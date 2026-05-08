@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { Menu, SquarePlus, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -16,32 +16,37 @@ export function HeaderClient({ categories }: HeaderClientProps) {
   const parentCategories = categories.filter((cat) => cat.parentId === null);
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 border-b border-gray-200/70 bg-white/90 backdrop-blur-md">
+    <header className="fixed top-0 right-0 left-0 z-50 bg-white/90 shadow-lg backdrop-blur-lg">
       <nav className="flex h-16 w-full items-center justify-center px-4 sm:px-6 lg:h-20 lg:px-8">
         <div className="relative flex w-full max-w-7xl items-center justify-between gap-6">
+          {/* Left spacer - for mobile centering */}
+          <div className="flex flex-1 md:flex-none" />
+
           {/* Logo - centered on mobile, left on desktop */}
           <Link
             href={"/"}
-            className="flex flex-1 justify-center md:flex-none md:justify-start"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0"
           >
             <Image
-              src="/imgs/logo-thuematbang.png"
+              src="/imgs/logo.png"
               alt="thuematbang.com.vn"
-              width={200}
+              width={280}
               height={80}
-              className="h-16 w-auto object-cover lg:h-20"
+              quality={100}
+              priority
+              className="h-14 w-auto object-contain lg:h-16"
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-1 md:flex">
+          <div className="hidden items-center gap-1 md:flex md:flex-1 md:justify-center">
             {parentCategories.length > 0 && (
               <>
                 {parentCategories.map((parent) => (
                   <Link
                     key={parent.id}
                     href={`/${parent.slug}`}
-                    className="hover:text-primary after:bg-primary relative rounded-md px-3 py-2 text-xs font-semibold tracking-wide text-gray-800 uppercase transition-colors after:absolute after:right-3 after:bottom-1 after:left-3 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
+                    className="hover:text-primary after:bg-primary relative rounded-md px-3 py-2 text-sm font-semibold tracking-wider text-gray-800 uppercase transition-colors after:absolute after:right-3 after:bottom-1 after:left-3 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
                   >
                     {parent.name}
                   </Link>
@@ -51,21 +56,23 @@ export function HeaderClient({ categories }: HeaderClientProps) {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3 md:flex-none md:justify-start">
             <Link href="#" className="hidden sm:inline">
               <Button
                 size={"lg"}
-                className="border-primary text-primary hover:bg-primary/10 hover:text-primary cursor-pointer border-2 bg-white text-xs font-semibold tracking-wide uppercase duration-200 ease-in-out"
+                className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
               >
                 Đăng nhập
+                <User className="h-5 w-5 object-cover" />
               </Button>
             </Link>
             <Link href="#" className="hidden sm:inline">
               <Button
                 size={"lg"}
-                className="bg-primary hover:bg-primary/90 cursor-pointer text-xs font-semibold tracking-wide text-white uppercase duration-200 ease-in-out"
+                className="bg-primary cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
               >
                 Đăng tin
+                <SquarePlus className="h-5 w-5 object-cover" />
               </Button>
             </Link>
 
@@ -100,17 +107,19 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                       <Link href="#" className="block">
                         <Button
                           size={"lg"}
-                          className="border-primary text-primary hover:bg-primary/10 hover:text-primary w-full cursor-pointer border-2 bg-white text-xs font-semibold tracking-wide uppercase duration-200 ease-in-out"
+                          className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
                         >
                           Đăng nhập
+                          <User className="h-5 w-5 object-cover" />
                         </Button>
                       </Link>
                       <Link href="#" className="block">
                         <Button
                           size={"lg"}
-                          className="bg-primary hover:bg-primary/90 w-full cursor-pointer text-xs font-semibold tracking-wide text-white uppercase duration-200 ease-in-out"
+                          className="bg-primary w-full cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
                         >
                           Đăng tin
+                          <SquarePlus className="h-5 w-5 object-cover" />
                         </Button>
                       </Link>
                     </div>

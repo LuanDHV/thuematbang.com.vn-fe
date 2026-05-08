@@ -1,12 +1,13 @@
 export interface Category {
-  id: string | number;
-  parentId: string | number | null;
+  id: number;
+  parentId?: number | null;
   name: string;
   slug: string;
-  fullPath?: string;
-  priority?: number;
-  isActive?: boolean;
+  fullPath?: string | null;
+  priority?: number | null;
+  isActive?: boolean | null;
+  createdAt?: Date | string | null;
+  updatedAt?: Date | string | null;
+  parent?: Category | null;
   children?: Category[];
-  createdAt?: string;
-  updatedAt?: string;
 }

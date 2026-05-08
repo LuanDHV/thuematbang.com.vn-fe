@@ -5,10 +5,34 @@
 @theme {
   --color-primary: #fbaa19;
   --color-text-black: #2c2c2c;
+  --font-family-montserrat: var(--font-montserrat);
 }
 
-body {
+/* Áp dụng cho toàn bộ trang web */
+::selection {
+  background-color: #fbaa19; /* Thay bằng mã màu Primary của bạn */
+  color: #ffffff; /* Màu chữ khi được bôi đen */
+}
+
+/* Cho các trình duyệt cũ hơn (Firefox) */
+::-moz-selection {
+  background-color: #fbaa19;
+  color: #ffffff;
+}
+
+html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  font-family: var(
+    --font-montserrat,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    sans-serif
+  );
 }
