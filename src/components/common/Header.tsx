@@ -1,4 +1,4 @@
-import { categoryService } from "@/app/services/category.service";
+import { categoryService } from "@/services/category.service";
 import { HeaderClient } from "./HeaderClient";
 
 export default async function Header() {

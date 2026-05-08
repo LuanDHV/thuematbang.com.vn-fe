@@ -4,4 +4,11 @@
 
 @theme {
   --color-primary: #fbaa19;
+  --color-text-black: #2c2c2c;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
