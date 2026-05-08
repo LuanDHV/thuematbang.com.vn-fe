@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center bg-[url('/imgs/wallpaper-1.jpg')] bg-cover bg-center">
+    <div className="relative flex h-auto min-h-screen w-full items-center justify-center bg-[url('/imgs/wallpaper-1.jpg')] bg-cover bg-center">
       {/* Lớp phủ đen sang trọng (độ mờ 60% để nổi bật text) */}
       <div className="absolute inset-0 bg-black/40"></div>
 

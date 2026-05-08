@@ -17,7 +17,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 bg-white/90 shadow-lg backdrop-blur-lg">
-      <nav className="flex h-16 w-full items-center justify-center px-4 sm:px-6 lg:h-20 lg:px-8">
+      <nav className="flex h-16 w-full items-center justify-center px-5 lg:h-20">
         <div className="relative flex w-full max-w-7xl items-center justify-between gap-6">
           {/* Left spacer - for mobile centering */}
           <div className="flex flex-1 md:flex-none" />

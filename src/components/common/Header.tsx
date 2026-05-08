@@ -1,5 +1,5 @@
 import { categoryService } from "@/services/category.service";
-import { HeaderClient } from "./HeaderClient";
+import { HeaderClient } from "../client/HeaderClient";
 
 export default async function Header() {
   const response = await categoryService.getAll();

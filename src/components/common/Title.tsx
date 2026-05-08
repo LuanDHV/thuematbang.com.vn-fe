@@ -1,7 +1,6 @@
-// 1. Định nghĩa kiểu dữ liệu cho Props (Nếu dùng TypeScript)
 interface TitleProps {
   title: string;
-  description?: string; // Dấu ? để không bắt buộc phải có description
+  description?: string;
 }
 
 export default function Title({ title, description }: TitleProps) {

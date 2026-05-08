@@ -17,7 +17,8 @@ export interface Property {
   numFloors?: number | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
-  legalStatus?: string | null;
+  viewCount: number | null;
+  priorityStatus?: string | null;
   cityId?: number | null;
   districtId?: number | null;
   wardId?: number | null;

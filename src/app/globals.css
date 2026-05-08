@@ -10,7 +10,7 @@
 
 /* Áp dụng cho toàn bộ trang web */
 ::selection {
-  background-color: #fbaa19; /* Thay bằng mã màu Primary của bạn */
+  background-color: #fbaa19; /* Màu nền khi được bôi đen */
   color: #ffffff; /* Màu chữ khi được bôi đen */
 }
 

@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en" className={`${montserrat.variable} h-full antialiased`}>
       <body>
         <Header />
-        <main className="flex-1">{children}</main>
+        <main className="min-h-screen flex-1">{children}</main>
         <Footer />
       </body>
     </html>

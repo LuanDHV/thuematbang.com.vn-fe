@@ -1,16 +1,18 @@
 import { PropertyCard } from "@/components/common/PropertyCard";
 import Title from "@/components/common/Title";
-import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
+import { featuredProperties } from "@/lib/mockData";
+import Link from "next/link";
+import SeeMoreButton from "@/components/common/SeeMoreButton";
 
 export default function FeaturedSection({
-  properties,
+  properties = featuredProperties,
 }: {
-  properties: Property[];
+  properties?: Property[];
 }) {
   return (
-    <section className="bg-slate-50/50 py-24">
-      <div className="container mx-auto px-4">
+    <section className="h-auto min-h-screen bg-slate-50/50 py-20">
+      <div className="container mx-auto max-w-7xl">
         {/* Tái sử dụng Title Component */}
         <Title
           title="Bất động sản nổi bật"
@@ -18,22 +20,20 @@ export default function FeaturedSection({
         />
 
         {/* Grid List */}
-        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {properties?.map((item: Property) => (
-            <PropertyCard key={item.id} property={item} />
+        <div className="mt-12 grid grid-cols-1 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
+          {properties?.slice(0, 8).map((item: Property) => (
+            <Link
+              key={item.id}
+              href={`/${item?.category?.slug}/${item.slug}`}
+              className="block transition-transform duration-300 hover:scale-[1.02]"
+            >
+              <PropertyCard property={item} />
+            </Link>
           ))}
         </div>
 
-        {/* Nút Xem Thêm - Style Sang Trọng */}
-        <div className="mt-16 text-center">
-          <Button
-            variant="outline"
-            size="lg"
-            className="border-primary text-primary hover:bg-primary shadow-primary/10 h-14 rounded-full px-10 font-bold tracking-widest uppercase shadow-lg transition-all duration-300 hover:text-white"
-          >
-            Xem thêm tất cả
-          </Button>
-        </div>
+        {/* Nút Xem thêm */}
+        <SeeMoreButton href="can-thue" />
       </div>
     </section>
   );
