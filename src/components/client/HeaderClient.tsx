@@ -28,11 +28,10 @@ export function HeaderClient({ categories }: HeaderClientProps) {
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0"
           >
             <Image
-              src="/imgs/logo.png"
+              src="/imgs/brand-logo.png"
               alt="thuematbang.com.vn"
               width={280}
               height={80}
-              quality={100}
               priority
               className="h-14 w-auto object-contain lg:h-16"
             />

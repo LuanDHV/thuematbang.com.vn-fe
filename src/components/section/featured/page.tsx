@@ -11,8 +11,8 @@ export default function FeaturedSection({
   properties?: Property[];
 }) {
   return (
-    <section className="h-auto min-h-screen bg-slate-50/50 py-20">
-      <div className="container mx-auto max-w-7xl">
+    <section className="w-full bg-slate-50/50 py-12 lg:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4">
         {/* Tái sử dụng Title Component */}
         <Title
           title="Bất động sản nổi bật"
@@ -20,8 +20,8 @@ export default function FeaturedSection({
         />
 
         {/* Grid List */}
-        <div className="mt-12 grid grid-cols-1 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
-          {properties?.slice(0, 8).map((item: Property) => (
+        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {properties?.slice(0, 4).map((item: Property) => (
             <Link
               key={item.id}
               href={`/${item?.category?.slug}/${item.slug}`}
