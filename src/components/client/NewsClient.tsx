@@ -20,7 +20,7 @@ export function NewsClient({ posts }: Props) {
         <div className="mb-16 text-center">
           <Title
             title="Tin Tức"
-            description="   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua."
           />
         </div>

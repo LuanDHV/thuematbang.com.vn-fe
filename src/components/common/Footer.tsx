@@ -18,7 +18,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="mt-auto w-full border-t border-gray-100 bg-white font-sans text-gray-800">
+    <footer className="to-primary/10 mt-auto w-full border-t border-gray-100 bg-white bg-linear-to-b from-white font-sans text-gray-800">
       {/* SECTION 1: TOP INFO BAR */}
       <div className="w-full border-b border-gray-100">
         <div className="mx-auto max-w-7xl px-4 py-8">
@@ -140,7 +140,7 @@ export default function Footer() {
       </div>
 
       {/* SECTION 3: LEGAL INFO */}
-      <div className="w-full border-t border-gray-100 bg-gray-50">
+      <div className="w-full border-t border-gray-100">
         <div className="mx-auto max-w-7xl p-4">
           <div className="text-primary text-center text-xs font-bold tracking-widest uppercase">
             Copyright © 2026 Thuematbang

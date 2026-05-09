@@ -31,7 +31,7 @@ export default function ProjectSection() {
         </div>
 
         {/* Grid danh mục */}
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-6">
           {categories.map((cat, index) => (
             <div
               key={index}
@@ -43,7 +43,7 @@ export default function ProjectSection() {
               </div>
 
               {/* Tên danh mục */}
-              <h3 className="group-hover:text-primary text-xl font-bold tracking-tight text-slate-800 transition-colors duration-300">
+              <h3 className="group-hover:text-primary text-center text-xl font-bold tracking-tight text-slate-800 transition-colors duration-300">
                 {cat.name}
               </h3>
 
