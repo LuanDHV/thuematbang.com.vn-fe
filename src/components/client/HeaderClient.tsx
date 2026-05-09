@@ -20,26 +20,25 @@ export function HeaderClient({ categories }: HeaderClientProps) {
       <nav className="flex h-16 w-full items-center justify-center px-5 lg:h-20">
         <div className="relative flex w-full max-w-7xl items-center justify-between gap-6">
           {/* Left spacer - for mobile centering */}
-          <div className="flex flex-1 md:flex-none" />
+          <div className="flex flex-1 lg:flex-none" />
 
           {/* Logo - centered on mobile, left on desktop */}
           <Link
             href={"/"}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0"
           >
             <Image
-              src="/imgs/logo.png"
+              src="/imgs/brand-logo.png"
               alt="thuematbang.com.vn"
               width={280}
               height={80}
-              quality={100}
               priority
               className="h-14 w-auto object-contain lg:h-16"
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-1 md:flex md:flex-1 md:justify-center">
+          <div className="hidden items-center gap-1 lg:flex lg:flex-1 lg:justify-center">
             {parentCategories.length > 0 && (
               <>
                 {parentCategories.map((parent) => (
@@ -56,8 +55,8 @@ export function HeaderClient({ categories }: HeaderClientProps) {
           </div>
 
           {/* Right Actions */}
-          <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3 md:flex-none md:justify-start">
-            <Link href="#" className="hidden sm:inline">
+          <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3 lg:flex-none lg:justify-start">
+            <Link href="#" className="hidden lg:inline">
               <Button
                 size={"lg"}
                 className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
@@ -66,7 +65,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                 <User className="h-5 w-5 object-cover" />
               </Button>
             </Link>
-            <Link href="#" className="hidden sm:inline">
+            <Link href="#" className="hidden lg:inline">
               <Button
                 size={"lg"}
                 className="bg-primary cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
@@ -77,7 +76,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
             </Link>
 
             {/* Mobile Navigation */}
-            <div className="absolute right-0 md:static md:hidden">
+            <div className="absolute right-0 lg:static lg:hidden">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon-lg">

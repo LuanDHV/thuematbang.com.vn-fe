@@ -19,8 +19,8 @@ const categories = [
 
 export default function ProjectSection() {
   return (
-    <section className="to-primary/10 flex h-auto min-h-screen w-full items-center justify-center bg-linear-to-b from-white py-20">
-      <div className="container mx-auto px-4">
+    <section className="to-primary/10 w-full bg-linear-to-b from-white py-12 lg:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4">
         {/* Title component - Thêm chút margin bottom để thoáng hơn */}
         <div className="mb-12">
           <Title
@@ -31,11 +31,11 @@ export default function ProjectSection() {
         </div>
 
         {/* Grid danh mục */}
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-6">
           {categories.map((cat, index) => (
             <div
               key={index}
-              className="group hover:border-primary/50 hover:shadow-primary/10 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-xl"
+              className="group hover:border-primary/50 hover:shadow-primary/10 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-xl"
             >
               {/* Icon Container */}
               <div className="text-primary mb-6 transition-all duration-300 group-hover:scale-110">
@@ -43,7 +43,7 @@ export default function ProjectSection() {
               </div>
 
               {/* Tên danh mục */}
-              <h3 className="group-hover:text-primary text-xl font-bold tracking-tight text-slate-800 transition-colors duration-300">
+              <h3 className="group-hover:text-primary text-center text-xl font-bold tracking-tight text-slate-800 transition-colors duration-300">
                 {cat.name}
               </h3>
 

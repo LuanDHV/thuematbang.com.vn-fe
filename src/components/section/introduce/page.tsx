@@ -27,8 +27,8 @@ const features = [
 
 export default function IntroduceSection() {
   return (
-    <section className="to-primary/10 relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-linear-to-b from-white py-20">
-      <div className="mx-auto w-full max-w-7xl px-5">
+    <section className="to-primary/10 relative w-full overflow-hidden bg-linear-to-b from-white py-12 lg:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4">
         <Title
           title="Giới thiệu"
           description="Chúng tôi là nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. Với hệ thống danh mục đa dạng và dịch vụ chuyên nghiệp, chúng tôi cam kết tạo ra trải nghiệm tốt nhất cho khách hàng."
