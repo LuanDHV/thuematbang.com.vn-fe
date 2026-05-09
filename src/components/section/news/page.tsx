@@ -1,10 +1,14 @@
 import { NewsClient } from "@/components/client/NewsClient";
-import { postService } from "@/services/post.service";
+import { mockPosts } from "@/lib/mockData";
+
+// TODO: Replace mockPosts with API call when ready
+// import { postService } from "@/services/post.service";
+// const response = await postService.getByCategorySlug("tin-tuc");
+// const posts = response.data?.slice(0, 4) || [];
 
 export default async function NewsSection() {
-  const response = await postService.getByCategorySlug("tin-tuc");
-  // Lấy 8 bài mới nhất từ server
-  const posts = response.data?.slice(0, 4) || [];
+  // Using mockData for demo - replace with API call above when ready
+  const posts = mockPosts.slice(0, 4);
 
   return <NewsClient posts={posts} />;
 }
