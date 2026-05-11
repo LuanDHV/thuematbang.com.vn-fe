@@ -1,5 +1,114 @@
-import React from "react";
+"use client";
 
-export default function CanThuePage() {
-  return <div>page</div>;
+import React, { useMemo, useState } from "react";
+import TinTucCategory from "@/components/tin-tuc/category";
+import NewsCard from "@/components/common/NewsCard";
+import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
+import { mockPosts } from "@/lib/mockData";
+import Title from "@/components/common/Title";
+import SeeMoreButton from "@/components/common/SeeMoreButton";
+
+const INITIAL_VISIBLE_POSTS = 4;
+const LOAD_MORE_STEP = 4;
+
+export default function TinTucPage() {
+  // Default to tin tuc category slug
+  const [selectedCategorySlug, setSelectedCategorySlug] =
+    useState<string>("tin-tuc");
+  const [visiblePostsCount, setVisiblePostsCount] = useState(
+    INITIAL_VISIBLE_POSTS,
+  );
+
+  const handleSelectCategory = (categorySlug: string) => {
+    setSelectedCategorySlug(categorySlug);
+    setVisiblePostsCount(INITIAL_VISIBLE_POSTS);
+  };
+
+  // Filter posts based on selected category slug
+  const posts = useMemo(() => {
+    if (selectedCategorySlug === "tin-tuc") {
+      // Show all posts from tin tuc subcategories
+      return mockPosts.filter((post) =>
+        ["kien-truc-xay-dung", "tu-van-luat", "phong-thuy"].includes(
+          post.category?.slug || "",
+        ),
+      );
+    }
+    return mockPosts.filter(
+      (post) => post.category?.slug === selectedCategorySlug,
+    );
+  }, [selectedCategorySlug]);
+
+  // Get featured post (first one) and remaining posts
+  const featuredPost = posts[0];
+  const remainingPosts = posts.slice(1);
+  const visibleRemainingPosts = remainingPosts.slice(0, visiblePostsCount);
+  const hasMorePosts = visiblePostsCount < remainingPosts.length;
+
+  // Get most viewed posts from remaining posts
+  const mostViewedPosts = [...remainingPosts]
+    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
+    .slice(0, 6);
+
+  const handleLoadMore = () => {
+    setVisiblePostsCount((currentCount) => currentCount + LOAD_MORE_STEP);
+  };
+
+  return (
+    <div className="mx-auto h-auto max-w-7xl px-4 py-12 lg:py-20">
+      <Title
+        title="Tin tức bất động sản mới nhất"
+        description=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      />
+
+      {/* Category selector */}
+      <TinTucCategory
+        selectedCategorySlug={selectedCategorySlug}
+        onSelectCategory={handleSelectCategory}
+      />
+
+      {/* Featured post and remaining posts - two column layout */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Left side - Featured + News posts (lg:col-span-2) */}
+        <div className="space-y-6 lg:col-span-2">
+          {/* Featured post */}
+          {featuredPost && <FeaturedNewsCard post={featuredPost} />}
+
+          {/* Remaining posts */}
+          <div className="grid gap-6">
+            {visibleRemainingPosts.length > 0 ? (
+              visibleRemainingPosts.map((post) => (
+                <NewsCard key={post.id} post={post} />
+              ))
+            ) : posts.length === 0 ? (
+              <div className="py-12 text-center">
+                <p className="text-gray-500">Không có bài viết nào</p>
+              </div>
+            ) : null}
+          </div>
+
+          {remainingPosts.length > 0 && hasMorePosts ? (
+            <SeeMoreButton onClick={handleLoadMore} />
+          ) : null}
+        </div>
+
+        {/* Right side - Most viewed posts (lg:col-span-1) */}
+        <div className="h-fit">
+          <h4 className="mb-4 text-lg font-bold">
+            Bài viết được xem nhiều nhất
+          </h4>
+          <div className="grid gap-6">
+            {mostViewedPosts.length > 0 ? (
+              mostViewedPosts.map((post) => (
+                <NewsCard key={post.id} post={post} />
+              ))
+            ) : (
+              <p className="text-gray-500">Không có bài viết</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

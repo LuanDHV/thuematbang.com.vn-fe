@@ -24,6 +24,7 @@ export interface Property {
   wardId?: number | null;
   addressDetail?: string | null;
   content?: string | null;
+  description?: string | null;
   status?: string | null;
   isFeatured?: boolean | null;
   createdAt?: Date | string | null;

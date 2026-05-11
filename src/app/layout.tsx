@@ -21,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${montserrat.variable} h-full antialiased`}>
-      <body>
+      <body className="flex min-h-screen flex-col">
         <Header />
-        <main className="min-h-screen flex-1">{children}</main>
+        <main className="grow pt-16 lg:pt-20">{children}</main>
         <Footer />
       </body>
     </html>

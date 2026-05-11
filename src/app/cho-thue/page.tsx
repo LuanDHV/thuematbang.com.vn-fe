@@ -1,10 +1,15 @@
-import SearchBar from "@/components/common/SearchBar";
-import React from "react";
+import Banner from "@/components/cho-thue/Banner";
+import ByFilter from "@/components/cho-thue/ByFilter";
+import ContentSEO from "@/components/cho-thue/ContentSEO";
+import FAQ from "@/components/cho-thue/FAQ";
 
-export default function CanThuePage() {
+export default function ChoThuePage() {
   return (
-    <div className="mx-auto mt-40 max-w-7xl">
-      <SearchBar />
-    </div>
+    <>
+      <Banner />
+      <ByFilter />
+      <ContentSEO />
+      <FAQ />
+    </>
   );
 }

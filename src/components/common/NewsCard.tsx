@@ -15,7 +15,7 @@ export default function NewsCard({ post }: NewsCardProps) {
       href={`/tin-tuc/${post.slug}`}
       className="group hover:border-primary/20 hover:shadow-primary/5 flex flex-row items-stretch overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
-      <div className="relative h-full w-2/5 shrink-0 self-stretch overflow-hidden bg-slate-50">
+      <div className="relative w-2/5 shrink-0 overflow-hidden bg-slate-50">
         <Image
           //   src={post.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
           src={"/imgs/wallpaper-1.jpg"}

@@ -1,11 +1,10 @@
-import { PropertyCard } from "@/components/common/PropertyCard";
-import Title from "@/components/common/Title";
+import Title from "../common/Title";
 import { Property } from "@/types/property";
-import { featuredProperties } from "@/lib/mockData";
 import Link from "next/link";
-import SeeMoreButton from "@/components/common/SeeMoreButton";
+import { PropertyCard } from "../common/PropertyCard";
+import { featuredProperties } from "@/lib/mockData";
 
-export default function FeaturedSection({
+export default function ByFilter({
   properties = featuredProperties,
 }: {
   properties?: Property[];
@@ -15,7 +14,7 @@ export default function FeaturedSection({
       <div className="mx-auto w-full max-w-7xl px-4">
         {/* Tái sử dụng Title Component */}
         <Title
-          title="Bất động sản nổi bật"
+          title="Tất cả tin rao ( count ) "
           description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."
         />
 
@@ -31,9 +30,6 @@ export default function FeaturedSection({
             </Link>
           ))}
         </div>
-
-        {/* Nút Xem thêm */}
-        <SeeMoreButton href="can-thue" />
       </div>
     </section>
   );
