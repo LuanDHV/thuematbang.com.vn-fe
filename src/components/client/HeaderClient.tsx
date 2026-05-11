@@ -61,8 +61,8 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                 size={"lg"}
                 className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
               >
-                Đăng nhập
                 <User className="h-5 w-5 object-cover" />
+                Đăng nhập
               </Button>
             </Link>
             <Link href="#" className="hidden lg:inline">
@@ -70,8 +70,8 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                 size={"lg"}
                 className="bg-primary cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
               >
-                Đăng tin
                 <SquarePlus className="h-5 w-5 object-cover" />
+                Đăng tin
               </Button>
             </Link>
 

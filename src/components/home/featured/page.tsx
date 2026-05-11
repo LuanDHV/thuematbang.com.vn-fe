@@ -11,7 +11,7 @@ export default function FeaturedSection({
   properties?: Property[];
 }) {
   return (
-    <section className="w-full bg-slate-50/50 py-12 lg:py-20">
+    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4">
         {/* Tái sử dụng Title Component */}
         <Title
@@ -21,7 +21,7 @@ export default function FeaturedSection({
 
         {/* Grid List */}
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {properties?.slice(0, 4).map((item: Property) => (
+          {properties?.map((item: Property) => (
             <Link
               key={item.id}
               href={`/${item?.category?.slug}/${item.slug}`}

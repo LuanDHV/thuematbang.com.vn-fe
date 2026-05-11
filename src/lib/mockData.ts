@@ -246,7 +246,7 @@ export const mockCategories: Category[] = [
 export const mockPosts: Post[] = [
   {
     id: 1,
-    categoryId: 4,
+    categoryId: 19,
     title: "SHIN CÀ PHÊ - ĐÔNG HÀNH CÙNG BẠN CHINH PHỤC DALAT ULTRA TRAIL 2026",
     slug: "shin-ca-phe-dong-hanh-dalat-ultra-trail-2026",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
@@ -258,11 +258,15 @@ export const mockPosts: Post[] = [
     status: "published",
     isFeatured: true,
     createdAt: "2026-04-13",
-    category: { id: 4, name: "Tin Tức", slug: "tin-tuc" },
+    category: {
+      id: 19,
+      name: "Kiến trúc xây dựng",
+      slug: "kien-truc-xay-dung",
+    },
   },
   {
     id: 2,
-    categoryId: 4,
+    categoryId: 20,
     title:
       "ISOUP HUUPSI, ICHILL & IKIRO HẬN HÀNH ĐÔNG HÀNH CÙNG DALAT ULTRA TRAIL 2026",
     slug: "isoup-ichill-ikiro-dalat-ultra-trail",
@@ -275,11 +279,11 @@ export const mockPosts: Post[] = [
     status: "published",
     isFeatured: false,
     createdAt: "2026-04-07",
-    category: { id: 4, name: "Tin Tức", slug: "tin-tuc" },
+    category: { id: 20, name: "Tư vấn luật", slug: "tu-van-luat" },
   },
   {
     id: 3,
-    categoryId: 4,
+    categoryId: 19,
     title: "Kinh nghiệm thuê mặt bằng kinh doanh cho người mới bắt đầu",
     slug: "kinh-nghiem-thue-mat-bang-kinh-doanh",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
@@ -290,11 +294,15 @@ export const mockPosts: Post[] = [
     status: "published",
     isFeatured: false,
     createdAt: "2026-04-05",
-    category: { id: 4, name: "Tin Tức", slug: "tin-tuc" },
+    category: {
+      id: 19,
+      name: "Kiến trúc xây dựng",
+      slug: "kien-truc-xay-dung",
+    },
   },
   {
     id: 4,
-    categoryId: 4,
+    categoryId: 21,
     title: "Checklist thuê mặt bằng mở quán cafe tại TP.HCM cho người mới",
     slug: "checklist-thue-mat-bang-cafe-tphcm",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
@@ -305,7 +313,7 @@ export const mockPosts: Post[] = [
     status: "published",
     isFeatured: false,
     createdAt: "2026-04-06",
-    category: { id: 4, name: "Tin Tức", slug: "tin-tuc" },
+    category: { id: 21, name: "Phong thủy", slug: "phong-thuy" },
   },
 ];
 
@@ -315,7 +323,8 @@ export const featuredProperties: Property[] = [
     userId: 1,
     title: "Căn hộ cao cấp The Gold View",
     slug: "can-ho-cao-cap-the-gold-view",
-    categoryId: 1,
+    categoryId: 14,
+    category: { id: 14, slug: "can-ho-chung-cu", name: "Căn hộ, chung cư" },
     price: 15000000,
     area: 85,
     bedrooms: 2,
@@ -330,6 +339,7 @@ export const featuredProperties: Property[] = [
     addressDetail: "123 Nguyễn Huệ, Quận 1",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     status: "published",
+    description: "Căn hộ cao cấp, vị trí trung tâm Quận 1, tiện nghi đầy đủ.",
     isFeatured: true,
     createdAt: "2024-12-01",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
@@ -340,7 +350,8 @@ export const featuredProperties: Property[] = [
     userId: 2,
     title: "Penthouse Landmark 81",
     slug: "penthouse-landmark-81",
-    categoryId: 1,
+    categoryId: 14,
+    category: { id: 14, slug: "can-ho-chung-cu", name: "Căn hộ, chung cư" },
     price: 35000000,
     area: 250,
     bedrooms: 4,
@@ -355,6 +366,8 @@ export const featuredProperties: Property[] = [
     addressDetail: "208 Nguyễn Hữu Cảnh, Quận Bình Thạnh",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     status: "published",
+    description:
+      "Penthouse sang trọng tại Landmark 81 với tầm nhìn toàn thành phố.",
     isFeatured: true,
     createdAt: "2024-11-28",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
@@ -365,7 +378,8 @@ export const featuredProperties: Property[] = [
     userId: 3,
     title: "Nhà phố Thảo Điền",
     slug: "nha-pho-thao-dien",
-    categoryId: 2,
+    categoryId: 11,
+    category: { id: 11, slug: "mat-bang", name: "Mặt bằng" },
     price: 12000000,
     area: 120,
     bedrooms: 3,
@@ -380,6 +394,8 @@ export const featuredProperties: Property[] = [
     addressDetail: "45 Thảo Điền, Quận 2",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     status: "published",
+    description:
+      "Nhà phố cao cấp tại Thảo Điền, không gian sống rộng rãi, yên tĩnh.",
     isFeatured: true,
     createdAt: "2024-11-25",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
@@ -390,7 +406,8 @@ export const featuredProperties: Property[] = [
     userId: 4,
     title: "Căn hộ Vinhomes Central Park",
     slug: "can-ho-vinhomes-central-park",
-    categoryId: 1,
+    categoryId: 14,
+    category: { id: 14, slug: "can-ho-chung-cu", name: "Căn hộ, chung cư" },
     price: 8500000,
     area: 65,
     bedrooms: 1,
@@ -405,6 +422,8 @@ export const featuredProperties: Property[] = [
     addressDetail: "720A Điện Biên Phủ, Quận Bình Thạnh",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     status: "published",
+    description:
+      "Căn hộ tại Vinhomes Central Park, gần sông, tiện ích cộng đồng đầy đủ.",
     isFeatured: true,
     createdAt: "2024-11-22",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
@@ -415,7 +434,8 @@ export const featuredProperties: Property[] = [
     userId: 5,
     title: "Officetel Millennium",
     slug: "officetel-millennium",
-    categoryId: 3,
+    categoryId: 10,
+    category: { id: 10, slug: "van-phong", name: "Văn phòng" },
     price: 5000000,
     area: 45,
     bedrooms: 1,
@@ -430,6 +450,8 @@ export const featuredProperties: Property[] = [
     addressDetail: "132 Bến Vân Đồn, Quận 4",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     status: "published",
+    description:
+      "Officetel phù hợp cho doanh nghiệp nhỏ, vị trí thuận tiện giao thương.",
     isFeatured: true,
     createdAt: "2024-11-20",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
@@ -440,7 +462,8 @@ export const featuredProperties: Property[] = [
     userId: 6,
     title: "Biệt thự khu compound Phú Mỹ Hưng",
     slug: "biet-thu-compound-phu-my-hung",
-    categoryId: 2,
+    categoryId: 11,
+    category: { id: 11, slug: "mat-bang", name: "Mặt bằng" },
     price: 25000000,
     area: 180,
     bedrooms: 4,
@@ -455,6 +478,8 @@ export const featuredProperties: Property[] = [
     addressDetail: "Đường Tôn Đức Thắng, Quận 7",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     status: "published",
+    description:
+      "Biệt thự trong compound Phú Mỹ Hưng, an ninh tốt, sân vườn riêng.",
     isFeatured: true,
     createdAt: "2024-11-18",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
@@ -465,7 +490,8 @@ export const featuredProperties: Property[] = [
     userId: 7,
     title: "Căn hộ Ascent Lakeside",
     slug: "can-ho-ascent-lakeside",
-    categoryId: 1,
+    categoryId: 14,
+    category: { id: 14, slug: "can-ho-chung-cu", name: "Căn hộ, chung cư" },
     price: 6500000,
     area: 72,
     bedrooms: 2,
@@ -480,6 +506,8 @@ export const featuredProperties: Property[] = [
     addressDetail: "Khu Eurovia, Quận 7",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     status: "published",
+    description:
+      "Căn hộ Ascent Lakeside, thiết kế hiện đại, gần tiện ích Quận 7.",
     isFeatured: true,
     createdAt: "2024-11-15",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
@@ -490,7 +518,8 @@ export const featuredProperties: Property[] = [
     userId: 8,
     title: "Shophouse Saigon Pearl",
     slug: "shophouse-saigon-pearl",
-    categoryId: 4,
+    categoryId: 11,
+    category: { id: 11, slug: "mat-bang", name: "Mặt bằng" },
     price: 18000000,
     area: 95,
     bedrooms: 0,
@@ -505,9 +534,71 @@ export const featuredProperties: Property[] = [
     addressDetail: "92 Nguyễn Hữu Cảnh, Bình Thạnh",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     status: "published",
+    description: "Shophouse tại Saigon Pearl phù hợp kinh doanh, mặt tiền đẹp.",
     isFeatured: true,
     createdAt: "2024-11-12",
     city: { id: 1, name: "TP. Hồ Chí Minh", slug: "ho-chi-minh" },
     district: { id: 102, cityId: 1, name: "Bình Thạnh", slug: "binh-thanh" },
+  },
+];
+
+export const contentSEO = {
+  title: "Cho Thuê Mặt Bằng, Văn Phòng, Kho Xưởng Uy Tín - Thuematbang.com.vn",
+  description:
+    "Thuematbang.com.vn - Kênh thông tin số 1 về cho thuê bất động sản. Hỗ trợ tìm kiếm mặt bằng kinh doanh, văn phòng, kho xưởng chính xác, hiệu quả và pháp lý đảm bảo.",
+  content: `
+    <p>Bên cạnh các hoạt động giao dịch nhà đất, thị trường <strong>cho thuê bất động sản</strong> đang diễn ra cực kỳ năng động trên toàn quốc. Bắt kịp xu hướng này, <strong>Thuematbang.com.vn</strong> tự hào là đơn vị dẫn đầu, hỗ trợ kết nối hàng ngàn tin rao <em>cho thuê văn phòng, mặt bằng, kho xưởng, căn hộ - chung cư</em> chất lượng và hiệu quả nhất hiện nay.</p>
+    
+    <p>Với lợi thế đi đầu về công nghệ kỹ thuật số và chất lượng tin bài, chúng tôi được đánh giá là "cầu nối" uy tín giúp khách hàng tìm kiếm bất động sản nhanh chóng. Mọi thông tin đều được sàng lọc chính xác, đi kèm hình ảnh chân thật và đảm bảo tính pháp lý nghiêm ngặt.</p>
+
+    <h2>1. Đa dạng loại hình bất động sản cho thuê hot nhất</h2>
+    <p>Nguồn cung <strong>bất động sản nhà đất cho thuê</strong> tại Việt Nam rất phong phú, đáp ứng trọn vẹn thị hiếu từ các doanh nghiệp đến cá nhân:</p>
+    <ul>
+      <li><strong>Cho thuê văn phòng:</strong> Nhiều diện tích linh hoạt tại các tòa nhà hạng A, B, C.</li>
+      <li><strong>Cho thuê mặt bằng:</strong> Vị trí đắc địa, thuận tiện cho mọi ngành nghề kinh doanh.</li>
+      <li><strong>Kho xưởng cho thuê:</strong> Hệ thống bãi kho chuẩn quy hoạch, giao thông thuận lợi.</li>
+      <li><strong>Căn hộ - Chung cư:</strong> Đầy đủ phân khúc từ bình dân đến cao cấp.</li>
+    </ul>
+
+    <h2>2. Sức hút từ bất động sản mặt tiền cho thuê</h2>
+    <p>Nhà mặt tiền luôn là "phân khúc nóng" nhờ vị trí đắc địa, là lựa chọn hàng đầu để mở quán cafe, văn phòng giao dịch hoặc showroom. Giá <strong>cho thuê nhà mặt tiền</strong> có biên độ rộng từ vài chục đến hàng trăm triệu đồng mỗi tháng, tùy thuộc vào vị trí và hạ tầng khu vực.</p>
+    <p>Chúng tôi cam kết hỗ trợ tối đa để khách thuê tìm được vị trí "đúng ý", giúp khởi tạo lợi thế cạnh tranh ngay từ bước đầu chọn mặt bằng.</p>
+
+    <h2>3. Tư vấn trọn gói dịch vụ văn phòng cho thuê</h2>
+    <p>Thuematbang.com.vn hiểu rõ những khó khăn của doanh nghiệp khi tìm kiếm không gian làm việc. Chúng tôi không chỉ cung cấp tin rao mà còn mang đến giải pháp tư vấn toàn diện, giúp quảng bá sản phẩm và kết nối các đối tác <strong>cho thuê văn phòng</strong> một cách chuyên nghiệp và chu đáo nhất.</p>
+
+    <h2>4. Nguồn cung dồi dào về kho xưởng và trung tâm thương mại</h2>
+    <p>Đối với doanh nghiệp sản xuất, <strong>kho xưởng</strong> là yếu tố sống còn. Kho xưởng cần đáp ứng các tiêu chuẩn về diện tích, công năng và vị trí trung chuyển. Ngoài ra, các phân khúc khác như <em>trung tâm thương mại, nhà trọ, phòng trọ</em> cũng được chúng tôi phủ sóng rộng khắp các quận huyện tại TP. Hồ Chí Minh và các tỉnh thành lân cận.</p>
+
+    <h2>5. Đội ngũ nhân viên chuyên nghiệp và tận tâm</h2>
+    <p>Với nhiều năm kinh nghiệm trong ngành, đội ngũ nhân sự của chúng tôi luôn được đào tạo bài bản để hỗ trợ khách hàng sàng lọc thông tin <strong>mặt bằng cho thuê chính xác</strong> nhất. Sự an tâm của khách hàng về chất lượng và tiện ích dịch vụ chính là kim chỉ nam cho sự phát triển bền vững của Thuematbang.com.vn.</p>
+
+    <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600 mt-8">
+      <h3 className="text-xl font-bold mb-2">Liên hệ tìm kiếm mặt bằng ngay!</h3>
+      <p>Thuê mặt bằng sẽ không còn là nỗi lo. Hãy để chúng tôi đồng hành cùng sự phát triển của bạn.</p>
+      <p><strong>Hotline:</strong> 0968.68.80.81</p>
+      <p><strong>Website:</strong> <a href="https://thuematbang.com.vn" className="text-blue-700 underline">Thuematbang.com.vn</a></p>
+    </div>
+  `,
+};
+
+export const faqs = [
+  {
+    id: "item-1",
+    question: "Làm thế nào để tôi có thể đăng tin cho thuê mặt bằng?",
+    answer:
+      "Bạn chỉ cần đăng ký tài khoản, chọn mục 'Đăng tin' và điền đầy đủ các thông tin chi tiết về diện tích, vị trí, giá cả cùng hình ảnh thực tế của mặt bằng.",
+  },
+  {
+    id: "item-2",
+    question: "Chi phí đăng tin trên Thuematbang.com.vn là bao nhiêu?",
+    answer:
+      "Chúng tôi cung cấp nhiều gói đăng tin từ miễn phí đến các gói VIP có trả phí để tăng khả năng tiếp cận khách hàng mục tiêu hiệu quả hơn.",
+  },
+  {
+    id: "item-3",
+    question: "Tin đăng của tôi sẽ hiển thị trong bao lâu?",
+    answer:
+      "Tùy vào gói dịch vụ bạn chọn, tin đăng có thể hiển thị từ 7 ngày, 15 ngày hoặc cho đến khi mặt bằng đã được cho thuê thành công.",
   },
 ];

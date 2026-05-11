@@ -7,9 +7,9 @@ export default function Title({ title, description }: TitleProps) {
   return (
     <div className="mx-auto mb-12 max-w-4xl text-center">
       {/* Title */}
-      <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 uppercase md:text-4xl">
+      <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 uppercase md:text-4xl">
         {title}
-      </h2>
+      </h1>
 
       {/* Decorative Line - Căn giữa */}
       <div className="bg-primary mx-auto mb-8 h-1.5 w-16 rounded-full"></div>
