@@ -305,7 +305,7 @@ function RangePopoverField({
                   }
                   className="focus:border-primary/50 focus:ring-primary/10 h-10 w-full [appearance:textfield] rounded-xl border border-gray-200 bg-white px-3 pr-16 text-sm text-gray-500 transition-all outline-none focus:ring-4 disabled:cursor-not-allowed disabled:bg-gray-100 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                 />
-                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-gray-500">
+                <span className="-trangray-y-1/2 pointer-events-none absolute top-1/2 right-3 text-xs text-gray-500">
                   {unit === "m²" ? "m²" : "Tỷ"}
                 </span>
               </div>
@@ -326,7 +326,7 @@ function RangePopoverField({
                   }
                   className="focus:border-primary/50 focus:ring-primary/10 h-10 w-full [appearance:textfield] rounded-xl border border-gray-200 bg-white px-3 pr-16 text-sm text-gray-500 transition-all outline-none focus:ring-4 disabled:cursor-not-allowed disabled:bg-gray-100 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                 />
-                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-gray-500">
+                <span className="-trangray-y-1/2 pointer-events-none absolute top-1/2 right-3 text-xs text-gray-500">
                   {unit === "m²" ? "m²" : "Tỷ"}
                 </span>
               </div>
@@ -453,7 +453,9 @@ function SelectField({
   );
 }
 
-export default function SearchBar() {
+export default function SearchBar({
+  layout = "horizontal",
+}: { layout?: "horizontal" | "vertical" } = {}) {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [keyword, setKeyword] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -519,7 +521,13 @@ export default function SearchBar() {
   return (
     <SectionCard>
       <form onSubmit={(event) => event.preventDefault()} className="space-y-4">
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+        <div
+          className={
+            layout === "vertical"
+              ? "space-y-3"
+              : "grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end"
+          }
+        >
           <div className="space-y-2">
             <FieldLabel>Tìm kiếm chính</FieldLabel>
             <div ref={searchRef} className="relative">
@@ -533,7 +541,7 @@ export default function SearchBar() {
                 }}
                 name="keyword"
                 type="search"
-                placeholder="Nhập tên dự án, đường phố hoặc từ khóa bất kỳ"
+                placeholder="Nhập đường phố hoặc từ khóa bất kỳ"
                 className="focus:border-primary/50 focus:ring-primary/10 h-12 w-full rounded-2xl border border-gray-200 bg-white px-11 py-3 text-sm text-gray-500 shadow-sm transition-all outline-none placeholder:text-gray-400 focus:ring-4"
               />
 
@@ -566,14 +574,20 @@ export default function SearchBar() {
 
           <Button
             type="submit"
-            className="bg-primary hover:bg-primary/90 h-12 cursor-pointer rounded-2xl px-6 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-[0_18px_40px_-18px_rgba(251,170,25,0.75)] md:min-w-40"
+            className={`bg-primary hover:bg-primary/90 h-12 cursor-pointer rounded-2xl px-6 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-[0_18px_40px_-18px_rgba(251,170,25,0.75)] ${layout === "vertical" ? "w-full" : "md:min-w-40"}`}
           >
             <Search className="mr-2 h-4 w-4" />
             Tìm kiếm
           </Button>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div
+          className={
+            layout === "vertical"
+              ? "grid grid-cols-1 gap-3"
+              : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
+          }
+        >
           <SelectField
             label="Loại bất động sản"
             value={propertyType}

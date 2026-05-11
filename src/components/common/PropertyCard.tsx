@@ -18,7 +18,7 @@ export function PropertyCard({ property }: { property: Property }) {
     : "Vừa đăng";
 
   return (
-    <div className="group hover:shadow-primary/5 flex min-h-115 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div className="group hover:shadow-primary/5 hover:-trangray-y-1 flex min-h-115 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-xl">
       {/* Image Container - Tăng chiều cao lên h-48 để nhìn thoáng hơn */}
       <div className="relative h-48 overflow-hidden">
         <Image
@@ -44,7 +44,7 @@ export function PropertyCard({ property }: { property: Property }) {
       {/* Content */}
       <div className="flex grow flex-col p-4">
         {/* Title - Tăng size chữ và chiều cao dòng */}
-        <h3 className="group-hover:text-primary line-clamp-2 min-h-10 text-lg leading-snug font-bold text-slate-800 transition-colors">
+        <h3 className="group-hover:text-primary line-clamp-2 min-h-10 text-lg leading-snug font-bold text-gray-800 transition-colors">
           {property.title}
         </h3>
 
@@ -56,7 +56,7 @@ export function PropertyCard({ property }: { property: Property }) {
         </div>
 
         {/* Address & Area gộp chung một hàng */}
-        <div className="flex flex-col gap-y-1 text-xs text-slate-400">
+        <div className="flex flex-col gap-y-1 text-xs text-gray-400">
           {/* Khối Địa chỉ */}
           <div className="mb-2 flex items-center gap-1.5">
             <MapPin size={14} className="shrink-0" />
@@ -82,13 +82,13 @@ export function PropertyCard({ property }: { property: Property }) {
         </div>
 
         {/* Footer Stats - Ngăn cách rõ ràng bằng border và khoảng trống */}
-        <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-3 text-[11px] font-medium text-slate-400">
+        <div className="mt-auto flex items-center justify-between border-t border-gray-50 pt-3 text-[11px] font-medium text-gray-400">
           <div className="flex items-center gap-1.5 text-xs">
             <Calendar size={13} strokeWidth={2.5} />
             <span>{dateStr}</span>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-full bg-slate-50 px-2 py-0.5 text-xs">
+          <div className="flex items-center gap-1.5 rounded-full bg-gray-50 px-2 py-0.5 text-xs">
             <Eye size={13} strokeWidth={2.5} />
             <span>{property.viewCount || 0}</span>
           </div>

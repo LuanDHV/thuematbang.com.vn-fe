@@ -1,5 +1,3 @@
-import SearchBar from "../common/SearchBar";
-
 export default function Banner() {
   return (
     <div className="relative flex min-h-175 w-full flex-col bg-[url('/imgs/wallpaper-1.jpg')] bg-cover bg-center">
@@ -17,11 +15,6 @@ export default function Banner() {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </p>
-        </div>
-
-        {/* SearchBar - Đặt vào flow tự nhiên hoặc dùng absolute so với container 7xl */}
-        <div className="mt-10 w-full">
-          <SearchBar />
         </div>
       </div>
     </div>

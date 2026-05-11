@@ -11,7 +11,7 @@ export default function FeaturedSection({
   properties?: Property[];
 }) {
   return (
-    <section className="w-full bg-slate-50/50 py-12 lg:py-20">
+    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4">
         {/* Tái sử dụng Title Component */}
         <Title

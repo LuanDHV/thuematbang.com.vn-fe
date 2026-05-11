@@ -107,7 +107,7 @@ export default function Footer() {
                     <li key={item.label}>
                       <Link
                         href={item.href}
-                        className="hover:text-primary block transition duration-300 hover:translate-x-1"
+                        className="hover:text-primary hover:trangray-x-1 block transition duration-300"
                       >
                         {item.label}
                       </Link>
@@ -126,7 +126,7 @@ export default function Footer() {
                     <li key={item.label}>
                       <Link
                         href={item.href}
-                        className="hover:text-primary block transition duration-300 hover:translate-x-1"
+                        className="hover:text-primary hover:trangray-x-1 block transition duration-300"
                       >
                         {item.label}
                       </Link>

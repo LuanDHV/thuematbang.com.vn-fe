@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import TinTucPageClient from "@/components/tin-tuc/TinTucPageClient";
 import { createPageMetadata } from "@/lib/metadata";
+import TinTucPageClient from "@/components/client/TinTucPageClient";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Tin tức",

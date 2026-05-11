@@ -27,7 +27,7 @@ export default function HeroSection() {
             <Button
               variant="outline"
               size="lg"
-              className="border-primary/30 bg-primary hover:bg-primary hover:border-primary group min-h-16 w-full min-w-55 cursor-pointer rounded-full border-2 px-10 text-lg font-bold tracking-widest text-white uppercase backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:text-white hover:shadow-[0_25px_50px_-12px_rgba(251,170,25,0.5)] lg:min-h-21 lg:min-w-75 lg:text-xl"
+              className="border-primary/30 bg-primary hover:bg-primary hover:border-primary group hover:-trangray-y-1 min-h-16 w-full min-w-55 cursor-pointer rounded-full border-2 px-10 text-lg font-bold tracking-widest text-white uppercase backdrop-blur-md transition-all duration-300 hover:text-white hover:shadow-[0_25px_50px_-12px_rgba(251,170,25,0.5)] lg:min-h-21 lg:min-w-75 lg:text-xl"
             >
               <Search className="mr-2 h-5 w-5 text-white transition-colors" />
               <span>Cho thuê</span>
@@ -39,7 +39,7 @@ export default function HeroSection() {
             <Button
               variant="outline"
               size="lg"
-              className="border-primary/30 hover:bg-primary hover:border-primary group text-primary min-h-16 w-full min-w-55 cursor-pointer rounded-full border-2 bg-white px-10 text-lg font-bold tracking-widest uppercase backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:text-white hover:shadow-[0_25px_50px_-12px_rgba(251,170,25,0.5)] lg:min-h-21 lg:min-w-75 lg:text-xl"
+              className="border-primary/30 hover:bg-primary hover:border-primary group text-primary hover:-trangray-y-1 min-h-16 w-full min-w-55 cursor-pointer rounded-full border-2 bg-white px-10 text-lg font-bold tracking-widest uppercase backdrop-blur-md transition-all duration-300 hover:text-white hover:shadow-[0_25px_50px_-12px_rgba(251,170,25,0.5)] lg:min-h-21 lg:min-w-75 lg:text-xl"
             >
               <Search className="text-primary mr-2 h-5 w-5 transition-colors group-hover:text-white" />
               <span>Cần thuê</span>
