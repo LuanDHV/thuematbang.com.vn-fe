@@ -19,23 +19,19 @@ export default function ByFilter({
           description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."
         />
 
-        <div className="mt-12 flex gap-6">
-          {/* Properties List */}
-          <div className="grid w-4/6 gap-6">
+        <div className="mt-12 flex flex-col gap-6 lg:flex-row">
+          {/* SearchBar: Lên đầu ở mobile, bên phải ở desktop */}
+          <div className="order-1 h-fit w-full lg:sticky lg:top-24 lg:order-2 lg:w-2/6">
+            <SearchBar layout="vertical" />
+          </div>
+
+          {/* Properties List: Dưới bộ lọc ở mobile, bên trái ở desktop */}
+          <div className="order-2 grid w-full gap-6 lg:order-1 lg:w-4/6">
             {properties?.map((item: Property) => (
-              <Link
-                key={item.id}
-                href={`/${item?.category?.slug}/${item.slug}`}
-                className="block transition-transform duration-300 hover:scale-[1.02]"
-              >
+              <Link key={item.id} href="...">
                 <PropertyCardV2 property={item} />
               </Link>
             ))}
-          </div>
-
-          {/* SearchBar Vertical */}
-          <div className="sticky top-24 h-fit w-2/6">
-            <SearchBar layout="vertical" />
           </div>
         </div>
       </div>

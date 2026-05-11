@@ -25,7 +25,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
           {/* Logo - centered on mobile, left on desktop */}
           <Link
             href={"/"}
-            className="-trangray-x-1/2 -trangray-y-1/2 lg:trangray-x-0 lg:trangray-y-0 absolute top-1/2 left-1/2 lg:static"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0"
           >
             <Image
               src="/imgs/brand-logo.png"
@@ -59,7 +59,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
             <Link href="#" className="hidden lg:inline">
               <Button
                 size={"lg"}
-                className="border-primary text-primary hover:border-primary hover:bg-primary/10 hover:-trangray-y-px cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out"
+                className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
               >
                 <User className="h-5 w-5 object-cover" />
                 Đăng nhập
@@ -68,7 +68,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
             <Link href="#" className="hidden lg:inline">
               <Button
                 size={"lg"}
-                className="bg-primary hover:-trangray-y-px cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:brightness-110"
+                className="bg-primary cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
               >
                 <SquarePlus className="h-5 w-5 object-cover" />
                 Đăng tin
@@ -106,7 +106,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                       <Link href="#" className="block">
                         <Button
                           size={"lg"}
-                          className="border-primary text-primary hover:border-primary hover:bg-primary/10 hover:-trangray-y-px w-full cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out"
+                          className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
                         >
                           Đăng nhập
                           <User className="h-5 w-5 object-cover" />
@@ -115,7 +115,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                       <Link href="#" className="block">
                         <Button
                           size={"lg"}
-                          className="bg-primary hover:-trangray-y-px w-full cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:brightness-110"
+                          className="bg-primary w-full cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
                         >
                           Đăng tin
                           <SquarePlus className="h-5 w-5 object-cover" />

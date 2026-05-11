@@ -305,7 +305,7 @@ function RangePopoverField({
                   }
                   className="focus:border-primary/50 focus:ring-primary/10 h-10 w-full [appearance:textfield] rounded-xl border border-gray-200 bg-white px-3 pr-16 text-sm text-gray-500 transition-all outline-none focus:ring-4 disabled:cursor-not-allowed disabled:bg-gray-100 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                 />
-                <span className="-trangray-y-1/2 pointer-events-none absolute top-1/2 right-3 text-xs text-gray-500">
+                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-gray-500">
                   {unit === "m²" ? "m²" : "Tỷ"}
                 </span>
               </div>
@@ -326,7 +326,7 @@ function RangePopoverField({
                   }
                   className="focus:border-primary/50 focus:ring-primary/10 h-10 w-full [appearance:textfield] rounded-xl border border-gray-200 bg-white px-3 pr-16 text-sm text-gray-500 transition-all outline-none focus:ring-4 disabled:cursor-not-allowed disabled:bg-gray-100 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                 />
-                <span className="-trangray-y-1/2 pointer-events-none absolute top-1/2 right-3 text-xs text-gray-500">
+                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-gray-500">
                   {unit === "m²" ? "m²" : "Tỷ"}
                 </span>
               </div>

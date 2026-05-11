@@ -13,7 +13,7 @@ export default function FeaturedNewsCard({ post }: FeaturedNewsCardProps) {
   return (
     <Link
       href={`/tin-tuc/${post.slug}`}
-      className="group hover:border-primary/20 hover:shadow-primary/5 hover:-trangray-y-1 flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl"
+      className="group hover:border-primary/20 hover:shadow-primary/5 flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       <div className="relative aspect-video w-full overflow-hidden bg-gray-50">
         <Image

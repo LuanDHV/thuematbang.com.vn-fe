@@ -18,7 +18,7 @@ export function PropertyCard({ property }: { property: Property }) {
     : "Vừa đăng";
 
   return (
-    <div className="group hover:shadow-primary/5 hover:-trangray-y-1 flex min-h-115 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-xl">
+    <div className="group hover:shadow-primary/5 flex min-h-115 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image Container - Tăng chiều cao lên h-48 để nhìn thoáng hơn */}
       <div className="relative h-48 overflow-hidden">
         <Image

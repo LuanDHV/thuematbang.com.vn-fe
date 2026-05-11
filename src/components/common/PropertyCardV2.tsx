@@ -1,5 +1,5 @@
 import { Property } from "@/types/property";
-import { Calendar, Camera, Heart, MapPin, Square } from "lucide-react";
+import { Calendar, Camera, Eye, MapPin, Square } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
@@ -15,17 +15,6 @@ const formatPrice = (price: bigint | number) => {
       currency: "VND",
     }).format(Number(price)) + "/tháng"
   );
-};
-
-const getInitials = (name?: string | null) => {
-  if (!name) return "?";
-
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() || "")
-    .join("");
 };
 
 const getGalleryImages = (property: Property, images?: string[]) => {
@@ -73,11 +62,7 @@ export default function PropertyCardV2({
   images,
 }: PropertyCardV2Props) {
   const galleryImages = getGalleryImages(property, images);
-  const postedDate = property.createdAt
-    ? new Date(property.createdAt).toLocaleDateString("vi-VN")
-    : "Vừa đăng";
-  const userName = property.user?.fullName || "Cao Trang";
-  const userPosts = 8;
+
   const displayAddress = [
     property.ward?.name,
     property.district?.name,
@@ -85,10 +70,16 @@ export default function PropertyCardV2({
   ]
     .filter(Boolean)
     .join(", ");
+
   const extraImageCount = Math.max((images?.length || 1) - 5, 0);
 
+  // Định dạng ngày tháng ngay tại đây
+  const dateStr = property.createdAt
+    ? new Date(property.createdAt).toLocaleDateString("vi-VN")
+    : "Vừa đăng";
+
   return (
-    <article className="group hover:-trangray-y-1 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)] transition-all duration-300 hover:shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+    <article className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
       <div className="p-0.5">
         <div className="grid gap-0.5 lg:grid-cols-[1.55fr_1fr]">
           <div className="relative h-56 overflow-hidden lg:h-84">
@@ -186,23 +177,16 @@ export default function PropertyCardV2({
           {property.description || "Thông tin đang được cập nhật."}
         </div>
 
-        {/* Footer - user info & date */}
-        <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 text-primary flex h-9 w-9 items-center justify-center overflow-hidden rounded-full text-xs font-bold">
-              {getInitials(userName)}
-            </div>
-            <div className="leading-tight">
-              <div className="text-sm font-semibold text-gray-700">
-                {userName}
-              </div>
-              <div className="text-xs text-gray-400">{userPosts} tin đăng</div>
-            </div>
+        {/* Footer Stats - Ngăn cách rõ ràng bằng border và khoảng trống */}
+        <div className="mt-auto flex items-center justify-between border-t border-gray-50 pt-3 text-[11px] font-medium text-gray-400">
+          <div className="flex items-center gap-1.5 text-xs">
+            <Calendar size={13} strokeWidth={2.5} />
+            <span>{dateStr}</span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-gray-500">
-            <Calendar size={14} />
-            <span>{postedDate}</span>
+          <div className="flex items-center gap-1.5 rounded-full bg-gray-50 px-2 py-0.5 text-xs">
+            <Eye size={13} strokeWidth={2.5} />
+            <span>{property.viewCount || 0}</span>
           </div>
         </div>
       </div>
