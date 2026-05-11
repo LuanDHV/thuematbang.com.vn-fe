@@ -5,11 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Post } from "@/types/post";
 
-interface FeaturedPostCardProps {
+interface FeaturedNewsCardProps {
   post: Post;
 }
 
-export default function FeaturedPostCard({ post }: FeaturedPostCardProps) {
+export default function FeaturedNewsCard({ post }: FeaturedNewsCardProps) {
   return (
     <Link
       href={`/tin-tuc/${post.slug}`}

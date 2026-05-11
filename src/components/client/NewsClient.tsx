@@ -3,8 +3,8 @@
 import Title from "@/components/common/Title";
 import { Post } from "@/types/post";
 import SeeMoreButton from "../common/SeeMoreButton";
-import PostCard from "@/components/common/PostCard";
-import FeaturedPostCard from "@/components/common/FeaturedPostCard";
+import NewsCard from "@/components/common/NewsCard";
+import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 
 interface Props {
   posts: Post[];
@@ -28,12 +28,12 @@ export function NewsClient({ posts }: Props) {
         {/* Layout 1 bài lớn trái + 3 bài nhỏ phải */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
           <div className="min-h-105">
-            {featuredPost && <FeaturedPostCard post={featuredPost} />}
+            {featuredPost && <FeaturedNewsCard post={featuredPost} />}
           </div>
 
           <div className="grid grid-cols-1 gap-6">
             {sidePosts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <NewsCard key={post.id} post={post} />
             ))}
           </div>
         </div>
