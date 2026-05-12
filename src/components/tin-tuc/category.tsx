@@ -27,7 +27,7 @@ export default function TinTucCategory({
         {/* Parent category button */}
         <button
           onClick={() => onSelectCategory?.(tintucCategory.slug)}
-          className={`cursor-pointer rounded-lg px-4 py-2 font-medium transition ${
+          className={`cursor-pointer rounded-xl px-4 py-2 font-medium transition ${
             selectedCategorySlug === tintucCategory.slug
               ? "bg-primary text-white"
               : "border-primary text-primary hover:bg-primary/10 border bg-white"
@@ -41,7 +41,7 @@ export default function TinTucCategory({
           <button
             key={category.id}
             onClick={() => onSelectCategory?.(category.slug)}
-            className={`cursor-pointer rounded-lg px-4 py-2 font-medium transition ${
+            className={`cursor-pointer rounded-xl px-4 py-2 font-medium transition ${
               selectedCategorySlug === category.slug
                 ? "bg-primary text-white"
                 : "border-primary text-primary hover:bg-primary/10 border bg-white"

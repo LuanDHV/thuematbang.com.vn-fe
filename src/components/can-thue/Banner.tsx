@@ -1,4 +1,4 @@
-import SearchBar from "../common/SearchBar";
+import FilterBar from "../common/FilterBar";
 
 export default function Banner() {
   return (
@@ -19,9 +19,9 @@ export default function Banner() {
           </p>
         </div>
 
-        {/* SearchBar - Đặt vào flow tự nhiên hoặc dùng absolute so với container 7xl */}
+        {/* FilterBar - Đặt vào flow tự nhiên hoặc dùng absolute so với container 7xl */}
         <div className="mt-10 w-full">
-          <SearchBar />
+          <FilterBar />
         </div>
       </div>
     </div>

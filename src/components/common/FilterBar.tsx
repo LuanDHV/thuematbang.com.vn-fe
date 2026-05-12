@@ -273,7 +273,7 @@ function RangePopoverField({
           <Button
             type="button"
             variant="outline"
-            className="hover:border-primary/40 hover:bg-primary/5 h-12 w-full cursor-pointer justify-between rounded-2xl border-gray-200 bg-white px-3 text-sm font-medium whitespace-nowrap text-gray-500 shadow-sm transition-all"
+            className="hover:border-primary/40 hover:bg-primary/5 h-10 w-full cursor-pointer justify-between rounded-2xl border-gray-200 bg-white px-3 text-sm font-medium whitespace-nowrap text-gray-500 shadow-sm transition-all"
           >
             <span className="truncate">
               {formatRangeSummary(draft, unit, decimalPlaces)}
@@ -433,7 +433,7 @@ function SelectField({
     <div className="space-y-2">
       <FieldLabel>{label}</FieldLabel>
       <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-        <SelectTrigger className="hover:border-primary/40 hover:bg-primary/5 h-12 cursor-pointer justify-between rounded-2xl border-gray-200 bg-white px-3 text-sm font-medium whitespace-nowrap text-gray-500 shadow-sm transition-all">
+        <SelectTrigger className="hover:border-primary/40 hover:bg-primary/5 h-10 cursor-pointer justify-between rounded-2xl border-gray-200 bg-white px-3 text-sm font-medium whitespace-nowrap text-gray-500 shadow-sm transition-all">
           <span className="flex min-w-0 items-center gap-2">
             {icon ? (
               <span className="text-primary shrink-0">{icon}</span>
@@ -453,7 +453,7 @@ function SelectField({
   );
 }
 
-export default function SearchBar({
+export default function FilterBar({
   layout = "horizontal",
 }: { layout?: "horizontal" | "vertical" } = {}) {
   const searchRef = useRef<HTMLDivElement | null>(null);
@@ -542,7 +542,7 @@ export default function SearchBar({
                 name="keyword"
                 type="search"
                 placeholder="Nhập đường phố hoặc từ khóa bất kỳ"
-                className="focus:border-primary/50 focus:ring-primary/10 h-12 w-full rounded-2xl border border-gray-200 bg-white px-11 py-3 text-sm text-gray-500 shadow-sm transition-all outline-none placeholder:text-gray-400 focus:ring-4"
+                className="focus:border-primary/50 focus:ring-primary/10 h-10 w-full rounded-2xl border border-gray-200 bg-white px-11 py-3 text-sm text-gray-500 shadow-sm transition-all outline-none placeholder:text-gray-400 focus:ring-4"
               />
 
               {searchOpen && keyword.trim() ? (
@@ -574,7 +574,7 @@ export default function SearchBar({
 
           <Button
             type="submit"
-            className={`bg-primary hover:bg-primary/90 h-12 cursor-pointer rounded-2xl px-6 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-[0_18px_40px_-18px_rgba(251,170,25,0.75)] ${layout === "vertical" ? "w-full" : "md:min-w-40"}`}
+            className={`bg-primary hover:bg-primary/90 h-10 cursor-pointer rounded-2xl px-6 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-[0_18px_40px_-18px_rgba(251,170,25,0.75)] ${layout === "vertical" ? "w-full" : "md:min-w-40"}`}
           >
             <Search className="mr-2 h-4 w-4" />
             Tìm kiếm

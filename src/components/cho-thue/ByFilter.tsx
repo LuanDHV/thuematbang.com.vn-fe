@@ -1,40 +1,133 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
+import FilterBar from "../common/FilterBar";
+import { Pagination } from "../common/Pagination";
 import Title from "../common/Title";
-import { Property } from "@/types/property";
-import Link from "next/link";
-import PropertyCardV2 from "../common/PropertyCardV2";
-import SearchBar from "../common/SearchBar";
+import { PropertyCard } from "../common/PropertyCard";
 import { featuredProperties } from "@/lib/mockData";
+import { Property } from "@/types/property";
+
+const PAGE_SIZE = 12;
+const TIER_ORDER = ["diamond", "gold", "silver", "normal"] as const;
+
+type TierKey = (typeof TIER_ORDER)[number];
+
+function getTierRank(value?: string | null) {
+  return TIER_ORDER.indexOf((value as TierKey) ?? "normal");
+}
+
+const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
+  diamond: {
+    title: "Diamond",
+    gridClass: "grid grid-cols-1 gap-5 sm:grid-cols-2",
+  },
+  gold: { title: "Gold", gridClass: "grid grid-cols-1 gap-5 sm:grid-cols-2" },
+  silver: {
+    title: "Silver",
+    gridClass: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3",
+  },
+  normal: {
+    title: "Tin thường",
+    gridClass: "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4",
+  },
+};
 
 export default function ByFilter({
   properties = featuredProperties,
 }: {
   properties?: Property[];
 }) {
+  const orderedProperties = useMemo(() => {
+    return [...properties].sort((left, right) => {
+      const tierDiff =
+        getTierRank(left.priorityStatus) - getTierRank(right.priorityStatus);
+
+      if (tierDiff !== 0) return tierDiff;
+      if (left.isFeatured !== right.isFeatured) {
+        return left.isFeatured ? -1 : 1;
+      }
+
+      return (
+        new Date(right.createdAt ?? 0).getTime() -
+        new Date(left.createdAt ?? 0).getTime()
+      );
+    });
+  }, [properties]);
+
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(orderedProperties.length / PAGE_SIZE),
+  );
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = orderedProperties.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
+
+  const groupedPageItems = TIER_ORDER.reduce(
+    (accumulator, tier) => {
+      accumulator[tier] = pageItems.filter(
+        (property) => (property.priorityStatus ?? "normal") === tier,
+      );
+      return accumulator;
+    },
+    {} as Record<TierKey, Property[]>,
+  );
+
   return (
-    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
-      <div className="mx-auto w-full max-w-7xl px-4">
-        {/* Tái sử dụng Title Component */}
-        <Title
-          title="Tất cả tin rao ( count ) "
-          description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."
-        />
+    <>
+      <div className="top-20 z-30 mx-auto max-w-7xl lg:sticky">
+        <FilterBar />
+      </div>
+      <section className="w-full bg-gray-50/50 py-12 lg:py-20">
+        <div className="mx-auto w-full max-w-7xl px-4">
+          <Title title="Cho thuê bất động sản" />
 
-        <div className="mt-12 flex flex-col gap-6 lg:flex-row">
-          {/* SearchBar: Lên đầu ở mobile, bên phải ở desktop */}
-          <div className="order-1 h-fit w-full lg:sticky lg:top-24 lg:order-2 lg:w-2/6">
-            <SearchBar layout="vertical" />
-          </div>
+          <div className="space-y-10">
+            {TIER_ORDER.map((tier) => {
+              const tierItems = groupedPageItems[tier];
 
-          {/* Properties List: Dưới bộ lọc ở mobile, bên trái ở desktop */}
-          <div className="order-2 grid w-full gap-6 lg:order-1 lg:w-4/6">
-            {properties?.map((item: Property) => (
-              <Link key={item.id} href="...">
-                <PropertyCardV2 property={item} />
-              </Link>
-            ))}
+              if (tierItems.length === 0) return null;
+
+              return (
+                <section key={tier} className="space-y-4">
+                  <div className="flex items-end justify-between gap-3">
+                    <div>
+                      <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase">
+                        {TIER_CONFIG[tier].title}
+                      </p>
+                      <h2 className="mt-1 text-2xl font-semibold text-gray-900">
+                        {tierItems.length} tin
+                      </h2>
+                    </div>
+                    <div className="from-primary/30 h-px flex-1 bg-linear-to-r to-transparent" />
+                  </div>
+
+                  <div className={TIER_CONFIG[tier].gridClass}>
+                    {tierItems.map((property) => (
+                      <PropertyCard
+                        key={property.id}
+                        property={property}
+                        variant="tier"
+                        isFeatured={Boolean(property.isFeatured)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={setPage}
+            />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

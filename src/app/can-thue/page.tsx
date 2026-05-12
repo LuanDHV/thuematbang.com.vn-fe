@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Banner from "@/components/cho-thue/Banner";
 import ByFilter from "@/components/cho-thue/ByFilter";
 import ContentSEO from "@/components/cho-thue/ContentSEO";
 import FAQ from "@/components/cho-thue/FAQ";
@@ -15,7 +14,6 @@ export const metadata: Metadata = createPageMetadata({
 export default function CanThuePage() {
   return (
     <>
-      <Banner />
       <ByFilter />
       <ContentSEO />
       <FAQ />

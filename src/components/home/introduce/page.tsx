@@ -39,7 +39,7 @@ export default function IntroduceSection() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
+              className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-xl border border-gray-100 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
             >
               {/* Icon Container */}
               <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
@@ -55,7 +55,7 @@ export default function IntroduceSection() {
               </p>
 
               {/* Decor Line */}
-              <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-2xl transition-all duration-300 group-hover:w-full"></div>
+              <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-lg transition-all duration-300 group-hover:w-full"></div>
             </div>
           ))}
         </div>
