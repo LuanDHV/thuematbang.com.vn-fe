@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +17,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Filter, MapPin } from "lucide-react";
+import {
+  Filter,
+  MapPin,
+  ChevronRight,
+  CircleDollarSign,
+  Maximize,
+  Plus,
+  ShieldCheck,
+  Award,
+} from "lucide-react";
+
+// Dữ liệu 8 hướng nhà
+const DIRECTIONS = [
+  { id: "bac", label: "Bắc" },
+  { id: "dong-bac", label: "Đông Bắc" },
+  { id: "dong", label: "Đông" },
+  { id: "dong-nam", label: "Đông Nam" },
+  { id: "nam", label: "Nam" },
+  { id: "tay-nam", label: "Tây Nam" },
+  { id: "tay", label: "Tây" },
+  { id: "tay-bac", label: "Tây Bắc" },
+];
 
 export function AdvancedSearchModal({
   filterCount = 0,
 }: {
   filterCount?: number;
 }) {
+  // State quản lý hướng nhà được chọn
+  const [selectedDirs, setSelectedDirs] = useState<string[]>([]);
+
+  // Hàm chọn/bỏ chọn hướng nhà
+  const toggleDirection = (id: string) => {
+    setSelectedDirs((prev) =>
+      prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id],
+    );
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -39,75 +71,232 @@ export function AdvancedSearchModal({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl gap-0 overflow-hidden rounded-3xl bg-white p-0">
-        <DialogHeader className="border-b border-gray-100 p-4">
+      <DialogContent className="flex max-h-[90vh] max-w-lg flex-col gap-0 overflow-hidden rounded-2xl bg-white p-0 sm:max-h-[85vh]">
+        {/* Header */}
+        <DialogHeader className="shrink-0 border-b border-gray-100 p-4">
           <DialogTitle className="text-center text-lg font-bold text-gray-800">
             Bộ lọc
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs
-          defaultValue="thue"
-          className="flex h-[70vh] w-full flex-col sm:h-150"
-        >
-          <div className="px-6 pt-4">
-            <TabsList className="grid h-12 w-full grid-cols-2 rounded-xl bg-gray-100 p-1">
+        <Tabs defaultValue="mua" className="flex min-h-0 flex-1 flex-col">
+          {/* Nút Tab */}
+          <div className="shrink-0 px-4 pt-4 sm:px-6">
+            <TabsList className="grid h-11 w-full grid-cols-2 rounded-lg bg-gray-100 p-1">
               <TabsTrigger
                 value="mua"
-                className="data-[state=active]:bg-primary rounded-lg text-sm font-semibold transition-all data-[state=active]:text-white"
+                className="data-[state=active]:bg-primary rounded-md text-sm font-semibold text-gray-500 transition-all data-[state=active]:text-white"
               >
-                TÌM MUA
+                Tìm mua
               </TabsTrigger>
               <TabsTrigger
                 value="thue"
-                className="data-[state=active]:bg-primary rounded-lg text-sm font-semibold transition-all data-[state=active]:text-white"
+                className="data-[state=active]:bg-primary rounded-md text-sm font-semibold text-gray-500 transition-all data-[state=active]:text-white"
               >
-                TÌM THUÊ
+                Tìm thuê
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <div className="flex-1 space-y-6 overflow-y-auto px-6 py-4">
-            {/* TAB: TÌM THUÊ */}
-            <TabsContent value="thue" className="mt-0 space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
-                  Khu vực & Dự án
+          {/* Nội dung cuộn */}
+          <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+            <TabsContent value="mua" className="mt-0 space-y-7">
+              {/* Loại bất động sản */}
+              <div className="space-y-3">
+                <label className="text-[15px] font-semibold text-gray-800">
+                  Loại bất động sản
                 </label>
-                <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-2.5">
-                  <MapPin className="h-4 w-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Chọn Phường/Xã, Quận/Huyện..."
-                    className="flex-1 bg-transparent text-sm outline-none"
-                  />
+                <div>
+                  <Button
+                    variant="ghost"
+                    className="text-primary hover:bg-primary/5 flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-medium"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Thêm
+                  </Button>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
-                  Nội thất
+              {/* Các menu điều hướng */}
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-[15px] font-semibold text-gray-800">
+                    Khu vực & Dự án
+                  </label>
+                  <button className="flex h-12 w-full items-center justify-between rounded-xl border border-gray-200 px-4 transition-colors outline-none hover:bg-gray-50">
+                    <div className="flex items-center gap-2.5 text-gray-600">
+                      <MapPin className="h-5 w-5" />
+                      <span className="text-sm">Trên toàn quốc</span>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[15px] font-semibold text-gray-800">
+                    Khoảng giá
+                  </label>
+                  <button className="flex h-12 w-full items-center justify-between rounded-xl border border-gray-200 px-4 transition-colors outline-none hover:bg-gray-50">
+                    <div className="flex items-center gap-2.5 text-gray-600">
+                      <CircleDollarSign className="h-5 w-5" />
+                      <span className="text-sm">Tất cả</span>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[15px] font-semibold text-gray-800">
+                    Diện tích
+                  </label>
+                  <button className="flex h-12 w-full items-center justify-between rounded-xl border border-gray-200 px-4 transition-colors outline-none hover:bg-gray-50">
+                    <div className="flex items-center gap-2.5 text-gray-600">
+                      <Maximize className="h-5 w-5" />
+                      <span className="text-sm">Tất cả</span>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Thông số phòng */}
+              <div className="space-y-3">
+                <label className="text-[15px] font-semibold text-gray-800">
+                  Số phòng ngủ
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {["Đầy đủ", "Cơ bản", "Không nội thất"].map((item) => (
-                    <Button
-                      key={item}
-                      variant="outline"
-                      className="hover:border-primary hover:text-primary h-8 rounded-full text-xs"
+                  {["1", "2", "3", "4", "5+"].map((num) => (
+                    <button
+                      key={num}
+                      className="hover:border-primary hover:text-primary flex h-10 w-12 items-center justify-center rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-600 transition-colors"
                     >
-                      {item}
-                    </Button>
+                      {num}
+                    </button>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
-                  Tiện ích & Chi phí (Đặc thù thuê)
+              <div className="space-y-3">
+                <label className="text-[15px] font-semibold text-gray-800">
+                  Số phòng tắm, vệ sinh
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {["1", "2", "3", "4", "5+"].map((num) => (
+                    <button
+                      key={`bath-${num}`}
+                      className="hover:border-primary hover:text-primary flex h-10 w-12 items-center justify-center rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-600 transition-colors"
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* CHỌN HƯỚNG NHÀ (WHEEL UI) BẰNG SVG */}
+              <div className="space-y-4">
+                <label className="text-[15px] font-semibold text-gray-800">
+                  Hướng nhà
+                </label>
+                <div className="flex justify-center py-2">
+                  <svg
+                    viewBox="-5 -5 210 210"
+                    className="mx-auto h-55 w-55 drop-shadow-sm"
+                  >
+                    {DIRECTIONS.map((dir, i) => {
+                      const angle = i * 45; // Góc quay của từng lát cắt
+                      const textAngle = angle - 90; // SVG text bắt đầu từ 3h, ta lùi 90 độ để về 12h
+                      // Tính toán vị trí chữ dựa theo lượng giác (sin/cos)
+                      const textX =
+                        100 + 70 * Math.cos((textAngle * Math.PI) / 180);
+                      const textY =
+                        100 + 70 * Math.sin((textAngle * Math.PI) / 180);
+
+                      const isSelected = selectedDirs.includes(dir.id);
+
+                      return (
+                        <g
+                          key={dir.id}
+                          onClick={() => toggleDirection(dir.id)}
+                          className="group cursor-pointer"
+                        >
+                          {/* Lát cắt SVG: Cung ngoài R=100, cung trong r=40 */}
+                          <path
+                            d="M 61.73 7.61 A 100 100 0 0 1 138.27 7.61 L 115.31 63.04 A 40 40 0 0 0 84.69 63.04 Z"
+                            transform={`rotate(${angle} 100 100)`}
+                            className={`stroke-white stroke-[2.5px] transition-colors duration-200 ${
+                              isSelected
+                                ? "fill-primary"
+                                : "fill-[#f4f4f4] group-hover:fill-gray-200"
+                            }`}
+                          />
+                          {/* Text trên bánh xe */}
+                          <text
+                            x={textX}
+                            y={textY}
+                            textAnchor="middle"
+                            dominantBaseline="central"
+                            className={`pointer-events-none text-[10px] transition-colors duration-200 ${
+                              isSelected
+                                ? "fill-white font-bold"
+                                : "fill-gray-600 font-medium"
+                            }`}
+                          >
+                            {dir.label}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* TAB: TÌM THUÊ */}
+            <TabsContent value="thue" className="mt-0 space-y-7">
+              {/* Nội thất */}
+              <div className="space-y-3">
+                <label className="text-[15px] font-semibold text-gray-800">
+                  Nội thất
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {["Đầy đủ", "Cơ bản", "Không nội thất", "Khác"].map(
+                    (item) => (
+                      <button
+                        key={item}
+                        className="hover:border-primary hover:text-primary flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-sm font-medium text-gray-600 transition-colors"
+                      >
+                        {item}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
+
+              {/* Tiện ích */}
+              <div className="space-y-3">
+                <label className="text-[15px] font-semibold text-gray-800">
+                  Tiện ích
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {["Có dịch vụ bảo vệ", "Có camera", "Có PCCC"].map((item) => (
+                    <button
+                      key={item}
+                      className="hover:border-primary hover:text-primary flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-sm font-medium text-gray-600 transition-colors"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Các Select Chi phí */}
+              <div className="space-y-4 pt-2">
+                <label className="text-[15px] font-semibold text-gray-800">
+                  Chi phí (Đặc thù thuê)
                 </label>
                 <div className="grid gap-3">
                   <Select>
-                    <SelectTrigger className="h-11 rounded-xl">
+                    <SelectTrigger className="h-12 rounded-xl text-gray-600">
                       <SelectValue placeholder="Mức giá điện" />
                     </SelectTrigger>
                     <SelectContent>
@@ -115,7 +304,7 @@ export function AdvancedSearchModal({
                     </SelectContent>
                   </Select>
                   <Select>
-                    <SelectTrigger className="h-11 rounded-xl">
+                    <SelectTrigger className="h-12 rounded-xl text-gray-600">
                       <SelectValue placeholder="Mức giá nước" />
                     </SelectTrigger>
                     <SelectContent>
@@ -123,7 +312,7 @@ export function AdvancedSearchModal({
                     </SelectContent>
                   </Select>
                   <Select>
-                    <SelectTrigger className="h-11 rounded-xl">
+                    <SelectTrigger className="h-12 rounded-xl text-gray-600">
                       <SelectValue placeholder="Mức giá Internet" />
                     </SelectTrigger>
                     <SelectContent>
@@ -133,83 +322,22 @@ export function AdvancedSearchModal({
                 </div>
               </div>
             </TabsContent>
-
-            {/* TAB: TÌM MUA */}
-            <TabsContent value="mua" className="mt-0 space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
-                  Loại hình BĐS
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant="outline"
-                    className="border-primary text-primary h-8 rounded-full border-dashed bg-orange-50 text-xs"
-                  >
-                    + Thêm
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-primary bg-primary/10 text-primary h-8 rounded-full text-xs"
-                  >
-                    Căn hộ
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-700">
-                  Thông số phòng
-                </label>
-                <div className="flex gap-2">
-                  {["1", "2", "3", "4", "5+"].map((num) => (
-                    <Button
-                      key={num}
-                      variant="outline"
-                      className="hover:border-primary hover:bg-primary h-10 w-10 rounded-full hover:text-white"
-                    >
-                      {num}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mockup Bánh xe hướng (Wheel UI) */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
-                  Hướng nhà
-                </label>
-                <div className="flex items-center justify-center py-6">
-                  <div className="relative flex h-48 w-48 items-center justify-center rounded-full border-4 border-gray-100 bg-gray-50">
-                    <span className="absolute top-2 text-xs font-medium text-gray-400">
-                      Bắc
-                    </span>
-                    <span className="absolute bottom-2 text-xs font-medium text-gray-400">
-                      Nam
-                    </span>
-                    <span className="absolute left-2 text-xs font-medium text-gray-400">
-                      Tây
-                    </span>
-                    <span className="absolute right-2 text-xs font-medium text-gray-400">
-                      Đông
-                    </span>
-                    <div className="z-10 h-16 w-16 rounded-full bg-white shadow-sm" />
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
           </div>
 
-          <div className="flex gap-3 border-t border-gray-100 bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
-            <Button
-              variant="outline"
-              className="border-primary text-primary hover:border-primary hover:bg-primary/10 h-10 cursor-pointer rounded-lg border bg-transparent px-4 text-xs font-medium tracking-wider uppercase"
-            >
-              Đặt lại
-            </Button>
-
-            <Button className="bg-primary hover:bg-primary/90 h-10 flex-2 cursor-pointer rounded-xl font-semibold text-white shadow-lg shadow-orange-100">
-              Xem kết quả
-            </Button>
+          {/* Footer Cố định */}
+          <div className="shrink-0 border-t border-gray-100 bg-white p-4 sm:px-6">
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setSelectedDirs([])} // Reset nhanh
+                className="text-primary border-primary hover:bg-primary/10 h-12 w-28 shrink-0 rounded-xl font-semibold transition-colors"
+              >
+                Đặt lại
+              </Button>
+              <Button className="bg-primary hover:bg-primary/90 h-12 flex-1 rounded-xl font-bold text-white shadow-md transition-all">
+                Xem kết quả
+              </Button>
+            </div>
           </div>
         </Tabs>
       </DialogContent>
