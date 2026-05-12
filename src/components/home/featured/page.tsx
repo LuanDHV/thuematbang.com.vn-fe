@@ -1,15 +1,19 @@
-import { PropertyCard } from "@/components/common/PropertyCard";
 import Title from "@/components/common/Title";
 import { Property } from "@/types/property";
 import { featuredProperties } from "@/lib/mockData";
-import Link from "next/link";
+
 import SeeMoreButton from "@/components/common/SeeMoreButton";
+
+import { PropertyCard } from "@/components/common/PropertyCard";
 
 export default function FeaturedSection({
   properties = featuredProperties,
 }: {
   properties?: Property[];
 }) {
+  const isFeatured = new Set(
+    properties.filter((p) => p.isFeatured).map((p) => p.id),
+  );
   return (
     <section className="w-full bg-gray-50/50 py-12 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4">
@@ -21,19 +25,18 @@ export default function FeaturedSection({
 
         {/* Grid List */}
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {properties?.map((item: Property) => (
-            <Link
+          {properties.slice(0, 8).map((item) => (
+            <PropertyCard
               key={item.id}
-              href={`/${item?.category?.slug}/${item.slug}`}
-              className="block transition-transform duration-300 hover:scale-[1.02]"
-            >
-              <PropertyCard property={item} />
-            </Link>
+              property={item}
+              variant="featured"
+              isFeatured={isFeatured.has(item.id)}
+            />
           ))}
         </div>
 
         {/* Nút Xem thêm */}
-        <SeeMoreButton href="can-thue" />
+        <SeeMoreButton href="cho-thue" />
       </div>
     </section>
   );

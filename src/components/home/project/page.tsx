@@ -35,7 +35,7 @@ export default function ProjectSection() {
           {categories.map((cat, index) => (
             <div
               key={index}
-              className="group hover:border-primary/50 hover:shadow-primary/10 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-xl"
+              className="group hover:border-primary/50 hover:shadow-primary/10 flex cursor-pointer flex-col items-center justify-center rounded-xl border border-gray-200 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-xl"
             >
               {/* Icon Container */}
               <div className="text-primary mb-6 transition-all duration-300 group-hover:scale-110">

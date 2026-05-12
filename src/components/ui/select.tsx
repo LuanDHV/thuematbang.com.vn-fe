@@ -37,7 +37,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "hover:border-primary/40 hover:bg-primary/5 focus:border-primary focus:ring-primary/10 flex h-12 w-full cursor-pointer items-center justify-between gap-2 rounded-2xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-500 shadow-sm transition-all outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50",
+        "hover:border-primary/40 hover:bg-primary/5 focus:border-primary focus:ring-primary/10 flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-500 shadow-sm transition-all outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50",
         size === "sm" && "h-10",
         className,
       )}
@@ -63,7 +63,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[--radix-select-content-available-height] w-(--radix-select-trigger-width) min-w-(--radix-select-trigger-width) overflow-hidden rounded-2xl border border-gray-300 bg-white text-gray-900 shadow-xl",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[--radix-select-content-available-height] w-(--radix-select-trigger-width) min-w-(--radix-select-trigger-width) overflow-hidden rounded-xl border border-gray-300 bg-white text-gray-900 shadow-xl",
           className,
         )}
         {...props}

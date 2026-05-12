@@ -16,8 +16,8 @@ export function HeaderClient({ categories }: HeaderClientProps) {
   const parentCategories = categories.filter((cat) => cat.parentId === null);
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 bg-white/90 shadow-lg backdrop-blur-lg">
-      <nav className="flex h-16 w-full items-center justify-center px-5 lg:h-20">
+    <header className="fixed top-0 right-0 left-0 z-50 bg-white shadow backdrop-blur-lg">
+      <nav className="flex h-16 w-full items-center justify-center px-5">
         <div className="relative flex w-full max-w-7xl items-center justify-between gap-6">
           {/* Left spacer - for mobile centering */}
           <div className="flex flex-1 lg:flex-none" />
@@ -33,7 +33,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
               width={280}
               height={80}
               priority
-              className="h-14 w-auto object-contain lg:h-16"
+              className="h-14 w-auto object-contain"
             />
           </Link>
 
@@ -59,7 +59,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
             <Link href="#" className="hidden lg:inline">
               <Button
                 size={"lg"}
-                className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
+                className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
               >
                 <User className="h-5 w-5 object-cover" />
                 Đăng nhập
@@ -68,7 +68,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
             <Link href="#" className="hidden lg:inline">
               <Button
                 size={"lg"}
-                className="bg-primary cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
+                className="bg-primary cursor-pointer rounded-xl px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
               >
                 <SquarePlus className="h-5 w-5 object-cover" />
                 Đăng tin
@@ -106,7 +106,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                       <Link href="#" className="block">
                         <Button
                           size={"lg"}
-                          className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-lg border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
+                          className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
                         >
                           Đăng nhập
                           <User className="h-5 w-5 object-cover" />
@@ -115,7 +115,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                       <Link href="#" className="block">
                         <Button
                           size={"lg"}
-                          className="bg-primary w-full cursor-pointer rounded-lg px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
+                          className="bg-primary w-full cursor-pointer rounded-xl px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
                         >
                           Đăng tin
                           <SquarePlus className="h-5 w-5 object-cover" />
