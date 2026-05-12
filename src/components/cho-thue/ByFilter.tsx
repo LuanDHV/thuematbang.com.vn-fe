@@ -1,13 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
-import FilterBar from "../common/FilterBar";
 import { Pagination } from "../common/Pagination";
 import Title from "../common/Title";
 import { PropertyCard } from "../common/PropertyCard";
 import { featuredProperties } from "@/lib/mockData";
 import { Property } from "@/types/property";
+import FilterBar from "../filter/FilterBar";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["diamond", "gold", "silver", "normal"] as const;
@@ -78,56 +77,48 @@ export default function ByFilter({
   );
 
   return (
-    <>
-      <div className="top-20 z-30 mx-auto max-w-7xl lg:sticky">
-        <FilterBar />
-      </div>
-      <section className="w-full bg-gray-50/50 py-12 lg:py-20">
-        <div className="mx-auto w-full max-w-7xl px-4">
-          <Title title="Cho thuê bất động sản" />
+    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4">
+        <Title title="Cho thuê bất động sản" />
 
-          <div className="space-y-10">
-            {TIER_ORDER.map((tier) => {
-              const tierItems = groupedPageItems[tier];
+        <div className="space-y-10">
+          {TIER_ORDER.map((tier) => {
+            const tierItems = groupedPageItems[tier];
 
-              if (tierItems.length === 0) return null;
+            if (tierItems.length === 0) return null;
 
-              return (
-                <section key={tier} className="space-y-4">
-                  <div className="flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase">
-                        {TIER_CONFIG[tier].title}
-                      </p>
-                      <h2 className="mt-1 text-2xl font-semibold text-gray-900">
-                        {tierItems.length} tin
-                      </h2>
-                    </div>
-                    <div className="from-primary/30 h-px flex-1 bg-linear-to-r to-transparent" />
+            return (
+              <section key={tier} className="space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase">
+                      {TIER_CONFIG[tier].title} - ({tierItems.length} tin)
+                    </p>
                   </div>
+                  <div className="from-primary/0 h-px flex-1 bg-linear-to-r to-transparent" />
+                </div>
 
-                  <div className={TIER_CONFIG[tier].gridClass}>
-                    {tierItems.map((property) => (
-                      <PropertyCard
-                        key={property.id}
-                        property={property}
-                        variant="tier"
-                        isFeatured={Boolean(property.isFeatured)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
+                <div className={TIER_CONFIG[tier].gridClass}>
+                  {tierItems.map((property) => (
+                    <PropertyCard
+                      key={property.id}
+                      property={property}
+                      variant="tier"
+                      isFeatured={Boolean(property.isFeatured)}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
 
-            <Pagination
-              page={currentPage}
-              totalPages={totalPages}
-              onChange={setPage}
-            />
-          </div>
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={setPage}
+          />
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

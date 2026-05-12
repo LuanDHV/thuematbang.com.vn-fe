@@ -57,7 +57,7 @@ export default function RootLayout({
     <html lang="vi" className={`${montserrat.variable} h-full antialiased`}>
       <body className="flex min-h-screen flex-col">
         <Header />
-        <main className="grow pt-16 lg:pt-20">{children}</main>
+        <main className="grow pt-16">{children}</main>
         <Footer />
       </body>
     </html>

@@ -16,8 +16,8 @@ export function HeaderClient({ categories }: HeaderClientProps) {
   const parentCategories = categories.filter((cat) => cat.parentId === null);
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 bg-white/90 shadow-lg backdrop-blur-lg">
-      <nav className="flex h-16 w-full items-center justify-center px-5 lg:h-20">
+    <header className="fixed top-0 right-0 left-0 z-50 bg-white shadow backdrop-blur-lg">
+      <nav className="flex h-16 w-full items-center justify-center px-5">
         <div className="relative flex w-full max-w-7xl items-center justify-between gap-6">
           {/* Left spacer - for mobile centering */}
           <div className="flex flex-1 lg:flex-none" />
@@ -33,7 +33,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
               width={280}
               height={80}
               priority
-              className="h-14 w-auto object-contain lg:h-16"
+              className="h-14 w-auto object-contain"
             />
           </Link>
 
