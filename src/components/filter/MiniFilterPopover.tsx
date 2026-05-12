@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
@@ -28,6 +28,17 @@ export function MiniFilterPopover({
 }: MiniFilterPopoverProps) {
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   const handleApply = () => {
     onApply();
     setOpen(false);
@@ -49,6 +60,7 @@ export function MiniFilterPopover({
 
       <PopoverContent
         align="start"
+        onOpenAutoFocus={(e) => e.preventDefault()}
         className="w-[min(92vw,320px)] overflow-hidden rounded-2xl border-gray-100 p-0 shadow-xl"
       >
         <div className="border-b border-gray-100 bg-gray-50/50 p-4">
