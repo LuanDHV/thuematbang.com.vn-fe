@@ -318,7 +318,7 @@ export const mockPosts: Post[] = [
 ];
 
 export const featuredProperties: Property[] = [
-  // --- DIAMOND (6 items) ---
+  // --- Gold (6 items) ---
   {
     id: 1,
     userId: 1,
@@ -333,7 +333,7 @@ export const featuredProperties: Property[] = [
     viewCount: 512,
     direction: "Đông Nam",
     numFloors: 25,
-    priorityStatus: "diamond",
+    priorityStatus: "gold",
     cityId: 1,
     districtId: 101,
     wardId: 1001,
@@ -360,7 +360,7 @@ export const featuredProperties: Property[] = [
     viewCount: 890,
     direction: "Tây Bắc",
     numFloors: 81,
-    priorityStatus: "diamond",
+    priorityStatus: "gold",
     cityId: 1,
     districtId: 102,
     wardId: 1002,
@@ -388,7 +388,7 @@ export const featuredProperties: Property[] = [
     viewCount: 1200,
     direction: "Nam",
     numFloors: 3,
-    priorityStatus: "diamond",
+    priorityStatus: "gold",
     cityId: 1,
     districtId: 103,
     wardId: 1009,
@@ -415,7 +415,7 @@ export const featuredProperties: Property[] = [
     viewCount: 750,
     direction: "Đông Bắc",
     numFloors: 15,
-    priorityStatus: "diamond",
+    priorityStatus: "gold",
     cityId: 1,
     districtId: 107,
     wardId: 1010,
@@ -443,7 +443,7 @@ export const featuredProperties: Property[] = [
     viewCount: 1100,
     direction: "Tây Nam",
     numFloors: 68,
-    priorityStatus: "diamond",
+    priorityStatus: "gold",
     cityId: 1,
     districtId: 101,
     wardId: 1001,
@@ -470,7 +470,7 @@ export const featuredProperties: Property[] = [
     viewCount: 920,
     direction: "Nam",
     numFloors: 3,
-    priorityStatus: "diamond",
+    priorityStatus: "gold",
     cityId: 1,
     districtId: 105,
     wardId: 1006,

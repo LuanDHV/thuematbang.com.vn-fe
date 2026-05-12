@@ -91,21 +91,46 @@ export default function FilterBar() {
     <div className="mx-auto max-w-7xl rounded-lg bg-white shadow backdrop-blur-md transition-all duration-300">
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="no-scrollbar flex flex-nowrap items-center gap-2 overflow-x-auto p-2"
+        className="flex flex-col gap-3 p-2 lg:flex-row lg:items-center lg:gap-2"
       >
-        {/* Ô tìm kiếm chính */}
-        <div className="relative flex min-w-60 flex-1 items-center rounded-xl bg-gray-50/50 px-2">
-          <Search className="ml-2 h-4 w-4 text-gray-400" />
-          <input
-            type="text"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="Bạn muốn thuê ở đâu?"
-            className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:ring-0"
-          />
+        {/* Hàng 1 (Mobile) / Cột Trái (Desktop): Ô tìm kiếm + Nút tìm kiếm Mobile */}
+        <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-1">
+          <div className="relative flex min-w-0 flex-1 items-center rounded-xl bg-gray-50/50 px-2">
+            <Search className="ml-2 h-4 w-4 shrink-0 text-gray-400" />
+            <input
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="Bạn muốn thuê ở đâu?"
+              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:ring-0"
+            />
+          </div>
+
+          {/* Nút Tìm kiếm (Chỉ hiện trên Mobile) */}
+          <Button
+            type="submit"
+            className="bg-primary flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-xl px-4 font-bold text-white shadow-md transition-all hover:brightness-105 lg:hidden"
+          >
+            <Search className="h-4 w-4" />
+          </Button>
         </div>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        {/* Hàng 2 (Mobile) / Cột Phải (Desktop): Các Filter có thể scroll ngang */}
+        <div className="no-scrollbar flex w-full items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:overflow-visible lg:pb-0">
+          {/* Modal Lọc Nâng Cao được đưa lên ĐẦU TIÊN */}
+          <div className="shrink-0">
+            <AdvancedSearchModal
+              filterCount={
+                selectedTypes.length +
+                (priceMin || priceMax ? 1 : 0) +
+                (areaMin || areaMax ? 1 : 0)
+              }
+            />
+          </div>
+
+          {/* Đường kẻ chia cách sau Lọc Nâng Cao */}
+          <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" />
+
           {/* Popover Loại BĐS */}
           <MiniFilterPopover
             title="Loại bất động sản"
@@ -293,25 +318,15 @@ export default function FilterBar() {
             </div>
           </MiniFilterPopover>
 
-          {/* Modal Lọc Nâng Cao */}
-          <div className="mx-1 h-6 w-px bg-gray-200" />
-          <AdvancedSearchModal
-            filterCount={
-              selectedTypes.length +
-              (priceMin || priceMax ? 1 : 0) +
-              (areaMin || areaMax ? 1 : 0)
-            }
-          />
+          {/* Nút Tìm kiếm (Chỉ hiện trên Desktop, nằm ở cuối) */}
+          <Button
+            type="submit"
+            className="bg-primary ml-auto hidden h-10 shrink-0 cursor-pointer items-center rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105 lg:flex"
+          >
+            <Search className="mr-2 h-4 w-4" />
+            <span>Tìm kiếm</span>
+          </Button>
         </div>
-
-        {/* Nút Tìm kiếm */}
-        <Button
-          type="submit"
-          className="bg-primary ml-auto h-10 shrink-0 cursor-pointer rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105"
-        >
-          <Search className="h-4 w-4 lg:mr-2" />
-          <span className="hidden lg:inline">Tìm kiếm</span>
-        </Button>
       </form>
     </div>
   );

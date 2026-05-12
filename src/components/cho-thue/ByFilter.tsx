@@ -6,10 +6,9 @@ import Title from "../common/Title";
 import { PropertyCard } from "../common/PropertyCard";
 import { featuredProperties } from "@/lib/mockData";
 import { Property } from "@/types/property";
-import FilterBar from "../filter/FilterBar";
 
 const PAGE_SIZE = 12;
-const TIER_ORDER = ["diamond", "gold", "silver", "normal"] as const;
+const TIER_ORDER = ["gold", "silver", "normal"] as const;
 
 type TierKey = (typeof TIER_ORDER)[number];
 
@@ -18,14 +17,13 @@ function getTierRank(value?: string | null) {
 }
 
 const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
-  diamond: {
-    title: "Diamond",
-    gridClass: "grid grid-cols-1 gap-5 sm:grid-cols-2",
+  gold: {
+    title: "Gold",
+    gridClass: "grid grid-cols-1 gap-5 lg:grid-cols-2",
   },
-  gold: { title: "Gold", gridClass: "grid grid-cols-1 gap-5 sm:grid-cols-2" },
   silver: {
     title: "Silver",
-    gridClass: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3",
+    gridClass: "grid grid-cols-1 gap-4 lg:grid-cols-3",
   },
   normal: {
     title: "Tin thường",
