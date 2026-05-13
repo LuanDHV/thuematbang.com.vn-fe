@@ -26,25 +26,14 @@ function CardFooter({ property }: { property: Property }) {
   );
 }
 
-function FeaturedCard({
-  property,
-  isFeatured,
-}: {
-  property: Property;
-  isFeatured?: boolean;
-}) {
+function FeaturedCard({ property }: { property: Property }) {
   return (
     <div className="group border-primary/30 border-l-primary cursor-pointer overflow-hidden rounded-xl border border-l-3 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
       <div className="relative h-48 shrink-0 overflow-hidden">
         <span className="bg-primary/95 absolute top-2 left-2 z-10 rounded-full px-2 py-1 text-[9px] font-semibold tracking-wider text-white uppercase">
           Gold
         </span>
-        {/* {isFeatured ? (
-          <span className="bg-primary absolute top-2 right-2 z-10 flex items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold tracking-wider text-white uppercase">
-            <span className="inline-block h-1 w-1 animate-pulse rounded-full bg-white" />
-            Đẩy tin
-          </span>
-        ) : null} */}
+
         <Image
           src={property.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
           alt={property.title || "Bất động sản"}
@@ -83,10 +72,8 @@ function FeaturedCard({
 
 function GoldCard({
   property,
-  isFeatured,
 }: {
   property: Property & { images?: string[] };
-  isFeatured?: boolean;
 }) {
   const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
 
@@ -232,10 +219,8 @@ function GoldCard({
 
 function SilverCard({
   property,
-  isFeatured,
 }: {
   property: Property & { images?: string[] };
-  isFeatured?: boolean;
 }) {
   // Lấy ảnh gốc hoặc ảnh mặc định
   const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
@@ -372,13 +357,7 @@ function SilverCard({
   );
 }
 
-function NormalCard({
-  property,
-  isFeatured,
-}: {
-  property: Property;
-  isFeatured?: boolean;
-}) {
+function NormalCard({ property }: { property: Property }) {
   return (
     <div className="group border-primary/30 border-l-primary cursor-pointer overflow-hidden rounded-xl border border-l-3 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
       <div className="relative h-32 shrink-0 overflow-hidden">
@@ -422,25 +401,23 @@ function NormalCard({
 
 export function PropertyCard({
   property,
-  isFeatured,
   variant = "tier",
 }: {
   property: Property;
-  isFeatured?: boolean;
   /** "featured" = homepage uniform, "tier" = listing layout theo cấp bậc */
   variant?: "featured" | "tier";
 }) {
   if (variant === "featured") {
-    return <FeaturedCard property={property} isFeatured={isFeatured} />;
+    return <FeaturedCard property={property} />;
   }
 
   const tier = property.priorityStatus ?? "normal";
   switch (tier) {
     case "gold":
-      return <GoldCard property={property} isFeatured={isFeatured} />;
+      return <GoldCard property={property} />;
     case "silver":
-      return <SilverCard property={property} isFeatured={isFeatured} />;
+      return <SilverCard property={property} />;
     default:
-      return <NormalCard property={property} isFeatured={isFeatured} />;
+      return <NormalCard property={property} />;
   }
 }

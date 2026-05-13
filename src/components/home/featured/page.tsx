@@ -9,9 +9,6 @@ export default function FeaturedSection({
 }: {
   properties?: Property[];
 }) {
-  const isFeatured = new Set(
-    properties.filter((p) => p.isFeatured).map((p) => p.id),
-  );
   return (
     <section className="w-full bg-gray-50/50 py-12 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4">
@@ -24,12 +21,7 @@ export default function FeaturedSection({
         {/* Grid List */}
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {properties.slice(0, 8).map((item) => (
-            <PropertyCard
-              key={item.id}
-              property={item}
-              variant="featured"
-              isFeatured={isFeatured.has(item.id)}
-            />
+            <PropertyCard key={item.id} property={item} variant="featured" />
           ))}
         </div>
 

@@ -104,7 +104,6 @@ export default function ByFilter({
                       key={property.id}
                       property={property}
                       variant="tier"
-                      isFeatured={Boolean(property.isFeatured)}
                     />
                   ))}
                 </div>
