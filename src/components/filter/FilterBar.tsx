@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
 import { AdvancedSearchModal } from "./AdvancedSearchModal";
@@ -28,8 +29,11 @@ import {
   INITIAL_ADVANCED_FILTER_VALUE,
   type AdvancedFilterValue,
 } from "@/types/filter";
+import { buildPropertyFilterPath } from "@/lib/flat-url";
 
 type Props = {
+  basePath: string;
+  initialFilters?: AdvancedFilterValue;
   sourceProperties: Property[];
   onFilteredChange: (items: Property[]) => void;
 };
@@ -59,12 +63,15 @@ const normalize = (value: string) =>
     .trim();
 
 export default function FilterBar({
+  basePath,
+  initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
   sourceProperties,
   onFilteredChange,
 }: Props) {
+  const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [advancedFilters, setAdvancedFilters] =
-    useState<AdvancedFilterValue>(INITIAL_ADVANCED_FILTER_VALUE);
+    useState<AdvancedFilterValue>(initialFilters);
 
   const displayTypeLabel =
     advancedFilters.propertyTypes.length > 0
@@ -92,12 +99,12 @@ export default function FilterBar({
     setAdvancedFilters((prev) => updater(prev));
   };
 
-  const runFilter = () => {
+  const getFilteredProperties = (activeFilters: AdvancedFilterValue) => {
     const keywordText = normalize(keyword);
-    const minPrice = parseNumericInput(advancedFilters.priceMin || "");
-    const maxPrice = parseNumericInput(advancedFilters.priceMax || "");
-    const minArea = Number(advancedFilters.areaMin || 0);
-    const maxArea = Number(advancedFilters.areaMax || 0);
+    const minPrice = parseNumericInput(activeFilters.priceMin || "");
+    const maxPrice = parseNumericInput(activeFilters.priceMax || "");
+    const minArea = Number(activeFilters.areaMin || 0);
+    const maxArea = Number(activeFilters.areaMax || 0);
 
     const filtered = sourceProperties.filter((property) => {
       const categoryName = property.category?.name ?? "";
@@ -110,9 +117,9 @@ export default function FilterBar({
 
       if (keywordText && !haystack.includes(keywordText)) return false;
 
-      if (advancedFilters.propertyTypes.length > 0) {
+      if (activeFilters.propertyTypes.length > 0) {
         const normalizedCategory = normalize(categoryName);
-        const matched = advancedFilters.propertyTypes.some(
+        const matched = activeFilters.propertyTypes.some(
           (type) => normalizedCategory === normalize(type),
         );
         if (!matched) return false;
@@ -126,49 +133,69 @@ export default function FilterBar({
       if (minArea > 0 && areaValue < minArea) return false;
       if (maxArea > 0 && areaValue > maxArea) return false;
 
-      if (advancedFilters.city && property.city?.name !== advancedFilters.city)
+      if (activeFilters.city && property.city?.name !== activeFilters.city)
         return false;
-      if (advancedFilters.ward && property.ward?.name !== advancedFilters.ward)
+      if (activeFilters.ward && property.ward?.name !== activeFilters.ward)
         return false;
       if (
-        advancedFilters.street &&
-        property.street?.name !== advancedFilters.street
+        activeFilters.street &&
+        property.street?.name !== activeFilters.street
       )
         return false;
 
-      if (advancedFilters.bedrooms.length > 0) {
-        const bedMatched = advancedFilters.bedrooms.some((item) => {
+      if (activeFilters.bedrooms.length > 0) {
+        const bedMatched = activeFilters.bedrooms.some((item) => {
           if (item === "5+") return (property.bedrooms ?? 0) >= 5;
           return String(property.bedrooms ?? 0) === item;
         });
         if (!bedMatched) return false;
       }
 
-      if (advancedFilters.bathrooms.length > 0) {
-        const bathMatched = advancedFilters.bathrooms.some((item) => {
+      if (activeFilters.bathrooms.length > 0) {
+        const bathMatched = activeFilters.bathrooms.some((item) => {
           if (item === "5+") return (property.bathrooms ?? 0) >= 5;
           return String(property.bathrooms ?? 0) === item;
         });
         if (!bathMatched) return false;
       }
 
-      if (advancedFilters.directions.length > 0) {
+      if (activeFilters.directions.length > 0) {
         const direction = (property.direction ?? "").toString().toUpperCase();
-        if (!advancedFilters.directions.includes(direction)) return false;
+        if (!activeFilters.directions.includes(direction)) return false;
       }
 
-      if (advancedFilters.negotiable && !property.isNegotiable) return false;
+      if (activeFilters.negotiable && !property.isNegotiable) return false;
       return true;
     });
 
-    onFilteredChange(filtered);
+    return filtered;
+  };
+
+  const runFilter = (
+    nextFilters?: AdvancedFilterValue,
+    options?: { syncUrl?: boolean },
+  ) => {
+    const activeFilters = nextFilters ?? advancedFilters;
+    onFilteredChange(getFilteredProperties(activeFilters));
+
+    if (options?.syncUrl !== false) {
+      router.replace(buildPropertyFilterPath(basePath, activeFilters), {
+        scroll: false,
+      });
+    }
   };
 
   const resetAll = () => {
     setKeyword("");
     setAdvancedFilters(INITIAL_ADVANCED_FILTER_VALUE);
     onFilteredChange(sourceProperties);
+    router.replace(basePath, { scroll: false });
   };
+
+  useEffect(() => {
+    onFilteredChange(getFilteredProperties(initialFilters));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialFilters, sourceProperties]);
 
   return (
     <div className="mx-auto max-w-7xl rounded-lg bg-white shadow backdrop-blur-md transition-all duration-300">
@@ -221,7 +248,7 @@ export default function FilterBar({
               value={advancedFilters}
               onApply={(value) => {
                 setAdvancedFilters(value);
-                setTimeout(runFilter, 0);
+                runFilter(value);
               }}
               onReset={resetAll}
             />
@@ -234,8 +261,9 @@ export default function FilterBar({
             label={displayTypeLabel}
             isActive={advancedFilters.propertyTypes.length > 0}
             onReset={() => {
-              updateAdvanced((prev) => ({ ...prev, propertyTypes: [] }));
-              setTimeout(runFilter, 0);
+              const next = { ...advancedFilters, propertyTypes: [] };
+              setAdvancedFilters(next);
+              runFilter(next);
             }}
             onApply={runFilter}
           >
@@ -255,13 +283,14 @@ export default function FilterBar({
               advancedFilters.negotiable
             }
             onReset={() => {
-              updateAdvanced((prev) => ({
-                ...prev,
+              const next = {
+                ...advancedFilters,
                 priceMin: "",
                 priceMax: "",
                 negotiable: false,
-              }));
-              setTimeout(runFilter, 0);
+              };
+              setAdvancedFilters(next);
+              runFilter(next);
             }}
             onApply={runFilter}
           >
@@ -280,8 +309,9 @@ export default function FilterBar({
             label={displayAreaLabel}
             isActive={!!advancedFilters.areaMin || !!advancedFilters.areaMax}
             onReset={() => {
-              updateAdvanced((prev) => ({ ...prev, areaMin: "", areaMax: "" }));
-              setTimeout(runFilter, 0);
+              const next = { ...advancedFilters, areaMin: "", areaMax: "" };
+              setAdvancedFilters(next);
+              runFilter(next);
             }}
             onApply={runFilter}
           >

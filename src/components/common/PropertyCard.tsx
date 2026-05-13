@@ -10,6 +10,15 @@ import {
   Bath,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+
+function resolvePropertyHref(property: Property) {
+  if (property.listingType === "RENT_WANTED") {
+    return `/can-thue/${property.slug}`;
+  }
+
+  return `/cho-thue/${property.slug}`;
+}
 
 function CardFooter({ property }: { property: Property }) {
   return (
@@ -407,17 +416,25 @@ export function PropertyCard({
   /** "featured" = homepage uniform, "tier" = listing layout theo cấp bậc */
   variant?: "featured" | "tier";
 }) {
+  const href = resolvePropertyHref(property);
+
+  let content: React.ReactNode;
   if (variant === "featured") {
-    return <FeaturedCard property={property} />;
+    content = <FeaturedCard property={property} />;
+  } else {
+    const tier = property.priorityStatus ?? "normal";
+    switch (tier) {
+      case "gold":
+        content = <GoldCard property={property} />;
+        break;
+      case "silver":
+        content = <SilverCard property={property} />;
+        break;
+      default:
+        content = <NormalCard property={property} />;
+        break;
+    }
   }
 
-  const tier = property.priorityStatus ?? "normal";
-  switch (tier) {
-    case "gold":
-      return <GoldCard property={property} />;
-    case "silver":
-      return <SilverCard property={property} />;
-    default:
-      return <NormalCard property={property} />;
-  }
+  return <Link href={href}>{content}</Link>;
 }

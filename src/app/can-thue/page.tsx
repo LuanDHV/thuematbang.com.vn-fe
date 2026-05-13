@@ -21,6 +21,7 @@ export default function CanThuePage() {
       <PropertyFilterSection
         title="Cần thuê bất động sản"
         properties={rentalDemandProperties}
+        basePath="/can-thue"
       />
       <ContentSEO />
       <FAQ />
