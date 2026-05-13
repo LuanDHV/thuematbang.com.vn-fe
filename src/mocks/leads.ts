@@ -1,4 +1,4 @@
-import { Lead } from "../src/types/lead";
+import { Lead } from "../types/lead";
 import { mockProperties } from "./properties";
 
 const getProperty = (id: number) =>

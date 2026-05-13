@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { mockProjects } from "../../../mocks/projects";
+import { mockProjects } from "../../mocks/projects";
 import { Project } from "@/types/project";
 import Title from "../common/Title";
 import { Pagination } from "../common/Pagination";
@@ -46,7 +46,11 @@ export default function ProjectByFilter({
         </div>
 
         <div className="mt-8">
-          <Pagination page={currentPage} totalPages={totalPages} onChange={setPage} />
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={setPage}
+          />
         </div>
       </div>
     </section>

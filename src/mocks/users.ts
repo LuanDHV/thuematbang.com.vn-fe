@@ -1,5 +1,5 @@
-import { User } from "../src/types/user";
-import { UserPostingQuota } from "../src/types/commerce";
+import { User } from "../types/user";
+import { UserPostingQuota } from "../types/commerce";
 
 const now = "2026-05-13T09:00:00.000Z";
 

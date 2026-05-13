@@ -1,4 +1,4 @@
-import { Banner } from "../src/types/banner";
+import { Banner } from "../types/banner";
 
 export const mockBanners: Banner[] = [
   {

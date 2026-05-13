@@ -1,3 +1,22 @@
+export const FILTER_LIMITS = {
+  PRICE_MAX: 60_000_000_000,
+  PRICE_MAX_MILLION: 60_000,
+  AREA_MAX: 500,
+} as const;
+
+export const BED_BATH_OPTIONS = ["1", "2", "3", "4", "5+"];
+
+export const DIRECTION_OPTIONS = [
+  { id: "BAC", label: "Bắc" },
+  { id: "DONG_BAC", label: "Đông Bắc" },
+  { id: "DONG", label: "Đông" },
+  { id: "DONG_NAM", label: "Đông Nam" },
+  { id: "NAM", label: "Nam" },
+  { id: "TAY_NAM", label: "Tây Nam" },
+  { id: "TAY", label: "Tây" },
+  { id: "TAY_BAC", label: "Tây Bắc" },
+];
+
 export const mockFilterPropertyTypes = [
   "Văn phòng",
   "Mặt bằng",

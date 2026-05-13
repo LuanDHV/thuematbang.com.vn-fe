@@ -1,4 +1,4 @@
-import { mockContentSeo } from "../../../mocks/contentSeo";
+import { mockContentSeo } from "../../mocks/contentSeo";
 
 export default function ContentSEO() {
   return (

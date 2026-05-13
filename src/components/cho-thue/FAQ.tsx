@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { mockFaqs } from "../../../mocks/faqs";
+import { mockFaqs } from "../../mocks/faqs";
 
 export default function FAQSection() {
   return (

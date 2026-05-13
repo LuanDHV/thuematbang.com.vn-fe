@@ -2,7 +2,7 @@ import Title from "@/components/common/Title";
 import { Property } from "@/types/property";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import { PropertyCard } from "@/components/common/PropertyCard";
-import { mockProperties } from "../../../../mocks/properties";
+import { mockProperties } from "../../../mocks/properties";
 
 export default function FeaturedSection({
   properties = mockProperties,

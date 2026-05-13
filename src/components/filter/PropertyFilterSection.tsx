@@ -20,9 +20,13 @@ export default function PropertyFilterSection({
     properties,
   );
 
+  const wrapperClass = stickyFilter
+    ? "sticky top-16 z-40 mx-auto max-w-7xl"
+    : "mx-auto max-w-7xl";
+
   return (
     <div className="relative">
-      <div className={stickyFilter ? "sticky top-16 z-40 mx-auto max-w-7xl" : "mx-auto max-w-7xl"}>
+      <div className={wrapperClass}>
         <FilterBar
           sourceProperties={properties}
           onFilteredChange={setFilteredProperties}

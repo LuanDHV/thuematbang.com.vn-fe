@@ -5,7 +5,7 @@ import { Pagination } from "../common/Pagination";
 import Title from "../common/Title";
 import { PropertyCard } from "../common/PropertyCard";
 import { Property } from "@/types/property";
-import { mockProperties } from "../../../mocks/properties";
+import { mockProperties } from "../../mocks/properties";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["gold", "silver", "normal"] as const;

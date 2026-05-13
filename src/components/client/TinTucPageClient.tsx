@@ -7,7 +7,7 @@ import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 
 import Title from "@/components/common/Title";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
-import { mockPosts } from "../../../mocks/post";
+import { mockPosts } from "../../mocks/post";
 
 const INITIAL_VISIBLE_POSTS = 4;
 const LOAD_MORE_STEP = 4;

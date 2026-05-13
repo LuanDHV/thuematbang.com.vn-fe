@@ -2,7 +2,7 @@ import {
   PaymentTransaction,
   PropertyBoostOrder,
   PropertyPackageOrder,
-} from "../src/types/commerce";
+} from "../types/commerce";
 
 export const mockPropertyPackageOrders: PropertyPackageOrder[] = [
   {

@@ -1,30 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
+import { AdvancedSearchModal } from "./AdvancedSearchModal";
 import {
-  AdvancedFilterValue,
-  AdvancedSearchModal,
   AreaDetailTab,
   PriceDetailTab,
   PropertyTypeDetailTab,
-} from "./AdvancedSearchModal";
+} from "./AdvancedFilterSections";
 import { MiniFilterPopover } from "./MiniFilterPopover";
 import {
   mockFilterAreaOptions,
   mockFilterPriceOptions,
   mockFilterPropertyTypes,
-} from "../../../mocks/filter";
-import { mockCities, mockStreets, mockWards } from "../../../mocks/locations";
+} from "@/mocks/filter";
+import { mockCities, mockStreets, mockWards } from "@/mocks/locations";
+import {
+  parseNumericInput,
+  resolveAreaSummary,
+  resolvePriceSummary,
+  toAreaRange,
+  toPriceRange,
+} from "@/helpers/filterHelpers";
+import {
+  INITIAL_ADVANCED_FILTER_VALUE,
+  type AdvancedFilterValue,
+} from "@/types/filter";
 
 type Props = {
   sourceProperties: Property[];
   onFilteredChange: (items: Property[]) => void;
 };
-
-const propertyTypes = mockFilterPropertyTypes;
 
 const cityMap = mockCities.reduce<Record<string, Record<string, string[]>>>(
   (accumulator, city) => {
@@ -50,43 +58,13 @@ const normalize = (value: string) =>
     .toLowerCase()
     .trim();
 
-const parseNumericInput = (value: string) =>
-  Number((value || "").replace(/[^\d]/g, ""));
-
-const formatCurrencyShort = (value: number) => {
-  if (!value) return "0";
-  if (value >= 1_000_000_000) {
-    const billion = value / 1_000_000_000;
-    return `${Number.isInteger(billion) ? billion : billion.toFixed(1)} tỷ`;
-  }
-  const million = value / 1_000_000;
-  return `${Number.isInteger(million) ? million : million.toFixed(1)} triệu`;
-};
-
-const formatArea = (value: number) => `${value.toLocaleString("vi-VN")} m²`;
-
-const initialFilterState: AdvancedFilterValue = {
-  propertyTypes: [],
-  city: "",
-  ward: "",
-  street: "",
-  priceMin: "",
-  priceMax: "",
-  negotiable: false,
-  areaMin: "",
-  areaMax: "",
-  bedrooms: [],
-  bathrooms: [],
-  directions: [],
-};
-
 export default function FilterBar({
   sourceProperties,
   onFilteredChange,
 }: Props) {
   const [keyword, setKeyword] = useState("");
   const [advancedFilters, setAdvancedFilters] =
-    useState<AdvancedFilterValue>(initialFilterState);
+    useState<AdvancedFilterValue>(INITIAL_ADVANCED_FILTER_VALUE);
 
   const displayTypeLabel =
     advancedFilters.propertyTypes.length > 0
@@ -95,42 +73,24 @@ export default function FilterBar({
         : `${advancedFilters.propertyTypes.length} loại`
       : "Loại BĐS";
 
-  const selectedPriceOption = mockFilterPriceOptions.find(
-    (option) =>
-      advancedFilters.priceMin === option.min &&
-      advancedFilters.priceMax === option.max &&
-      Boolean(option.isNegotiable) === advancedFilters.negotiable,
-  );
+  const displayPriceLabel = useMemo(() => {
+    const summary = resolvePriceSummary(
+      advancedFilters,
+      mockFilterPriceOptions,
+    );
+    return summary === "Tất cả" ? "Mức giá" : summary;
+  }, [advancedFilters]);
 
-  const selectedAreaOption = mockFilterAreaOptions.find(
-    (option) =>
-      advancedFilters.areaMin === option.min &&
-      advancedFilters.areaMax === option.max,
-  );
+  const displayAreaLabel = useMemo(() => {
+    const summary = resolveAreaSummary(advancedFilters, mockFilterAreaOptions);
+    return summary === "Tất cả" ? "Diện tích" : summary;
+  }, [advancedFilters]);
 
-  const displayPriceLabel =
-    selectedPriceOption
-      ? selectedPriceOption.label
-      : advancedFilters.negotiable
-        ? "Thỏa thuận"
-        : advancedFilters.priceMin || advancedFilters.priceMax
-          ? `${formatCurrencyShort(parseNumericInput(advancedFilters.priceMin) || 0)} - ${
-              parseNumericInput(advancedFilters.priceMax)
-                ? formatCurrencyShort(parseNumericInput(advancedFilters.priceMax))
-                : "max"
-            }`
-          : "Mức giá";
-
-  const displayAreaLabel =
-    selectedAreaOption
-      ? selectedAreaOption.label
-      : advancedFilters.areaMin || advancedFilters.areaMax
-        ? `${advancedFilters.areaMin ? formatArea(Number(advancedFilters.areaMin)) : "0 m²"} - ${
-            advancedFilters.areaMax
-              ? formatArea(Number(advancedFilters.areaMax))
-              : "max"
-          }`
-        : "Diện tích";
+  const updateAdvanced = (
+    updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
+  ) => {
+    setAdvancedFilters((prev) => updater(prev));
+  };
 
   const runFilter = () => {
     const keywordText = normalize(keyword);
@@ -198,7 +158,6 @@ export default function FilterBar({
       }
 
       if (advancedFilters.negotiable && !property.isNegotiable) return false;
-
       return true;
     });
 
@@ -207,14 +166,8 @@ export default function FilterBar({
 
   const resetAll = () => {
     setKeyword("");
-    setAdvancedFilters(initialFilterState);
+    setAdvancedFilters(INITIAL_ADVANCED_FILTER_VALUE);
     onFilteredChange(sourceProperties);
-  };
-
-  const updateAdvanced = (
-    updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
-  ) => {
-    setAdvancedFilters((prev) => updater(prev));
   };
 
   return (
@@ -263,7 +216,7 @@ export default function FilterBar({
                   ? 1
                   : 0)
               }
-              propertyTypeOptions={propertyTypes}
+              propertyTypeOptions={mockFilterPropertyTypes}
               cityMap={cityMap}
               value={advancedFilters}
               onApply={(value) => {
@@ -289,7 +242,7 @@ export default function FilterBar({
             <PropertyTypeDetailTab
               current={advancedFilters}
               updateCurrent={updateAdvanced}
-              propertyTypeOptions={propertyTypes}
+              propertyTypeOptions={mockFilterPropertyTypes}
             />
           </MiniFilterPopover>
 
@@ -315,16 +268,10 @@ export default function FilterBar({
             <PriceDetailTab
               current={advancedFilters}
               updateCurrent={updateAdvanced}
-              priceRange={[
-                Math.round(
-                  parseNumericInput(advancedFilters.priceMin || "0") /
-                    1_000_000,
-                ),
-                Math.round(
-                  parseNumericInput(advancedFilters.priceMax || "0") /
-                    1_000_000,
-                ) || 60000,
-              ]}
+              priceRange={toPriceRange(
+                advancedFilters.priceMin,
+                advancedFilters.priceMax,
+              )}
             />
           </MiniFilterPopover>
 
@@ -341,10 +288,10 @@ export default function FilterBar({
             <AreaDetailTab
               current={advancedFilters}
               updateCurrent={updateAdvanced}
-              areaRange={[
-                Number(advancedFilters.areaMin || 0),
-                Number(advancedFilters.areaMax || 500),
-              ]}
+              areaRange={toAreaRange(
+                advancedFilters.areaMin,
+                advancedFilters.areaMax,
+              )}
             />
           </MiniFilterPopover>
 

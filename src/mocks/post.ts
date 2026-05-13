@@ -1,4 +1,4 @@
-import { News } from "../src/types/news";
+import { News } from "../types/news";
 import { mockCategoryNews } from "./categories";
 
 const now = "2026-05-13T09:00:00.000Z";
@@ -15,7 +15,8 @@ export const mockNews: News[] = [
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     summary:
       "Phân khúc mặt bằng trung tâm tiếp tục tăng do nhu cầu mở rộng chuỗi F&B và thời trang.",
-    content: "<p>Thị trường cho thuê mặt bằng tại quận 1 ghi nhận đà tăng rõ rệt...</p>",
+    content:
+      "<p>Thị trường cho thuê mặt bằng tại quận 1 ghi nhận đà tăng rõ rệt...</p>",
     viewCount: 1290,
     status: "PUBLISHED",
     isFeatured: true,
@@ -31,7 +32,8 @@ export const mockNews: News[] = [
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     summary:
       "Checklist pháp lý giúp doanh nghiệp tránh tranh chấp khi thuê dài hạn.",
-    content: "<p>Khi ký hợp đồng thuê văn phòng, cần rà soát các điều khoản...</p>",
+    content:
+      "<p>Khi ký hợp đồng thuê văn phòng, cần rà soát các điều khoản...</p>",
     viewCount: 740,
     status: "PUBLISHED",
     isFeatured: false,
@@ -47,7 +49,8 @@ export const mockNews: News[] = [
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     summary:
       "Gợi ý các tiêu chí đo lưu lượng khách, chi phí vận hành và mức độ cạnh tranh.",
-    content: "<p>Để mở cửa hàng hiệu quả, bạn nên bắt đầu từ bài toán vị trí...</p>",
+    content:
+      "<p>Để mở cửa hàng hiệu quả, bạn nên bắt đầu từ bài toán vị trí...</p>",
     viewCount: 560,
     status: "PUBLISHED",
     isFeatured: false,
@@ -63,7 +66,8 @@ export const mockNews: News[] = [
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     summary:
       "Nhiều dự án hậu cần mới hoàn thiện giúp doanh nghiệp có thêm lựa chọn.",
-    content: "<p>Thị trường kho xưởng có thêm nguồn cung tại các trục vành đai...</p>",
+    content:
+      "<p>Thị trường kho xưởng có thêm nguồn cung tại các trục vành đai...</p>",
     viewCount: 430,
     status: "PUBLISHED",
     isFeatured: false,

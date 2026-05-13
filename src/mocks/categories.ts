@@ -1,4 +1,4 @@
-import { Category } from "../src/types/category";
+import { Category } from "../types/category";
 
 const now = "2026-05-13T09:00:00.000Z";
 

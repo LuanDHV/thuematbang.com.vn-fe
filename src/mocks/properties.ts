@@ -1,13 +1,15 @@
-import { Property } from "../src/types/property";
+import { Property } from "../types/property";
 import { mockCategoryProperty } from "./categories";
 import { mockCities, mockDistricts, mockStreets, mockWards } from "./locations";
 
 const getCategory = (id: number) =>
   mockCategoryProperty.find((category) => category.id === id) ?? null;
-const getCity = (id: number) => mockCities.find((city) => city.id === id) ?? null;
+const getCity = (id: number) =>
+  mockCities.find((city) => city.id === id) ?? null;
 const getDistrict = (id: number) =>
   mockDistricts.find((district) => district.id === id) ?? null;
-const getWard = (id: number) => mockWards.find((ward) => ward.id === id) ?? null;
+const getWard = (id: number) =>
+  mockWards.find((ward) => ward.id === id) ?? null;
 const getStreet = (id: number) =>
   mockStreets.find((street) => street.id === id) ?? null;
 

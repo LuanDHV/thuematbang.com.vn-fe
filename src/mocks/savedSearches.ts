@@ -1,4 +1,4 @@
-import { SavedSearch } from "../src/types/saved-search";
+import { SavedSearch } from "../types/saved-search";
 
 export const mockSavedSearches: SavedSearch[] = [
   {

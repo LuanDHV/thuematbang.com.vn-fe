@@ -1,7 +1,7 @@
 "use client";
 
 import { Category } from "@/types/category";
-import { mockCategories } from "../../../mocks/categories";
+import { mockCategories } from "../../mocks/categories";
 
 interface CategoryProps {
   onSelectCategory?: (categorySlug: string) => void;
