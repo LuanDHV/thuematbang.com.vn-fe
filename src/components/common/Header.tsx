@@ -1,13 +1,12 @@
 import { HeaderClient } from "../client/HeaderClient";
-import { mockCategories } from "@/lib/mockData";
 
-// TODO: Replace mockCategories with API call when ready
-// import { categoryService } from "@/services/category.service";
-// const response = await categoryService.getAll();
-// const categories = response.data || [];
+const HEADER_MENU_ITEMS = [
+  { id: 1, name: "Cho Thuê", slug: "cho-thue" },
+  { id: 2, name: "Cần Thuê", slug: "can-thue" },
+  { id: 3, name: "Dự Án", slug: "du-an" },
+  { id: 4, name: "Tin Tức", slug: "tin-tuc" },
+];
 
 export default async function Header() {
-  // Using mockData for demo - replace with API call above when ready
-  const categories = mockCategories;
-  return <HeaderClient categories={categories} />;
+  return <HeaderClient categories={HEADER_MENU_ITEMS} />;
 }

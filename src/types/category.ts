@@ -1,13 +1,17 @@
+import { CategoryType } from "./enums";
+
 export interface Category {
   id: number;
-  parentId?: number | null;
+  type?: CategoryType;
   name: string;
   slug: string;
-  fullPath?: string | null;
   priority?: number | null;
   isActive?: boolean | null;
   createdAt?: Date | string | null;
   updatedAt?: Date | string | null;
+  // Legacy fields kept for compatibility with current UI mocks/components.
+  parentId?: number | null;
+  fullPath?: string | null;
   parent?: Category | null;
   children?: Category[];
 }

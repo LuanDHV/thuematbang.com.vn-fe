@@ -1,112 +1,223 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-
+import { Property } from "@/types/property";
 import { AdvancedSearchModal } from "./AdvancedSearchModal";
+import {
+  AreaDetailTab,
+  PriceDetailTab,
+  PropertyTypeDetailTab,
+} from "./AdvancedFilterSections";
 import { MiniFilterPopover } from "./MiniFilterPopover";
+import {
+  mockFilterAreaOptions,
+  mockFilterPriceOptions,
+  mockFilterPropertyTypes,
+} from "@/mocks/filter";
+import { mockCities, mockStreets, mockWards } from "@/mocks/locations";
+import {
+  parseNumericInput,
+  resolveAreaSummary,
+  resolvePriceSummary,
+  toAreaRange,
+  toPriceRange,
+} from "@/helpers/filterHelpers";
+import {
+  INITIAL_ADVANCED_FILTER_VALUE,
+  type AdvancedFilterValue,
+} from "@/types/filter";
+import { buildPropertyFilterPath } from "@/lib/flat-url";
 
-const propertyTypes = [
-  "Văn phòng",
-  "Mặt bằng",
-  "Kho xưởng",
-  "Căn hộ",
-  "Nhà trọ",
-];
+type Props = {
+  basePath: string;
+  initialFilters?: AdvancedFilterValue;
+  sourceProperties: Property[];
+  onFilteredChange: (items: Property[]) => void;
+};
 
-const priceOptions = [
-  { label: "Tất cả mức giá", min: "", max: "" },
-  { label: "Dưới 1 triệu", min: "0", max: "1" },
-  { label: "1 - 3 triệu", min: "1", max: "3" },
-  { label: "3 - 5 triệu", min: "3", max: "5" },
-  { label: "5 - 10 triệu", min: "5", max: "10" },
-  { label: "10 - 40 triệu", min: "10", max: "40" },
-  { label: "40 - 70 triệu", min: "40", max: "70" },
-  { label: "70 - 100 triệu", min: "70", max: "100" },
-  { label: "Trên 100 triệu", min: "100", max: "" },
-];
-
-const areaOptions = [
-  { label: "Tất cả diện tích", min: "", max: "" },
-  { label: "Dưới 30 m²", min: "0", max: "30" },
-  { label: "30 - 50 m²", min: "30", max: "50" },
-  { label: "50 - 80 m²", min: "50", max: "80" },
-  { label: "80 - 100 m²", min: "80", max: "100" },
-  { label: "100 - 150 m²", min: "100", max: "150" },
-  { label: "150 - 200 m²", min: "150", max: "200" },
-  { label: "200 - 250 m²", min: "200", max: "250" },
-  { label: "250 - 300 m²", min: "250", max: "300" },
-  { label: "300 - 500 m²", min: "300", max: "500" },
-  { label: "Trên 500 m²", min: "500", max: "" },
-];
-
-export default function FilterBar() {
-  const [keyword, setKeyword] = useState("");
-
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-
-  const [priceMin, setPriceMin] = useState("");
-  const [priceMax, setPriceMax] = useState("");
-  const [priceLabel, setPriceLabel] = useState("");
-
-  const [areaMin, setAreaMin] = useState("");
-  const [areaMax, setAreaMax] = useState("");
-  const [areaLabel, setAreaLabel] = useState("");
-
-  const handleTypeToggle = (type: string) => {
-    setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+const cityMap = mockCities.reduce<Record<string, Record<string, string[]>>>(
+  (accumulator, city) => {
+    const cityWards = mockWards.filter((ward) => ward.cityId === city.id);
+    accumulator[city.name] = cityWards.reduce<Record<string, string[]>>(
+      (wardAccumulator, ward) => {
+        wardAccumulator[ward.name] = mockStreets
+          .filter((street) => street.wardId === ward.id)
+          .map((street) => street.name);
+        return wardAccumulator;
+      },
+      {},
     );
-  };
+    return accumulator;
+  },
+  {},
+);
+
+const normalize = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
+export default function FilterBar({
+  basePath,
+  initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
+  sourceProperties,
+  onFilteredChange,
+}: Props) {
+  const router = useRouter();
+  const [keyword, setKeyword] = useState("");
+  const [advancedFilters, setAdvancedFilters] =
+    useState<AdvancedFilterValue>(initialFilters);
 
   const displayTypeLabel =
-    selectedTypes.length > 0
-      ? selectedTypes.length === 1
-        ? selectedTypes[0]
-        : `${selectedTypes.length} loại`
+    advancedFilters.propertyTypes.length > 0
+      ? advancedFilters.propertyTypes.length === 1
+        ? advancedFilters.propertyTypes[0]
+        : `${advancedFilters.propertyTypes.length} loại`
       : "Loại BĐS";
 
-  const displayPriceLabel =
-    priceLabel ||
-    (priceMin && priceMax
-      ? `${priceMin} - ${priceMax} triệu`
-      : priceMin
-        ? `Từ ${priceMin} triệu`
-        : priceMax
-          ? `Dưới ${priceMax} triệu`
-          : "Mức giá");
+  const displayPriceLabel = useMemo(() => {
+    const summary = resolvePriceSummary(
+      advancedFilters,
+      mockFilterPriceOptions,
+    );
+    return summary === "Tất cả" ? "Mức giá" : summary;
+  }, [advancedFilters]);
 
-  const displayAreaLabel =
-    areaLabel ||
-    (areaMin && areaMax
-      ? `${areaMin} - ${areaMax} m²`
-      : areaMin
-        ? `Từ ${areaMin} m²`
-        : areaMax
-          ? `Dưới ${areaMax} m²`
-          : "Diện tích");
+  const displayAreaLabel = useMemo(() => {
+    const summary = resolveAreaSummary(advancedFilters, mockFilterAreaOptions);
+    return summary === "Tất cả" ? "Diện tích" : summary;
+  }, [advancedFilters]);
+
+  const updateAdvanced = (
+    updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
+  ) => {
+    setAdvancedFilters((prev) => updater(prev));
+  };
+
+  const getFilteredProperties = (activeFilters: AdvancedFilterValue) => {
+    const keywordText = normalize(keyword);
+    const minPrice = parseNumericInput(activeFilters.priceMin || "");
+    const maxPrice = parseNumericInput(activeFilters.priceMax || "");
+    const minArea = Number(activeFilters.areaMin || 0);
+    const maxArea = Number(activeFilters.areaMax || 0);
+
+    const filtered = sourceProperties.filter((property) => {
+      const categoryName = property.category?.name ?? "";
+      const cityName = property.city?.name ?? "";
+      const wardName = property.ward?.name ?? "";
+      const streetName = property.street?.name ?? "";
+      const haystack = normalize(
+        `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName}`,
+      );
+
+      if (keywordText && !haystack.includes(keywordText)) return false;
+
+      if (activeFilters.propertyTypes.length > 0) {
+        const normalizedCategory = normalize(categoryName);
+        const matched = activeFilters.propertyTypes.some(
+          (type) => normalizedCategory === normalize(type),
+        );
+        if (!matched) return false;
+      }
+
+      const priceValue = Number(property.price || 0);
+      if (minPrice > 0 && priceValue < minPrice) return false;
+      if (maxPrice > 0 && priceValue > maxPrice) return false;
+
+      const areaValue = property.area ?? 0;
+      if (minArea > 0 && areaValue < minArea) return false;
+      if (maxArea > 0 && areaValue > maxArea) return false;
+
+      if (activeFilters.city && property.city?.name !== activeFilters.city)
+        return false;
+      if (activeFilters.ward && property.ward?.name !== activeFilters.ward)
+        return false;
+      if (
+        activeFilters.street &&
+        property.street?.name !== activeFilters.street
+      )
+        return false;
+
+      if (activeFilters.bedrooms.length > 0) {
+        const bedMatched = activeFilters.bedrooms.some((item) => {
+          if (item === "5+") return (property.bedrooms ?? 0) >= 5;
+          return String(property.bedrooms ?? 0) === item;
+        });
+        if (!bedMatched) return false;
+      }
+
+      if (activeFilters.bathrooms.length > 0) {
+        const bathMatched = activeFilters.bathrooms.some((item) => {
+          if (item === "5+") return (property.bathrooms ?? 0) >= 5;
+          return String(property.bathrooms ?? 0) === item;
+        });
+        if (!bathMatched) return false;
+      }
+
+      if (activeFilters.directions.length > 0) {
+        const direction = (property.direction ?? "").toString().toUpperCase();
+        if (!activeFilters.directions.includes(direction)) return false;
+      }
+
+      if (activeFilters.negotiable && !property.isNegotiable) return false;
+      return true;
+    });
+
+    return filtered;
+  };
+
+  const runFilter = (
+    nextFilters?: AdvancedFilterValue,
+    options?: { syncUrl?: boolean },
+  ) => {
+    const activeFilters = nextFilters ?? advancedFilters;
+    onFilteredChange(getFilteredProperties(activeFilters));
+
+    if (options?.syncUrl !== false) {
+      router.replace(buildPropertyFilterPath(basePath, activeFilters), {
+        scroll: false,
+      });
+    }
+  };
+
+  const resetAll = () => {
+    setKeyword("");
+    setAdvancedFilters(INITIAL_ADVANCED_FILTER_VALUE);
+    onFilteredChange(sourceProperties);
+    router.replace(basePath, { scroll: false });
+  };
+
+  useEffect(() => {
+    onFilteredChange(getFilteredProperties(initialFilters));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialFilters, sourceProperties]);
 
   return (
     <div className="mx-auto max-w-7xl rounded-lg bg-white shadow backdrop-blur-md transition-all duration-300">
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          runFilter();
+        }}
         className="flex flex-col gap-3 p-2 lg:flex-row lg:items-center lg:gap-2"
       >
-        {/* Hàng 1 (Mobile) / Cột Trái (Desktop): Ô tìm kiếm + Nút tìm kiếm Mobile */}
         <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-1">
           <div className="relative flex min-w-0 flex-1 items-center rounded-xl bg-gray-50/50 px-2">
             <Search className="ml-2 h-4 w-4 shrink-0 text-gray-400" />
             <input
               type="text"
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(event) => setKeyword(event.target.value)}
               placeholder="Bạn muốn thuê ở đâu?"
               className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:ring-0"
             />
           </div>
 
-          {/* Nút Tìm kiếm (Chỉ hiện trên Mobile) */}
           <Button
             type="submit"
             className="bg-primary flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-xl px-4 font-bold text-white shadow-md transition-all hover:brightness-105 lg:hidden"
@@ -115,210 +226,113 @@ export default function FilterBar() {
           </Button>
         </div>
 
-        {/* Hàng 2 (Mobile) / Cột Phải (Desktop): Các Filter có thể scroll ngang */}
-        <div className="no-scrollbar flex w-full items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:overflow-visible lg:pb-0">
-          {/* Modal Lọc Nâng Cao được đưa lên ĐẦU TIÊN */}
+        <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex w-full items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
           <div className="shrink-0">
             <AdvancedSearchModal
               filterCount={
-                selectedTypes.length +
-                (priceMin || priceMax ? 1 : 0) +
-                (areaMin || areaMax ? 1 : 0)
+                advancedFilters.propertyTypes.length +
+                (advancedFilters.priceMin ||
+                advancedFilters.priceMax ||
+                advancedFilters.negotiable
+                  ? 1
+                  : 0) +
+                (advancedFilters.areaMin || advancedFilters.areaMax ? 1 : 0) +
+                (advancedFilters.city ||
+                advancedFilters.ward ||
+                advancedFilters.street
+                  ? 1
+                  : 0)
               }
+              propertyTypeOptions={mockFilterPropertyTypes}
+              cityMap={cityMap}
+              value={advancedFilters}
+              onApply={(value) => {
+                setAdvancedFilters(value);
+                runFilter(value);
+              }}
+              onReset={resetAll}
             />
           </div>
 
-          {/* Đường kẻ chia cách sau Lọc Nâng Cao */}
           <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" />
 
-          {/* Popover Loại BĐS */}
           <MiniFilterPopover
             title="Loại bất động sản"
             label={displayTypeLabel}
-            isActive={selectedTypes.length > 0}
-            onReset={() => setSelectedTypes([])}
-            onApply={() => console.log("Applied types:", selectedTypes)}
-          >
-            <div className="grid gap-2">
-              {propertyTypes.map((type) => (
-                <label
-                  key={type}
-                  className="flex cursor-pointer items-center justify-between gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50"
-                >
-                  <span className="text-sm font-medium text-gray-700">
-                    {type}
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={selectedTypes.includes(type)}
-                    onChange={() => handleTypeToggle(type)}
-                    className="focus:ring-primary accent-primary h-4 w-4 cursor-pointer rounded border-gray-300"
-                  />
-                </label>
-              ))}
-            </div>
-          </MiniFilterPopover>
-
-          {/* Popover Khoảng Giá */}
-          <MiniFilterPopover
-            title="Mức giá (Triệu VNĐ)"
-            label={displayPriceLabel}
-            isActive={!!priceMin || !!priceMax}
+            isActive={advancedFilters.propertyTypes.length > 0}
             onReset={() => {
-              setPriceMin("");
-              setPriceMax("");
-              setPriceLabel("");
+              const next = { ...advancedFilters, propertyTypes: [] };
+              setAdvancedFilters(next);
+              runFilter(next);
             }}
-            onApply={() =>
-              console.log("Applied price:", { priceMin, priceMax })
-            }
+            onApply={runFilter}
           >
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Từ"
-                    value={priceMin}
-                    onChange={(e) => {
-                      setPriceMin(e.target.value);
-                      setPriceLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
-                <span className="text-gray-400">-</span>
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Đến"
-                    value={priceMax}
-                    onChange={(e) => {
-                      setPriceMax(e.target.value);
-                      setPriceLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                {priceOptions.map((opt, idx) => {
-                  const isSelected =
-                    priceMin === opt.min && priceMax === opt.max;
-                  return (
-                    <label
-                      key={idx}
-                      className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg p-2 text-sm transition-colors hover:bg-gray-50 ${
-                        isSelected
-                          ? "text-primary font-semibold"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => {
-                          if (isSelected) {
-                            setPriceMin("");
-                            setPriceMax("");
-                            setPriceLabel("");
-                          } else {
-                            setPriceMin(opt.min);
-                            setPriceMax(opt.max);
-                            setPriceLabel(
-                              opt.label === "Tất cả mức giá" ? "" : opt.label,
-                            );
-                          }
-                        }}
-                        className="focus:ring-primary accent-primary h-4 w-4 cursor-pointer rounded border-gray-300"
-                      />
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
+            <PropertyTypeDetailTab
+              current={advancedFilters}
+              updateCurrent={updateAdvanced}
+              propertyTypeOptions={mockFilterPropertyTypes}
+            />
           </MiniFilterPopover>
 
-          {/* Popover Diện tích */}
+          <MiniFilterPopover
+            title="Khoảng giá"
+            label={displayPriceLabel}
+            isActive={
+              !!advancedFilters.priceMin ||
+              !!advancedFilters.priceMax ||
+              advancedFilters.negotiable
+            }
+            onReset={() => {
+              const next = {
+                ...advancedFilters,
+                priceMin: "",
+                priceMax: "",
+                negotiable: false,
+              };
+              setAdvancedFilters(next);
+              runFilter(next);
+            }}
+            onApply={runFilter}
+          >
+            <PriceDetailTab
+              current={advancedFilters}
+              updateCurrent={updateAdvanced}
+              priceRange={toPriceRange(
+                advancedFilters.priceMin,
+                advancedFilters.priceMax,
+              )}
+            />
+          </MiniFilterPopover>
+
           <MiniFilterPopover
             title="Diện tích"
             label={displayAreaLabel}
-            isActive={!!areaMin || !!areaMax}
+            isActive={!!advancedFilters.areaMin || !!advancedFilters.areaMax}
             onReset={() => {
-              setAreaMin("");
-              setAreaMax("");
-              setAreaLabel("");
+              const next = { ...advancedFilters, areaMin: "", areaMax: "" };
+              setAdvancedFilters(next);
+              runFilter(next);
             }}
-            onApply={() => console.log("Applied area:", { areaMin, areaMax })}
+            onApply={runFilter}
           >
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Từ"
-                    value={areaMin}
-                    onChange={(e) => {
-                      setAreaMin(e.target.value);
-                      setAreaLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
-                <span className="text-gray-400">-</span>
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Đến"
-                    value={areaMax}
-                    onChange={(e) => {
-                      setAreaMax(e.target.value);
-                      setAreaLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                {areaOptions.map((opt, idx) => {
-                  const isSelected = areaMin === opt.min && areaMax === opt.max;
-                  return (
-                    <label
-                      key={idx}
-                      className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg p-2 text-sm transition-colors hover:bg-gray-50 ${
-                        isSelected
-                          ? "text-primary font-semibold"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => {
-                          if (isSelected) {
-                            setAreaMin("");
-                            setAreaMax("");
-                            setAreaLabel("");
-                          } else {
-                            setAreaMin(opt.min);
-                            setAreaMax(opt.max);
-                            setAreaLabel(
-                              opt.label === "Tất cả diện tích" ? "" : opt.label,
-                            );
-                          }
-                        }}
-                        className="focus:ring-primary accent-primary h-4 w-4 cursor-pointer rounded border-gray-300"
-                      />
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
+            <AreaDetailTab
+              current={advancedFilters}
+              updateCurrent={updateAdvanced}
+              areaRange={toAreaRange(
+                advancedFilters.areaMin,
+                advancedFilters.areaMax,
+              )}
+            />
           </MiniFilterPopover>
 
-          {/* Nút Tìm kiếm (Chỉ hiện trên Desktop, nằm ở cuối) */}
+          <Button
+            type="button"
+            onClick={resetAll}
+            className="border-primary text-primary hover:bg-primary/10 hidden h-10 cursor-pointer rounded-xl border bg-transparent px-4 lg:flex"
+          >
+            Đặt lại
+          </Button>
+
           <Button
             type="submit"
             className="bg-primary ml-auto hidden h-10 shrink-0 cursor-pointer items-center rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105 lg:flex"

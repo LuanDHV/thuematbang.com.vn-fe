@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import ByFilter from "@/components/cho-thue/ByFilter";
-import ContentSEO from "@/components/cho-thue/ContentSEO";
-import FAQ from "@/components/cho-thue/FAQ";
+import ProjectByFilter from "@/components/du-an/ByFilter";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata({
@@ -10,13 +8,6 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/du-an",
 });
 
-//Tạm thời dùng dữ liệu từ cho thuê cho đến khi sử dụng data thật
-export default function CanThuePage() {
-  return (
-    <>
-      <ByFilter />
-      <ContentSEO />
-      <FAQ />
-    </>
-  );
+export default function DuAnPage() {
+  return <ProjectByFilter />;
 }

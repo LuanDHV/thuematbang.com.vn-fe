@@ -1,3 +1,5 @@
+import { LeadStatus } from "./enums";
+
 export interface Lead {
   id: number;
   fullName: string;
@@ -5,7 +7,7 @@ export interface Lead {
   propertyId?: number | null;
   source: string;
   message?: string | null;
-  status?: string | null;
+  status?: LeadStatus | string | null;
   createdAt?: Date | string | null;
   property?: {
     id: number;

@@ -10,6 +10,15 @@ import {
   Bath,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+
+function resolvePropertyHref(property: Property) {
+  if (property.listingType === "RENT_WANTED") {
+    return `/can-thue/${property.slug}`;
+  }
+
+  return `/cho-thue/${property.slug}`;
+}
 
 function CardFooter({ property }: { property: Property }) {
   return (
@@ -26,25 +35,14 @@ function CardFooter({ property }: { property: Property }) {
   );
 }
 
-function FeaturedCard({
-  property,
-  isFeatured,
-}: {
-  property: Property;
-  isFeatured?: boolean;
-}) {
+function FeaturedCard({ property }: { property: Property }) {
   return (
     <div className="group border-primary/30 border-l-primary cursor-pointer overflow-hidden rounded-xl border border-l-3 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
       <div className="relative h-48 shrink-0 overflow-hidden">
         <span className="bg-primary/95 absolute top-2 left-2 z-10 rounded-full px-2 py-1 text-[9px] font-semibold tracking-wider text-white uppercase">
           Gold
         </span>
-        {/* {isFeatured ? (
-          <span className="bg-primary absolute top-2 right-2 z-10 flex items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold tracking-wider text-white uppercase">
-            <span className="inline-block h-1 w-1 animate-pulse rounded-full bg-white" />
-            Đẩy tin
-          </span>
-        ) : null} */}
+
         <Image
           src={property.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
           alt={property.title || "Bất động sản"}
@@ -83,10 +81,8 @@ function FeaturedCard({
 
 function GoldCard({
   property,
-  isFeatured,
 }: {
   property: Property & { images?: string[] };
-  isFeatured?: boolean;
 }) {
   const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
 
@@ -215,7 +211,7 @@ function GoldCard({
           {property.bathrooms && (
             <span className="flex items-center gap-1">
               <Bath size={12} className="shrink-0" />
-              {property.bathrooms} phòng tắm
+              {property.bathrooms} phòng tắm, vệ sinh
             </span>
           )}
           {property.description && (
@@ -232,10 +228,8 @@ function GoldCard({
 
 function SilverCard({
   property,
-  isFeatured,
 }: {
   property: Property & { images?: string[] };
-  isFeatured?: boolean;
 }) {
   // Lấy ảnh gốc hoặc ảnh mặc định
   const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
@@ -372,13 +366,7 @@ function SilverCard({
   );
 }
 
-function NormalCard({
-  property,
-  isFeatured,
-}: {
-  property: Property;
-  isFeatured?: boolean;
-}) {
+function NormalCard({ property }: { property: Property }) {
   return (
     <div className="group border-primary/30 border-l-primary cursor-pointer overflow-hidden rounded-xl border border-l-3 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
       <div className="relative h-32 shrink-0 overflow-hidden">
@@ -422,25 +410,31 @@ function NormalCard({
 
 export function PropertyCard({
   property,
-  isFeatured,
   variant = "tier",
 }: {
   property: Property;
-  isFeatured?: boolean;
   /** "featured" = homepage uniform, "tier" = listing layout theo cấp bậc */
   variant?: "featured" | "tier";
 }) {
+  const href = resolvePropertyHref(property);
+
+  let content: React.ReactNode;
   if (variant === "featured") {
-    return <FeaturedCard property={property} isFeatured={isFeatured} />;
+    content = <FeaturedCard property={property} />;
+  } else {
+    const tier = property.priorityStatus ?? "normal";
+    switch (tier) {
+      case "gold":
+        content = <GoldCard property={property} />;
+        break;
+      case "silver":
+        content = <SilverCard property={property} />;
+        break;
+      default:
+        content = <NormalCard property={property} />;
+        break;
+    }
   }
 
-  const tier = property.priorityStatus ?? "normal";
-  switch (tier) {
-    case "gold":
-      return <GoldCard property={property} isFeatured={isFeatured} />;
-    case "silver":
-      return <SilverCard property={property} isFeatured={isFeatured} />;
-    default:
-      return <NormalCard property={property} isFeatured={isFeatured} />;
-  }
+  return <Link href={href}>{content}</Link>;
 }

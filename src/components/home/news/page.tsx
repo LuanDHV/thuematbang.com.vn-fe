@@ -1,5 +1,5 @@
 import { NewsClient } from "@/components/client/NewsClient";
-import { mockPosts } from "@/lib/mockData";
+import { mockPosts } from "../../../mocks/post";
 
 // TODO: Replace mockPosts with API call when ready
 // import { postService } from "@/services/post.service";
