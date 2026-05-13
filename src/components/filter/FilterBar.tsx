@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
 import { AdvancedFilterValue, AdvancedSearchModal } from "./AdvancedSearchModal";
 import { MiniFilterPopover } from "./MiniFilterPopover";
-import { mockCategoryProperty } from "../../../mocks/categories";
+import {
+  mockFilterAreaOptions,
+  mockFilterPriceOptions,
+  mockFilterPropertyTypes,
+} from "../../../mocks/filter";
 import { mockCities, mockStreets, mockWards } from "../../../mocks/locations";
 
 type Props = {
@@ -14,25 +18,9 @@ type Props = {
   onFilteredChange: (items: Property[]) => void;
 };
 
-const propertyTypes = mockCategoryProperty.map((category) => category.name);
-
-const priceOptions = [
-  { label: "Tất cả mức giá", min: "", max: "" },
-  { label: "Dưới 5 triệu", min: "0", max: "5" },
-  { label: "5 - 10 triệu", min: "5", max: "10" },
-  { label: "10 - 20 triệu", min: "10", max: "20" },
-  { label: "20 - 40 triệu", min: "20", max: "40" },
-  { label: "Trên 40 triệu", min: "40", max: "" },
-];
-
-const areaOptions = [
-  { label: "Tất cả diện tích", min: "", max: "" },
-  { label: "Dưới 30 m²", min: "0", max: "30" },
-  { label: "30 - 50 m²", min: "30", max: "50" },
-  { label: "50 - 80 m²", min: "50", max: "80" },
-  { label: "80 - 120 m²", min: "80", max: "120" },
-  { label: "Trên 120 m²", min: "120", max: "" },
-];
+const propertyTypes = mockFilterPropertyTypes;
+const priceOptions = mockFilterPriceOptions;
+const areaOptions = mockFilterAreaOptions;
 
 const cityMap = mockCities.reduce<Record<string, Record<string, string[]>>>(
   (accumulator, city) => {
@@ -58,7 +46,16 @@ const normalize = (value: string) =>
     .toLowerCase()
     .trim();
 
-const priceToMillion = (price?: number | null) => (price ? price / 1_000_000 : 0);
+const parseNumericInput = (value: string) =>
+  Number((value || "").replace(/[^\d]/g, ""));
+
+const formatMoneyLabel = (value: string) => {
+  const numeric = parseNumericInput(value);
+  if (!numeric) return "";
+  return new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 0 }).format(
+    numeric,
+  );
+};
 
 export default function FilterBar({ sourceProperties, onFilteredChange }: Props) {
   const [keyword, setKeyword] = useState("");
@@ -103,11 +100,11 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
   const displayPriceLabel =
     priceLabel ||
     (priceMin && priceMax
-      ? `${priceMin} - ${priceMax} triệu`
+      ? `${formatMoneyLabel(priceMin)} - ${formatMoneyLabel(priceMax)}`
       : priceMin
-        ? `Từ ${priceMin} triệu`
+        ? `Từ ${formatMoneyLabel(priceMin)}`
         : priceMax
-          ? `Dưới ${priceMax} triệu`
+          ? `Dưới ${formatMoneyLabel(priceMax)}`
           : "Mức giá");
 
   const displayAreaLabel =
@@ -127,8 +124,8 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
 
   const runFilter = () => {
     const keywordText = normalize(keyword);
-    const minPrice = Number(priceMin || advancedFilters.priceMin || 0);
-    const maxPrice = Number(priceMax || advancedFilters.priceMax || 0);
+    const minPrice = parseNumericInput(priceMin || advancedFilters.priceMin || "");
+    const maxPrice = parseNumericInput(priceMax || advancedFilters.priceMax || "");
     const minArea = Number(areaMin || advancedFilters.areaMin || 0);
     const maxArea = Number(areaMax || advancedFilters.areaMax || 0);
 
@@ -151,9 +148,9 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
         if (!matched) return false;
       }
 
-      const priceM = priceToMillion(property.price);
-      if (minPrice > 0 && priceM < minPrice) return false;
-      if (maxPrice > 0 && priceM > maxPrice) return false;
+      const priceValue = Number(property.price || 0);
+      if (minPrice > 0 && priceValue < minPrice) return false;
+      if (maxPrice > 0 && priceValue > maxPrice) return false;
 
       const areaValue = property.area ?? 0;
       if (minArea > 0 && areaValue < minArea) return false;
@@ -264,9 +261,6 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
               value={advancedFilters}
               onApply={(value) => {
                 setAdvancedFilters(value);
-                onFilteredChange(
-                  sourceProperties,
-                );
                 setTimeout(runFilter, 0);
               }}
               onReset={resetAll}
@@ -304,44 +298,56 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
           </MiniFilterPopover>
 
           <MiniFilterPopover
-            title="Mức giá (Triệu VNĐ)"
+            title="Khoảng giá"
             label={displayPriceLabel}
-            isActive={!!priceMin || !!priceMax}
+            isActive={!!priceMin || !!priceMax || advancedFilters.negotiable}
             onReset={() => {
               setPriceMin("");
               setPriceMax("");
               setPriceLabel("");
+              setAdvancedFilters((prev) => ({ ...prev, negotiable: false }));
               setTimeout(runFilter, 0);
             }}
             onApply={runFilter}
           >
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  placeholder="Từ"
-                  value={priceMin}
-                  onChange={(event) => {
-                    setPriceMin(event.target.value);
-                    setPriceLabel("");
-                  }}
-                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
-                />
-                <span className="text-gray-400">-</span>
-                <input
-                  type="number"
-                  placeholder="Đến"
-                  value={priceMax}
-                  onChange={(event) => {
-                    setPriceMax(event.target.value);
-                    setPriceLabel("");
-                  }}
-                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
-                />
+                <div className="flex-1 space-y-1">
+                  <p className="text-xs font-medium text-gray-500">Giá thấp nhất</p>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="Từ"
+                    value={priceMin}
+                    onChange={(event) => {
+                      setPriceMin(event.target.value);
+                      setPriceLabel("");
+                    }}
+                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                  />
+                </div>
+                <span className="mt-5 text-gray-400">-</span>
+                <div className="flex-1 space-y-1">
+                  <p className="text-xs font-medium text-gray-500">Giá cao nhất</p>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="Đến"
+                    value={priceMax}
+                    onChange={(event) => {
+                      setPriceMax(event.target.value);
+                      setPriceLabel("");
+                    }}
+                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                  />
+                </div>
               </div>
               <div className="grid gap-2">
                 {priceOptions.map((option) => {
-                  const isSelected = priceMin === option.min && priceMax === option.max;
+                  const isSelected =
+                    priceMin === option.min &&
+                    priceMax === option.max &&
+                    Boolean(option.isNegotiable) === advancedFilters.negotiable;
                   return (
                     <label
                       key={option.label}
@@ -358,12 +364,18 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
                             setPriceMin("");
                             setPriceMax("");
                             setPriceLabel("");
+                            setAdvancedFilters((prev) => ({
+                              ...prev,
+                              negotiable: false,
+                            }));
                           } else {
                             setPriceMin(option.min);
                             setPriceMax(option.max);
-                            setPriceLabel(
-                              option.label === "Tất cả mức giá" ? "" : option.label,
-                            );
+                            setPriceLabel(option.label === "Tất cả khoảng giá" ? "" : option.label);
+                            setAdvancedFilters((prev) => ({
+                              ...prev,
+                              negotiable: Boolean(option.isNegotiable),
+                            }));
                           }
                         }}
                         className="focus:ring-primary accent-primary h-4 w-4 cursor-pointer rounded border-gray-300"
@@ -389,27 +401,33 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
           >
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  placeholder="Từ"
-                  value={areaMin}
-                  onChange={(event) => {
-                    setAreaMin(event.target.value);
-                    setAreaLabel("");
-                  }}
-                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
-                />
-                <span className="text-gray-400">-</span>
-                <input
-                  type="number"
-                  placeholder="Đến"
-                  value={areaMax}
-                  onChange={(event) => {
-                    setAreaMax(event.target.value);
-                    setAreaLabel("");
-                  }}
-                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
-                />
+                <div className="flex-1 space-y-1">
+                  <p className="text-xs font-medium text-gray-500">Diện tích thấp nhất</p>
+                  <input
+                    type="number"
+                    placeholder="Từ"
+                    value={areaMin}
+                    onChange={(event) => {
+                      setAreaMin(event.target.value);
+                      setAreaLabel("");
+                    }}
+                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                  />
+                </div>
+                <span className="mt-5 text-gray-400">-</span>
+                <div className="flex-1 space-y-1">
+                  <p className="text-xs font-medium text-gray-500">Diện tích cao nhất</p>
+                  <input
+                    type="number"
+                    placeholder="Đến"
+                    value={areaMax}
+                    onChange={(event) => {
+                      setAreaMax(event.target.value);
+                      setAreaLabel("");
+                    }}
+                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                  />
+                </div>
               </div>
               <div className="grid gap-2">
                 {areaOptions.map((option) => {
@@ -433,9 +451,7 @@ export default function FilterBar({ sourceProperties, onFilteredChange }: Props)
                           } else {
                             setAreaMin(option.min);
                             setAreaMax(option.max);
-                            setAreaLabel(
-                              option.label === "Tất cả diện tích" ? "" : option.label,
-                            );
+                            setAreaLabel(option.label === "Tất cả diện tích" ? "" : option.label);
                           }
                         }}
                         className="focus:ring-primary accent-primary h-4 w-4 cursor-pointer rounded border-gray-300"

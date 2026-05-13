@@ -3,6 +3,7 @@ export * from "./categories";
 export * from "./commerce";
 export * from "./contentSeo";
 export * from "./faqs";
+export * from "./filter";
 export * from "./leads";
 export * from "./locations";
 export * from "./post";
