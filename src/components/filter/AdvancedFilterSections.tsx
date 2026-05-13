@@ -9,7 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronRight, CircleDollarSign, MapPin, Maximize, Plus, X } from "lucide-react";
+import {
+  ChevronRight,
+  CircleDollarSign,
+  MapPin,
+  Maximize,
+  Plus,
+  X,
+} from "lucide-react";
 import {
   BED_BATH_OPTIONS,
   DIRECTION_OPTIONS,
@@ -95,7 +102,9 @@ export function PriceDetailTab({
         <div className="flex-1 space-y-1">
           <input
             type="number"
-            value={Math.round(parseNumericInput(current.priceMin || "0") / 1_000_000)}
+            value={Math.round(
+              parseNumericInput(current.priceMin || "0") / 1_000_000,
+            )}
             onChange={(event) =>
               updateCurrent((prev) => ({
                 ...prev,
@@ -112,8 +121,9 @@ export function PriceDetailTab({
           <input
             type="number"
             value={Math.round(
-              parseNumericInput(current.priceMax || String(FILTER_LIMITS.PRICE_MAX)) /
-                1_000_000,
+              parseNumericInput(
+                current.priceMax || String(FILTER_LIMITS.PRICE_MAX),
+              ) / 1_000_000,
             )}
             onChange={(event) =>
               updateCurrent((prev) => ({
@@ -207,7 +217,10 @@ export function AreaDetailTab({
             type="number"
             value={current.areaMin}
             onChange={(event) =>
-              updateCurrent((prev) => ({ ...prev, areaMin: event.target.value }))
+              updateCurrent((prev) => ({
+                ...prev,
+                areaMin: event.target.value,
+              }))
             }
             placeholder="Từ"
             className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
@@ -219,7 +232,10 @@ export function AreaDetailTab({
             type="number"
             value={current.areaMax}
             onChange={(event) =>
-              updateCurrent((prev) => ({ ...prev, areaMax: event.target.value }))
+              updateCurrent((prev) => ({
+                ...prev,
+                areaMax: event.target.value,
+              }))
             }
             placeholder="Đến"
             className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
@@ -283,14 +299,21 @@ export function LocationDetailTab({
 }) {
   const wards = current.city ? Object.keys(cityMap[current.city] ?? {}) : [];
   const streets =
-    current.city && current.ward ? (cityMap[current.city]?.[current.ward] ?? []) : [];
+    current.city && current.ward
+      ? (cityMap[current.city]?.[current.ward] ?? [])
+      : [];
 
   return (
     <div className="space-y-3">
       <Select
         value={current.city}
         onValueChange={(valueItem) =>
-          updateCurrent((prev) => ({ ...prev, city: valueItem, ward: "", street: "" }))
+          updateCurrent((prev) => ({
+            ...prev,
+            city: valueItem,
+            ward: "",
+            street: "",
+          }))
         }
       >
         <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
@@ -366,13 +389,18 @@ export function AdvancedMainTab({
   updateCurrent: UpdateCurrent;
 }) {
   const quickCellClass =
-    "hover:border-primary hover:text-primary cursor-pointer rounded-xl border border-gray-200 px-4 py-1 text-sm font-medium text-gray-600 transition-colors";
+    "hover:border-primary mt-2 hover:text-primary cursor-pointer rounded-xl border border-gray-200 px-4 py-1 text-sm font-medium text-gray-600 transition-colors";
   const selectedQuickCellClass = "border-primary bg-primary/5 text-primary";
+  const locationSummary = [current.city, current.ward]
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">Loại bất động sản</label>
+        <label className="text-sm font-semibold text-gray-800">
+          Loại bất động sản
+        </label>
         <div className="flex flex-wrap items-center gap-2">
           {current.propertyTypes.map((item) => (
             <div
@@ -385,7 +413,9 @@ export function AdvancedMainTab({
                 onClick={() =>
                   updateCurrent((prev) => ({
                     ...prev,
-                    propertyTypes: prev.propertyTypes.filter((selected) => selected !== item),
+                    propertyTypes: prev.propertyTypes.filter(
+                      (selected) => selected !== item,
+                    ),
                   }))
                 }
                 className="text-primary/80 hover:text-primary cursor-pointer"
@@ -406,44 +436,57 @@ export function AdvancedMainTab({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setDetailTab("location")}
-        className="flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
-      >
-        <div className="flex items-center gap-2 text-gray-600">
-          <MapPin className="h-4 w-4" />
-          <span className="text-sm">{current.city || "Toàn quốc"}</span>
-        </div>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </button>
-
-      <button
-        type="button"
-        onClick={() => setDetailTab("price")}
-        className="flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
-      >
-        <div className="flex items-center gap-2 text-gray-600">
-          <CircleDollarSign className="h-4 w-4" />
-          <span className="text-sm">{priceSummary}</span>
-        </div>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </button>
-
-      <button
-        type="button"
-        onClick={() => setDetailTab("area")}
-        className="flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
-      >
-        <div className="flex items-center gap-2 text-gray-600">
-          <Maximize className="h-4 w-4" />
-          <span className="text-sm">{areaSummary}</span>
-        </div>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </button>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-800">Khu vực</label>
+        <button
+          type="button"
+          onClick={() => setDetailTab("location")}
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+        >
+          <div className="flex items-center gap-2 text-gray-600">
+            <MapPin className="h-4 w-4" />
+            <span className="text-sm">{locationSummary || "Toàn quốc"}</span>
+          </div>
+          <ChevronRight className="h-4 w-4 text-gray-400" />
+        </button>
+      </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">Số phòng ngủ</label>
+        <label className="text-sm font-semibold text-gray-800">
+          Khoảng giá
+        </label>
+        <button
+          type="button"
+          onClick={() => setDetailTab("price")}
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+        >
+          <div className="flex items-center gap-2 text-gray-600">
+            <CircleDollarSign className="h-4 w-4" />
+            <span className="text-sm">{priceSummary}</span>
+          </div>
+          <ChevronRight className="h-4 w-4 text-gray-400" />
+        </button>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-800">Diện tích</label>
+        <button
+          type="button"
+          onClick={() => setDetailTab("area")}
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+        >
+          <div className="flex items-center gap-2 text-gray-600">
+            <Maximize className="h-4 w-4" />
+            <span className="text-sm">{areaSummary}</span>
+          </div>
+          <ChevronRight className="h-4 w-4 text-gray-400" />
+        </button>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-800">
+          Số phòng ngủ
+        </label>
         <div className="flex flex-wrap gap-2">
           {BED_BATH_OPTIONS.map((item) => (
             <button
@@ -459,7 +502,9 @@ export function AdvancedMainTab({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">Số phòng tắm, vệ sinh</label>
+        <label className="text-sm font-semibold text-gray-800">
+          Số phòng tắm, vệ sinh
+        </label>
         <div className="flex flex-wrap gap-2">
           {BED_BATH_OPTIONS.map((item) => (
             <button
@@ -477,7 +522,10 @@ export function AdvancedMainTab({
       <div className="space-y-4">
         <label className="text-sm font-semibold text-gray-800">Hướng nhà</label>
         <div className="flex justify-center py-2">
-          <svg viewBox="-5 -5 210 210" className="mx-auto h-55 w-55 drop-shadow-sm">
+          <svg
+            viewBox="-5 -5 210 210"
+            className="mx-auto h-55 w-55 drop-shadow-sm"
+          >
             {DIRECTION_OPTIONS.map((dir, index) => {
               const angle = index * 45;
               const textAngle = angle - 90;
