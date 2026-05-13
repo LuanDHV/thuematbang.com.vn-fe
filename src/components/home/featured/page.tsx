@@ -1,13 +1,11 @@
 import Title from "@/components/common/Title";
 import { Property } from "@/types/property";
-import { featuredProperties } from "@/lib/mockData";
-
 import SeeMoreButton from "@/components/common/SeeMoreButton";
-
 import { PropertyCard } from "@/components/common/PropertyCard";
+import { mockProperties } from "../../../../mocks/properties";
 
 export default function FeaturedSection({
-  properties = featuredProperties,
+  properties = mockProperties,
 }: {
   properties?: Property[];
 }) {

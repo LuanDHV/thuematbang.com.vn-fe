@@ -1,5 +1,5 @@
+import { mockCategories } from "../../../mocks/categories";
 import { HeaderClient } from "../client/HeaderClient";
-import { mockCategories } from "@/lib/mockData";
 
 // TODO: Replace mockCategories with API call when ready
 // import { categoryService } from "@/services/category.service";

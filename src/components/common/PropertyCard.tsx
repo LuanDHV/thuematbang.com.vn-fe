@@ -215,7 +215,7 @@ function GoldCard({
           {property.bathrooms && (
             <span className="flex items-center gap-1">
               <Bath size={12} className="shrink-0" />
-              {property.bathrooms} phòng tắm
+              {property.bathrooms} phòng tắm, vệ sinh
             </span>
           )}
           {property.description && (

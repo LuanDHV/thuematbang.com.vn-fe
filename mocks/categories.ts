@@ -1,0 +1,203 @@
+import { Category } from "../src/types/category";
+
+const now = "2026-05-13T09:00:00.000Z";
+
+export const mockCategoryProperty: Category[] = [
+  {
+    id: 101,
+    type: "PROPERTY",
+    name: "Văn phòng",
+    slug: "van-phong",
+    priority: 1,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 102,
+    type: "PROPERTY",
+    name: "Mặt bằng",
+    slug: "mat-bang",
+    priority: 2,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 103,
+    type: "PROPERTY",
+    name: "Kho xưởng",
+    slug: "kho-xuong",
+    priority: 3,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 104,
+    type: "PROPERTY",
+    name: "Khu công nghiệp",
+    slug: "khu-cong-nghiep",
+    priority: 4,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 105,
+    type: "PROPERTY",
+    name: "Căn hộ, chung cư",
+    slug: "can-ho-chung-cu",
+    priority: 5,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 106,
+    type: "PROPERTY",
+    name: "Trung tâm thương mại",
+    slug: "trung-tam-thuong-mai",
+    priority: 6,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 107,
+    type: "PROPERTY",
+    name: "Nhà trọ, phòng trọ",
+    slug: "nha-tro-phong-tro",
+    priority: 7,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+];
+
+export const mockCategoryProject: Category[] = [
+  {
+    id: 201,
+    type: "PROJECT",
+    name: "Khu đô thị",
+    slug: "khu-do-thi",
+    priority: 1,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 202,
+    type: "PROJECT",
+    name: "Khu thương mại",
+    slug: "khu-thuong-mai",
+    priority: 2,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+];
+
+export const mockCategoryNews: Category[] = [
+  {
+    id: 301,
+    type: "POST",
+    name: "Kiến trúc xây dựng",
+    slug: "kien-truc-xay-dung",
+    priority: 1,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 302,
+    type: "POST",
+    name: "Tư vấn luật",
+    slug: "tu-van-luat",
+    priority: 2,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 303,
+    type: "POST",
+    name: "Phong thủy",
+    slug: "phong-thuy",
+    priority: 3,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+];
+
+export const mockCategoryFlat: Category[] = [
+  ...mockCategoryProperty,
+  ...mockCategoryProject,
+  ...mockCategoryNews,
+];
+
+// Legacy format for current header/news category UI.
+export const mockCategories: Category[] = [
+  {
+    id: 1,
+    name: "Cho thuê",
+    slug: "cho-thue",
+    fullPath: "cho-thue",
+    priority: 1,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+    children: mockCategoryProperty.map((category) => ({
+      ...category,
+      parentId: 1,
+      fullPath: `cho-thue/${category.slug}`,
+    })),
+  },
+  {
+    id: 2,
+    name: "Cần thuê",
+    slug: "can-thue",
+    fullPath: "can-thue",
+    priority: 2,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+    children: mockCategoryProperty.map((category) => ({
+      ...category,
+      id: category.id + 1000,
+      parentId: 2,
+      fullPath: `can-thue/${category.slug}`,
+    })),
+  },
+  {
+    id: 3,
+    name: "Dự án",
+    slug: "du-an",
+    fullPath: "du-an",
+    priority: 3,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+    children: mockCategoryProject.map((category) => ({
+      ...category,
+      parentId: 3,
+      fullPath: `du-an/${category.slug}`,
+    })),
+  },
+  {
+    id: 4,
+    name: "Tin tức",
+    slug: "tin-tuc",
+    fullPath: "tin-tuc",
+    priority: 4,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now,
+    children: mockCategoryNews.map((category) => ({
+      ...category,
+      parentId: 4,
+      fullPath: `tin-tuc/${category.slug}`,
+    })),
+  },
+];

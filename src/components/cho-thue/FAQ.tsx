@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { faqs } from "@/lib/mockData";
+import { mockFaqs } from "../../../mocks/faqs";
 
 export default function FAQSection() {
   return (
@@ -24,7 +24,7 @@ export default function FAQSection() {
         collapsible
         className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
       >
-        {faqs.map((faq, index) => (
+        {mockFaqs.map((faq, index) => (
           <AccordionItem
             key={index}
             // Sử dụng id từ dữ liệu hoặc index để làm value

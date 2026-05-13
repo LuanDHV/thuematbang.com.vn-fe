@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { mockPosts } from "@/lib/mockData";
+
 import { createPageMetadata } from "@/lib/metadata";
+import { mockPosts } from "../../../../mocks/post";
 
 type PageProps = {
   params: Promise<{ slug: string }>;

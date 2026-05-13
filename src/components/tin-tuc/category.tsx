@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
-import { mockCategories } from "@/lib/mockData";
 import { Category } from "@/types/category";
+import { mockCategories } from "../../../mocks/categories";
 
 interface CategoryProps {
   onSelectCategory?: (categorySlug: string) => void;

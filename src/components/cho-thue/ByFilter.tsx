@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { Pagination } from "../common/Pagination";
 import Title from "../common/Title";
 import { PropertyCard } from "../common/PropertyCard";
-import { featuredProperties } from "@/lib/mockData";
 import { Property } from "@/types/property";
+import { mockProperties } from "../../../mocks/properties";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["gold", "silver", "normal"] as const;
@@ -32,7 +32,7 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
 };
 
 export default function ByFilter({
-  properties = featuredProperties,
+  properties = mockProperties,
 }: {
   properties?: Property[];
 }) {

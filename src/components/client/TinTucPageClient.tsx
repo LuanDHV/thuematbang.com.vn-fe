@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import TinTucCategory from "@/components/tin-tuc/category";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
-import { mockPosts } from "@/lib/mockData";
+
 import Title from "@/components/common/Title";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
+import { mockPosts } from "../../../mocks/post";
 
 const INITIAL_VISIBLE_POSTS = 4;
 const LOAD_MORE_STEP = 4;

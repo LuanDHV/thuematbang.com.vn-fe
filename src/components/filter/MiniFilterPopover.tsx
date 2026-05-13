@@ -68,7 +68,7 @@ export function MiniFilterPopover({
         </div>
 
         {/* Body content passed from parent */}
-        <div className="max-h-75 overflow-y-auto p-4 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5">
+        <div className="max-h-75 overflow-y-auto p-4 [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1">
           {children}
         </div>
 

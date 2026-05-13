@@ -116,7 +116,7 @@ export default function FilterBar() {
         </div>
 
         {/* Hàng 2 (Mobile) / Cột Phải (Desktop): Các Filter có thể scroll ngang */}
-        <div className="no-scrollbar flex w-full items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:overflow-visible lg:pb-0">
+        <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1 lg:w-auto lg:overflow-visible lg:pb-0">
           {/* Modal Lọc Nâng Cao được đưa lên ĐẦU TIÊN */}
           <div className="shrink-0">
             <AdvancedSearchModal
