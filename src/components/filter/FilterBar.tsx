@@ -1,30 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import { AdvancedSearchModal } from "./AdvancedSearchModal";
+import { Property } from "@/types/property";
+import { AdvancedFilterValue, AdvancedSearchModal } from "./AdvancedSearchModal";
 import { MiniFilterPopover } from "./MiniFilterPopover";
+import { mockCategoryProperty } from "../../../mocks/categories";
+import { mockCities, mockStreets, mockWards } from "../../../mocks/locations";
 
-const propertyTypes = [
-  "Văn phòng",
-  "Mặt bằng",
-  "Kho xưởng",
-  "Căn hộ",
-  "Nhà trọ",
-];
+type Props = {
+  sourceProperties: Property[];
+  onFilteredChange: (items: Property[]) => void;
+};
+
+const propertyTypes = mockCategoryProperty.map((category) => category.name);
 
 const priceOptions = [
   { label: "Tất cả mức giá", min: "", max: "" },
-  { label: "Dưới 1 triệu", min: "0", max: "1" },
-  { label: "1 - 3 triệu", min: "1", max: "3" },
-  { label: "3 - 5 triệu", min: "3", max: "5" },
+  { label: "Dưới 5 triệu", min: "0", max: "5" },
   { label: "5 - 10 triệu", min: "5", max: "10" },
-  { label: "10 - 40 triệu", min: "10", max: "40" },
-  { label: "40 - 70 triệu", min: "40", max: "70" },
-  { label: "70 - 100 triệu", min: "70", max: "100" },
-  { label: "Trên 100 triệu", min: "100", max: "" },
+  { label: "10 - 20 triệu", min: "10", max: "20" },
+  { label: "20 - 40 triệu", min: "20", max: "40" },
+  { label: "Trên 40 triệu", min: "40", max: "" },
 ];
 
 const areaOptions = [
@@ -32,18 +30,38 @@ const areaOptions = [
   { label: "Dưới 30 m²", min: "0", max: "30" },
   { label: "30 - 50 m²", min: "30", max: "50" },
   { label: "50 - 80 m²", min: "50", max: "80" },
-  { label: "80 - 100 m²", min: "80", max: "100" },
-  { label: "100 - 150 m²", min: "100", max: "150" },
-  { label: "150 - 200 m²", min: "150", max: "200" },
-  { label: "200 - 250 m²", min: "200", max: "250" },
-  { label: "250 - 300 m²", min: "250", max: "300" },
-  { label: "300 - 500 m²", min: "300", max: "500" },
-  { label: "Trên 500 m²", min: "500", max: "" },
+  { label: "80 - 120 m²", min: "80", max: "120" },
+  { label: "Trên 120 m²", min: "120", max: "" },
 ];
 
-export default function FilterBar() {
-  const [keyword, setKeyword] = useState("");
+const cityMap = mockCities.reduce<Record<string, Record<string, string[]>>>(
+  (accumulator, city) => {
+    const cityWards = mockWards.filter((ward) => ward.cityId === city.id);
+    accumulator[city.name] = cityWards.reduce<Record<string, string[]>>(
+      (wardAccumulator, ward) => {
+        wardAccumulator[ward.name] = mockStreets
+          .filter((street) => street.wardId === ward.id)
+          .map((street) => street.name);
+        return wardAccumulator;
+      },
+      {},
+    );
+    return accumulator;
+  },
+  {},
+);
 
+const normalize = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
+const priceToMillion = (price?: number | null) => (price ? price / 1_000_000 : 0);
+
+export default function FilterBar({ sourceProperties, onFilteredChange }: Props) {
+  const [keyword, setKeyword] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
   const [priceMin, setPriceMin] = useState("");
@@ -54,9 +72,24 @@ export default function FilterBar() {
   const [areaMax, setAreaMax] = useState("");
   const [areaLabel, setAreaLabel] = useState("");
 
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilterValue>({
+    propertyTypes: [],
+    city: "",
+    ward: "",
+    street: "",
+    priceMin: "",
+    priceMax: "",
+    negotiable: false,
+    areaMin: "",
+    areaMax: "",
+    bedrooms: [],
+    bathrooms: [],
+    directions: [],
+  });
+
   const handleTypeToggle = (type: string) => {
     setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+      prev.includes(type) ? prev.filter((item) => item !== type) : [...prev, type],
     );
   };
 
@@ -87,26 +120,128 @@ export default function FilterBar() {
           ? `Dưới ${areaMax} m²`
           : "Diện tích");
 
+  const mergedCategoryFilter = useMemo(() => {
+    const fromAdvanced = advancedFilters.propertyTypes;
+    return Array.from(new Set([...selectedTypes, ...fromAdvanced]));
+  }, [selectedTypes, advancedFilters.propertyTypes]);
+
+  const runFilter = () => {
+    const keywordText = normalize(keyword);
+    const minPrice = Number(priceMin || advancedFilters.priceMin || 0);
+    const maxPrice = Number(priceMax || advancedFilters.priceMax || 0);
+    const minArea = Number(areaMin || advancedFilters.areaMin || 0);
+    const maxArea = Number(areaMax || advancedFilters.areaMax || 0);
+
+    const filtered = sourceProperties.filter((property) => {
+      const categoryName = property.category?.name ?? "";
+      const cityName = property.city?.name ?? "";
+      const wardName = property.ward?.name ?? "";
+      const streetName = property.street?.name ?? "";
+      const haystack = normalize(
+        `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName}`,
+      );
+
+      if (keywordText && !haystack.includes(keywordText)) return false;
+
+      if (mergedCategoryFilter.length > 0) {
+        const normalizedCategory = normalize(categoryName);
+        const matched = mergedCategoryFilter.some(
+          (type) => normalizedCategory === normalize(type),
+        );
+        if (!matched) return false;
+      }
+
+      const priceM = priceToMillion(property.price);
+      if (minPrice > 0 && priceM < minPrice) return false;
+      if (maxPrice > 0 && priceM > maxPrice) return false;
+
+      const areaValue = property.area ?? 0;
+      if (minArea > 0 && areaValue < minArea) return false;
+      if (maxArea > 0 && areaValue > maxArea) return false;
+
+      if (advancedFilters.city && property.city?.name !== advancedFilters.city)
+        return false;
+      if (advancedFilters.ward && property.ward?.name !== advancedFilters.ward)
+        return false;
+      if (advancedFilters.street && property.street?.name !== advancedFilters.street)
+        return false;
+
+      if (advancedFilters.bedrooms.length > 0) {
+        const bedMatched = advancedFilters.bedrooms.some((item) => {
+          if (item === "5+") return (property.bedrooms ?? 0) >= 5;
+          return String(property.bedrooms ?? 0) === item;
+        });
+        if (!bedMatched) return false;
+      }
+
+      if (advancedFilters.bathrooms.length > 0) {
+        const bathMatched = advancedFilters.bathrooms.some((item) => {
+          if (item === "5+") return (property.bathrooms ?? 0) >= 5;
+          return String(property.bathrooms ?? 0) === item;
+        });
+        if (!bathMatched) return false;
+      }
+
+      if (advancedFilters.directions.length > 0) {
+        const direction = (property.direction ?? "").toString().toUpperCase();
+        if (!advancedFilters.directions.includes(direction)) return false;
+      }
+
+      if (advancedFilters.negotiable && !property.isNegotiable) return false;
+
+      return true;
+    });
+
+    onFilteredChange(filtered);
+  };
+
+  const resetAll = () => {
+    setKeyword("");
+    setSelectedTypes([]);
+    setPriceMin("");
+    setPriceMax("");
+    setPriceLabel("");
+    setAreaMin("");
+    setAreaMax("");
+    setAreaLabel("");
+    setAdvancedFilters({
+      propertyTypes: [],
+      city: "",
+      ward: "",
+      street: "",
+      priceMin: "",
+      priceMax: "",
+      negotiable: false,
+      areaMin: "",
+      areaMax: "",
+      bedrooms: [],
+      bathrooms: [],
+      directions: [],
+    });
+    onFilteredChange(sourceProperties);
+  };
+
   return (
     <div className="mx-auto max-w-7xl rounded-lg bg-white shadow backdrop-blur-md transition-all duration-300">
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          runFilter();
+        }}
         className="flex flex-col gap-3 p-2 lg:flex-row lg:items-center lg:gap-2"
       >
-        {/* Hàng 1 (Mobile) / Cột Trái (Desktop): Ô tìm kiếm + Nút tìm kiếm Mobile */}
         <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-1">
           <div className="relative flex min-w-0 flex-1 items-center rounded-xl bg-gray-50/50 px-2">
             <Search className="ml-2 h-4 w-4 shrink-0 text-gray-400" />
             <input
               type="text"
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(event) => setKeyword(event.target.value)}
               placeholder="Bạn muốn thuê ở đâu?"
               className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:ring-0"
             />
           </div>
 
-          {/* Nút Tìm kiếm (Chỉ hiện trên Mobile) */}
           <Button
             type="submit"
             className="bg-primary flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-xl px-4 font-bold text-white shadow-md transition-all hover:brightness-105 lg:hidden"
@@ -115,29 +250,40 @@ export default function FilterBar() {
           </Button>
         </div>
 
-        {/* Hàng 2 (Mobile) / Cột Phải (Desktop): Các Filter có thể scroll ngang */}
-        <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1 lg:w-auto lg:overflow-visible lg:pb-0">
-          {/* Modal Lọc Nâng Cao được đưa lên ĐẦU TIÊN */}
+        <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1 lg:w-auto lg:overflow-visible lg:pb-0">
           <div className="shrink-0">
             <AdvancedSearchModal
               filterCount={
-                selectedTypes.length +
-                (priceMin || priceMax ? 1 : 0) +
-                (areaMin || areaMax ? 1 : 0)
+                mergedCategoryFilter.length +
+                (priceMin || priceMax || advancedFilters.priceMin || advancedFilters.priceMax ? 1 : 0) +
+                (areaMin || areaMax || advancedFilters.areaMin || advancedFilters.areaMax ? 1 : 0) +
+                (advancedFilters.city || advancedFilters.ward || advancedFilters.street ? 1 : 0)
               }
+              propertyTypeOptions={propertyTypes}
+              cityMap={cityMap}
+              value={advancedFilters}
+              onApply={(value) => {
+                setAdvancedFilters(value);
+                onFilteredChange(
+                  sourceProperties,
+                );
+                setTimeout(runFilter, 0);
+              }}
+              onReset={resetAll}
             />
           </div>
 
-          {/* Đường kẻ chia cách sau Lọc Nâng Cao */}
           <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" />
 
-          {/* Popover Loại BĐS */}
           <MiniFilterPopover
             title="Loại bất động sản"
             label={displayTypeLabel}
             isActive={selectedTypes.length > 0}
-            onReset={() => setSelectedTypes([])}
-            onApply={() => console.log("Applied types:", selectedTypes)}
+            onReset={() => {
+              setSelectedTypes([]);
+              setTimeout(runFilter, 0);
+            }}
+            onApply={runFilter}
           >
             <div className="grid gap-2">
               {propertyTypes.map((type) => (
@@ -145,9 +291,7 @@ export default function FilterBar() {
                   key={type}
                   className="flex cursor-pointer items-center justify-between gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50"
                 >
-                  <span className="text-sm font-medium text-gray-700">
-                    {type}
-                  </span>
+                  <span className="text-sm font-medium text-gray-700">{type}</span>
                   <input
                     type="checkbox"
                     checked={selectedTypes.includes(type)}
@@ -159,7 +303,6 @@ export default function FilterBar() {
             </div>
           </MiniFilterPopover>
 
-          {/* Popover Khoảng Giá */}
           <MiniFilterPopover
             title="Mức giá (Triệu VNĐ)"
             label={displayPriceLabel}
@@ -168,53 +311,45 @@ export default function FilterBar() {
               setPriceMin("");
               setPriceMax("");
               setPriceLabel("");
+              setTimeout(runFilter, 0);
             }}
-            onApply={() =>
-              console.log("Applied price:", { priceMin, priceMax })
-            }
+            onApply={runFilter}
           >
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Từ"
-                    value={priceMin}
-                    onChange={(e) => {
-                      setPriceMin(e.target.value);
-                      setPriceLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
+                <input
+                  type="number"
+                  placeholder="Từ"
+                  value={priceMin}
+                  onChange={(event) => {
+                    setPriceMin(event.target.value);
+                    setPriceLabel("");
+                  }}
+                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                />
                 <span className="text-gray-400">-</span>
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Đến"
-                    value={priceMax}
-                    onChange={(e) => {
-                      setPriceMax(e.target.value);
-                      setPriceLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
+                <input
+                  type="number"
+                  placeholder="Đến"
+                  value={priceMax}
+                  onChange={(event) => {
+                    setPriceMax(event.target.value);
+                    setPriceLabel("");
+                  }}
+                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                />
               </div>
               <div className="grid gap-2">
-                {priceOptions.map((opt, idx) => {
-                  const isSelected =
-                    priceMin === opt.min && priceMax === opt.max;
+                {priceOptions.map((option) => {
+                  const isSelected = priceMin === option.min && priceMax === option.max;
                   return (
                     <label
-                      key={idx}
+                      key={option.label}
                       className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg p-2 text-sm transition-colors hover:bg-gray-50 ${
-                        isSelected
-                          ? "text-primary font-semibold"
-                          : "text-gray-700"
+                        isSelected ? "text-primary font-semibold" : "text-gray-700"
                       }`}
                     >
-                      <span>{opt.label}</span>
+                      <span>{option.label}</span>
                       <input
                         type="checkbox"
                         checked={isSelected}
@@ -224,10 +359,10 @@ export default function FilterBar() {
                             setPriceMax("");
                             setPriceLabel("");
                           } else {
-                            setPriceMin(opt.min);
-                            setPriceMax(opt.max);
+                            setPriceMin(option.min);
+                            setPriceMax(option.max);
                             setPriceLabel(
-                              opt.label === "Tất cả mức giá" ? "" : opt.label,
+                              option.label === "Tất cả mức giá" ? "" : option.label,
                             );
                           }
                         }}
@@ -240,7 +375,6 @@ export default function FilterBar() {
             </div>
           </MiniFilterPopover>
 
-          {/* Popover Diện tích */}
           <MiniFilterPopover
             title="Diện tích"
             label={displayAreaLabel}
@@ -249,50 +383,45 @@ export default function FilterBar() {
               setAreaMin("");
               setAreaMax("");
               setAreaLabel("");
+              setTimeout(runFilter, 0);
             }}
-            onApply={() => console.log("Applied area:", { areaMin, areaMax })}
+            onApply={runFilter}
           >
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Từ"
-                    value={areaMin}
-                    onChange={(e) => {
-                      setAreaMin(e.target.value);
-                      setAreaLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
+                <input
+                  type="number"
+                  placeholder="Từ"
+                  value={areaMin}
+                  onChange={(event) => {
+                    setAreaMin(event.target.value);
+                    setAreaLabel("");
+                  }}
+                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                />
                 <span className="text-gray-400">-</span>
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Đến"
-                    value={areaMax}
-                    onChange={(e) => {
-                      setAreaMax(e.target.value);
-                      setAreaLabel("");
-                    }}
-                    className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none [-moz-appearance:textfield] focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
+                <input
+                  type="number"
+                  placeholder="Đến"
+                  value={areaMax}
+                  onChange={(event) => {
+                    setAreaMax(event.target.value);
+                    setAreaLabel("");
+                  }}
+                  className="focus:border-primary focus:ring-primary w-full rounded-lg border border-gray-200 p-2 text-sm outline-none"
+                />
               </div>
               <div className="grid gap-2">
-                {areaOptions.map((opt, idx) => {
-                  const isSelected = areaMin === opt.min && areaMax === opt.max;
+                {areaOptions.map((option) => {
+                  const isSelected = areaMin === option.min && areaMax === option.max;
                   return (
                     <label
-                      key={idx}
+                      key={option.label}
                       className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg p-2 text-sm transition-colors hover:bg-gray-50 ${
-                        isSelected
-                          ? "text-primary font-semibold"
-                          : "text-gray-700"
+                        isSelected ? "text-primary font-semibold" : "text-gray-700"
                       }`}
                     >
-                      <span>{opt.label}</span>
+                      <span>{option.label}</span>
                       <input
                         type="checkbox"
                         checked={isSelected}
@@ -302,10 +431,10 @@ export default function FilterBar() {
                             setAreaMax("");
                             setAreaLabel("");
                           } else {
-                            setAreaMin(opt.min);
-                            setAreaMax(opt.max);
+                            setAreaMin(option.min);
+                            setAreaMax(option.max);
                             setAreaLabel(
-                              opt.label === "Tất cả diện tích" ? "" : opt.label,
+                              option.label === "Tất cả diện tích" ? "" : option.label,
                             );
                           }
                         }}
@@ -318,7 +447,14 @@ export default function FilterBar() {
             </div>
           </MiniFilterPopover>
 
-          {/* Nút Tìm kiếm (Chỉ hiện trên Desktop, nằm ở cuối) */}
+          <Button
+            type="button"
+            onClick={resetAll}
+            className="border-primary text-primary hover:bg-primary/10 hidden h-10 cursor-pointer rounded-xl border bg-transparent px-4 lg:flex"
+          >
+            Đặt lại
+          </Button>
+
           <Button
             type="submit"
             className="bg-primary ml-auto hidden h-10 shrink-0 cursor-pointer items-center rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105 lg:flex"

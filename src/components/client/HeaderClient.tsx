@@ -5,15 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Category } from "@/types/category";
+
+type HeaderMenuItem = { id: number; name: string; slug: string };
 
 interface HeaderClientProps {
-  categories: Category[];
+  categories: HeaderMenuItem[];
 }
 
 export function HeaderClient({ categories }: HeaderClientProps) {
-  // Get only parent categories (parentId === null)
-  const parentCategories = categories.filter((cat) => cat.parentId === null);
+  const parentCategories = categories;
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 bg-white shadow backdrop-blur-lg">

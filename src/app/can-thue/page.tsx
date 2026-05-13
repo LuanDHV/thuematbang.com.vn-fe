@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import ByFilter from "@/components/cho-thue/ByFilter";
 import ContentSEO from "@/components/cho-thue/ContentSEO";
 import FAQ from "@/components/cho-thue/FAQ";
 import { createPageMetadata } from "@/lib/metadata";
+import { mockProperties } from "../../../mocks/properties";
+import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Cần thuê mặt bằng",
@@ -10,11 +11,17 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/can-thue",
 });
 
-//Tạm thời dùng dữ liệu từ cho thuê cho đến khi sử dụng data thật
 export default function CanThuePage() {
+  const rentalDemandProperties = mockProperties.filter(
+    (property) => property.listingType === "RENT_WANTED",
+  );
+
   return (
     <>
-      <ByFilter />
+      <PropertyFilterSection
+        title="Cần thuê bất động sản"
+        properties={rentalDemandProperties}
+      />
       <ContentSEO />
       <FAQ />
     </>

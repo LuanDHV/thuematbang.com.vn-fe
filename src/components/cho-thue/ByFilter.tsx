@@ -33,8 +33,10 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
 
 export default function ByFilter({
   properties = mockProperties,
+  title = "Cho thuê bất động sản",
 }: {
   properties?: Property[];
+  title?: string;
 }) {
   const orderedProperties = useMemo(() => {
     return [...properties].sort((left, right) => {
@@ -77,7 +79,7 @@ export default function ByFilter({
   return (
     <section className="w-full bg-gray-50/50 py-12 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4">
-        <Title title="Cho thuê bất động sản" />
+        <Title title={title} />
 
         <div className="space-y-10">
           {TIER_ORDER.map((tier) => {
