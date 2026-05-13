@@ -26,7 +26,12 @@ import {
   MapPin,
   Maximize,
   Plus,
+  X,
 } from "lucide-react";
+import {
+  mockFilterAreaOptions,
+  mockFilterPriceOptions,
+} from "../../../mocks/filter";
 
 type DemandTab = "cho-thue" | "can-thue";
 type DetailTab = "main" | "propertyType" | "location" | "price" | "area";
@@ -56,20 +61,9 @@ type Props = {
 };
 
 const BED_BATH_OPTIONS = ["1", "2", "3", "4", "5+"];
-const PRICE_OPTIONS = [
-  "Dưới 3 triệu",
-  "3 - 5 triệu",
-  "5 - 10 triệu",
-  "10 - 20 triệu",
-  "Trên 20 triệu",
-];
-const AREA_OPTIONS = [
-  "Dưới 30 m²",
-  "30 - 50 m²",
-  "50 - 80 m²",
-  "80 - 120 m²",
-  "Trên 120 m²",
-];
+const PRICE_MAX = 60_000_000_000;
+const PRICE_MAX_MILLION = 60_000;
+const AREA_MAX = 500;
 
 const DIRECTIONS = [
   { id: "BAC", label: "Bắc" },
@@ -97,6 +91,272 @@ const initialFilterState: AdvancedFilterValue = {
   directions: [],
 };
 
+const parseNumericInput = (value: string) =>
+  Number((value || "").replace(/[^\d]/g, ""));
+
+const millionToVnd = (million: number) => million * 1_000_000;
+const vndToMillion = (vnd: number) => Math.round(vnd / 1_000_000);
+
+const formatCurrencyShort = (value: number) => {
+  if (!value) return "0";
+  if (value >= 1_000_000_000) {
+    const billion = value / 1_000_000_000;
+    return `${Number.isInteger(billion) ? billion : billion.toFixed(1)} tỷ`;
+  }
+  const million = value / 1_000_000;
+  return `${Number.isInteger(million) ? million : million.toFixed(1)} triệu`;
+};
+
+const formatArea = (value: number) => `${value.toLocaleString("vi-VN")} m²`;
+
+type DetailTabSharedProps = {
+  current: AdvancedFilterValue;
+  updateCurrent: (
+    updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
+  ) => void;
+  onDone?: () => void;
+};
+
+export function PropertyTypeDetailTab({
+  current,
+  updateCurrent,
+  propertyTypeOptions,
+  onDone,
+}: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
+  return (
+    <div className="space-y-2">
+      {propertyTypeOptions.map((type) => (
+        <label
+          key={type}
+          className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-50"
+        >
+          <span className="text-sm text-gray-700">{type}</span>
+          <input
+            type="checkbox"
+            checked={current.propertyTypes.includes(type)}
+            onChange={() => {
+              updateCurrent((prev) => ({
+                ...prev,
+                propertyTypes: prev.propertyTypes.includes(type)
+                  ? prev.propertyTypes.filter((item) => item !== type)
+                  : [...prev.propertyTypes, type],
+              }));
+              onDone?.();
+            }}
+            className="accent-primary h-4 w-4 cursor-pointer"
+          />
+        </label>
+      ))}
+    </div>
+  );
+}
+
+export function PriceDetailTab({
+  current,
+  updateCurrent,
+  priceRange,
+  onDone,
+}: DetailTabSharedProps & {
+  priceRange: [number, number];
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4 text-sm font-semibold">
+        <p>
+          Từ:{" "}
+          <span className="text-primary">
+            {formatCurrencyShort(millionToVnd(priceRange[0]))}
+          </span>
+        </p>
+        <p>
+          Đến:{" "}
+          <span className="text-primary">
+            {formatCurrencyShort(millionToVnd(priceRange[1]))}
+          </span>
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="flex-1 space-y-1">
+          <input
+            type="number"
+            value={vndToMillion(parseNumericInput(current.priceMin || "0"))}
+            onChange={(event) =>
+              updateCurrent((prev) => ({
+                ...prev,
+                priceMin: String(millionToVnd(Number(event.target.value || 0))),
+                negotiable: false,
+              }))
+            }
+            placeholder="0"
+            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+          />
+        </div>
+        <span className="mt-1 text-xl text-gray-500">→</span>
+        <div className="flex-1 space-y-1">
+          <input
+            type="number"
+            value={vndToMillion(
+              parseNumericInput(current.priceMax || String(PRICE_MAX)),
+            )}
+            onChange={(event) =>
+              updateCurrent((prev) => ({
+                ...prev,
+                priceMax: String(millionToVnd(Number(event.target.value || 0))),
+                negotiable: false,
+              }))
+            }
+            placeholder="60000"
+            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+          />
+        </div>
+      </div>
+
+      <Slider
+        min={0}
+        max={PRICE_MAX_MILLION}
+        step={100}
+        value={priceRange}
+        onValueChange={(valueItem) => {
+          updateCurrent((prev) => ({
+            ...prev,
+            priceMin: String(millionToVnd(valueItem[0])),
+            priceMax: String(millionToVnd(valueItem[1])),
+            negotiable: false,
+          }));
+        }}
+        className="cursor-pointer"
+      />
+
+      <div className="grid gap-2">
+        {mockFilterPriceOptions.map((option) => {
+          const isSelected =
+            current.priceMin === option.min &&
+            current.priceMax === option.max &&
+            Boolean(option.isNegotiable) === current.negotiable;
+          return (
+            <label
+              key={option.label}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2 text-sm hover:bg-gray-50 ${isSelected ? "text-primary font-semibold" : "text-gray-700"}`}
+            >
+              <span>{option.label}</span>
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() => {
+                  const nextMin = option.min;
+                  const nextMax = option.max;
+                  const minMillion = vndToMillion(parseNumericInput(nextMin || "0"));
+                  const maxMillion = nextMax
+                    ? vndToMillion(parseNumericInput(nextMax))
+                    : PRICE_MAX_MILLION;
+                  updateCurrent((prev) => ({
+                    ...prev,
+                    priceMin: String(millionToVnd(minMillion)),
+                    priceMax: String(millionToVnd(maxMillion)),
+                    negotiable: Boolean(option.isNegotiable),
+                  }));
+                  onDone?.();
+                }}
+                className="accent-primary h-4 w-4 cursor-pointer"
+              />
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function AreaDetailTab({
+  current,
+  updateCurrent,
+  areaRange,
+  onDone,
+}: DetailTabSharedProps & {
+  areaRange: [number, number];
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4 text-sm font-semibold">
+        <p>
+          Từ: <span className="text-primary">{formatArea(areaRange[0])}</span>
+        </p>
+        <p>
+          Đến: <span className="text-primary">{formatArea(areaRange[1])}</span>
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="flex-1 space-y-1">
+          <input
+            type="number"
+            value={current.areaMin}
+            onChange={(event) =>
+              updateCurrent((prev) => ({ ...prev, areaMin: event.target.value }))
+            }
+            placeholder="Từ"
+            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+          />
+        </div>
+        <span className="mt-1 text-xl text-gray-500">→</span>
+        <div className="flex-1 space-y-1">
+          <input
+            type="number"
+            value={current.areaMax}
+            onChange={(event) =>
+              updateCurrent((prev) => ({ ...prev, areaMax: event.target.value }))
+            }
+            placeholder="Đến"
+            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+          />
+        </div>
+      </div>
+
+      <Slider
+        min={0}
+        max={AREA_MAX}
+        step={1}
+        value={areaRange}
+        onValueChange={(valueItem) => {
+          updateCurrent((prev) => ({
+            ...prev,
+            areaMin: String(valueItem[0]),
+            areaMax: String(valueItem[1]),
+          }));
+        }}
+        className="cursor-pointer"
+      />
+
+      <div className="grid gap-2">
+        {mockFilterAreaOptions.map((option) => {
+          const isSelected =
+            current.areaMin === option.min && current.areaMax === option.max;
+          return (
+            <label
+              key={option.label}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2 text-sm hover:bg-gray-50 ${isSelected ? "text-primary font-semibold" : "text-gray-700"}`}
+            >
+              <span>{option.label}</span>
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() => {
+                  updateCurrent((prev) => ({
+                    ...prev,
+                    areaMin: option.min,
+                    areaMax: option.max,
+                  }));
+                  onDone?.();
+                }}
+                className="accent-primary h-4 w-4 cursor-pointer"
+              />
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function AdvancedSearchModal({
   filterCount = 0,
   propertyTypeOptions,
@@ -105,6 +365,7 @@ export function AdvancedSearchModal({
   onApply,
   onReset,
 }: Props) {
+  const [open, setOpen] = useState(false);
   const [demandTab, setDemandTab] = useState<DemandTab>("cho-thue");
   const [detailTab, setDetailTab] = useState<DetailTab>("main");
   const [localValue, setLocalValue] = useState<AdvancedFilterValue>(
@@ -114,7 +375,9 @@ export function AdvancedSearchModal({
   const current = localValue;
   const wards = current.city ? Object.keys(cityMap[current.city] ?? {}) : [];
   const streets =
-    current.city && current.ward ? cityMap[current.city]?.[current.ward] ?? [] : [];
+    current.city && current.ward
+      ? (cityMap[current.city]?.[current.ward] ?? [])
+      : [];
 
   const activeCount = useMemo(() => {
     return [
@@ -128,16 +391,29 @@ export function AdvancedSearchModal({
     ].reduce((sum, valueItem) => sum + (valueItem > 0 ? 1 : 0), 0);
   }, [current]);
 
-  const updateCurrent = (updater: (prev: AdvancedFilterValue) => AdvancedFilterValue) => {
+  const priceRange = useMemo<[number, number]>(() => {
+    const minPrice = parseNumericInput(current.priceMin);
+    const maxPrice = parseNumericInput(current.priceMax);
+    return [
+      minPrice > 0 ? vndToMillion(minPrice) : 0,
+      maxPrice > 0 ? vndToMillion(maxPrice) : PRICE_MAX_MILLION,
+    ];
+  }, [current.priceMin, current.priceMax]);
+
+  const areaRange = useMemo<[number, number]>(() => {
+    const minArea = Number(current.areaMin || 0);
+    const maxArea = Number(current.areaMax || 0);
+    return [minArea > 0 ? minArea : 0, maxArea > 0 ? maxArea : AREA_MAX];
+  }, [current.areaMin, current.areaMax]);
+
+  const updateCurrent = (
+    updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
+  ) => {
     setLocalValue((prev) => updater(prev));
   };
 
   const toggleFromList = (
-    key:
-      | "propertyTypes"
-      | "bedrooms"
-      | "bathrooms"
-      | "directions",
+    key: "propertyTypes" | "bedrooms" | "bathrooms" | "directions",
     item: string,
   ) => {
     updateCurrent((prev) => ({
@@ -156,14 +432,56 @@ export function AdvancedSearchModal({
 
   const applyCurrent = () => {
     onApply?.(localValue);
+    setOpen(false);
   };
 
   const quickCellClass =
     "hover:border-primary hover:text-primary cursor-pointer rounded-xl border border-gray-200 px-4 py-1 text-sm font-medium text-gray-600 transition-colors";
   const selectedQuickCellClass = "border-primary bg-primary/5 text-primary";
 
+  const selectedPriceOption = mockFilterPriceOptions.find(
+    (option) =>
+      current.priceMin === option.min &&
+      current.priceMax === option.max &&
+      Boolean(option.isNegotiable) === current.negotiable,
+  );
+
+  const selectedAreaOption = mockFilterAreaOptions.find(
+    (option) =>
+      current.areaMin === option.min && current.areaMax === option.max,
+  );
+
+  const priceSummary = selectedPriceOption
+    ? selectedPriceOption.label
+    : current.negotiable
+      ? "Thỏa thuận"
+      : current.priceMin || current.priceMax
+        ? `${formatCurrencyShort(parseNumericInput(current.priceMin) || 0)} - ${
+            parseNumericInput(current.priceMax)
+              ? formatCurrencyShort(parseNumericInput(current.priceMax))
+              : "max"
+          }`
+        : "Tất cả";
+
+  const areaSummary = selectedAreaOption
+    ? selectedAreaOption.label
+    : current.areaMin || current.areaMax
+      ? `${current.areaMin ? formatArea(Number(current.areaMin)) : "0 m²"} - ${
+          current.areaMax ? formatArea(Number(current.areaMax)) : "max"
+        }`
+      : "Tất cả";
+
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (nextOpen) {
+          setLocalValue(value ?? initialFilterState);
+          setDetailTab("main");
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -196,13 +514,13 @@ export function AdvancedSearchModal({
             <TabsList className="grid h-11 w-full grid-cols-2 bg-gray-100 p-1">
               <TabsTrigger
                 value="cho-thue"
-                className="data-[state=active]:bg-primary cursor-pointer font-semibold data-[state=active]:text-white"
+                className="data-[state=active]:bg-primary cursor-pointer font-medium data-[state=active]:text-white"
               >
                 Cho thuê
               </TabsTrigger>
               <TabsTrigger
                 value="can-thue"
-                className="data-[state=active]:bg-primary cursor-pointer font-semibold data-[state=active]:text-white"
+                className="data-[state=active]:bg-primary cursor-pointer font-medium data-[state=active]:text-white"
               >
                 Cần thuê
               </TabsTrigger>
@@ -210,12 +528,12 @@ export function AdvancedSearchModal({
           </Tabs>
         </div>
 
-        <div className="flex-1 overflow-y-auto bg-white px-4 py-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/40 [&::-webkit-scrollbar]:w-1.5">
+        <div className="[&::-webkit-scrollbar-thumb]:bg-primary/40 flex-1 overflow-y-auto bg-white px-4 py-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full">
           {detailTab !== "main" && (
             <Button
               variant="ghost"
               onClick={() => setDetailTab("main")}
-              className="text-primary mb-3 h-9 cursor-pointer px-2 hover:bg-primary/10"
+              className="text-primary hover:bg-primary/10 mb-3 h-9 cursor-pointer px-2"
             >
               <ArrowLeft className="mr-1 h-4 w-4" />
               Quay lại
@@ -228,61 +546,121 @@ export function AdvancedSearchModal({
                 <label className="text-sm font-semibold text-gray-800">
                   Loại bất động sản
                 </label>
-                <Button
-                  variant="ghost"
-                  onClick={() => setDetailTab("propertyType")}
-                  className="text-primary h-9 cursor-pointer rounded-full px-4 hover:bg-primary/10"
-                >
-                  <Plus className="mr-1 h-4 w-4" />
-                  Thêm
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                  {current.propertyTypes.length > 0
+                    ? current.propertyTypes.map((item) => (
+                        <div
+                          key={item}
+                          className="text-primary flex h-10 items-center gap-1 rounded-full border border-orange-200 px-4 text-sm"
+                        >
+                          <span>{item}</span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              updateCurrent((prev) => ({
+                                ...prev,
+                                propertyTypes: prev.propertyTypes.filter(
+                                  (selected) => selected !== item,
+                                ),
+                              }))
+                            }
+                            className="text-primary/80 hover:text-primary cursor-pointer"
+                            aria-label={`Bỏ chọn ${item}`}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ))
+                    : null}
+                  <Button
+                    variant="ghost"
+                    onClick={() => setDetailTab("propertyType")}
+                    className="text-primary hover:bg-primary/10 h-10 cursor-pointer rounded-full px-4"
+                  >
+                    Thêm
+                    <Plus className="ml-1 h-4 w-4" />
+                  </Button>
+                </div>
               </div>
 
-              {[
-                {
-                  key: "location",
-                  icon: MapPin,
-                  label: "Khu vực",
-                  value: current.city || "Toàn quốc",
-                },
-                {
-                  key: "price",
-                  icon: CircleDollarSign,
-                  label: "Khoảng giá",
-                  value: current.negotiable
-                    ? "Thỏa thuận"
-                    : current.priceMin || current.priceMax
-                      ? `${current.priceMin || 0} - ${current.priceMax || "max"} triệu`
-                      : "Tất cả",
-                },
-                {
-                  key: "area",
-                  icon: Maximize,
-                  label: "Diện tích",
-                  value:
-                    current.areaMin || current.areaMax
-                      ? `${current.areaMin || 0} - ${current.areaMax || "max"} m²`
-                      : "Tất cả",
-                },
-              ].map((item) => (
-                <div key={item.key} className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-800">{item.label}</label>
-                  <button
-                    type="button"
-                    onClick={() => setDetailTab(item.key as DetailTab)}
-                    className="flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
-                  >
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.value}</span>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-800">
+                  Khu vực
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setDetailTab("location")}
+                  className="flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+                >
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <MapPin className="h-4 w-4" />
+                    <span className="text-sm">
+                      {current.city || "Toàn quốc"}
+                    </span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                </button>
+              </div>
+
+              {current.city ? (
+                <div className="space-y-2 rounded-lg border border-gray-100 bg-gray-50/70 p-3 text-sm text-gray-700">
+                  {current.ward ? (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500">
+                        Phường/ Xã
+                      </p>
+                      <p>{current.ward}</p>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-gray-400" />
-                  </button>
+                  ) : null}
+                  {current.street ? (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500">
+                        Đường Phố
+                      </p>
+                      <p>{current.street}</p>
+                    </div>
+                  ) : null}
                 </div>
-              ))}
+              ) : null}
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-800">Số phòng ngủ</label>
+                <label className="text-sm font-semibold text-gray-800">
+                  Khoảng giá
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setDetailTab("price")}
+                  className="flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+                >
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <CircleDollarSign className="h-4 w-4" />
+                    <span className="text-sm">{priceSummary}</span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-800">
+                  Diện tích
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setDetailTab("area")}
+                  className="flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+                >
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Maximize className="h-4 w-4" />
+                    <span className="text-sm">{areaSummary}</span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-800">
+                  Số phòng ngủ
+                </label>
                 <div className="flex flex-wrap gap-2">
                   {BED_BATH_OPTIONS.map((item) => (
                     <button
@@ -298,7 +676,9 @@ export function AdvancedSearchModal({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-800">Số phòng tắm, vệ sinh</label>
+                <label className="text-sm font-semibold text-gray-800">
+                  Số phòng tắm, vệ sinh
+                </label>
                 <div className="flex flex-wrap gap-2">
                   {BED_BATH_OPTIONS.map((item) => (
                     <button
@@ -314,14 +694,21 @@ export function AdvancedSearchModal({
               </div>
 
               <div className="space-y-4">
-                <label className="text-sm font-semibold text-gray-800">Hướng nhà</label>
+                <label className="text-sm font-semibold text-gray-800">
+                  Hướng nhà
+                </label>
                 <div className="flex justify-center py-2">
-                  <svg viewBox="-5 -5 210 210" className="mx-auto h-55 w-55 drop-shadow-sm">
+                  <svg
+                    viewBox="-5 -5 210 210"
+                    className="mx-auto h-55 w-55 drop-shadow-sm"
+                  >
                     {DIRECTIONS.map((dir, index) => {
                       const angle = index * 45;
                       const textAngle = angle - 90;
-                      const textX = 100 + 70 * Math.cos((textAngle * Math.PI) / 180);
-                      const textY = 100 + 70 * Math.sin((textAngle * Math.PI) / 180);
+                      const textX =
+                        100 + 70 * Math.cos((textAngle * Math.PI) / 180);
+                      const textY =
+                        100 + 70 * Math.sin((textAngle * Math.PI) / 180);
                       const isSelected = current.directions.includes(dir.id);
 
                       return (
@@ -354,22 +741,11 @@ export function AdvancedSearchModal({
           )}
 
           {detailTab === "propertyType" && (
-            <div className="space-y-2">
-              {propertyTypeOptions.map((type) => (
-                <label
-                  key={type}
-                  className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-50"
-                >
-                  <span className="text-sm text-gray-700">{type}</span>
-                  <input
-                    type="checkbox"
-                    checked={current.propertyTypes.includes(type)}
-                    onChange={() => toggleFromList("propertyTypes", type)}
-                    className="accent-primary h-4 w-4 cursor-pointer"
-                  />
-                </label>
-              ))}
-            </div>
+            <PropertyTypeDetailTab
+              current={current}
+              updateCurrent={updateCurrent}
+              propertyTypeOptions={propertyTypeOptions}
+            />
           )}
 
           {detailTab === "location" && (
@@ -377,15 +753,24 @@ export function AdvancedSearchModal({
               <Select
                 value={current.city}
                 onValueChange={(valueItem) =>
-                  updateCurrent((prev) => ({ ...prev, city: valueItem, ward: "", street: "" }))
+                  updateCurrent((prev) => ({
+                    ...prev,
+                    city: valueItem,
+                    ward: "",
+                    street: "",
+                  }))
                 }
               >
                 <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
                   <SelectValue placeholder="Chọn tỉnh / thành phố" />
                 </SelectTrigger>
-                <SelectContent className="max-h-60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar]:w-1">
+                <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
                   {Object.keys(cityMap).map((city) => (
-                    <SelectItem key={city} value={city} className="cursor-pointer">
+                    <SelectItem
+                      key={city}
+                      value={city}
+                      className="cursor-pointer"
+                    >
                       {city}
                     </SelectItem>
                   ))}
@@ -395,16 +780,24 @@ export function AdvancedSearchModal({
               <Select
                 value={current.ward}
                 onValueChange={(valueItem) =>
-                  updateCurrent((prev) => ({ ...prev, ward: valueItem, street: "" }))
+                  updateCurrent((prev) => ({
+                    ...prev,
+                    ward: valueItem,
+                    street: "",
+                  }))
                 }
                 disabled={!current.city}
               >
                 <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
                   <SelectValue placeholder="Chọn phường / xã" />
                 </SelectTrigger>
-                <SelectContent className="max-h-60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar]:w-1">
+                <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
                   {wards.map((ward) => (
-                    <SelectItem key={ward} value={ward} className="cursor-pointer">
+                    <SelectItem
+                      key={ward}
+                      value={ward}
+                      className="cursor-pointer"
+                    >
                       {ward}
                     </SelectItem>
                   ))}
@@ -413,17 +806,22 @@ export function AdvancedSearchModal({
 
               <Select
                 value={current.street}
-                onValueChange={(valueItem) =>
-                  updateCurrent((prev) => ({ ...prev, street: valueItem }))
-                }
+                onValueChange={(valueItem) => {
+                  updateCurrent((prev) => ({ ...prev, street: valueItem }));
+                  setDetailTab("main");
+                }}
                 disabled={!current.ward}
               >
                 <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
                   <SelectValue placeholder="Chọn đường / phố" />
                 </SelectTrigger>
-                <SelectContent className="max-h-60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar]:w-1">
+                <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
                   {streets.map((street) => (
-                    <SelectItem key={street} value={street} className="cursor-pointer">
+                    <SelectItem
+                      key={street}
+                      value={street}
+                      className="cursor-pointer"
+                    >
                       {street}
                     </SelectItem>
                   ))}
@@ -433,72 +831,21 @@ export function AdvancedSearchModal({
           )}
 
           {detailTab === "price" && (
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <input
-                  value={current.priceMin}
-                  onChange={(event) =>
-                    updateCurrent((prev) => ({ ...prev, priceMin: event.target.value }))
-                  }
-                  placeholder="Từ"
-                  className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
-                />
-                <input
-                  value={current.priceMax}
-                  onChange={(event) =>
-                    updateCurrent((prev) => ({ ...prev, priceMax: event.target.value }))
-                  }
-                  placeholder="Đến"
-                  className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
-                />
-              </div>
-              <Slider min={0} max={100} step={1} defaultValue={[10, 60]} className="cursor-pointer" />
-              <label className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-50">
-                <span className="text-sm text-gray-700">Thỏa thuận</span>
-                <input
-                  type="checkbox"
-                  checked={current.negotiable}
-                  onChange={() =>
-                    updateCurrent((prev) => ({ ...prev, negotiable: !prev.negotiable }))
-                  }
-                  className="accent-primary h-4 w-4 cursor-pointer"
-                />
-              </label>
-              {PRICE_OPTIONS.map((option) => (
-                <div key={option} className="rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-50">
-                  {option}
-                </div>
-              ))}
-            </div>
+            <PriceDetailTab
+              current={current}
+              updateCurrent={updateCurrent}
+              priceRange={priceRange}
+              onDone={() => setDetailTab("main")}
+            />
           )}
 
           {detailTab === "area" && (
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <input
-                  value={current.areaMin}
-                  onChange={(event) =>
-                    updateCurrent((prev) => ({ ...prev, areaMin: event.target.value }))
-                  }
-                  placeholder="Từ"
-                  className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
-                />
-                <input
-                  value={current.areaMax}
-                  onChange={(event) =>
-                    updateCurrent((prev) => ({ ...prev, areaMax: event.target.value }))
-                  }
-                  placeholder="Đến"
-                  className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
-                />
-              </div>
-              <Slider min={0} max={300} step={1} defaultValue={[30, 120]} className="cursor-pointer" />
-              {AREA_OPTIONS.map((option) => (
-                <div key={option} className="rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-50">
-                  {option}
-                </div>
-              ))}
-            </div>
+            <AreaDetailTab
+              current={current}
+              updateCurrent={updateCurrent}
+              areaRange={areaRange}
+              onDone={() => setDetailTab("main")}
+            />
           )}
         </div>
 
@@ -507,13 +854,13 @@ export function AdvancedSearchModal({
             <Button
               variant="outline"
               onClick={resetCurrent}
-              className="border-primary text-primary h-11 w-28 cursor-pointer rounded-xl hover:bg-primary/10"
+              className="border-primary text-primary hover:bg-primary/10 h-11 w-28 cursor-pointer rounded-xl"
             >
               Đặt lại
             </Button>
             <Button
               onClick={applyCurrent}
-              className="bg-primary h-11 flex-1 cursor-pointer rounded-xl text-white hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 h-11 flex-1 cursor-pointer rounded-xl text-white"
             >
               Xem kết quả
             </Button>
