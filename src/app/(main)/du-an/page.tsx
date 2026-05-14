@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ProjectByFilter from "@/components/du-an/ByFilter";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata({
@@ -9,5 +10,14 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function DuAnPage() {
-  return <ProjectByFilter />;
+  return (
+    <>
+      <div className="mx-auto mt-6 max-w-7xl px-4">
+        <DynamicBreadcrumb
+          items={[{ label: "Trang chủ", href: "/" }, { label: "Dự án" }]}
+        />
+      </div>
+      <ProjectByFilter />
+    </>
+  );
 }

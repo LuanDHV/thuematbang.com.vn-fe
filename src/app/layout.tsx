@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
 import { siteConfig } from "@/lib/metadata";
 
 const montserrat = Montserrat({
@@ -55,11 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={`${montserrat.variable} h-full antialiased`}>
-      <body className="flex min-h-screen flex-col">
-        <Header />
-        <main className="grow pt-16">{children}</main>
-        <Footer />
-      </body>
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }

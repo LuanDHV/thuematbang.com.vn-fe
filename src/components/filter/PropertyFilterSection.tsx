@@ -24,9 +24,8 @@ export default function PropertyFilterSection({
   basePath,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
 }: Props) {
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>(
-    properties,
-  );
+  const [filteredProperties, setFilteredProperties] =
+    useState<Property[]>(properties);
 
   const wrapperClass = stickyFilter
     ? "sticky top-16 z-40 mx-auto max-w-7xl"
