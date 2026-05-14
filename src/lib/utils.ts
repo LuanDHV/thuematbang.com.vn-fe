@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
+﻿import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -16,5 +16,7 @@ export const formatPrice = (price: bigint | number) => {
 
 export const formatDate = (date?: Date | string | null) => {
   if (!date) return "Vừa đăng";
-  return new Date(date).toLocaleDateString("vi-VN");
+  return new Intl.DateTimeFormat("vi-VN", { timeZone: "UTC" }).format(
+    new Date(date),
+  );
 };

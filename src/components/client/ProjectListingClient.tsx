@@ -2,16 +2,17 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { mockProjects } from "../../mocks/projects";
+import { mockProjects } from "@/mocks/projects";
 import { Project } from "@/types/project";
-import Title from "../common/Title";
-import { Pagination } from "../common/Pagination";
-import { ProjectCard } from "../common/ProjectCard";
+import Title from "@/components/common/Title";
+import { Pagination } from "@/components/common/Pagination";
+import { ProjectCard } from "@/components/common/ProjectCard";
 import { mockCategoryProject } from "@/mocks/categories";
+import { CategoryChips } from "@/components/common/CategoryChips";
 
 const PAGE_SIZE = 6;
 
-export default function ProjectByFilter({
+export default function ProjectListingClient({
   projects = mockProjects,
   initialCategorySlug = "du-an",
 }: {
@@ -21,6 +22,24 @@ export default function ProjectByFilter({
   const router = useRouter();
   const [selectedCategorySlug, setSelectedCategorySlug] =
     useState(initialCategorySlug);
+  const categoryItems = useMemo(
+    () => [
+      { id: "all", label: "Tất cả", value: "du-an" },
+      ...mockCategoryProject.map((category) => ({
+        id: category.id,
+        label: category.name,
+        value: category.slug,
+      })),
+    ],
+    [],
+  );
+
+  const handleSelectCategory = (value: string) => {
+    setSelectedCategorySlug(value);
+    router.replace(value === "du-an" ? "/du-an" : `/du-an/${value}`, {
+      scroll: false,
+    });
+  };
 
   const filteredProjects = useMemo(() => {
     if (selectedCategorySlug === "du-an") return projects;
@@ -54,39 +73,12 @@ export default function ProjectByFilter({
           description="Danh sách dự án nổi bật được cập nhật theo khu vực và phân khúc mới nhất."
         />
 
-        <div className="mt-6 mb-8 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedCategorySlug("du-an");
-              router.replace("/du-an", { scroll: false });
-            }}
-            className={`cursor-pointer rounded-xl px-4 py-2 text-sm font-medium transition ${
-              selectedCategorySlug === "du-an"
-                ? "bg-primary text-white"
-                : "border-primary text-primary hover:bg-primary/10 border bg-white"
-            }`}
-          >
-            Tất cả
-          </button>
-
-          {mockCategoryProject.map((category) => (
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => {
-                setSelectedCategorySlug(category.slug);
-                router.replace(`/du-an/${category.slug}`, { scroll: false });
-              }}
-              className={`cursor-pointer rounded-xl px-4 py-2 font-medium transition ${
-                selectedCategorySlug === category.slug
-                  ? "bg-primary text-white"
-                  : "border-primary text-primary hover:bg-primary/10 border bg-white"
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
+        <div className="my-6">
+          <CategoryChips
+            activeValue={selectedCategorySlug}
+            onChange={handleSelectCategory}
+            items={categoryItems}
+          />
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">

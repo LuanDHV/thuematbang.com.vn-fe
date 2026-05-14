@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Property } from "@/types/property";
 import FilterBar from "./FilterBar";
-import ByFilter from "../cho-thue/ByFilter";
+import PropertyListingClient from "@/components/client/PropertyListingClient";
 import {
   type AdvancedFilterValue,
   INITIAL_ADVANCED_FILTER_VALUE,
@@ -43,7 +43,7 @@ export default function PropertyFilterSection({
       </div>
 
       <div className="relative">
-        <ByFilter title={title} properties={filteredProperties} />
+        <PropertyListingClient title={title} properties={filteredProperties} />
       </div>
     </div>
   );

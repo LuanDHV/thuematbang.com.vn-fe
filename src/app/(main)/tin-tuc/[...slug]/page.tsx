@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createPageMetadata } from "@/lib/metadata";
 import { parseNewsCategoryFromSlug } from "@/lib/flat-url";
-import TinTucPageClient from "@/components/client/TinTucPageClient";
+import NewsListingClient from "@/components/client/NewsListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { mockCategoryNews } from "@/mocks/categories";
 import { mockPosts } from "@/mocks/post";
@@ -33,8 +33,8 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Tin t?c",
-    description: "T?ng h?p tin t?c và ki?n th?c b?t d?ng s?n m?i nh?t.",
+    title: "Tin tức",
+    description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
     pathname: `/tin-tuc/${joined}`,
   });
 }
@@ -89,7 +89,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
           ]}
         />
       </div>
-      <TinTucPageClient initialCategorySlug={initialCategorySlug} />
+      <NewsListingClient initialCategorySlug={initialCategorySlug} />
     </>
   );
 }

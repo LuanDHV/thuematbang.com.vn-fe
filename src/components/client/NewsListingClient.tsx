@@ -2,17 +2,17 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import TinTucCategory from "@/components/tin-tuc/category";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
-import Title from "@/components/common/Title";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
+import { CategoryChips } from "@/components/common/CategoryChips";
 import { mockPosts } from "../../mocks/post";
+import { mockCategories } from "../../mocks/categories";
 
 const INITIAL_VISIBLE_POSTS = 4;
 const LOAD_MORE_STEP = 4;
 
-export default function TinTucPageClient({
+export default function NewsListingClient({
   initialCategorySlug = "tin-tuc",
 }: {
   initialCategorySlug?: string;
@@ -20,14 +20,37 @@ export default function TinTucPageClient({
   const router = useRouter();
   const [selectedCategorySlug, setSelectedCategorySlug] =
     useState<string>(initialCategorySlug);
-  const [visiblePostsCount, setVisiblePostsCount] = useState(INITIAL_VISIBLE_POSTS);
+  const [visiblePostsCount, setVisiblePostsCount] = useState(
+    INITIAL_VISIBLE_POSTS,
+  );
+
+  const tintucCategory = mockCategories.find((cat) => cat.slug === "tin-tuc");
+
+  const categoryItems = useMemo(() => {
+    if (!tintucCategory) return [];
+    return [
+      {
+        id: tintucCategory.id,
+        label: tintucCategory.name,
+        value: tintucCategory.slug,
+      },
+      ...(tintucCategory.children ?? []).map((category) => ({
+        id: category.id,
+        label: category.name,
+        value: category.slug,
+      })),
+    ];
+  }, [tintucCategory]);
 
   const handleSelectCategory = (categorySlug: string) => {
     setSelectedCategorySlug(categorySlug);
     setVisiblePostsCount(INITIAL_VISIBLE_POSTS);
-    router.replace(categorySlug === "tin-tuc" ? "/tin-tuc" : `/tin-tuc/${categorySlug}`, {
-      scroll: false,
-    });
+    router.replace(
+      categorySlug === "tin-tuc" ? "/tin-tuc" : `/tin-tuc/${categorySlug}`,
+      {
+        scroll: false,
+      },
+    );
   };
 
   const posts = useMemo(() => {
@@ -38,7 +61,9 @@ export default function TinTucPageClient({
         ),
       );
     }
-    return mockPosts.filter((post) => post.category?.slug === selectedCategorySlug);
+    return mockPosts.filter(
+      (post) => post.category?.slug === selectedCategorySlug,
+    );
   }, [selectedCategorySlug]);
 
   const featuredPost = posts[0];
@@ -56,15 +81,13 @@ export default function TinTucPageClient({
 
   return (
     <div className="mx-auto h-auto max-w-7xl px-4 py-12 lg:py-20">
-      <Title
-        title="Tin tức bất động sản mới nhất"
-        description="Tổng hợp tin tức, kiến thức và kinh nghiệm về thị trường bất động sản."
-      />
-
-      <TinTucCategory
-        selectedCategorySlug={selectedCategorySlug}
-        onSelectCategory={handleSelectCategory}
-      />
+      <div className="my-6">
+        <CategoryChips
+          activeValue={selectedCategorySlug}
+          onChange={handleSelectCategory}
+          items={categoryItems}
+        />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
@@ -72,7 +95,9 @@ export default function TinTucPageClient({
 
           <div className="grid gap-6">
             {visibleRemainingPosts.length > 0 ? (
-              visibleRemainingPosts.map((post) => <NewsCard key={post.id} post={post} />)
+              visibleRemainingPosts.map((post) => (
+                <NewsCard key={post.id} post={post} />
+              ))
             ) : posts.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-gray-500">Không có bài viết nào</p>
@@ -86,10 +111,14 @@ export default function TinTucPageClient({
         </div>
 
         <div className="h-fit">
-          <h4 className="mb-4 text-lg font-bold">Bài viết được xem nhiều nhất</h4>
+          <h4 className="mb-4 text-lg font-bold">
+            Bài viết được xem nhiều nhất
+          </h4>
           <div className="grid gap-6">
             {mostViewedPosts.length > 0 ? (
-              mostViewedPosts.map((post) => <NewsCard key={post.id} post={post} />)
+              mostViewedPosts.map((post) => (
+                <NewsCard key={post.id} post={post} />
+              ))
             ) : (
               <p className="text-gray-500">Không có bài viết</p>
             )}

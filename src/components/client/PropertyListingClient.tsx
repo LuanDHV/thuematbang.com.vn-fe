@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Pagination } from "../common/Pagination";
-import Title from "../common/Title";
-import { PropertyCard } from "../common/PropertyCard";
+import { Pagination } from "@/components/common/Pagination";
+import Title from "@/components/common/Title";
+import { PropertyCard } from "@/components/common/PropertyCard";
 import { Property } from "@/types/property";
-import { mockProperties } from "../../mocks/properties";
+import { mockProperties } from "@/mocks/properties";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["gold", "silver", "normal"] as const;
@@ -31,7 +31,7 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
   },
 };
 
-export default function ByFilter({
+export default function PropertyListingClient({
   properties = mockProperties,
   title = "Cho thuê bất động sản",
 }: {
@@ -56,10 +56,7 @@ export default function ByFilter({
   }, [properties]);
 
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(
-    1,
-    Math.ceil(orderedProperties.length / PAGE_SIZE),
-  );
+  const totalPages = Math.max(1, Math.ceil(orderedProperties.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
   const pageItems = orderedProperties.slice(
     (currentPage - 1) * PAGE_SIZE,

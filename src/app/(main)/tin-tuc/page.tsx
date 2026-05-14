@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/lib/metadata";
-import TinTucPageClient from "@/components/client/TinTucPageClient";
+import NewsListingClient from "@/components/client/NewsListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 
 export const metadata: Metadata = createPageMetadata({
@@ -17,7 +17,7 @@ export default function TinTucPage() {
           items={[{ label: "Trang chủ", href: "/" }, { label: "Tin tức" }]}
         />
       </div>
-      <TinTucPageClient />
+      <NewsListingClient />
     </>
   );
 }

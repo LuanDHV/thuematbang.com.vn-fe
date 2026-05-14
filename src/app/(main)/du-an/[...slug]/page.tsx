@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import ProjectByFilter from "@/components/du-an/ByFilter";
+import ProjectListingClient from "@/components/client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { createPageMetadata } from "@/lib/metadata";
 import { parseProjectCategoryFromSlug } from "@/lib/flat-url";
@@ -87,7 +87,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
           ]}
         />
       </div>
-      <ProjectByFilter initialCategorySlug={initialCategorySlug} />
+      <ProjectListingClient initialCategorySlug={initialCategorySlug} />
     </>
   );
 }

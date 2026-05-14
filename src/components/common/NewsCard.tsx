@@ -1,9 +1,10 @@
-"use client";
+﻿"use client";
 
 import { Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Post } from "@/types/post";
+import { formatDate } from "@/lib/utils";
 
 interface NewsCardProps {
   post: Post;
@@ -17,7 +18,6 @@ export default function NewsCard({ post }: NewsCardProps) {
     >
       <div className="relative w-2/5 shrink-0 overflow-hidden bg-gray-50">
         <Image
-          //   src={post.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
           src={"/imgs/wallpaper-1.jpg"}
           alt={post.title}
           fill
@@ -39,11 +39,7 @@ export default function NewsCard({ post }: NewsCardProps) {
         <div className="flex items-center gap-4 text-[10px] font-medium text-gray-400">
           <div className="flex items-center gap-1.5">
             <Calendar size={13} strokeWidth={2.5} className="text-primary/70" />
-            <span>
-              {post.createdAt
-                ? new Date(post.createdAt).toLocaleDateString("vi-VN")
-                : "Gần đây"}
-            </span>
+            <span>{formatDate(post.createdAt)}</span>
           </div>
         </div>
       </div>

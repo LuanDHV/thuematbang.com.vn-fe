@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ProjectByFilter from "@/components/du-an/ByFilter";
+import ProjectListingClient from "@/components/client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -17,7 +17,7 @@ export default function DuAnPage() {
           items={[{ label: "Trang chủ", href: "/" }, { label: "Dự án" }]}
         />
       </div>
-      <ProjectByFilter />
+      <ProjectListingClient />
     </>
   );
 }
