@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createPageMetadata } from "@/lib/metadata";
-import { parsePropertyFilterSlug } from "@/lib/flat-url";
+import {
+  buildPropertyFilterBreadcrumbs,
+  parsePropertyFilterSlug,
+} from "@/lib/flat-url";
 import { mockProperties } from "@/mocks/properties";
 import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
 import ContentSEO from "@/components/cho-thue/ContentSEO";
 import FAQ from "@/components/cho-thue/FAQ";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -47,6 +51,14 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   if (property) {
     return (
       <article className="mx-auto max-w-4xl px-4 py-12 lg:py-20">
+        <DynamicBreadcrumb
+          className="mb-6"
+          items={[
+            { label: "Trang chủ", href: "/" },
+            { label: "Cho thuê", href: "/cho-thue" },
+            { label: property.title },
+          ]}
+        />
         <h1 className="text-3xl font-bold leading-tight">{property.title}</h1>
         <p className="mt-3 text-base text-gray-600">{property.description}</p>
         {property.content ? <div className="mt-6 text-base" dangerouslySetInnerHTML={{ __html: property.content }} /> : null}
@@ -65,6 +77,11 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
   return (
     <>
+      <div className="mx-auto mt-6 max-w-7xl px-4">
+        <DynamicBreadcrumb
+          items={buildPropertyFilterBreadcrumbs("/cho-thue", rawSlug)}
+        />
+      </div>
       <PropertyFilterSection
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}

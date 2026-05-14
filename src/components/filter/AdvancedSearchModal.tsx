@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -128,6 +129,9 @@ export function AdvancedSearchModal({
           <DialogTitle className="text-center text-lg font-bold text-gray-800">
             Bộ lọc nâng cao
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Chọn các tiêu chí để lọc bất động sản theo nhu cầu của bạn.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="bg-white px-4 pt-4">

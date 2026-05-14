@@ -13,6 +13,11 @@ import {
   INITIAL_ADVANCED_FILTER_VALUE,
 } from "@/types/filter";
 
+export type BreadcrumbItem = {
+  label: string;
+  href?: string;
+};
+
 const normalize = (value: string) =>
   value
     .normalize("NFD")
@@ -167,4 +172,74 @@ export function parseProjectCategoryFromSlug(slug?: string) {
   if (!slug) return "du-an";
   const matched = mockCategoryProject.find((item) => item.slug === slug);
   return matched ? matched.slug : "du-an";
+}
+
+function formatVndLabel(value: string) {
+  const amount = Number(value || 0);
+  if (!amount) return "";
+
+  if (amount >= 1_000_000_000) {
+    const ty = amount / 1_000_000_000;
+    return `${Number.isInteger(ty) ? ty : ty.toFixed(1)} tỷ`;
+  }
+
+  const trieu = Math.round(amount / 1_000_000);
+  return `${trieu} triệu`;
+}
+
+function formatAreaLabel(value: string) {
+  const amount = Number(value || 0);
+  if (!amount) return "";
+  return `${amount}m2`;
+}
+
+export function buildPropertyFilterBreadcrumbs(
+  basePath: "/cho-thue" | "/can-thue",
+  rawSlug?: string,
+) {
+  const rootLabel = basePath === "/cho-thue" ? "Cho thuê" : "Cần thuê";
+  const items: BreadcrumbItem[] = [
+    { label: "Trang chủ", href: "/" },
+    { label: rootLabel, href: basePath },
+  ];
+
+  if (!rawSlug) {
+    return items;
+  }
+
+  const parsed = parsePropertyFilterSlug(rawSlug);
+
+  if (parsed.propertyTypes[0]) {
+    items.push({ label: parsed.propertyTypes[0] });
+  }
+
+  if (parsed.negotiable) {
+    items.push({ label: "Giá thỏa thuận" });
+  } else if (parsed.priceMin || parsed.priceMax) {
+    const min = formatVndLabel(parsed.priceMin);
+    const max = formatVndLabel(parsed.priceMax);
+
+    if (min && max) {
+      items.push({ label: `Giá ${min} - ${max}` });
+    } else if (min) {
+      items.push({ label: `Giá từ ${min}` });
+    } else if (max) {
+      items.push({ label: `Giá dưới ${max}` });
+    }
+  }
+
+  if (parsed.areaMin || parsed.areaMax) {
+    const min = formatAreaLabel(parsed.areaMin);
+    const max = formatAreaLabel(parsed.areaMax);
+
+    if (min && max) {
+      items.push({ label: `Diện tích ${min} - ${max}` });
+    } else if (min) {
+      items.push({ label: `Diện tích từ ${min}` });
+    } else if (max) {
+      items.push({ label: `Diện tích dưới ${max}` });
+    }
+  }
+
+  return items;
 }

@@ -3,15 +3,20 @@ import { notFound } from "next/navigation";
 import { createPageMetadata } from "@/lib/metadata";
 import { parseNewsCategoryFromSlug } from "@/lib/flat-url";
 import TinTucPageClient from "@/components/client/TinTucPageClient";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import { mockCategoryNews } from "@/mocks/categories";
 import { mockPosts } from "@/mocks/post";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-const getPostBySlug = (slug: string) => mockPosts.find((post) => post.slug === slug);
+const getPostBySlug = (slug: string) =>
+  mockPosts.find((post) => post.slug === slug);
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const joined = slug.join("/");
   const newsSlug = slug.join("-");
@@ -28,8 +33,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return createPageMetadata({
-    title: "Tin tức",
-    description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
+    title: "Tin t?c",
+    description: "T?ng h?p tin t?c và ki?n th?c b?t d?ng s?n m?i nh?t.",
     pathname: `/tin-tuc/${joined}`,
   });
 }
@@ -42,9 +47,24 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
   if (post) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12 lg:py-20">
+        <DynamicBreadcrumb
+          className="mb-6"
+          items={[
+            { label: "Trang chủ", href: "/" },
+            { label: "Tin tức", href: "/tin-tuc" },
+            { label: post.title },
+          ]}
+        />
         <h1 className="text-3xl leading-tight font-bold">{post.title}</h1>
-        {post.summary ? <p className="mt-4 text-base text-gray-600">{post.summary}</p> : null}
-        {post.content ? <div className="mt-6 text-base" dangerouslySetInnerHTML={{ __html: post.content }} /> : null}
+        {post.summary ? (
+          <p className="mt-4 text-base text-gray-600">{post.summary}</p>
+        ) : null}
+        {post.content ? (
+          <div
+            className="mt-6 text-base"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+        ) : null}
       </div>
     );
   }
@@ -54,6 +74,22 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
   }
 
   const initialCategorySlug = parseNewsCategoryFromSlug(slug[0]);
+  const category = mockCategoryNews.find(
+    (item) => item.slug === initialCategorySlug,
+  );
 
-  return <TinTucPageClient initialCategorySlug={initialCategorySlug} />;
+  return (
+    <>
+      <div className="mx-auto mt-6 max-w-7xl px-4">
+        <DynamicBreadcrumb
+          items={[
+            { label: "Trang chủ", href: "/" },
+            { label: "Tin tức", href: "/tin-tuc" },
+            ...(category ? [{ label: category.name }] : []),
+          ]}
+        />
+      </div>
+      <TinTucPageClient initialCategorySlug={initialCategorySlug} />
+    </>
+  );
 }
