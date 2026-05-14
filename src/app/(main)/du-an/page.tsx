@@ -1,8 +1,8 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import ProjectListingClient from "@/components/client/ProjectListingClient";
-import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import PageFaq from "@/components/common/PageFaq";
+import { buildProjectCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/mocks/pageSeoFaq";
 
@@ -17,12 +17,7 @@ export default function DuAnPage() {
 
   return (
     <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[{ label: "Trang chủ", href: "/" }, { label: "Dự án" }]}
-        />
-      </div>
-      <ProjectListingClient />
+      <ProjectListingClient breadcrumbItems={buildProjectCategoryBreadcrumbs()} />
       <PageSeoContent content={pageContent.seoContent} />
       <PageFaq
         title={pageContent.faqTitle}

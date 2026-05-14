@@ -1,7 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import type { BreadcrumbItem } from "@/lib/flat-url";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
@@ -14,8 +16,10 @@ const LOAD_MORE_STEP = 4;
 
 export default function NewsListingClient({
   initialCategorySlug = "tin-tuc",
+  breadcrumbItems,
 }: {
   initialCategorySlug?: string;
+  breadcrumbItems?: BreadcrumbItem[];
 }) {
   const router = useRouter();
   const [selectedCategorySlug, setSelectedCategorySlug] =
@@ -81,6 +85,10 @@ export default function NewsListingClient({
 
   return (
     <div className="mx-auto h-auto max-w-7xl px-4 py-12 lg:py-20">
+      {breadcrumbItems?.length ? (
+        <DynamicBreadcrumb items={breadcrumbItems} />
+      ) : null}
+
       <div className="my-6">
         <CategoryChips
           activeValue={selectedCategorySlug}
@@ -111,7 +119,9 @@ export default function NewsListingClient({
         </div>
 
         <div className="h-fit">
-          <h4 className="mb-4 text-lg font-bold">Bài viết được xem nhiều nhất</h4>
+          <h4 className="mb-4 text-lg font-bold">
+            Bài viết được xem nhiều nhất
+          </h4>
           <div className="grid gap-6">
             {mostViewedPosts.length > 0 ? (
               mostViewedPosts.map((post) => (

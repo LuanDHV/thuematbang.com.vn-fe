@@ -85,16 +85,12 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
   return (
     <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={buildPropertyFilterBreadcrumbs("/cho-thue", rawSlug)}
-        />
-      </div>
       <PropertyFilterSection
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}
         basePath="/cho-thue"
         initialFilters={initialFilters}
+        breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue", rawSlug)}
         stickyFilter
       />
       <PageSeoContent content={pageContent.seoContent} />

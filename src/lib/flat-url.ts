@@ -90,7 +90,9 @@ function buildAreaToken(areaMin: string, areaMax: string) {
 function buildLocationToken(city: string, ward: string, street: string) {
   const cityPart = city ? `${LOCATION_CITY_PREFIX}${compact(city)}` : "";
   const wardPart = ward ? `${LOCATION_WARD_PREFIX}${compact(ward)}` : "";
-  const streetPart = street ? `${LOCATION_STREET_PREFIX}${compact(street)}` : "";
+  const streetPart = street
+    ? `${LOCATION_STREET_PREFIX}${compact(street)}`
+    : "";
   const parts = [cityPart, wardPart, streetPart].filter(Boolean);
   if (parts.length === 0) return "";
   return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
@@ -152,8 +154,12 @@ const priceTokenMatchers = mockFilterPriceOptions
   .filter((item) => item.token)
   .sort((left, right) => right.token.length - left.token.length);
 
-const citySlugToName = new Map(mockCities.map((city) => [compact(city.name), city.name]));
-const wardSlugToName = new Map(mockWards.map((ward) => [compact(ward.name), ward.name]));
+const citySlugToName = new Map(
+  mockCities.map((city) => [compact(city.name), city.name]),
+);
+const wardSlugToName = new Map(
+  mockWards.map((ward) => [compact(ward.name), ward.name]),
+);
 const streetSlugToName = new Map(
   mockStreets.map((street) => [compact(street.name), street.name]),
 );
@@ -204,7 +210,9 @@ function parseSingleListToken(
 }
 
 function parseLocationToken(pending: string) {
-  const locationTokenPattern = new RegExp(`${LOCATION_TOKEN_PREFIX}[a-z0-9-]+$`);
+  const locationTokenPattern = new RegExp(
+    `${LOCATION_TOKEN_PREFIX}[a-z0-9-]+$`,
+  );
   const locationMatch = pending.match(locationTokenPattern);
   if (!locationMatch?.[0]) {
     return {
@@ -383,6 +391,45 @@ export function parseProjectCategoryFromSlug(slug?: string) {
   return matched ? matched.slug : "du-an";
 }
 
+// Hàm hỗ trợ flat url slug cho dynamic breadcrumb
+export function buildNewsCategoryBreadcrumbs(slug?: string) {
+  const categorySlug = parseNewsCategoryFromSlug(slug);
+  const items: BreadcrumbItem[] = [
+    { label: "Trang chủ", href: "/" },
+    { label: "Tin tức", href: "/tin-tuc" },
+  ];
+
+  if (categorySlug !== "tin-tuc") {
+    const category = mockCategoryNews.find(
+      (item) => item.slug === categorySlug,
+    );
+    if (category) {
+      items.push({ label: category.name });
+    }
+  }
+
+  return items;
+}
+
+export function buildProjectCategoryBreadcrumbs(slug?: string) {
+  const categorySlug = parseProjectCategoryFromSlug(slug);
+  const items: BreadcrumbItem[] = [
+    { label: "Trang chủ", href: "/" },
+    { label: "Dự án", href: "/du-an" },
+  ];
+
+  if (categorySlug !== "du-an") {
+    const category = mockCategoryProject.find(
+      (item) => item.slug === categorySlug,
+    );
+    if (category) {
+      items.push({ label: category.name });
+    }
+  }
+
+  return items;
+}
+
 function formatVndLabel(value: string) {
   const amount = Number(value || 0);
   if (!amount) return "";
@@ -395,7 +442,6 @@ function formatVndLabel(value: string) {
   const trieu = Math.round(amount / 1_000_000);
   return `${trieu} triệu`;
 }
-
 function formatAreaLabel(value: string) {
   const amount = Number(value || 0);
   if (!amount) return "";

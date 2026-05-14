@@ -94,7 +94,7 @@ function OverlayTitle({
 
 function FeaturedCard({ property }: { property: Property }) {
   return (
-    <article className="group min-h-108.75 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative h-52 overflow-hidden">
         <TierBadge label={getTierLabel(property.priorityStatus)} />
         <Image
@@ -282,7 +282,7 @@ function CardBody({ property }: { property: Property }) {
   const location = getLocationText(property) || "Đang cập nhật vị trí";
 
   return (
-    <div className="flex flex-1 flex-col p-4">
+    <div className="flex min-h-55 flex-1 flex-col p-4">
       <p className="text-primary mt-1 text-base font-bold">
         {formatPrice(property.price || 0)}
       </p>

@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProjectListingClient from "@/components/client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import { buildProjectCategoryBreadcrumbs, parseProjectCategoryFromSlug } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { parseProjectCategoryFromSlug } from "@/lib/flat-url";
-import { mockCategoryProject } from "@/mocks/categories";
 import { mockProjects } from "@/mocks/projects";
 
 type PageProps = {
@@ -73,22 +72,11 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
   }
 
   const initialCategorySlug = parseProjectCategoryFromSlug(slug[0]);
-  const category = mockCategoryProject.find(
-    (item) => item.slug === initialCategorySlug,
-  );
 
   return (
-    <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Dự án", href: "/du-an" },
-            ...(category ? [{ label: category.name }] : []),
-          ]}
-        />
-      </div>
-      <ProjectListingClient initialCategorySlug={initialCategorySlug} />
-    </>
+    <ProjectListingClient
+      initialCategorySlug={initialCategorySlug}
+      breadcrumbItems={buildProjectCategoryBreadcrumbs(slug[0])}
+    />
   );
 }

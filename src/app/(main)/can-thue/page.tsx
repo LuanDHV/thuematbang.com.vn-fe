@@ -1,5 +1,5 @@
-﻿import type { Metadata } from "next";
-import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import type { Metadata } from "next";
+import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
 import { mockProperties } from "@/mocks";
@@ -21,18 +21,11 @@ export default function CanThuePage() {
 
   return (
     <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Cần thuê" },
-          ]}
-        />
-      </div>
       <PropertyFilterSection
         title="Cần thuê bất động sản"
         properties={rentalDemandProperties}
         basePath="/can-thue"
+        breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue")}
       />
       <PageSeoContent content={pageContent.seoContent} />
       <PageFaq

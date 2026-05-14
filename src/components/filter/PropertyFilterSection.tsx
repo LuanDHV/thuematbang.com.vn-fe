@@ -8,6 +8,7 @@ import {
   type AdvancedFilterValue,
   INITIAL_ADVANCED_FILTER_VALUE,
 } from "@/types/filter";
+import type { BreadcrumbItem } from "@/lib/flat-url";
 
 type Props = {
   title: string;
@@ -15,6 +16,7 @@ type Props = {
   stickyFilter?: boolean;
   basePath: string;
   initialFilters?: AdvancedFilterValue;
+  breadcrumbItems?: BreadcrumbItem[];
 };
 
 export default function PropertyFilterSection({
@@ -23,6 +25,7 @@ export default function PropertyFilterSection({
   stickyFilter = false,
   basePath,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
+  breadcrumbItems,
 }: Props) {
   const [filteredProperties, setFilteredProperties] =
     useState<Property[]>(properties);
@@ -43,7 +46,11 @@ export default function PropertyFilterSection({
       </div>
 
       <div className="relative">
-        <PropertyListingClient title={title} properties={filteredProperties} />
+        <PropertyListingClient
+          title={title}
+          properties={filteredProperties}
+          breadcrumbItems={breadcrumbItems}
+        />
       </div>
     </div>
   );

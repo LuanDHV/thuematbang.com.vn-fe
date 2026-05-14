@@ -1,5 +1,5 @@
-﻿import type { Metadata } from "next";
-import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import type { Metadata } from "next";
+import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
 import { mockProperties } from "@/mocks";
@@ -21,19 +21,12 @@ export default function ChoThuePage() {
 
   return (
     <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Cho thuê" },
-          ]}
-        />
-      </div>
       <PropertyFilterSection
         stickyFilter
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}
         basePath="/cho-thue"
+        breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue")}
       />
       <PageSeoContent content={pageContent.seoContent} />
       <PageFaq

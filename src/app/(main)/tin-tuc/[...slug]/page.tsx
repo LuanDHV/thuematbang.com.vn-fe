@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createPageMetadata } from "@/lib/metadata";
-import { parseNewsCategoryFromSlug } from "@/lib/flat-url";
-import NewsListingClient from "@/components/client/NewsListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import { mockCategoryNews } from "@/mocks/categories";
+import { buildNewsCategoryBreadcrumbs, parseNewsCategoryFromSlug } from "@/lib/flat-url";
+import { createPageMetadata } from "@/lib/metadata";
+import NewsListingClient from "@/components/client/NewsListingClient";
 import { mockPosts } from "@/mocks/post";
 
 type PageProps = {
@@ -75,22 +74,11 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
   }
 
   const initialCategorySlug = parseNewsCategoryFromSlug(slug[0]);
-  const category = mockCategoryNews.find(
-    (item) => item.slug === initialCategorySlug,
-  );
 
   return (
-    <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Tin tức", href: "/tin-tuc" },
-            ...(category ? [{ label: category.name }] : []),
-          ]}
-        />
-      </div>
-      <NewsListingClient initialCategorySlug={initialCategorySlug} />
-    </>
+    <NewsListingClient
+      initialCategorySlug={initialCategorySlug}
+      breadcrumbItems={buildNewsCategoryBreadcrumbs(slug[0])}
+    />
   );
 }

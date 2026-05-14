@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Pagination } from "@/components/common/Pagination";
-import Title from "@/components/common/Title";
 import { PropertyCard } from "@/components/common/PropertyCard";
-import { Property } from "@/types/property";
+import type { BreadcrumbItem } from "@/lib/flat-url";
 import { mockProperties } from "@/mocks/properties";
+import { Property } from "@/types/property";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["gold", "silver", "normal"] as const;
@@ -33,10 +34,11 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
 
 export default function PropertyListingClient({
   properties = mockProperties,
-  title = "Cho thuê bất động sản",
+  breadcrumbItems,
 }: {
   properties?: Property[];
   title?: string;
+  breadcrumbItems?: BreadcrumbItem[];
 }) {
   const orderedProperties = useMemo(() => {
     return [...properties].sort((left, right) => {
@@ -56,7 +58,10 @@ export default function PropertyListingClient({
   }, [properties]);
 
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(orderedProperties.length / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(orderedProperties.length / PAGE_SIZE),
+  );
   const currentPage = Math.min(page, totalPages);
   const pageItems = orderedProperties.slice(
     (currentPage - 1) * PAGE_SIZE,
@@ -76,7 +81,9 @@ export default function PropertyListingClient({
   return (
     <section className="w-full bg-gray-50/50 py-12 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4">
-        <Title title={title} />
+        {breadcrumbItems?.length ? (
+          <DynamicBreadcrumb items={breadcrumbItems} />
+        ) : null}
 
         <div className="space-y-10">
           {TIER_ORDER.map((tier) => {

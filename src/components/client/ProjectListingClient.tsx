@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { mockProjects } from "@/mocks/projects";
 import { Project } from "@/types/project";
+import type { BreadcrumbItem } from "@/lib/flat-url";
 import Title from "@/components/common/Title";
 import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";
@@ -15,9 +17,11 @@ const PAGE_SIZE = 6;
 export default function ProjectListingClient({
   projects = mockProjects,
   initialCategorySlug = "du-an",
+  breadcrumbItems,
 }: {
   projects?: Project[];
   initialCategorySlug?: string;
+  breadcrumbItems?: BreadcrumbItem[];
 }) {
   const router = useRouter();
   const [selectedCategorySlug, setSelectedCategorySlug] =
@@ -68,10 +72,9 @@ export default function ProjectListingClient({
   return (
     <section className="w-full bg-gray-50/50 py-12 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4">
-        <Title
-          title="Dự án bất động sản"
-          description="Danh sách dự án nổi bật được cập nhật theo khu vực và phân khúc mới nhất."
-        />
+        {breadcrumbItems?.length ? (
+          <DynamicBreadcrumb items={breadcrumbItems} />
+        ) : null}
 
         <div className="my-6">
           <CategoryChips
