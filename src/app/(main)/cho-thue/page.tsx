@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import ContentSEO from "@/components/cho-thue/ContentSEO";
 import FAQ from "@/components/cho-thue/FAQ";
 import { createPageMetadata } from "@/lib/metadata";
-
 import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
 import { mockProperties } from "@/mocks";
 

@@ -19,11 +19,14 @@ export default function ProjectByFilter({
   initialCategorySlug?: string;
 }) {
   const router = useRouter();
-  const [selectedCategorySlug, setSelectedCategorySlug] = useState(initialCategorySlug);
+  const [selectedCategorySlug, setSelectedCategorySlug] =
+    useState(initialCategorySlug);
 
   const filteredProjects = useMemo(() => {
     if (selectedCategorySlug === "du-an") return projects;
-    return projects.filter((project) => project.category?.slug === selectedCategorySlug);
+    return projects.filter(
+      (project) => project.category?.slug === selectedCategorySlug,
+    );
   }, [projects, selectedCategorySlug]);
 
   const orderedProjects = useMemo(() => {
@@ -58,7 +61,7 @@ export default function ProjectByFilter({
               setSelectedCategorySlug("du-an");
               router.replace("/du-an", { scroll: false });
             }}
-            className={`cursor-pointer rounded-xl px-4 py-2 font-medium transition ${
+            className={`cursor-pointer rounded-xl px-4 py-2 text-sm font-medium transition ${
               selectedCategorySlug === "du-an"
                 ? "bg-primary text-white"
                 : "border-primary text-primary hover:bg-primary/10 border bg-white"
@@ -93,7 +96,11 @@ export default function ProjectByFilter({
         </div>
 
         <div className="mt-8">
-          <Pagination page={currentPage} totalPages={totalPages} onChange={setPage} />
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={setPage}
+          />
         </div>
       </div>
     </section>

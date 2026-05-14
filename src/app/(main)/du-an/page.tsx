@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import ProjectByFilter from "@/components/du-an/ByFilter";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -9,5 +9,9 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function DuAnPage() {
-  return <ProjectByFilter />;
+  return (
+    <>
+      <ProjectByFilter />
+    </>
+  );
 }

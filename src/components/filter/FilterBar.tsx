@@ -226,7 +226,7 @@ export default function FilterBar({
           </Button>
         </div>
 
-        <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex w-full items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
+        <div className="flex w-full items-center gap-2 lg:w-auto">
           <div className="shrink-0">
             <AdvancedSearchModal
               filterCount={
@@ -256,6 +256,7 @@ export default function FilterBar({
 
           <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" />
 
+          <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:flex-none lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
           <MiniFilterPopover
             title="Loại bất động sản"
             label={displayTypeLabel}
@@ -340,6 +341,7 @@ export default function FilterBar({
             <Search className="mr-2 h-4 w-4" />
             <span>Tìm kiếm</span>
           </Button>
+          </div>
         </div>
       </form>
     </div>

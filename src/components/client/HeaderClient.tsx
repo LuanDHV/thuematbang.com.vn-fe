@@ -56,7 +56,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
 
           {/* Right Actions */}
           <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3 lg:flex-none lg:justify-start">
-            <Link href="#" className="hidden lg:inline">
+            <Link href="/dang-nhap" className="hidden lg:inline">
               <Button
                 size={"lg"}
                 className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
@@ -103,7 +103,7 @@ export function HeaderClient({ categories }: HeaderClientProps) {
                     )}
                     <div className="border-t border-gray-200/80 pt-3" />
                     <div className="space-y-2">
-                      <Link href="#" className="block">
+                      <Link href="/dang-nhap" className="block">
                         <Button
                           size={"lg"}
                           className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"

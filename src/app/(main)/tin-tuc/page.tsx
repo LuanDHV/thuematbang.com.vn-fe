@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { createPageMetadata } from "@/lib/metadata";
 import TinTucPageClient from "@/components/client/TinTucPageClient";
 
@@ -9,5 +9,9 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function TinTucPage() {
-  return <TinTucPageClient />;
+  return (
+    <>
+      <TinTucPageClient />
+    </>
+  );
 }
