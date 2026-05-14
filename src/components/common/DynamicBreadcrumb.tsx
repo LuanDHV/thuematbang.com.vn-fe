@@ -33,7 +33,7 @@ export default function DynamicBreadcrumb({ items, className }: Props) {
                   ) : (
                     <BreadcrumbLink
                       asChild
-                      className="text-primary hover:text-primary/80"
+                      className="text-primary hover:text-primary/80 font-semibold"
                     >
                       <Link href={item.href}>{item.label}</Link>
                     </BreadcrumbLink>

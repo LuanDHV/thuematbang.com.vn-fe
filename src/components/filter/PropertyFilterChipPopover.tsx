@@ -67,7 +67,7 @@ export function PropertyFilterChipPopover({
         className="w-[min(92vw,320px)] overflow-hidden rounded-2xl border-gray-100 p-0 shadow-xl"
       >
         <div className="border-b border-gray-100 bg-gray-50/50 p-4">
-          <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+          <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
         </div>
 
         <div className={bodyClass}>{children}</div>

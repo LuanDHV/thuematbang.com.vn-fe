@@ -130,14 +130,14 @@ export function PropertyFilterDrawer({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className={`h-10 min-w-34 cursor-pointer rounded-xl border px-4 text-xs font-semibold shadow-sm transition-all hover:-translate-y-px hover:shadow ${
+          className={`h-10 w-10 cursor-pointer rounded-xl border px-4 text-xs font-semibold shadow-sm transition-all hover:-translate-y-px hover:shadow ${
             activeCount > 0
               ? "border-primary text-primary bg-primary/5 hover:bg-primary/10"
               : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
           }`}
         >
-          <Filter className="mr-2 h-4 w-4" />
-          Bộ lọc nâng cao
+          <Filter size={12} />
+
           {displayedCount > 0 ? (
             <span className="bg-primary ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white">
               {displayedCount}

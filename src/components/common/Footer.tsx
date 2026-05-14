@@ -18,7 +18,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="to-primary/10 mt-auto w-full border-t border-gray-100 bg-white bg-linear-to-b from-white font-sans text-gray-800">
+    <footer className="to-primary/10 mt-auto w-full border-t border-gray-100 bg-white bg-linear-to-b from-white font-sans text-gray-700">
       {/* SECTION 1: TOP INFO BAR */}
       <div className="w-full border-b border-gray-100">
         <div className="mx-auto max-w-7xl px-4 py-8">
@@ -99,7 +99,7 @@ export default function Footer() {
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
               {/* Menu 1 */}
               <div>
-                <h3 className="after:bg-primary relative mb-3 pb-2 text-base font-bold tracking-tight text-gray-900 uppercase after:absolute after:bottom-0 after:left-0 after:h-0.75 after:w-8 after:rounded-full after:content-['']">
+                <h3 className="after:bg-primary relative mb-3 pb-2 text-base font-bold tracking-tight text-gray-700 uppercase after:absolute after:bottom-0 after:left-0 after:h-0.75 after:w-8 after:rounded-full after:content-['']">
                   Về chúng tôi
                 </h3>
                 <ul className="space-y-3 text-sm text-gray-600">
@@ -118,7 +118,7 @@ export default function Footer() {
 
               {/* Menu 2 */}
               <div>
-                <h3 className="after:bg-primary relative mb-3 pb-2 text-base font-bold tracking-tight text-gray-900 uppercase after:absolute after:bottom-0 after:left-0 after:h-0.75 after:w-8 after:rounded-full after:content-['']">
+                <h3 className="after:bg-primary relative mb-3 pb-2 text-base font-bold tracking-tight text-gray-700 uppercase after:absolute after:bottom-0 after:left-0 after:h-0.75 after:w-8 after:rounded-full after:content-['']">
                   Quy định
                 </h3>
                 <ul className="space-y-3.5 text-sm text-gray-600">

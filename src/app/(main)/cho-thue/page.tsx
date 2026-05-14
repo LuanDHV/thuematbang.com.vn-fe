@@ -22,7 +22,6 @@ export default function ChoThuePage() {
   return (
     <>
       <PropertyFilterSection
-        stickyFilter
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}
         basePath="/cho-thue"

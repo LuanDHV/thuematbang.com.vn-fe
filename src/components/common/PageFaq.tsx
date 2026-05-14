@@ -21,7 +21,7 @@ export default function PageFaq({ title, description, items }: PageFaqProps) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 lg:py-20">
       <div className="mb-10 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-700 sm:text-4xl">
           {title}
         </h2>
         <p className="mt-4 text-lg text-gray-600">{description}</p>
@@ -50,4 +50,3 @@ export default function PageFaq({ title, description, items }: PageFaqProps) {
     </section>
   );
 }
-

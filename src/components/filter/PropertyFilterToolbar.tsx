@@ -214,7 +214,7 @@ export default function PropertyFilterToolbar({
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="Bạn muốn thuê ở đâu?"
-              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:ring-0"
+              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400 focus:ring-0"
             />
           </div>
 
@@ -347,4 +347,3 @@ export default function PropertyFilterToolbar({
     </div>
   );
 }
-

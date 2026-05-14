@@ -411,7 +411,7 @@ export function AdvancedMainTab({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">
+        <label className="text-sm font-semibold text-gray-700">
           Loại bất động sản
         </label>
         <button
@@ -428,7 +428,7 @@ export function AdvancedMainTab({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">Khu vực</label>
+        <label className="text-sm font-semibold text-gray-700">Khu vực</label>
         <button
           type="button"
           onClick={() => setDetailTab("location")}
@@ -443,7 +443,7 @@ export function AdvancedMainTab({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">
+        <label className="text-sm font-semibold text-gray-700">
           Khoảng giá
         </label>
         <button
@@ -460,7 +460,7 @@ export function AdvancedMainTab({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">Diện tích</label>
+        <label className="text-sm font-semibold text-gray-700">Diện tích</label>
         <button
           type="button"
           onClick={() => setDetailTab("area")}
@@ -475,7 +475,7 @@ export function AdvancedMainTab({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">
+        <label className="text-sm font-semibold text-gray-700">
           Số phòng ngủ
         </label>
         <div className="flex flex-wrap gap-2">
@@ -493,7 +493,7 @@ export function AdvancedMainTab({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-800">
+        <label className="text-sm font-semibold text-gray-700">
           Số phòng tắm, vệ sinh
         </label>
         <div className="flex flex-wrap gap-2">
@@ -511,7 +511,7 @@ export function AdvancedMainTab({
       </div>
 
       <div className="space-y-4">
-        <label className="text-sm font-semibold text-gray-800">Hướng nhà</label>
+        <label className="text-sm font-semibold text-gray-700">Hướng nhà</label>
         <div className="flex justify-center py-2">
           <svg
             viewBox="-5 -5 210 210"

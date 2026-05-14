@@ -13,7 +13,6 @@ import type { BreadcrumbItem } from "@/lib/flat-url";
 type Props = {
   title: string;
   properties: Property[];
-  stickyFilter?: boolean;
   basePath: string;
   initialFilters?: AdvancedFilterValue;
   breadcrumbItems?: BreadcrumbItem[];
@@ -22,7 +21,6 @@ type Props = {
 export default function PropertyFilterSection({
   title,
   properties,
-  stickyFilter = false,
   basePath,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
   breadcrumbItems,
@@ -30,13 +28,9 @@ export default function PropertyFilterSection({
   const [filteredProperties, setFilteredProperties] =
     useState<Property[]>(properties);
 
-  const wrapperClass = stickyFilter
-    ? "sticky top-16 z-40 mx-auto max-w-7xl"
-    : "mx-auto max-w-7xl";
-
   return (
     <div className="relative">
-      <div className={wrapperClass}>
+      <div className="sticky top-16 z-40 mx-auto max-w-7xl">
         <PropertyFilterToolbar
           basePath={basePath}
           initialFilters={initialFilters}
@@ -44,15 +38,11 @@ export default function PropertyFilterSection({
           onFilteredChange={setFilteredProperties}
         />
       </div>
-
-      <div className="relative">
-        <PropertyListingClient
-          title={title}
-          properties={filteredProperties}
-          breadcrumbItems={breadcrumbItems}
-        />
-      </div>
+      <PropertyListingClient
+        title={title}
+        properties={filteredProperties}
+        breadcrumbItems={breadcrumbItems}
+      />
     </div>
   );
 }
-

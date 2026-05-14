@@ -28,7 +28,7 @@ export default function NewsCard({ post }: NewsCardProps) {
 
       <div className="flex w-3/5 grow flex-col justify-between p-3 md:p-4">
         <div>
-          <h3 className="group-hover:text-primary line-clamp-2 text-sm leading-snug font-extrabold text-gray-800 transition-colors md:text-base">
+          <h3 className="group-hover:text-primary line-clamp-2 text-sm leading-snug font-extrabold text-gray-700 transition-colors md:text-base">
             {post.title}
           </h3>
           <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-gray-400">

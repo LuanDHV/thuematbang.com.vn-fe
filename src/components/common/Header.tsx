@@ -1,4 +1,5 @@
-﻿import { Menu, SquarePlus, User } from "lucide-react";
+﻿"use client";
+import { Menu, SquarePlus, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ export default function Header() {
               <Link
                 key={parent.id}
                 href={`/${parent.slug}`}
-                className="hover:text-primary after:bg-primary relative rounded-md px-3 py-2 text-sm font-semibold tracking-wider text-gray-800 uppercase transition-colors after:absolute after:right-3 after:bottom-1 after:left-3 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
+                className="hover:text-primary after:bg-primary relative rounded-md px-3 py-2 text-sm font-semibold tracking-wider text-gray-700 uppercase transition-colors after:absolute after:right-3 after:bottom-1 after:left-3 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
               >
                 {parent.name}
               </Link>
@@ -76,7 +77,11 @@ export default function Header() {
                     <Menu className="h-6 w-6" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-64 bg-white" srTitle="Menu điều hướng">
+                <SheetContent
+                  side="right"
+                  className="w-64 bg-white"
+                  srTitle="Menu điều hướng"
+                >
                   <div className="mt-6 space-y-5 px-5">
                     <div className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
                       Danh mục
@@ -86,7 +91,7 @@ export default function Header() {
                         <Link
                           key={parent.id}
                           href={`/${parent.slug}`}
-                          className="hover:text-primary block rounded-md px-2 py-1 text-sm font-semibold tracking-wide text-gray-800 uppercase transition-colors"
+                          className="hover:text-primary block rounded-md px-2 py-1 text-sm font-semibold tracking-wide text-gray-700 uppercase transition-colors"
                         >
                           {parent.name}
                         </Link>

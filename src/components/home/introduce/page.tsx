@@ -46,7 +46,7 @@ export default function IntroduceSection() {
                 {feature.icon}
               </div>
 
-              <h3 className="mb-4 text-xl font-bold tracking-tight text-gray-900">
+              <h3 className="mb-4 text-xl font-bold tracking-tight text-gray-700">
                 {feature.title}
               </h3>
 

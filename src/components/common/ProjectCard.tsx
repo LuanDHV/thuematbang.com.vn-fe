@@ -70,7 +70,7 @@ export function ProjectCard({ project }: { project: Project }) {
             <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
               Quy mô
             </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
+            <p className="mt-1 text-sm font-semibold text-gray-700">
               {project.area
                 ? `${project.area.toLocaleString("vi-VN")} m²`
                 : "Đang cập nhật"}

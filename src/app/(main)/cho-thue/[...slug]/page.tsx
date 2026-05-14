@@ -22,7 +22,9 @@ function getPropertyDetail(slug: string) {
   );
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const rawSlug = slug.join("-");
   const property = getPropertyDetail(rawSlug);
@@ -60,7 +62,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
             { label: property.title },
           ]}
         />
-        <h1 className="text-3xl font-bold leading-tight">{property.title}</h1>
+        <h1 className="text-3xl leading-tight font-bold">{property.title}</h1>
         <p className="mt-3 text-base text-gray-600">{property.description}</p>
         {property.content ? (
           <div
@@ -91,7 +93,6 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         basePath="/cho-thue"
         initialFilters={initialFilters}
         breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue", rawSlug)}
-        stickyFilter
       />
       <PageSeoContent content={pageContent.seoContent} />
       <PageFaq

@@ -79,39 +79,37 @@ export default function PropertyListingClient({
   );
 
   return (
-    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
-      <div className="mx-auto w-full max-w-7xl px-4">
-        {breadcrumbItems?.length ? (
-          <DynamicBreadcrumb items={breadcrumbItems} />
-        ) : null}
+    <section className="mx-auto w-full max-w-7xl px-4">
+      {breadcrumbItems?.length ? (
+        <DynamicBreadcrumb items={breadcrumbItems} />
+      ) : null}
 
-        <div className="space-y-10">
-          {TIER_ORDER.map((tier) => {
-            const tierItems = groupedPageItems[tier];
+      <div className="space-y-10">
+        {TIER_ORDER.map((tier) => {
+          const tierItems = groupedPageItems[tier];
 
-            if (tierItems.length === 0) return null;
+          if (tierItems.length === 0) return null;
 
-            return (
-              <section key={tier} className="space-y-4">
-                <div className={TIER_CONFIG[tier].gridClass}>
-                  {tierItems.map((property) => (
-                    <PropertyCard
-                      key={property.id}
-                      property={property}
-                      variant="tier"
-                    />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
+          return (
+            <section key={tier} className="space-y-4">
+              <div className={TIER_CONFIG[tier].gridClass}>
+                {tierItems.map((property) => (
+                  <PropertyCard
+                    key={property.id}
+                    property={property}
+                    variant="tier"
+                  />
+                ))}
+              </div>
+            </section>
+          );
+        })}
 
-          <Pagination
-            page={currentPage}
-            totalPages={totalPages}
-            onChange={setPage}
-          />
-        </div>
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          onChange={setPage}
+        />
       </div>
     </section>
   );
