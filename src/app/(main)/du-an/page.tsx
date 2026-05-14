@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import ProjectListingClient from "@/components/client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import PageFaq from "@/components/common/PageFaq";
 import { createPageMetadata } from "@/lib/metadata";
+import { pageSeoFaq } from "@/mocks/pageSeoFaq";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Dự án",
@@ -10,6 +13,8 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function DuAnPage() {
+  const pageContent = pageSeoFaq["du-an"];
+
   return (
     <>
       <div className="mx-auto mt-6 max-w-7xl px-4">
@@ -18,6 +23,12 @@ export default function DuAnPage() {
         />
       </div>
       <ProjectListingClient />
+      <PageSeoContent content={pageContent.seoContent} />
+      <PageFaq
+        title={pageContent.faqTitle}
+        description={pageContent.faqDescription}
+        items={pageContent.faqs}
+      />
     </>
   );
 }

@@ -60,6 +60,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         {project.content ? (
           <div
             className="mt-6 text-base"
+            suppressHydrationWarning
             dangerouslySetInnerHTML={{ __html: project.content }}
           />
         ) : null}

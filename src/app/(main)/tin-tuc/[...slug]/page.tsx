@@ -62,6 +62,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         {post.content ? (
           <div
             className="mt-6 text-base"
+            suppressHydrationWarning
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         ) : null}

@@ -1,10 +1,11 @@
 ﻿import type { Metadata } from "next";
-import ContentSEO from "@/components/cho-thue/ContentSEO";
-import FAQ from "@/components/cho-thue/FAQ";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { createPageMetadata } from "@/lib/metadata";
 import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
 import { mockProperties } from "@/mocks";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import PageFaq from "@/components/common/PageFaq";
+import { pageSeoFaq } from "@/mocks/pageSeoFaq";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Cho thuê mặt bằng",
@@ -13,6 +14,7 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function ChoThuePage() {
+  const pageContent = pageSeoFaq["cho-thue"];
   const rentalOutProperties = mockProperties.filter(
     (property) => property.listingType === "RENT_OUT",
   );
@@ -33,8 +35,12 @@ export default function ChoThuePage() {
         properties={rentalOutProperties}
         basePath="/cho-thue"
       />
-      <ContentSEO />
-      <FAQ />
+      <PageSeoContent content={pageContent.seoContent} />
+      <PageFaq
+        title={pageContent.faqTitle}
+        description={pageContent.faqDescription}
+        items={pageContent.faqs}
+      />
     </>
   );
 }

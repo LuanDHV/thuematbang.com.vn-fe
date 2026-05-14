@@ -48,24 +48,26 @@ export default function Header() {
           </div>
 
           <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3 lg:flex-none lg:justify-start">
-            <Link href="/dang-nhap" className="hidden lg:inline">
-              <Button
-                size="lg"
-                className="border-primary text-primary hover:border-primary hover:bg-primary/10 cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
-              >
+            <Button
+              asChild
+              size="lg"
+              className="border-primary text-primary hover:border-primary hover:bg-primary/10 hidden cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px lg:inline-flex"
+            >
+              <Link href="/dang-nhap">
                 <User className="h-5 w-5 object-cover" />
                 Đăng nhập
-              </Button>
-            </Link>
-            <Link href="#" className="hidden lg:inline">
-              <Button
-                size="lg"
-                className="bg-primary cursor-pointer rounded-xl px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
-              >
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="bg-primary hidden cursor-pointer rounded-xl px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110 lg:inline-flex"
+            >
+              <Link href="#">
                 <SquarePlus className="h-5 w-5 object-cover" />
                 Đăng tin
-              </Button>
-            </Link>
+              </Link>
+            </Button>
 
             <div className="absolute right-0 lg:static lg:hidden">
               <Sheet>
@@ -92,24 +94,26 @@ export default function Header() {
                     </div>
                     <div className="border-t border-gray-200/80 pt-3" />
                     <div className="space-y-2">
-                      <Link href="/dang-nhap" className="block">
-                        <Button
-                          size="lg"
-                          className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
-                        >
+                      <Button
+                        asChild
+                        size="lg"
+                        className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
+                      >
+                        <Link href="/dang-nhap">
                           Đăng nhập
                           <User className="h-5 w-5 object-cover" />
-                        </Button>
-                      </Link>
-                      <Link href="#" className="block">
-                        <Button
-                          size="lg"
-                          className="bg-primary w-full cursor-pointer rounded-xl px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
-                        >
+                        </Link>
+                      </Button>
+                      <Button
+                        asChild
+                        size="lg"
+                        className="bg-primary w-full cursor-pointer rounded-xl px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
+                      >
+                        <Link href="#">
                           Đăng tin
                           <SquarePlus className="h-5 w-5 object-cover" />
-                        </Button>
-                      </Link>
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </SheetContent>

@@ -7,9 +7,10 @@ import {
 } from "@/lib/flat-url";
 import { mockProperties } from "@/mocks/properties";
 import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
-import ContentSEO from "@/components/cho-thue/ContentSEO";
-import FAQ from "@/components/cho-thue/FAQ";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import PageFaq from "@/components/common/PageFaq";
+import { pageSeoFaq } from "@/mocks/pageSeoFaq";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -61,12 +62,19 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         />
         <h1 className="text-3xl font-bold leading-tight">{property.title}</h1>
         <p className="mt-3 text-base text-gray-600">{property.description}</p>
-        {property.content ? <div className="mt-6 text-base" dangerouslySetInnerHTML={{ __html: property.content }} /> : null}
+        {property.content ? (
+          <div
+            className="mt-6 text-base"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: property.content }}
+          />
+        ) : null}
       </article>
     );
   }
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
+  const pageContent = pageSeoFaq["cho-thue"];
   const rentalOutProperties = mockProperties.filter(
     (item) => item.listingType === "RENT_OUT",
   );
@@ -89,8 +97,12 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         initialFilters={initialFilters}
         stickyFilter
       />
-      <ContentSEO />
-      <FAQ />
+      <PageSeoContent content={pageContent.seoContent} />
+      <PageFaq
+        title={pageContent.faqTitle}
+        description={pageContent.faqDescription}
+        items={pageContent.faqs}
+      />
     </>
   );
 }
