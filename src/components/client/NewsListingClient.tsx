@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -111,9 +111,7 @@ export default function NewsListingClient({
         </div>
 
         <div className="h-fit">
-          <h4 className="mb-4 text-lg font-bold">
-            Bài viết được xem nhiều nhất
-          </h4>
+          <h4 className="mb-4 text-lg font-bold">Bài viết được xem nhiều nhất</h4>
           <div className="grid gap-6">
             {mostViewedPosts.length > 0 ? (
               mostViewedPosts.map((post) => (

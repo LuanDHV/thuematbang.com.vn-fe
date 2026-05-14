@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Property } from "@/types/property";
-import FilterBar from "./FilterBar";
+import PropertyFilterToolbar from "./PropertyFilterToolbar";
 import PropertyListingClient from "@/components/client/PropertyListingClient";
 import {
   type AdvancedFilterValue,
@@ -34,7 +34,7 @@ export default function PropertyFilterSection({
   return (
     <div className="relative">
       <div className={wrapperClass}>
-        <FilterBar
+        <PropertyFilterToolbar
           basePath={basePath}
           initialFilters={initialFilters}
           sourceProperties={properties}
@@ -48,3 +48,4 @@ export default function PropertyFilterSection({
     </div>
   );
 }
+

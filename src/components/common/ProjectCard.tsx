@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 function formatProjectPrice(value?: number | null) {
-  if (!value) return "LiÃªn há»‡";
+  if (!value) return "Liên hệ";
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
@@ -13,15 +13,17 @@ function formatProjectPrice(value?: number | null) {
 }
 
 function formatDate(value?: Date | string | null) {
-  if (!value) return "Vá»«a cáº­p nháº­t";
-  return new Intl.DateTimeFormat("vi-VN", { timeZone: "UTC" }).format(new Date(value));
+  if (!value) return "Vừa cập nhật";
+  return new Intl.DateTimeFormat("vi-VN", { timeZone: "UTC" }).format(
+    new Date(value),
+  );
 }
 
 export function ProjectCard({ project }: { project: Project }) {
   const location =
     [project.ward?.name, project.district?.name, project.city?.name]
       .filter(Boolean)
-      .join(", ") || "Äang cáº­p nháº­t vá»‹ trÃ­";
+      .join(", ") || "Đang cập nhật vị trí";
 
   return (
     <Link
@@ -46,7 +48,7 @@ export function ProjectCard({ project }: { project: Project }) {
 
         <div className="absolute right-4 bottom-4 left-4">
           <p className="text-[11px] font-medium text-white/80 uppercase">
-            Dá»± Ã¡n ná»•i báº­t
+            Dự án nổi bật
           </p>
           <h3 className="line-clamp-2 text-xl leading-tight font-bold text-white">
             {project.name}
@@ -58,7 +60,7 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-gray-100 bg-gray-50 p-3">
             <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
-              Tá»•ng má»©c
+              Tổng mức
             </p>
             <p className="text-primary mt-1 text-sm font-bold">
               {formatProjectPrice(project.price)}
@@ -66,12 +68,12 @@ export function ProjectCard({ project }: { project: Project }) {
           </div>
           <div className="rounded-xl border border-gray-100 bg-gray-50 p-3">
             <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
-              Quy mÃ´
+              Quy mô
             </p>
             <p className="mt-1 text-sm font-semibold text-gray-800">
               {project.area
-                ? `${project.area.toLocaleString("vi-VN")} mÂ²`
-                : "Äang cáº­p nháº­t"}
+                ? `${project.area.toLocaleString("vi-VN")} m²`
+                : "Đang cập nhật"}
             </p>
           </div>
         </div>
@@ -83,7 +85,7 @@ export function ProjectCard({ project }: { project: Project }) {
           </p>
           <p className="flex items-center gap-2">
             <Building2 size={15} className="shrink-0 text-gray-400" />
-            <span>{project.developer || "Äang cáº­p nháº­t chá»§ Ä‘áº§u tÆ°"}</span>
+            <span>{project.developer || "Đang cập nhật chủ đầu tư"}</span>
           </p>
         </div>
 
@@ -99,7 +101,7 @@ export function ProjectCard({ project }: { project: Project }) {
         </div>
 
         <p className="text-primary text-sm font-semibold group-hover:underline">
-          Xem chi tiáº¿t dá»± Ã¡n
+          Xem chi tiết dự án
         </p>
       </div>
 
@@ -107,4 +109,3 @@ export function ProjectCard({ project }: { project: Project }) {
     </Link>
   );
 }
-

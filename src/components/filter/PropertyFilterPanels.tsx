@@ -1,6 +1,5 @@
-"use client";
+﻿"use client";
 
-import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
   Select,
@@ -10,12 +9,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Building2,
   ChevronRight,
   CircleDollarSign,
   MapPin,
   Maximize,
-  Plus,
-  X,
 } from "lucide-react";
 import {
   BED_BATH_OPTIONS,
@@ -391,7 +389,6 @@ export function AdvancedMainTab({
   areaSummary,
   setDetailTab,
   toggleFromList,
-  updateCurrent,
 }: {
   current: AdvancedFilterValue;
   priceSummary: string;
@@ -401,7 +398,6 @@ export function AdvancedMainTab({
     key: "propertyTypes" | "bedrooms" | "bathrooms" | "directions",
     item: string,
   ) => void;
-  updateCurrent: UpdateCurrent;
 }) {
   const quickCellClass =
     "hover:border-primary mt-2 hover:text-primary cursor-pointer rounded-xl border border-gray-200 px-4 py-1 text-sm font-medium text-gray-600 transition-colors";
@@ -409,6 +405,8 @@ export function AdvancedMainTab({
   const locationSummary = [current.city, current.ward]
     .filter(Boolean)
     .join(", ");
+  const propertyTypeSummary =
+    current.propertyTypes[0] || "Tất cả loại bất động sản";
 
   return (
     <div className="space-y-6">
@@ -416,38 +414,17 @@ export function AdvancedMainTab({
         <label className="text-sm font-semibold text-gray-800">
           Loại bất động sản
         </label>
-        <div className="flex flex-wrap items-center gap-2">
-          {current.propertyTypes[0] ? (
-            <div className="text-primary flex h-10 items-center gap-1 rounded-full border border-orange-200 px-4 text-sm">
-              <span>{current.propertyTypes[0]}</span>
-              <button
-                type="button"
-                onClick={() =>
-                  updateCurrent((prev) => ({
-                    ...prev,
-                    propertyTypes: [],
-                  }))
-                }
-                className="text-primary/80 hover:text-primary cursor-pointer"
-                aria-label={`Bỏ chọn ${current.propertyTypes[0]}`}
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ) : (
-            <span className="text-sm text-gray-500">
-              Tất cả loại bất động sản
-            </span>
-          )}
-          <Button
-            variant="ghost"
-            onClick={() => setDetailTab("propertyType")}
-            className="text-primary hover:bg-primary/10 h-10 cursor-pointer rounded-full px-4"
-          >
-            Thêm
-            <Plus className="ml-1 h-4 w-4" />
-          </Button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setDetailTab("propertyType")}
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+        >
+          <div className="flex items-center gap-2 text-gray-600">
+            <Building2 className="h-4 w-4" />
+            <span className="text-sm">{propertyTypeSummary}</span>
+          </div>
+          <ChevronRight className="h-4 w-4 text-gray-400" />
+        </button>
       </div>
 
       <div className="space-y-2">
