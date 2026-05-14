@@ -1,5 +1,5 @@
 import { Project } from "@/types/project";
-import { Calendar, Eye, MapPin, Maximize } from "lucide-react";
+import { Building2, Calendar, Eye, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,12 +18,17 @@ function formatDate(value?: Date | string | null) {
 }
 
 export function ProjectCard({ project }: { project: Project }) {
+  const location =
+    [project.ward?.name, project.district?.name, project.city?.name]
+      .filter(Boolean)
+      .join(", ") || "Đang cập nhật vị trí";
+
   return (
     <Link
       href={`/du-an/${project.slug}`}
-      className="group border-primary/20 hover:border-primary/40 block cursor-pointer overflow-hidden rounded-xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+      className="group block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
-      <div className="relative h-52 overflow-hidden">
+      <div className="relative h-64 overflow-hidden">
         <Image
           src={project.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
           alt={project.name}
@@ -31,47 +36,74 @@ export function ProjectCard({ project }: { project: Project }) {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-      </div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
-      <div className="space-y-3 p-4">
         {project.category?.name ? (
-          <span className="bg-primary/10 text-primary rounded-md px-2 py-1 text-[11px] font-semibold tracking-wide uppercase">
+          <span className="bg-primary absolute top-4 left-4 rounded-full px-3 py-1 text-[11px] font-bold tracking-wider text-white uppercase">
             {project.category.name}
           </span>
         ) : null}
 
-        <h3 className="group-hover:text-primary line-clamp-2 text-lg leading-snug font-bold text-gray-800 transition-colors">
-          {project.name}
-        </h3>
-
-        <p className="text-primary text-base font-semibold">
-          {formatProjectPrice(project.price)}
-        </p>
-
-        <div className="space-y-1 text-sm text-gray-500">
-          <p className="line-clamp-1 flex items-center gap-1">
-            <MapPin size={13} />
-            {[project.ward?.name, project.district?.name, project.city?.name]
-              .filter(Boolean)
-              .join(", ") || "Đang cập nhật vị trí"}
+        <div className="absolute right-4 bottom-4 left-4">
+          <p className="text-[11px] font-medium text-white/80 uppercase">
+            Dự án nổi bật
           </p>
-          <p className="flex items-center gap-1">
-            <Maximize size={13} />
-            {project.area ? `${project.area.toLocaleString("vi-VN")} m²` : "Đang cập nhật diện tích"}
+          <h3 className="line-clamp-2 text-xl leading-tight font-bold text-white">
+            {project.name}
+          </h3>
+        </div>
+      </div>
+
+      <div className="space-y-4 p-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+            <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+              Tổng mức
+            </p>
+            <p className="text-primary mt-1 text-sm font-bold">
+              {formatProjectPrice(project.price)}
+            </p>
+          </div>
+          <div className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+            <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+              Quy mô
+            </p>
+            <p className="mt-1 text-sm font-semibold text-gray-800">
+              {project.area
+                ? `${project.area.toLocaleString("vi-VN")} m²`
+                : "Đang cập nhật"}
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-2 text-sm text-gray-600">
+          <p className="flex items-start gap-2">
+            <MapPin size={15} className="mt-0.5 shrink-0 text-gray-400" />
+            <span className="line-clamp-2">{location}</span>
+          </p>
+          <p className="flex items-center gap-2">
+            <Building2 size={15} className="shrink-0 text-gray-400" />
+            <span>{project.developer || "Đang cập nhật chủ đầu tư"}</span>
           </p>
         </div>
 
-        <div className="flex items-center justify-between border-t border-gray-100 pt-2 text-xs text-gray-400">
-          <span className="flex items-center gap-1">
+        <div className="flex items-center justify-between border-t border-dashed border-gray-200 pt-3 text-xs text-gray-500">
+          <span className="inline-flex items-center gap-1.5">
             <Calendar size={12} />
             {formatDate(project.createdAt)}
           </span>
-          <span className="flex items-center gap-1">
+          <span className="inline-flex items-center gap-1.5">
             <Eye size={12} />
             {(project.viewCount || 0).toLocaleString("vi-VN")}
           </span>
         </div>
+
+        <p className="text-primary text-sm font-semibold group-hover:underline">
+          Xem chi tiết dự án
+        </p>
       </div>
+
+      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
     </Link>
   );
 }

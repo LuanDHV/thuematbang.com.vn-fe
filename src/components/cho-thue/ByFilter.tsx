@@ -89,15 +89,6 @@ export default function ByFilter({
 
             return (
               <section key={tier} className="space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase">
-                      {TIER_CONFIG[tier].title} - ({tierItems.length} tin)
-                    </p>
-                  </div>
-                  <div className="from-primary/0 h-px flex-1 bg-linear-to-r to-transparent" />
-                </div>
-
                 <div className={TIER_CONFIG[tier].gridClass}>
                   {tierItems.map((property) => (
                     <PropertyCard
