@@ -90,9 +90,7 @@ export function AdvancedSearchModal({
   ) => {
     updateCurrent((prev) => ({
       ...prev,
-      [key]: prev[key].includes(item)
-        ? prev[key].filter((valueItem) => valueItem !== item)
-        : [...prev[key], item],
+      [key]: prev[key].includes(item) ? [] : [item],
     }));
   };
 
