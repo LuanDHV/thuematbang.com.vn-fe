@@ -13,8 +13,16 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Filter } from "lucide-react";
 import { mockFilterAreaOptions, mockFilterPriceOptions } from "@/mocks/filter";
-import { INITIAL_ADVANCED_FILTER_VALUE, type AdvancedFilterValue } from "@/types/filter";
-import { resolveAreaSummary, resolvePriceSummary, toAreaRange, toPriceRange } from "@/helpers/filterHelpers";
+import {
+  INITIAL_ADVANCED_FILTER_VALUE,
+  type AdvancedFilterValue,
+} from "@/types/filter";
+import {
+  resolveAreaSummary,
+  resolvePriceSummary,
+  toAreaRange,
+  toPriceRange,
+} from "@/helpers/filterHelpers";
 import {
   AdvancedMainTab,
   AreaDetailTab,
@@ -124,7 +132,7 @@ export function AdvancedSearchModal({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="flex max-h-[88vh] max-w-xl flex-col gap-0 overflow-hidden rounded-2xl bg-white p-0 shadow-2xl">
+      <DialogContent className="flex max-h-[88vh] w-[calc(100vw-1.5rem)] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden rounded-2xl bg-white p-0 shadow-2xl lg:max-w-md">
         <DialogHeader className="border-b border-gray-100 bg-white p-4">
           <DialogTitle className="text-center text-lg font-bold text-gray-800">
             Bộ lọc nâng cao
