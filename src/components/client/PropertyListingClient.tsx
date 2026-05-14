@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Pagination } from "../common/Pagination";
-import Title from "../common/Title";
-import { PropertyCard } from "../common/PropertyCard";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import { Pagination } from "@/components/common/Pagination";
+import { PropertyCard } from "@/components/common/PropertyCard";
+import type { BreadcrumbItem } from "@/lib/flat-url";
+import { mockProperties } from "@/mocks/properties";
 import { Property } from "@/types/property";
-import { mockProperties } from "../../mocks/properties";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["gold", "silver", "normal"] as const;
@@ -31,12 +32,13 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
   },
 };
 
-export default function ByFilter({
+export default function PropertyListingClient({
   properties = mockProperties,
-  title = "Cho thuê bất động sản",
+  breadcrumbItems,
 }: {
   properties?: Property[];
   title?: string;
+  breadcrumbItems?: BreadcrumbItem[];
 }) {
   const orderedProperties = useMemo(() => {
     return [...properties].sort((left, right) => {
@@ -77,46 +79,37 @@ export default function ByFilter({
   );
 
   return (
-    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
-      <div className="mx-auto w-full max-w-7xl px-4">
-        <Title title={title} />
+    <section className="mx-auto w-full max-w-7xl px-4">
+      {breadcrumbItems?.length ? (
+        <DynamicBreadcrumb items={breadcrumbItems} />
+      ) : null}
 
-        <div className="space-y-10">
-          {TIER_ORDER.map((tier) => {
-            const tierItems = groupedPageItems[tier];
+      <div className="space-y-10">
+        {TIER_ORDER.map((tier) => {
+          const tierItems = groupedPageItems[tier];
 
-            if (tierItems.length === 0) return null;
+          if (tierItems.length === 0) return null;
 
-            return (
-              <section key={tier} className="space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase">
-                      {TIER_CONFIG[tier].title} - ({tierItems.length} tin)
-                    </p>
-                  </div>
-                  <div className="from-primary/0 h-px flex-1 bg-linear-to-r to-transparent" />
-                </div>
+          return (
+            <section key={tier} className="space-y-4">
+              <div className={TIER_CONFIG[tier].gridClass}>
+                {tierItems.map((property) => (
+                  <PropertyCard
+                    key={property.id}
+                    property={property}
+                    variant="tier"
+                  />
+                ))}
+              </div>
+            </section>
+          );
+        })}
 
-                <div className={TIER_CONFIG[tier].gridClass}>
-                  {tierItems.map((property) => (
-                    <PropertyCard
-                      key={property.id}
-                      property={property}
-                      variant="tier"
-                    />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-
-          <Pagination
-            page={currentPage}
-            totalPages={totalPages}
-            onChange={setPage}
-          />
-        </div>
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          onChange={setPage}
+        />
       </div>
     </section>
   );

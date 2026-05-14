@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 
-interface MiniFilterPopoverProps {
+interface PropertyFilterChipPopoverProps {
   label: string;
   title: string;
   children: React.ReactNode;
@@ -25,14 +25,14 @@ const bodyClass =
 const footerButtonClass =
   "cursor-pointer rounded-lg px-4 text-xs font-medium tracking-wider uppercase";
 
-export function MiniFilterPopover({
+export function PropertyFilterChipPopover({
   label,
   title,
   children,
   onApply,
   onReset,
   isActive = false,
-}: MiniFilterPopoverProps) {
+}: PropertyFilterChipPopoverProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function MiniFilterPopover({
         className="w-[min(92vw,320px)] overflow-hidden rounded-2xl border-gray-100 p-0 shadow-xl"
       >
         <div className="border-b border-gray-100 bg-gray-50/50 p-4">
-          <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+          <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
         </div>
 
         <div className={bodyClass}>{children}</div>
@@ -82,7 +82,7 @@ export function MiniFilterPopover({
           </Button>
           <Button
             onClick={handleApply}
-            className={`bg-primary text-white shadow-lg hover:brightness-110 ${footerButtonClass}`}
+            className={`bg-primary hover:bg-primary/90 text-white ${footerButtonClass}`}
           >
             Áp dụng
           </Button>

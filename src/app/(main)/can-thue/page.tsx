@@ -1,11 +1,11 @@
-﻿import type { Metadata } from "next";
-import ContentSEO from "@/components/cho-thue/ContentSEO";
-import FAQ from "@/components/cho-thue/FAQ";
-import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import type { Metadata } from "next";
+import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-
 import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
 import { mockProperties } from "@/mocks";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import PageFaq from "@/components/common/PageFaq";
+import { pageSeoFaq } from "@/mocks/pageSeoFaq";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Cần thuê mặt bằng",
@@ -14,27 +14,25 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function CanThuePage() {
+  const pageContent = pageSeoFaq["can-thue"];
   const rentalDemandProperties = mockProperties.filter(
     (property) => property.listingType === "RENT_WANTED",
   );
 
   return (
     <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Cần thuê" },
-          ]}
-        />
-      </div>
       <PropertyFilterSection
         title="Cần thuê bất động sản"
         properties={rentalDemandProperties}
         basePath="/can-thue"
+        breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue")}
       />
-      <ContentSEO />
-      <FAQ />
+      <PageSeoContent content={pageContent.seoContent} />
+      <PageFaq
+        title={pageContent.faqTitle}
+        description={pageContent.faqDescription}
+        items={pageContent.faqs}
+      />
     </>
   );
 }

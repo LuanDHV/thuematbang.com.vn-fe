@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import TinTucPageClient from "@/components/client/TinTucPageClient";
-import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import NewsListingClient from "@/components/client/NewsListingClient";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Tin tức",
@@ -10,14 +10,5 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function TinTucPage() {
-  return (
-    <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[{ label: "Trang chủ", href: "/" }, { label: "Tin tức" }]}
-        />
-      </div>
-      <TinTucPageClient />
-    </>
-  );
+  return <NewsListingClient breadcrumbItems={buildNewsCategoryBreadcrumbs()} />;
 }

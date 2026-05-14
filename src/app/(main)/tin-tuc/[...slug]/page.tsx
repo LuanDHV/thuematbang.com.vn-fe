@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createPageMetadata } from "@/lib/metadata";
-import { parseNewsCategoryFromSlug } from "@/lib/flat-url";
-import TinTucPageClient from "@/components/client/TinTucPageClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import { mockCategoryNews } from "@/mocks/categories";
+import { buildNewsCategoryBreadcrumbs, parseNewsCategoryFromSlug } from "@/lib/flat-url";
+import { createPageMetadata } from "@/lib/metadata";
+import NewsListingClient from "@/components/client/NewsListingClient";
 import { mockPosts } from "@/mocks/post";
 
 type PageProps = {
@@ -33,8 +32,8 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Tin t?c",
-    description: "T?ng h?p tin t?c và ki?n th?c b?t d?ng s?n m?i nh?t.",
+    title: "Tin tức",
+    description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
     pathname: `/tin-tuc/${joined}`,
   });
 }
@@ -62,6 +61,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         {post.content ? (
           <div
             className="mt-6 text-base"
+            suppressHydrationWarning
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         ) : null}
@@ -74,22 +74,11 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
   }
 
   const initialCategorySlug = parseNewsCategoryFromSlug(slug[0]);
-  const category = mockCategoryNews.find(
-    (item) => item.slug === initialCategorySlug,
-  );
 
   return (
-    <>
-      <div className="mx-auto mt-6 max-w-7xl px-4">
-        <DynamicBreadcrumb
-          items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Tin tức", href: "/tin-tuc" },
-            ...(category ? [{ label: category.name }] : []),
-          ]}
-        />
-      </div>
-      <TinTucPageClient initialCategorySlug={initialCategorySlug} />
-    </>
+    <NewsListingClient
+      initialCategorySlug={initialCategorySlug}
+      breadcrumbItems={buildNewsCategoryBreadcrumbs(slug[0])}
+    />
   );
 }

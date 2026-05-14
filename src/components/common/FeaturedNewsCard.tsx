@@ -1,9 +1,10 @@
-"use client";
+﻿"use client";
 
 import { Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Post } from "@/types/post";
+import { formatDate } from "@/lib/utils";
 
 interface FeaturedNewsCardProps {
   post: Post;
@@ -17,7 +18,6 @@ export default function FeaturedNewsCard({ post }: FeaturedNewsCardProps) {
     >
       <div className="relative aspect-video w-full overflow-hidden bg-gray-50">
         <Image
-          // src={post.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
           src="/imgs/wallpaper-1.jpg"
           alt={post.title}
           fill
@@ -28,7 +28,7 @@ export default function FeaturedNewsCard({ post }: FeaturedNewsCardProps) {
 
       <div className="flex grow flex-col justify-between p-4 md:p-5">
         <div>
-          <h3 className="group-hover:text-primary line-clamp-2 text-lg leading-snug font-extrabold text-gray-800 transition-colors md:text-xl">
+          <h3 className="group-hover:text-primary line-clamp-2 text-lg leading-snug font-extrabold text-gray-700 transition-colors md:text-xl">
             {post.title}
           </h3>
           <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-400">
@@ -39,11 +39,7 @@ export default function FeaturedNewsCard({ post }: FeaturedNewsCardProps) {
         <div className="mt-4 flex items-center gap-4 text-xs font-medium text-gray-400">
           <div className="flex items-center gap-1.5">
             <Calendar size={14} strokeWidth={2.5} className="text-primary/70" />
-            <span>
-              {post.createdAt
-                ? new Date(post.createdAt).toLocaleDateString("vi-VN")
-                : "Gần đây"}
-            </span>
+            <span>{formatDate(post.createdAt)}</span>
           </div>
         </div>
       </div>

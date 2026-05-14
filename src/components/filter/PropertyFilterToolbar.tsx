@@ -1,17 +1,17 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
-import { AdvancedSearchModal } from "./AdvancedSearchModal";
+import { PropertyFilterDrawer } from "./PropertyFilterDrawer";
 import {
   AreaDetailTab,
   PriceDetailTab,
   PropertyTypeDetailTab,
-} from "./AdvancedFilterSections";
-import { MiniFilterPopover } from "./MiniFilterPopover";
+} from "./PropertyFilterPanels";
+import { PropertyFilterChipPopover } from "./PropertyFilterChipPopover";
 import {
   mockFilterAreaOptions,
   mockFilterPriceOptions,
@@ -62,7 +62,7 @@ const normalize = (value: string) =>
     .toLowerCase()
     .trim();
 
-export default function FilterBar({
+export default function PropertyFilterToolbar({
   basePath,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
   sourceProperties,
@@ -214,7 +214,7 @@ export default function FilterBar({
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="Bạn muốn thuê ở đâu?"
-              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:ring-0"
+              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400 focus:ring-0"
             />
           </div>
 
@@ -228,7 +228,7 @@ export default function FilterBar({
 
         <div className="flex w-full items-center gap-2 lg:w-auto">
           <div className="shrink-0">
-            <AdvancedSearchModal
+            <PropertyFilterDrawer
               filterCount={
                 advancedFilters.propertyTypes.length +
                 (advancedFilters.priceMin ||
@@ -257,90 +257,90 @@ export default function FilterBar({
           <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" />
 
           <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:flex-none lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
-          <MiniFilterPopover
-            title="Loại bất động sản"
-            label={displayTypeLabel}
-            isActive={advancedFilters.propertyTypes.length > 0}
-            onReset={() => {
-              const next = { ...advancedFilters, propertyTypes: [] };
-              setAdvancedFilters(next);
-              runFilter(next);
-            }}
-            onApply={runFilter}
-          >
-            <PropertyTypeDetailTab
-              current={advancedFilters}
-              updateCurrent={updateAdvanced}
-              propertyTypeOptions={mockFilterPropertyTypes}
-            />
-          </MiniFilterPopover>
+            <PropertyFilterChipPopover
+              title="Loại bất động sản"
+              label={displayTypeLabel}
+              isActive={advancedFilters.propertyTypes.length > 0}
+              onReset={() => {
+                const next = { ...advancedFilters, propertyTypes: [] };
+                setAdvancedFilters(next);
+                runFilter(next);
+              }}
+              onApply={runFilter}
+            >
+              <PropertyTypeDetailTab
+                current={advancedFilters}
+                updateCurrent={updateAdvanced}
+                propertyTypeOptions={mockFilterPropertyTypes}
+              />
+            </PropertyFilterChipPopover>
 
-          <MiniFilterPopover
-            title="Khoảng giá"
-            label={displayPriceLabel}
-            isActive={
-              !!advancedFilters.priceMin ||
-              !!advancedFilters.priceMax ||
-              advancedFilters.negotiable
-            }
-            onReset={() => {
-              const next = {
-                ...advancedFilters,
-                priceMin: "",
-                priceMax: "",
-                negotiable: false,
-              };
-              setAdvancedFilters(next);
-              runFilter(next);
-            }}
-            onApply={runFilter}
-          >
-            <PriceDetailTab
-              current={advancedFilters}
-              updateCurrent={updateAdvanced}
-              priceRange={toPriceRange(
-                advancedFilters.priceMin,
-                advancedFilters.priceMax,
-              )}
-            />
-          </MiniFilterPopover>
+            <PropertyFilterChipPopover
+              title="Khoảng giá"
+              label={displayPriceLabel}
+              isActive={
+                !!advancedFilters.priceMin ||
+                !!advancedFilters.priceMax ||
+                advancedFilters.negotiable
+              }
+              onReset={() => {
+                const next = {
+                  ...advancedFilters,
+                  priceMin: "",
+                  priceMax: "",
+                  negotiable: false,
+                };
+                setAdvancedFilters(next);
+                runFilter(next);
+              }}
+              onApply={runFilter}
+            >
+              <PriceDetailTab
+                current={advancedFilters}
+                updateCurrent={updateAdvanced}
+                priceRange={toPriceRange(
+                  advancedFilters.priceMin,
+                  advancedFilters.priceMax,
+                )}
+              />
+            </PropertyFilterChipPopover>
 
-          <MiniFilterPopover
-            title="Diện tích"
-            label={displayAreaLabel}
-            isActive={!!advancedFilters.areaMin || !!advancedFilters.areaMax}
-            onReset={() => {
-              const next = { ...advancedFilters, areaMin: "", areaMax: "" };
-              setAdvancedFilters(next);
-              runFilter(next);
-            }}
-            onApply={runFilter}
-          >
-            <AreaDetailTab
-              current={advancedFilters}
-              updateCurrent={updateAdvanced}
-              areaRange={toAreaRange(
-                advancedFilters.areaMin,
-                advancedFilters.areaMax,
-              )}
-            />
-          </MiniFilterPopover>
+            <PropertyFilterChipPopover
+              title="Diện tích"
+              label={displayAreaLabel}
+              isActive={!!advancedFilters.areaMin || !!advancedFilters.areaMax}
+              onReset={() => {
+                const next = { ...advancedFilters, areaMin: "", areaMax: "" };
+                setAdvancedFilters(next);
+                runFilter(next);
+              }}
+              onApply={runFilter}
+            >
+              <AreaDetailTab
+                current={advancedFilters}
+                updateCurrent={updateAdvanced}
+                areaRange={toAreaRange(
+                  advancedFilters.areaMin,
+                  advancedFilters.areaMax,
+                )}
+              />
+            </PropertyFilterChipPopover>
 
-          <Button
-            type="button"
-            onClick={resetAll}
-            className="border-primary text-primary hover:bg-primary/10 hidden h-10 cursor-pointer rounded-xl border bg-transparent px-4 lg:flex"
-          >
-            Đặt lại
-          </Button>
+            <Button
+              type="button"
+              onClick={resetAll}
+              className="border-primary text-primary hover:bg-primary/10 hidden h-10 cursor-pointer rounded-xl border bg-transparent px-4 lg:flex"
+            >
+              Đặt lại
+            </Button>
 
-          <Button
-            type="submit"
-            className="bg-primary ml-auto hidden h-10 shrink-0 cursor-pointer items-center rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105 lg:flex"
-          >
-            <Search className="mr-2 h-4 w-4" />
-            <span>Tìm kiếm</span>
-          </Button>
+            <Button
+              type="submit"
+              className="bg-primary ml-auto hidden h-10 shrink-0 cursor-pointer items-center rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105 lg:flex"
+            >
+              <Search className="mr-2 h-4 w-4" />
+              <span>Tìm kiếm</span>
+            </Button>
           </div>
         </div>
       </form>

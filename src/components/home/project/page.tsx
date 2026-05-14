@@ -43,7 +43,7 @@ export default function ProjectSection() {
               </div>
 
               {/* Tên danh mục */}
-              <h3 className="group-hover:text-primary text-center text-xl font-bold tracking-tight text-gray-800 transition-colors duration-300">
+              <h3 className="group-hover:text-primary text-center text-xl font-bold tracking-tight text-gray-700 transition-colors duration-300">
                 {cat.name}
               </h3>
 
