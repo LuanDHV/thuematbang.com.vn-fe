@@ -50,6 +50,22 @@ export function PropertyTypeDetailTab({
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
     <div className="space-y-2">
+      <label className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-50">
+        <span className="text-sm text-gray-700">Tất cả loại mặt bằng</span>
+        <input
+          type="checkbox"
+          name="property-type-single"
+          checked={current.propertyTypes.length === 0}
+          onChange={() => {
+            updateCurrent((prev) => ({
+              ...prev,
+              propertyTypes: [],
+            }));
+            onDone?.();
+          }}
+          className="accent-primary h-4 w-4 cursor-pointer"
+        />
+      </label>
       {propertyTypeOptions.map((type) => (
         <label
           key={type}
@@ -58,13 +74,12 @@ export function PropertyTypeDetailTab({
           <span className="text-sm text-gray-700">{type}</span>
           <input
             type="checkbox"
-            checked={current.propertyTypes.includes(type)}
+            name="property-type-single"
+            checked={current.propertyTypes[0] === type}
             onChange={() => {
               updateCurrent((prev) => ({
                 ...prev,
-                propertyTypes: prev.propertyTypes.includes(type)
-                  ? prev.propertyTypes.filter((item) => item !== type)
-                  : [...prev.propertyTypes, type],
+                propertyTypes: [type],
               }));
               onDone?.();
             }}
@@ -402,29 +417,28 @@ export function AdvancedMainTab({
           Loại bất động sản
         </label>
         <div className="flex flex-wrap items-center gap-2">
-          {current.propertyTypes.map((item) => (
-            <div
-              key={item}
-              className="text-primary flex h-10 items-center gap-1 rounded-full border border-orange-200 px-4 text-sm"
-            >
-              <span>{item}</span>
+          {current.propertyTypes[0] ? (
+            <div className="text-primary flex h-10 items-center gap-1 rounded-full border border-orange-200 px-4 text-sm">
+              <span>{current.propertyTypes[0]}</span>
               <button
                 type="button"
                 onClick={() =>
                   updateCurrent((prev) => ({
                     ...prev,
-                    propertyTypes: prev.propertyTypes.filter(
-                      (selected) => selected !== item,
-                    ),
+                    propertyTypes: [],
                   }))
                 }
                 className="text-primary/80 hover:text-primary cursor-pointer"
-                aria-label={`Bỏ chọn ${item}`}
+                aria-label={`Bỏ chọn ${current.propertyTypes[0]}`}
               >
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
-          ))}
+          ) : (
+            <span className="text-sm text-gray-500">
+              Tất cả loại bất động sản
+            </span>
+          )}
           <Button
             variant="ghost"
             onClick={() => setDetailTab("propertyType")}
