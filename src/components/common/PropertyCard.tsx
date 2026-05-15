@@ -22,9 +22,9 @@ function resolvePropertyHref(property: Property) {
 
 function getTierLabel(priorityStatus?: string | null) {
   switch (priorityStatus) {
-    case "gold":
+    case "GOLD":
       return "Gold";
-    case "silver":
+    case "SILVER":
       return "Silver";
     default:
       return "Normal";
@@ -286,6 +286,8 @@ function NormalCard({ property }: { property: Property }) {
 
 function CardBody({ property }: { property: Property }) {
   const location = getLocationText(property) || "Đang cập nhật vị trí";
+  const contentPreview =
+    property.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
     <div className="flex min-h-55 flex-1 flex-col p-4">
@@ -314,8 +316,8 @@ function CardBody({ property }: { property: Property }) {
             {property.bedrooms} phòng ngủ
           </p>
         ) : null}
-        {property.description ? (
-          <p className="line-clamp-2">{property.description}</p>
+        {contentPreview ? (
+          <p className="line-clamp-2">{contentPreview}</p>
         ) : null}
       </div>
 
@@ -338,12 +340,12 @@ export function PropertyCard({
   if (variant === "featured") {
     content = <FeaturedCard property={property} />;
   } else {
-    const tier = property.priorityStatus ?? "normal";
+    const tier = property.priorityStatus ?? "NORMAL";
     switch (tier) {
-      case "gold":
+      case "GOLD":
         content = <GoldCard property={property} />;
         break;
-      case "silver":
+      case "SILVER":
         content = <SilverCard property={property} />;
         break;
       default:

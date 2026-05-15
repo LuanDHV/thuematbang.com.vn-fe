@@ -6,7 +6,6 @@ import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { mockProjects } from "@/mocks/projects";
 import { Project } from "@/types/project";
 import type { BreadcrumbItem } from "@/lib/flat-url";
-import Title from "@/components/common/Title";
 import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";
 import { mockCategoryProject } from "@/mocks/categories";

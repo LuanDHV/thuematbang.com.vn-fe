@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
@@ -11,25 +11,25 @@ import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
 
 const PAGE_SIZE = 12;
-const TIER_ORDER = ["gold", "silver", "normal"] as const;
+const TIER_ORDER = ["GOLD", "SILVER", "NORMAL"] as const;
 
 type TierKey = (typeof TIER_ORDER)[number];
 
 function getTierRank(value?: string | null) {
-  return TIER_ORDER.indexOf((value as TierKey) ?? "normal");
+  return TIER_ORDER.indexOf((value as TierKey) ?? "NORMAL");
 }
 
 const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
-  gold: {
+  GOLD: {
     title: "Gold",
     gridClass: "grid grid-cols-1 gap-5 lg:grid-cols-2",
   },
-  silver: {
+  SILVER: {
     title: "Silver",
     gridClass: "grid grid-cols-1 gap-4 lg:grid-cols-3",
   },
-  normal: {
-    title: "Tin thường",
+  NORMAL: {
+    title: "Normal",
     gridClass: "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4",
   },
 };
@@ -94,7 +94,7 @@ export default function ListingResultsClient({
       ? TIER_ORDER.reduce(
           (accumulator, tier) => {
             accumulator[tier] = (pageItems as Property[]).filter(
-              (property) => (property.priorityStatus ?? "normal") === tier,
+              (property) => (property.priorityStatus ?? "NORMAL") === tier,
             );
             return accumulator;
           },

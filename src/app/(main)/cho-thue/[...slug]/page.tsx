@@ -32,9 +32,12 @@ export async function generateMetadata({
   const property = getPropertyDetail(rawSlug);
 
   if (property) {
+    const propertyDescription =
+      property.content?.replace(/<[^>]+>/g, "").trim() ||
+      "Chi tiết tin đăng cho thuê.";
     return createPageMetadata({
       title: property.title,
-      description: property.description || "Chi tiết tin đăng cho thuê.",
+      description: propertyDescription,
       pathname: `/cho-thue/${property.slug}`,
       image: getPropertyThumbnailUrl(property.id),
       type: "article",

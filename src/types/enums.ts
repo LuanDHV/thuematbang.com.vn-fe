@@ -11,8 +11,6 @@ export type LeadStatus =
 
 export type PropertyPriority = "NORMAL" | "SILVER" | "GOLD";
 
-export type PropertyPriorityLegacy = "normal" | "silver" | "gold";
-
 export type PropertyDirection =
   | "BAC"
   | "DONG_BAC"

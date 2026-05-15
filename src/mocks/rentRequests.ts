@@ -1,6 +1,6 @@
 import { RentRequest } from "@/types/rent-request";
 import { mockCategoryRentRequest } from "./categories";
-import { mockCities, mockDistricts, mockWards } from "./locations";
+import { mockCities, mockDistricts, mockStreets, mockWards } from "./locations";
 
 const getCategory = (id: number) =>
   mockCategoryRentRequest.find((category) => category.id === id) ?? null;
@@ -8,6 +8,8 @@ const getCity = (id: number) => mockCities.find((city) => city.id === id) ?? nul
 const getDistrict = (id: number) =>
   mockDistricts.find((district) => district.id === id) ?? null;
 const getWard = (id: number) => mockWards.find((ward) => ward.id === id) ?? null;
+const getStreet = (id: number) =>
+  mockStreets.find((street) => street.id === id) ?? null;
 
 export const mockRentRequests: RentRequest[] = [
   {
@@ -16,11 +18,11 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê mặt bằng mở showroom xe máy",
     slug: "can-thue-mat-bang-mo-showroom-xe-may",
     categoryId: 1102,
-    categoryName: "Mặt bằng",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     desiredCityId: 2,
     desiredDistrictId: 202,
     desiredWardId: 2002,
+    desiredStreetId: 5004,
     minBudget: 25000000,
     maxBudget: 40000000,
     minArea: 120,
@@ -41,6 +43,7 @@ export const mockRentRequests: RentRequest[] = [
     desiredCity: getCity(2),
     desiredDistrict: getDistrict(202),
     desiredWard: getWard(2002),
+    desiredStreet: getStreet(5004),
   },
   {
     id: 2002,
@@ -48,11 +51,11 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê văn phòng 50-80m2 tại Đà Nẵng",
     slug: "can-thue-van-phong-50-80m2-da-nang",
     categoryId: 1101,
-    categoryName: "Văn phòng",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     desiredCityId: 3,
     desiredDistrictId: 301,
     desiredWardId: 3001,
+    desiredStreetId: 5005,
     minBudget: 10000000,
     maxBudget: 15000000,
     minArea: 50,
@@ -73,6 +76,7 @@ export const mockRentRequests: RentRequest[] = [
     desiredCity: getCity(3),
     desiredDistrict: getDistrict(301),
     desiredWard: getWard(3001),
+    desiredStreet: getStreet(5005),
   },
   {
     id: 2003,
@@ -80,11 +84,11 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê kho 300-500m² gần KCN Tân Thuận",
     slug: "can-thue-kho-300-500m2-gan-kcn-tan-thuan",
     categoryId: 1103,
-    categoryName: "Kho xưởng",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     desiredCityId: 1,
     desiredDistrictId: 102,
     desiredWardId: 1002,
+    desiredStreetId: 5002,
     minBudget: 45000000,
     maxBudget: 65000000,
     minArea: 300,
@@ -104,6 +108,7 @@ export const mockRentRequests: RentRequest[] = [
     desiredCity: getCity(1),
     desiredDistrict: getDistrict(102),
     desiredWard: getWard(1002),
+    desiredStreet: getStreet(5002),
   },
   {
     id: 2004,
@@ -111,11 +116,11 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê mặt bằng F&B khu Quận 1",
     slug: "can-thue-mat-bang-fb-khu-quan-1",
     categoryId: 1102,
-    categoryName: "Mặt bằng",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     desiredCityId: 1,
     desiredDistrictId: 101,
     desiredWardId: 1001,
+    desiredStreetId: 5001,
     minBudget: 30000000,
     maxBudget: 55000000,
     minArea: 80,
@@ -135,5 +140,6 @@ export const mockRentRequests: RentRequest[] = [
     desiredCity: getCity(1),
     desiredDistrict: getDistrict(101),
     desiredWard: getWard(1001),
+    desiredStreet: getStreet(5001),
   },
 ];

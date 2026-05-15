@@ -1,4 +1,4 @@
-﻿import { Category } from "../types/category";
+﻿import { Category, CategoryTreeNode } from "../types/category";
 
 const now = "2026-05-13T09:00:00.000Z";
 
@@ -147,7 +147,7 @@ export const mockCategoryFlat: Category[] = [
 ];
 
 // Legacy format for current header/news category UI.
-export const mockCategories: Category[] = [
+export const mockCategories: CategoryTreeNode[] = [
   {
     id: 1,
     name: "Cho thuê",
@@ -209,3 +209,4 @@ export const mockCategories: Category[] = [
     })),
   },
 ];
+

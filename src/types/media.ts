@@ -1,24 +1,17 @@
-export interface Media {
+export interface PropertyImage {
   id: number;
-  fileUrl: string;
-  // Legacy generic fields.
-  mediableId?: number;
-  mediaType?: string;
-  // Schema-specific fields.
-  propertyId?: number;
-  projectId?: number;
-  sortOrder?: number | null;
-  createdAt?: Date | string | null;
-}
-
-export interface PropertyImage extends Media {
   propertyId: number;
+  fileUrl: string;
   publicId?: string | null;
-  sortOrder?: number | null;
+  sortOrder: number;
+  createdAt: Date | string;
 }
 
-export interface ProjectImage extends Media {
+export interface ProjectImage {
+  id: number;
   projectId: number;
+  fileUrl: string;
   publicId?: string | null;
-  sortOrder?: number | null;
+  sortOrder: number;
+  createdAt: Date | string;
 }

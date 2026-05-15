@@ -62,6 +62,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
     const poster = mockUsers.find((user) => user.id === rentRequest.userId);
     const locationText = [
+      rentRequest.desiredStreet?.name,
       rentRequest.desiredWard?.name,
       rentRequest.desiredDistrict?.name,
       rentRequest.desiredCity?.name,

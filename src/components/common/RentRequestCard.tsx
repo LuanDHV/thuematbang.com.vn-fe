@@ -42,8 +42,7 @@ export function RentRequestCard({
   const location = getLocationText(request) || "Toàn quốc";
   const image = request.thumbnailUrl || "/imgs/wallpaper-1.jpg";
   const isFeatured = variant === "featured";
-  const categoryName =
-    request.categoryName?.trim() || request.category?.name || "";
+  const categoryName = request.category?.name ?? "";
 
   return (
     <Link href={`/can-thue/${request.slug}`}>

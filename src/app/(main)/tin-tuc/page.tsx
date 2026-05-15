@@ -4,8 +4,8 @@ import { createPageMetadata } from "@/lib/metadata";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Tin tá»©c",
-  description: "Tá»•ng há»£p tin tá»©c vÃ  kiáº¿n thá»©c báº¥t Ä‘á»™ng sáº£n má»›i nháº¥t.",
+  title: "Tin tức",
+  description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
   pathname: "/tin-tuc",
 });
 

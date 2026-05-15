@@ -50,8 +50,7 @@ export default function RentRequestDetailContent({
   const hasArea =
     (rentRequest.minArea ?? 0) > 0 || (rentRequest.maxArea ?? 0) > 0;
   const hasDirection = Boolean(rentRequest.preferredDirection);
-  const categoryName =
-    rentRequest.categoryName?.trim() || rentRequest.category?.name || "";
+  const categoryName = rentRequest.category?.name ?? "";
   const hasCategoryName = Boolean(categoryName);
 
   return (

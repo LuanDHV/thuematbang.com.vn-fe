@@ -1,7 +1,17 @@
+import { Project } from "./project";
+import { Property } from "./property";
+import { RentRequest } from "./rent-request";
+
 export interface City {
   id: number;
   name: string;
   slug: string;
+  districts?: District[];
+  wards?: Ward[];
+  streets?: Street[];
+  properties?: Property[];
+  rentRequests?: RentRequest[];
+  projects?: Project[];
 }
 
 export interface District {
@@ -10,15 +20,25 @@ export interface District {
   name: string;
   slug: string;
   city?: City;
+  wards?: Ward[];
+  streets?: Street[];
+  properties?: Property[];
+  rentRequests?: RentRequest[];
+  projects?: Project[];
 }
 
 export interface Ward {
-  cityId?: number;
   id: number;
+  cityId: number;
   districtId: number;
   name: string;
   slug: string;
+  city?: City;
   district?: District;
+  streets?: Street[];
+  properties?: Property[];
+  rentRequests?: RentRequest[];
+  projects?: Project[];
 }
 
 export interface Street {
@@ -31,4 +51,6 @@ export interface Street {
   city?: City;
   district?: District;
   ward?: Ward | null;
+  properties?: Property[];
+  rentRequests?: RentRequest[];
 }
