@@ -16,7 +16,7 @@ export default async function NewsSection() {
   const sidePosts = posts.slice(1, 4);
 
   return (
-    <section className="w-full px-4 py-8">
+    <section className="w-full px-4 py-12">
       <div className="container mx-auto max-w-7xl px-4">
         <div className="mb-16 text-center">
           <Title

@@ -10,7 +10,7 @@ export default function FeaturedSection() {
   );
 
   return (
-    <section className="w-full bg-gray-50/50 px-4 py-8">
+    <section className="w-full bg-gray-50/50 px-4 py-12">
       <div className="mx-auto w-full max-w-7xl px-4">
         {/* Tái sử dụng Title Component */}
         <Title

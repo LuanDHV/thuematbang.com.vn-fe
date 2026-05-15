@@ -27,7 +27,7 @@ const features = [
 
 export default function IntroduceSection() {
   return (
-    <section className="to-primary/10 relative h-auto w-full overflow-hidden bg-linear-to-b from-white py-12 lg:min-h-screen lg:py-20">
+    <section className="to-primary/10 relative h-auto w-full overflow-hidden bg-linear-to-b from-white px-4 py-12 lg:min-h-screen">
       <div className="mx-auto w-full max-w-7xl px-4">
         <Title
           title="Giới thiệu"
