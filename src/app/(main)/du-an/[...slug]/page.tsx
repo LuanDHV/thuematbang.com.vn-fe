@@ -1,13 +1,18 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PropertyImageGallery from "@/components/common/PropertyImageGallery";
+import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import {
   buildProjectCategoryBreadcrumbs,
   parseProjectCategoryFromSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { mockProjects } from "@/mocks/projects";
+import {
+  getProjectGalleryImages,
+  getProjectThumbnailUrl,
+  mockProjects,
+} from "@/mocks/projects";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -27,16 +32,17 @@ export async function generateMetadata({
   if (project) {
     return createPageMetadata({
       title: project.name,
-      description: project.addressDetail || "Chi tiáº¿t dá»± Ã¡n báº¥t Ä‘á»™ng sáº£n.",
+      description: project.addressDetail || "Chi tiết dự án bất động sản.",
       pathname: `/du-an/${project.slug}`,
-      image: project.thumbnailUrl || undefined,
+      image: getProjectThumbnailUrl(project.id),
       type: "article",
     });
   }
 
   return createPageMetadata({
-    title: "Dá»± Ã¡n",
-    description: "Cáº­p nháº­t thÃ´ng tin dá»± Ã¡n báº¥t Ä‘á»™ng sáº£n ná»•i báº­t vÃ  má»›i nháº¥t.",
+    title: "Dự án",
+    description:
+      "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
     pathname: `/du-an/${joined}`,
   });
 }
@@ -47,18 +53,23 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
   const project = getProjectBySlug(projectSlug);
 
   if (project) {
+    const galleryImages = getProjectGalleryImages(project.id);
+
     return (
       <article className="mx-auto max-w-4xl px-4 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[
-            { label: "Trang chá»§", href: "/" },
-            { label: "Dá»± Ã¡n", href: "/du-an" },
+            { label: "Trang chủ", href: "/" },
+            { label: "Dự án", href: "/du-an" },
             { label: project.name },
           ]}
         />
         <h1 className="text-3xl leading-tight font-bold">{project.name}</h1>
         <p className="mt-3 text-base text-gray-600">{project.addressDetail}</p>
+        <div className="mt-6">
+          <PropertyImageGallery title={project.name} images={galleryImages} />
+        </div>
         {project.content ? (
           <div
             className="mt-6 text-base"

@@ -1,14 +1,13 @@
 import { MapPin, Maximize, Navigation, Wallet } from "lucide-react";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
-import PropertyImageGallery from "@/components/common/PropertyImageGallery";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { DIRECTION_OPTIONS } from "@/mocks/filter";
 import { RentRequest } from "@/types/rent-request";
+import Image from "next/image";
 
 type RentRequestDetailContentProps = {
   rentRequest: RentRequest;
   locationText: string;
-  galleryImages: string[];
   featuredRequests: RentRequest[];
   viewedRequests: RentRequest[];
 };
@@ -45,27 +44,35 @@ function formatAreaRange(request: RentRequest) {
 export default function RentRequestDetailContent({
   rentRequest,
   locationText,
-  galleryImages,
   featuredRequests,
   viewedRequests,
 }: RentRequestDetailContentProps) {
   const hasArea =
     (rentRequest.minArea ?? 0) > 0 || (rentRequest.maxArea ?? 0) > 0;
   const hasDirection = Boolean(rentRequest.preferredDirection);
-  const hasBusinessType = Boolean(rentRequest.businessType);
+  const categoryName =
+    rentRequest.categoryName?.trim() || rentRequest.category?.name || "";
+  const hasCategoryName = Boolean(categoryName);
 
   return (
     <div className="w-full space-y-6 lg:w-3/4 lg:space-y-8">
       <section>
-        <PropertyImageGallery title={rentRequest.title} images={galleryImages} />
+        <div className="aspect-image relative w-full overflow-hidden rounded-2xl bg-gray-100">
+          <Image
+            src={rentRequest.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
+            alt={rentRequest.title}
+            fill
+            sizes="(max-width: 1024px) 100vw, 75vw"
+            className="object-cover"
+            priority
+          />
+        </div>
 
         <div className="mt-5">
           <h1 className="text-2xl leading-tight font-bold text-gray-800 lg:text-4xl">
             {rentRequest.title}
           </h1>
-          <p className="text-primary mt-2 text-3xl font-bold tracking-tight">
-            {formatBudgetRange(rentRequest)}
-          </p>
+
           <p className="mt-3 flex items-start gap-2 text-sm text-gray-600">
             <MapPin size={16} className="mt-0.5 shrink-0 text-gray-500" />
             <span>{locationText || "Đang cập nhật địa chỉ"}</span>
@@ -129,13 +136,13 @@ export default function RentRequestDetailContent({
             </div>
           ) : null}
 
-          {hasBusinessType ? (
+          {hasCategoryName ? (
             <div className="rounded-2xl bg-gray-50 px-4 py-3">
               <p className="text-xs tracking-wide text-gray-500 uppercase">
-                Ngành nghề
+                Danh mục
               </p>
               <p className="mt-1 text-sm font-semibold text-gray-800">
-                {rentRequest.businessType}
+                {categoryName}
               </p>
             </div>
           ) : null}
@@ -146,13 +153,9 @@ export default function RentRequestDetailContent({
         <div className="flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
-            Xem trên bản đồ
+            Thông tin thêm
           </h2>
         </div>
-        <div className="mt-4 rounded-2xl bg-gray-50 p-4 text-sm text-gray-600">
-          Nhu cầu cần thuê không yêu cầu tọa độ bản đồ.
-        </div>
-
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-2xl bg-gray-50 px-4 py-3">
             <p className="text-xs tracking-wide text-gray-500 uppercase">

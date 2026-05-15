@@ -1,5 +1,6 @@
 import { Category } from "./category";
 import { City, District, Street, Ward } from "./location";
+import { PropertyImage } from "./media";
 import { User } from "./user";
 import {
   PropertyDirection,
@@ -18,7 +19,6 @@ export interface Property {
   price?: number | null;
   isNegotiable?: boolean;
   area?: number | null;
-  thumbnailUrl?: string | null;
   direction?: PropertyDirection | string | null;
   floors?: number | null;
   bedrooms?: number | null;
@@ -63,4 +63,5 @@ export interface Property {
   district?: District | null;
   ward?: Ward | null;
   street?: Street | null;
+  images?: PropertyImage[];
 }

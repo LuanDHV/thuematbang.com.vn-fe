@@ -1,4 +1,5 @@
-﻿import { Project } from "@/types/project";
+﻿import { getProjectThumbnailUrl } from "@/mocks/projects";
+import { Project } from "@/types/project";
 import { Building2, Calendar, Eye, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,6 +21,7 @@ function formatDate(value?: Date | string | null) {
 }
 
 export function ProjectCard({ project }: { project: Project }) {
+  const thumbnailUrl = getProjectThumbnailUrl(project.id);
   const location =
     [project.ward?.name, project.district?.name, project.city?.name]
       .filter(Boolean)
@@ -32,7 +34,7 @@ export function ProjectCard({ project }: { project: Project }) {
     >
       <div className="relative h-64 overflow-hidden">
         <Image
-          src={project.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
+          src={thumbnailUrl}
           alt={project.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -109,3 +111,5 @@ export function ProjectCard({ project }: { project: Project }) {
     </Link>
   );
 }
+
+

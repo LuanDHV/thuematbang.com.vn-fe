@@ -112,12 +112,13 @@ export default function ListingFilterToolbar({
     const filtered =
       listingMode === "rentRequest"
         ? (sourceProperties as RentRequest[]).filter((request) => {
-            const categoryName = request.category?.name ?? "";
+            const categoryName =
+              request.categoryName?.trim() || request.category?.name || "";
             const cityName = request.desiredCity?.name ?? "";
+            const districtName = request.desiredDistrict?.name ?? "";
             const wardName = request.desiredWard?.name ?? "";
-            const streetName = request.preferredStreet ?? "";
             const haystack = normalize(
-              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName} ${request.businessType ?? ""}`,
+              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${cityName} ${districtName} ${wardName}`,
             );
 
             if (keywordText && !haystack.includes(keywordText)) return false;
@@ -150,15 +151,6 @@ export default function ListingFilterToolbar({
             if (
               activeFilters.ward &&
               request.desiredWard?.name !== activeFilters.ward
-            )
-              return false;
-            if (
-              activeFilters.street &&
-              normalize(request.preferredStreet ?? "") !==
-                normalize(activeFilters.street) &&
-              !normalize(request.preferredStreet ?? "").includes(
-                normalize(activeFilters.street),
-              )
             )
               return false;
 

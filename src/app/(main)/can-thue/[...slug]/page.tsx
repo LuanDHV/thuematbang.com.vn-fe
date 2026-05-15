@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
@@ -62,7 +62,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
     const poster = mockUsers.find((user) => user.id === rentRequest.userId);
     const locationText = [
-      rentRequest.preferredStreet,
       rentRequest.desiredWard?.name,
       rentRequest.desiredDistrict?.name,
       rentRequest.desiredCity?.name,
@@ -88,13 +87,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       })
       .slice(0, 10);
 
-    const galleryImages = [
-      rentRequest.thumbnailUrl || "/imgs/wallpaper-1.jpg",
-      ...relatedRequests
-        .slice(0, 6)
-        .map((item) => item.thumbnailUrl || "/imgs/wallpaper-1.jpg"),
-    ];
-
     return (
       <article className="mx-auto max-w-7xl px-4 py-8">
         <DynamicBreadcrumb
@@ -110,7 +102,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           <RentRequestDetailContent
             rentRequest={rentRequest}
             locationText={locationText}
-            galleryImages={galleryImages}
             featuredRequests={featuredRequests}
             viewedRequests={viewedRequests}
           />

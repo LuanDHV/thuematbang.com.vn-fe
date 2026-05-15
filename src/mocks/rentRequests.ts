@@ -4,12 +4,10 @@ import { mockCities, mockDistricts, mockWards } from "./locations";
 
 const getCategory = (id: number) =>
   mockCategoryRentRequest.find((category) => category.id === id) ?? null;
-const getCity = (id: number) =>
-  mockCities.find((city) => city.id === id) ?? null;
+const getCity = (id: number) => mockCities.find((city) => city.id === id) ?? null;
 const getDistrict = (id: number) =>
   mockDistricts.find((district) => district.id === id) ?? null;
-const getWard = (id: number) =>
-  mockWards.find((ward) => ward.id === id) ?? null;
+const getWard = (id: number) => mockWards.find((ward) => ward.id === id) ?? null;
 
 export const mockRentRequests: RentRequest[] = [
   {
@@ -18,6 +16,7 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê mặt bằng mở showroom xe máy",
     slug: "can-thue-mat-bang-mo-showroom-xe-may",
     categoryId: 1102,
+    categoryName: "Mặt bằng",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     desiredCityId: 2,
     desiredDistrictId: 202,
@@ -27,8 +26,6 @@ export const mockRentRequests: RentRequest[] = [
     minArea: 120,
     maxArea: 220,
     preferredDirection: "TAY",
-    businessType: "Showroom xe máy",
-    preferredStreet: "Khu Cầu Giấy hoặc lân cận",
     requirementText:
       "Ưu tiên mặt tiền lớn, có chỗ đậu xe trước cửa, phù hợp trưng bày xe.",
     contactName: "Trần Quốc Bảo",
@@ -51,6 +48,7 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê văn phòng 50-80m2 tại Đà Nẵng",
     slug: "can-thue-van-phong-50-80m2-da-nang",
     categoryId: 1101,
+    categoryName: "Văn phòng",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     desiredCityId: 3,
     desiredDistrictId: 301,
@@ -60,8 +58,6 @@ export const mockRentRequests: RentRequest[] = [
     minArea: 50,
     maxArea: 80,
     preferredDirection: "BAC",
-    businessType: "Văn phòng đại diện",
-    preferredStreet: "Khu Hải Châu, gần trung tâm",
     requirementText:
       "Ưu tiên tòa nhà có hầm gửi xe và bảo vệ 24/7, nhận mặt bằng ngay.",
     contactName: "Nguyễn Minh An",
@@ -84,6 +80,7 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê kho 300-500m² gần KCN Tân Thuận",
     slug: "can-thue-kho-300-500m2-gan-kcn-tan-thuan",
     categoryId: 1103,
+    categoryName: "Kho xưởng",
     thumbnailUrl: "/imgs/wallpaper-2.jpg",
     desiredCityId: 1,
     desiredDistrictId: 102,
@@ -92,8 +89,6 @@ export const mockRentRequests: RentRequest[] = [
     maxBudget: 65000000,
     minArea: 300,
     maxArea: 500,
-    businessType: "Kho vận",
-    preferredStreet: "Trục đường xe container vào được",
     requirementText:
       "Yêu cầu nền chịu tải, trần cao trên 8m, có thể hoạt động ban đêm.",
     contactName: "Nguyễn Minh An",
@@ -116,6 +111,7 @@ export const mockRentRequests: RentRequest[] = [
     title: "Cần thuê mặt bằng F&B khu Quận 1",
     slug: "can-thue-mat-bang-fb-khu-quan-1",
     categoryId: 1102,
+    categoryName: "Mặt bằng",
     thumbnailUrl: "/imgs/wallpaper-1.jpg",
     desiredCityId: 1,
     desiredDistrictId: 101,
@@ -124,7 +120,6 @@ export const mockRentRequests: RentRequest[] = [
     maxBudget: 55000000,
     minArea: 80,
     maxArea: 150,
-    businessType: "F&B",
     requirementText:
       "Cần khu đông dân cư, có thể set up quầy bar và bếp nóng.",
     contactName: "Trần Quốc Bảo",

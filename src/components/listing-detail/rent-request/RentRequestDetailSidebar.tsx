@@ -1,5 +1,4 @@
-﻿import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+﻿import Link from "next/link";
 import PosterContactCard from "@/components/common/PosterContactCard";
 import { RentRequest } from "@/types/rent-request";
 import { User } from "@/types/user";
@@ -40,7 +39,6 @@ export default function RentRequestDetailSidebar({
                 className="group hover:text-primary flex items-center justify-between py-2.5 text-sm text-gray-700 transition-colors duration-200 ease-in-out"
               >
                 <span className="line-clamp-2 font-medium">{item.title}</span>
-                <ArrowRight size={12} />
               </Link>
             ))}
           </div>

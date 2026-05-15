@@ -42,6 +42,8 @@ export function RentRequestCard({
   const location = getLocationText(request) || "Toàn quốc";
   const image = request.thumbnailUrl || "/imgs/wallpaper-1.jpg";
   const isFeatured = variant === "featured";
+  const categoryName =
+    request.categoryName?.trim() || request.category?.name || "";
 
   return (
     <Link href={`/can-thue/${request.slug}`}>
@@ -59,9 +61,9 @@ export function RentRequestCard({
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
-          {request.category?.name ? (
+          {categoryName ? (
             <span className="text-primary absolute top-3 left-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase">
-              {request.category.name}
+              {categoryName}
             </span>
           ) : null}
           <h3 className="absolute right-3 bottom-3 left-3 line-clamp-2 text-lg leading-tight font-bold text-white">

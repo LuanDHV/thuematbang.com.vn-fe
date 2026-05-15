@@ -13,7 +13,7 @@ import {
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/mocks/pageSeoFaq";
-import { mockProperties } from "@/mocks/properties";
+import { getPropertyGalleryImages, getPropertyThumbnailUrl, mockProperties } from "@/mocks/properties";
 import { mockUsers } from "@/mocks/users";
 
 type PageProps = {
@@ -36,7 +36,7 @@ export async function generateMetadata({
       title: property.title,
       description: property.description || "Chi tiết tin đăng cho thuê.",
       pathname: `/cho-thue/${property.slug}`,
-      image: property.thumbnailUrl || undefined,
+      image: getPropertyThumbnailUrl(property.id),
       type: "article",
     });
   }
@@ -80,12 +80,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
     const viewedProperties = rentalOutProperties.slice(0, 3);
 
-    const galleryImages = [
-      property.thumbnailUrl || "/imgs/wallpaper-1.jpg",
-      ...rentalOutProperties
-        .slice(0, 6)
-        .map((item) => item.thumbnailUrl || "/imgs/wallpaper-1.jpg"),
-    ];
+    const galleryImages = getPropertyGalleryImages(property.id);
 
     const hasCoordinates =
       typeof property.latitude === "number" &&
@@ -171,3 +166,4 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     </>
   );
 }
+

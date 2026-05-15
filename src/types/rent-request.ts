@@ -19,8 +19,7 @@ export interface RentRequest {
   minArea?: number | null;
   maxArea?: number | null;
   preferredDirection?: PropertyDirection | string | null;
-  businessType?: string | null;
-  preferredStreet?: string | null;
+  categoryName?: string | null;
   requirementText?: string | null;
   contactName?: string | null;
   contactPhone?: string | null;

@@ -1,4 +1,8 @@
 ﻿import { formatDate, formatPrice } from "@/lib/utils";
+import {
+  getPropertyGalleryImages,
+  getPropertyThumbnailUrl,
+} from "@/mocks/properties";
 import { Property } from "@/types/property";
 import {
   Bath,
@@ -96,7 +100,7 @@ function FeaturedCard({ property }: { property: Property }) {
       <div className="relative h-52 overflow-hidden">
         <TierBadge label={getTierLabel(property.priorityStatus)} />
         <Image
-          src={property.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
+          src={getPropertyThumbnailUrl(property.id)}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -124,12 +128,13 @@ function FeaturedCard({ property }: { property: Property }) {
 function GoldCard({
   property,
 }: {
-  property: Property & { images?: string[] };
+  property: Property;
 }) {
-  const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
+  const fallbackImage = getPropertyThumbnailUrl(property.id);
+  const galleryImages = getPropertyGalleryImages(property.id);
   const imagesList =
-    property.images && property.images.length > 0
-      ? property.images
+    galleryImages.length > 0
+      ? galleryImages
       : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
 
   return (
@@ -197,12 +202,13 @@ function GoldCard({
 function SilverCard({
   property,
 }: {
-  property: Property & { images?: string[] };
+  property: Property;
 }) {
-  const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
+  const fallbackImage = getPropertyThumbnailUrl(property.id);
+  const galleryImages = getPropertyGalleryImages(property.id);
   const imagesList =
-    property.images && property.images.length > 0
-      ? property.images
+    galleryImages.length > 0
+      ? galleryImages
       : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
 
   const rightThumbs = [
@@ -254,7 +260,7 @@ function SilverCard({
 }
 
 function NormalCard({ property }: { property: Property }) {
-  const image = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
+  const image = getPropertyThumbnailUrl(property.id);
 
   return (
     <article className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
@@ -348,3 +354,5 @@ export function PropertyCard({
 
   return <Link href={href}>{content}</Link>;
 }
+
+

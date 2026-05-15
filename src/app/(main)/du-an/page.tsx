@@ -1,14 +1,15 @@
-﻿import type { Metadata } from "next";
-import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
-import PageSeoContent from "@/components/common/PageSeoContent";
+import type { Metadata } from "next";
 import PageFaq from "@/components/common/PageFaq";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import { buildProjectCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/mocks/pageSeoFaq";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Dá»± Ã¡n",
-  description: "Cáº­p nháº­t thÃ´ng tin dá»± Ã¡n báº¥t Ä‘á»™ng sáº£n ná»•i báº­t vÃ  má»›i nháº¥t.",
+  title: "Dự án",
+  description:
+    "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
   pathname: "/du-an",
 });
 

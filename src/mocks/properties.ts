@@ -1,4 +1,5 @@
 ﻿import { Property } from "../types/property";
+import { PropertyImage } from "../types/media";
 import { mockCategoryProperty } from "./categories";
 import { mockCities, mockDistricts, mockStreets, mockWards } from "./locations";
 
@@ -23,7 +24,6 @@ export const mockProperties: Property[] = [
     price: 48000000,
     isNegotiable: true,
     area: 150,
-    thumbnailUrl: "/imgs/wallpaper-1.jpg",
     direction: "DONG_NAM",
     bedrooms: 0,
     bathrooms: 2,
@@ -65,7 +65,6 @@ export const mockProperties: Property[] = [
     price: 19000000,
     isNegotiable: false,
     area: 85,
-    thumbnailUrl: "/imgs/wallpaper-2.jpg",
     direction: "NAM",
     bedrooms: 0,
     bathrooms: 2,
@@ -102,7 +101,6 @@ export const mockProperties: Property[] = [
     price: 15500000,
     isNegotiable: false,
     area: 72,
-    thumbnailUrl: "/imgs/wallpaper-1.jpg",
     direction: "DONG",
     bedrooms: 2,
     bathrooms: 2,
@@ -138,7 +136,6 @@ export const mockProperties: Property[] = [
     price: 60000000,
     isNegotiable: true,
     area: 500,
-    thumbnailUrl: "/imgs/wallpaper-2.jpg",
     direction: "TAY_BAC",
     bedrooms: 0,
     bathrooms: 2,
@@ -175,3 +172,82 @@ export const mockProperties: Property[] = [
 export const featuredMockProperties = mockProperties.filter(
   (property) => property.isFeatured,
 );
+
+
+export const mockPropertyImages: PropertyImage[] = [
+  {
+    id: 90001,
+    propertyId: 1001,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "property-1001-1",
+    sortOrder: 1,
+    createdAt: "2026-05-01T08:00:00.000Z",
+  },
+  {
+    id: 90002,
+    propertyId: 1001,
+    fileUrl: "/imgs/wallpaper-2.jpg",
+    publicId: "property-1001-2",
+    sortOrder: 2,
+    createdAt: "2026-05-01T08:00:00.000Z",
+  },
+  {
+    id: 90003,
+    propertyId: 1001,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "property-1001-3",
+    sortOrder: 3,
+    createdAt: "2026-05-01T08:00:00.000Z",
+  },
+  {
+    id: 90004,
+    propertyId: 1002,
+    fileUrl: "/imgs/wallpaper-2.jpg",
+    publicId: "property-1002-1",
+    sortOrder: 1,
+    createdAt: "2026-05-05T10:00:00.000Z",
+  },
+  {
+    id: 90005,
+    propertyId: 1002,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "property-1002-2",
+    sortOrder: 2,
+    createdAt: "2026-05-05T10:00:00.000Z",
+  },
+  {
+    id: 90006,
+    propertyId: 1003,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "property-1003-1",
+    sortOrder: 1,
+    createdAt: "2026-05-09T12:00:00.000Z",
+  },
+  {
+    id: 90007,
+    propertyId: 1006,
+    fileUrl: "/imgs/wallpaper-2.jpg",
+    publicId: "property-1006-1",
+    sortOrder: 1,
+    createdAt: "2026-05-02T09:00:00.000Z",
+  },
+  {
+    id: 90008,
+    propertyId: 1006,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "property-1006-2",
+    sortOrder: 2,
+    createdAt: "2026-05-02T09:00:00.000Z",
+  },
+];
+
+export const getPropertyGalleryImages = (propertyId: number) =>
+  mockPropertyImages
+    .filter((image) => image.propertyId === propertyId)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    .map((image) => image.fileUrl);
+
+export const getPropertyThumbnailUrl = (propertyId: number) =>
+  getPropertyGalleryImages(propertyId)[0] || "/imgs/wallpaper-1.jpg";
+
+

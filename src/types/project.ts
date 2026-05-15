@@ -1,5 +1,6 @@
 import { Category } from "./category";
 import { City, District, Ward } from "./location";
+import { ProjectImage } from "./media";
 import { PublishStatus } from "./enums";
 
 export interface Project {
@@ -14,7 +15,6 @@ export interface Project {
   addressDetail?: string | null;
   area?: number | null;
   price?: number | null;
-  thumbnailUrl?: string | null;
   content?: string | null;
   viewCount?: number | null;
   status?: PublishStatus | string | null;
@@ -24,6 +24,7 @@ export interface Project {
   city?: City | null;
   district?: District | null;
   ward?: Ward | null;
+  images?: ProjectImage[];
   // Legacy fields kept for compatibility.
   overviewContent?: string | null;
   locationContent?: string | null;

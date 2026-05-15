@@ -1,3 +1,4 @@
+import { ProjectImage } from "../types/media";
 import { Project } from "../types/project";
 import { mockCategoryProject } from "./categories";
 import { mockCities, mockDistricts, mockWards } from "./locations";
@@ -24,7 +25,6 @@ export const mockProjects: Project[] = [
     addressDetail: "Bến Nghé, Quận 1",
     area: 12000,
     price: 8500000000,
-    thumbnailUrl: "/imgs/wallpaper-1.jpg",
     content:
       "<h2>Tổng quan dự án</h2><p>Tổ hợp thương mại - văn phòng cao cấp.</p>",
     viewCount: 920,
@@ -48,7 +48,6 @@ export const mockProjects: Project[] = [
     addressDetail: "Cầu Giấy, Hà Nội",
     area: 48000,
     price: 14500000000,
-    thumbnailUrl: "/imgs/wallpaper-2.jpg",
     content:
       "<h2>Tiện ích</h2><p>Trung tâm thương mại, công viên, trường học.</p>",
     viewCount: 510,
@@ -61,3 +60,55 @@ export const mockProjects: Project[] = [
     ward: getWard(2002),
   },
 ];
+
+export const mockProjectImages: ProjectImage[] = [
+  {
+    id: 91001,
+    projectId: 7001,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "project-7001-1",
+    sortOrder: 1,
+    createdAt: "2026-03-12T03:00:00.000Z",
+  },
+  {
+    id: 91002,
+    projectId: 7001,
+    fileUrl: "/imgs/wallpaper-2.jpg",
+    publicId: "project-7001-2",
+    sortOrder: 2,
+    createdAt: "2026-03-12T03:00:00.000Z",
+  },
+  {
+    id: 91003,
+    projectId: 7001,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "project-7001-3",
+    sortOrder: 3,
+    createdAt: "2026-03-12T03:00:00.000Z",
+  },
+  {
+    id: 91004,
+    projectId: 7002,
+    fileUrl: "/imgs/wallpaper-2.jpg",
+    publicId: "project-7002-1",
+    sortOrder: 1,
+    createdAt: "2026-04-02T03:00:00.000Z",
+  },
+  {
+    id: 91005,
+    projectId: 7002,
+    fileUrl: "/imgs/wallpaper-1.jpg",
+    publicId: "project-7002-2",
+    sortOrder: 2,
+    createdAt: "2026-04-02T03:00:00.000Z",
+  },
+];
+
+export const getProjectGalleryImages = (projectId: number) =>
+  mockProjectImages
+    .filter((image) => image.projectId === projectId)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    .map((image) => image.fileUrl);
+
+export const getProjectThumbnailUrl = (projectId: number) =>
+  getProjectGalleryImages(projectId)[0] || "/imgs/wallpaper-1.jpg";
