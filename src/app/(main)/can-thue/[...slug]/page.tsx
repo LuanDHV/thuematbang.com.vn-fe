@@ -1,16 +1,20 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { createPageMetadata } from "@/lib/metadata";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageFaq from "@/components/common/PageFaq";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
+import PropertyDetailMain from "@/components/property-detail/PropertyDetailMain";
+import PropertyDetailSidebarRentWanted from "@/components/property-detail/PropertyDetailSidebarRentWanted";
 import {
   buildPropertyFilterBreadcrumbs,
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
-import { mockProperties } from "@/mocks/properties";
-import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
-import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import PageSeoContent from "@/components/common/PageSeoContent";
-import PageFaq from "@/components/common/PageFaq";
+import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/mocks/pageSeoFaq";
+import { mockProperties } from "@/mocks/properties";
+import { mockUsers } from "@/mocks/users";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -18,8 +22,7 @@ type PageProps = {
 
 function getPropertyDetail(slug: string) {
   return mockProperties.find(
-    (property) =>
-      property.listingType === "RENT_WANTED" && property.slug === slug,
+    (property) => property.listingType === "RENT_WANTED" && property.slug === slug,
   );
 }
 
@@ -53,8 +56,59 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
   const property = getPropertyDetail(rawSlug);
 
   if (property) {
+    const cookieStore = await cookies();
+    const isLoggedIn =
+      Boolean(cookieStore.get("accessToken")?.value) ||
+      Boolean(cookieStore.get("token")?.value) ||
+      Boolean(cookieStore.get("authToken")?.value);
+
+    const poster = mockUsers.find((user) => user.id === property.userId);
+    const locationText = [
+      property.addressDetail,
+      property.ward?.name,
+      property.district?.name,
+      property.city?.name,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const rentalWantedProperties = mockProperties.filter(
+      (item) => item.listingType === "RENT_WANTED" && item.id !== property.id,
+    );
+
+    const featuredProperties = mockProperties
+      .filter((item) => item.listingType === "RENT_WANTED" && item.isFeatured)
+      .slice(0, 6);
+
+    const viewedProperties = rentalWantedProperties.slice(0, 3);
+    const latestWantedProperties = mockProperties
+      .filter(
+        (item) => item.listingType === "RENT_WANTED" && item.id !== property.id,
+      )
+      .sort((a, b) => {
+        const aTime = new Date(a.createdAt || 0).getTime();
+        const bTime = new Date(b.createdAt || 0).getTime();
+        return bTime - aTime;
+      })
+      .slice(0, 10);
+
+    const galleryImages = [
+      property.thumbnailUrl || "/imgs/wallpaper-1.jpg",
+      ...rentalWantedProperties
+        .slice(0, 6)
+        .map((item) => item.thumbnailUrl || "/imgs/wallpaper-1.jpg"),
+    ];
+
+    const hasCoordinates =
+      typeof property.latitude === "number" &&
+      typeof property.longitude === "number";
+
+    const mapSrc = hasCoordinates
+      ? `https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`
+      : null;
+
     return (
-      <article className="mx-auto max-w-4xl px-4 py-8">
+      <article className="mx-auto max-w-7xl px-4 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[
@@ -63,15 +117,22 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
             { label: property.title },
           ]}
         />
-        <h1 className="text-3xl leading-tight font-bold">{property.title}</h1>
-        <p className="mt-3 text-base text-gray-600">{property.description}</p>
-        {property.content ? (
-          <div
-            className="mt-6 text-base"
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: property.content }}
+
+        <div className="flex flex-col gap-6 lg:flex-row">
+          <PropertyDetailMain
+            property={property}
+            locationText={locationText}
+            galleryImages={galleryImages}
+            mapSrc={mapSrc}
+            featuredProperties={featuredProperties}
+            viewedProperties={viewedProperties}
           />
-        ) : null}
+          <PropertyDetailSidebarRentWanted
+            poster={poster}
+            isLoggedIn={isLoggedIn}
+            latestWantedProperties={latestWantedProperties}
+          />
+        </div>
       </article>
     );
   }
@@ -104,3 +165,4 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     </>
   );
 }
+

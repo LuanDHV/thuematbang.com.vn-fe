@@ -10,11 +10,19 @@ type PosterContactCardProps = {
   phone?: string | null;
   avatarUrl?: string | null;
   canRevealPhone: boolean;
+  loginHref?: string;
+  revealLabelPrefix?: string;
+  maskedLabelPrefix?: string;
 };
 
+function normalizePhone(phone?: string | null) {
+  if (!phone) return "";
+  return phone.replace(/\s+/g, "");
+}
+
 function getMaskedPhone(phone?: string | null) {
-  if (!phone) return "Đang cập nhật";
-  const normalized = phone.replace(/\s+/g, "");
+  const normalized = normalizePhone(phone);
+  if (!normalized) return "Đang cập nhật";
   if (normalized.length <= 3) return `${normalized}***`;
   return `${normalized.slice(0, 6)}***`;
 }
@@ -30,9 +38,13 @@ export default function PosterContactCard({
   phone,
   avatarUrl,
   canRevealPhone,
+  loginHref = "/dang-nhap",
+  revealLabelPrefix = "Liên hệ",
+  maskedLabelPrefix = "Hiện số",
 }: PosterContactCardProps) {
+  const normalizedPhone = useMemo(() => normalizePhone(phone), [phone]);
   const maskedPhone = useMemo(() => getMaskedPhone(phone), [phone]);
-  const directPhone = phone || "Đang cập nhật";
+  const directPhone = normalizedPhone || "Đang cập nhật";
 
   return (
     <section>
@@ -56,24 +68,27 @@ export default function PosterContactCard({
         )}
         <div>
           <p className="text-sm text-gray-500">Người đăng</p>
-          <p className="text-base font-semibold text-gray-900">
+          <p className="text-base font-semibold text-gray-800">
             {fullName || "Đang cập nhật"}
           </p>
         </div>
       </div>
 
       {canRevealPhone ? (
-        <button className="bg-primary mt-4 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:opacity-90">
+        <a
+          href={normalizedPhone ? `tel:${normalizedPhone}` : undefined}
+          className="bg-primary mt-4 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:opacity-90"
+        >
           <PhoneCall size={16} />
-          Gọi {directPhone}
-        </button>
+          {revealLabelPrefix} {directPhone}
+        </a>
       ) : (
         <Link
-          href="/dang-nhap"
+          href={loginHref}
           className="bg-primary mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:opacity-90"
         >
           <PhoneCall size={16} />
-          Hiện số {maskedPhone}
+          {maskedLabelPrefix} {maskedPhone}
         </Link>
       )}
     </section>
