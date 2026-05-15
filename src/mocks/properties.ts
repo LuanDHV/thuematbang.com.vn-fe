@@ -1,4 +1,4 @@
-import { Property } from "../types/property";
+﻿import { Property } from "../types/property";
 import { mockCategoryProperty } from "./categories";
 import { mockCities, mockDistricts, mockStreets, mockWards } from "./locations";
 
@@ -113,8 +113,8 @@ export const mockProperties: Property[] = [
     districtId: 201,
     wardId: 2001,
     streetId: 5003,
-    addressDetail: "Đội Cấn, Ba Đình",
-    description: "Căn hộ mới, vào ở ngay.",
+        addressDetail: "Äá»™i Cáº¥n, Ba ÄÃ¬nh",
+    description: "CÄƒn há»™ má»›i, vÃ o á»Ÿ ngay.",
     viewCount: 420,
     status: "PUBLISHED",
     isFeatured: false,
@@ -153,6 +153,8 @@ export const mockProperties: Property[] = [
     districtId: 202,
     wardId: 2002,
     streetId: 5004,
+latitude: 21.036237,
+    longitude: 105.790583,
     addressDetail: "Khu Cầu Giấy hoặc lân cận",
     description: "Ưu tiên mặt tiền lớn, chỗ đậu xe rộng.",
     viewCount: 980,
@@ -188,8 +190,10 @@ export const mockProperties: Property[] = [
     districtId: 301,
     wardId: 3001,
     streetId: 5005,
-    addressDetail: "Khu Hải Châu, gần trung tâm",
-    description: "Cần chỗ có chỗ gửi xe máy cho nhân viên.",
+    latitude: 16.06778,
+    longitude: 108.22083,
+    addressDetail: "Khu Háº£i ChÃ¢u, gáº§n trung tÃ¢m",
+    description: "Cáº§n chá»— cÃ³ chá»— gá»­i xe mÃ¡y cho nhÃ¢n viÃªn.",
     viewCount: 260,
     status: "PUBLISHED",
     isFeatured: false,
