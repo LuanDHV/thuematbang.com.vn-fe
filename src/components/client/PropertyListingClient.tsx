@@ -4,9 +4,11 @@ import { useMemo, useState } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Pagination } from "@/components/common/Pagination";
 import { PropertyCard } from "@/components/common/PropertyCard";
+import { RentRequestCard } from "@/components/common/RentRequestCard";
 import type { BreadcrumbItem } from "@/lib/flat-url";
 import { mockProperties } from "@/mocks/properties";
 import { Property } from "@/types/property";
+import { RentRequest } from "@/types/rent-request";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["gold", "silver", "normal"] as const;
@@ -34,28 +36,47 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
 
 export default function PropertyListingClient({
   properties = mockProperties,
+  listingMode = "property",
   breadcrumbItems,
 }: {
-  properties?: Property[];
+  properties?: Property[] | RentRequest[];
+  listingMode?: "property" | "rentRequest";
   title?: string;
   breadcrumbItems?: BreadcrumbItem[];
 }) {
   const orderedProperties = useMemo(() => {
+    if (listingMode === "rentRequest") {
+      return [...properties].sort((left, right) => {
+        const leftItem = left as RentRequest;
+        const rightItem = right as RentRequest;
+        if (leftItem.isFeatured !== rightItem.isFeatured) {
+          return leftItem.isFeatured ? -1 : 1;
+        }
+        return (
+          new Date(rightItem.createdAt ?? 0).getTime() -
+          new Date(leftItem.createdAt ?? 0).getTime()
+        );
+      }) as RentRequest[];
+    }
+
     return [...properties].sort((left, right) => {
+      const leftItem = left as Property;
+      const rightItem = right as Property;
       const tierDiff =
-        getTierRank(left.priorityStatus) - getTierRank(right.priorityStatus);
+        getTierRank(leftItem.priorityStatus) -
+        getTierRank(rightItem.priorityStatus);
 
       if (tierDiff !== 0) return tierDiff;
-      if (left.isFeatured !== right.isFeatured) {
-        return left.isFeatured ? -1 : 1;
+      if (leftItem.isFeatured !== rightItem.isFeatured) {
+        return leftItem.isFeatured ? -1 : 1;
       }
 
       return (
-        new Date(right.createdAt ?? 0).getTime() -
-        new Date(left.createdAt ?? 0).getTime()
+        new Date(rightItem.createdAt ?? 0).getTime() -
+        new Date(leftItem.createdAt ?? 0).getTime()
       );
-    });
-  }, [properties]);
+    }) as Property[];
+  }, [listingMode, properties]);
 
   const [page, setPage] = useState(1);
   const totalPages = Math.max(
@@ -68,15 +89,18 @@ export default function PropertyListingClient({
     currentPage * PAGE_SIZE,
   );
 
-  const groupedPageItems = TIER_ORDER.reduce(
-    (accumulator, tier) => {
-      accumulator[tier] = pageItems.filter(
-        (property) => (property.priorityStatus ?? "normal") === tier,
-      );
-      return accumulator;
-    },
-    {} as Record<TierKey, Property[]>,
-  );
+  const groupedPageItems =
+    listingMode === "property"
+      ? TIER_ORDER.reduce(
+          (accumulator, tier) => {
+            accumulator[tier] = (pageItems as Property[]).filter(
+              (property) => (property.priorityStatus ?? "normal") === tier,
+            );
+            return accumulator;
+          },
+          {} as Record<TierKey, Property[]>,
+        )
+      : null;
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-8">
@@ -85,25 +109,37 @@ export default function PropertyListingClient({
       ) : null}
 
       <div className="space-y-10">
-        {TIER_ORDER.map((tier) => {
-          const tierItems = groupedPageItems[tier];
+        {listingMode === "property" && groupedPageItems
+          ? TIER_ORDER.map((tier) => {
+              const tierItems = groupedPageItems[tier];
 
-          if (tierItems.length === 0) return null;
+              if (tierItems.length === 0) return null;
 
-          return (
-            <section key={tier} className="space-y-4">
-              <div className={TIER_CONFIG[tier].gridClass}>
-                {tierItems.map((property) => (
-                  <PropertyCard
-                    key={property.id}
-                    property={property}
-                    variant="tier"
-                  />
-                ))}
-              </div>
-            </section>
-          );
-        })}
+              return (
+                <section key={tier} className="space-y-4">
+                  <div className={TIER_CONFIG[tier].gridClass}>
+                    {tierItems.map((property) => (
+                      <PropertyCard
+                        key={property.id}
+                        property={property}
+                        variant="tier"
+                      />
+                    ))}
+                  </div>
+                </section>
+              );
+            })
+          : null}
+
+        {listingMode === "rentRequest" ? (
+          <section className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {(pageItems as RentRequest[]).map((request) => (
+                <RentRequestCard key={request.id} request={request} />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <Pagination
           page={currentPage}

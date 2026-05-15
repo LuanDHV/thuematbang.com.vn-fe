@@ -1,9 +1,7 @@
 import { Category } from "./category";
 import { City, District, Street, Ward } from "./location";
 import { User } from "./user";
-import { Project } from "./project";
 import {
-  ListingType,
   PropertyDirection,
   PropertyPriority,
   PropertyPriorityLegacy,
@@ -14,8 +12,6 @@ import {
 export interface Property {
   id: number;
   userId?: number;
-  listingType?: ListingType;
-  projectId?: number | null;
   title: string;
   slug: string;
   categoryId: number;
@@ -24,9 +20,11 @@ export interface Property {
   area?: number | null;
   thumbnailUrl?: string | null;
   direction?: PropertyDirection | string | null;
-  numFloors?: number | null;
+  floors?: number | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
+  frontage?: number | null;
+  roadWidth?: number | null;
   viewCount?: number | null;
   priorityStatus?:
     | PropertyPriority
@@ -34,7 +32,7 @@ export interface Property {
     | string
     | null;
   publishSource?: PublishSource | string | null;
-  packageOrderId?: number | null;
+  propertyPackageOrderId?: number | null;
   isBoosted?: boolean;
   boostedAt?: Date | string | null;
   boostStartAt?: Date | string | null;
@@ -49,14 +47,17 @@ export interface Property {
   latitude?: number | null;
   longitude?: number | null;
   addressDetail?: string | null;
+  contactName?: string | null;
+  contactPhone?: string | null;
   content?: string | null;
   description?: string | null;
   status?: PublishStatus | string | null;
   isFeatured?: boolean | null;
+  publishedAt?: Date | string | null;
+  expiredAt?: Date | string | null;
   createdAt?: Date | string | null;
   updatedAt?: Date | string | null;
   user?: User;
-  project?: Project | null;
   category?: Category | null;
   city?: City | null;
   district?: District | null;

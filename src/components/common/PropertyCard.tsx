@@ -13,9 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 function resolvePropertyHref(property: Property) {
-  return property.listingType === "RENT_WANTED"
-    ? `/can-thue/${property.slug}`
-    : `/cho-thue/${property.slug}`;
+  return `/cho-thue/${property.slug}`;
 }
 
 function getTierLabel(priorityStatus?: string | null) {

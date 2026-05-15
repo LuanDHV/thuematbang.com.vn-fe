@@ -21,9 +21,7 @@ type PageProps = {
 };
 
 function getPropertyDetail(slug: string) {
-  return mockProperties.find(
-    (property) => property.listingType === "RENT_OUT" && property.slug === slug,
-  );
+  return mockProperties.find((property) => property.slug === slug);
 }
 
 export async function generateMetadata({
@@ -73,11 +71,11 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       .join(", ");
 
     const rentalOutProperties = mockProperties.filter(
-      (item) => item.listingType === "RENT_OUT" && item.id !== property.id,
+      (item) => item.id !== property.id,
     );
 
     const featuredProperties = mockProperties
-      .filter((item) => item.listingType === "RENT_OUT" && item.isFeatured)
+      .filter((item) => item.isFeatured)
       .slice(0, 6);
 
     const viewedProperties = rentalOutProperties.slice(0, 3);
@@ -102,7 +100,6 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       ? mockProperties
           .filter(
             (item) =>
-              item.listingType === "RENT_OUT" &&
               item.cityId === property.cityId &&
               item.category?.slug &&
               item.category?.name,
@@ -130,12 +127,13 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
         <div className="flex flex-col gap-6 lg:flex-row">
           <PropertyDetailMain
-            property={property}
+            listing={property}
+            listingMode="property"
             locationText={locationText}
             galleryImages={galleryImages}
             mapSrc={mapSrc}
-            featuredProperties={featuredProperties}
-            viewedProperties={viewedProperties}
+            featuredItems={featuredProperties}
+            viewedItems={viewedProperties}
           />
           <PropertyDetailSidebarRentOut
             poster={poster}
@@ -149,9 +147,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
   const pageContent = pageSeoFaq["cho-thue"];
-  const rentalOutProperties = mockProperties.filter(
-    (item) => item.listingType === "RENT_OUT",
-  );
+  const rentalOutProperties = mockProperties;
 
   if (!rentalOutProperties.length) {
     notFound();
@@ -162,6 +158,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       <PropertyFilterSection
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}
+        listingMode="property"
         basePath="/cho-thue"
         initialFilters={initialFilters}
         breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue", rawSlug)}

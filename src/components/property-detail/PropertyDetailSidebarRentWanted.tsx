@@ -1,13 +1,13 @@
 ﻿import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PosterContactCard from "@/components/common/PosterContactCard";
-import { Property } from "@/types/property";
+import { RentRequest } from "@/types/rent-request";
 import { User } from "@/types/user";
 
 type PropertyDetailSidebarRentWantedProps = {
   poster?: User;
   isLoggedIn: boolean;
-  latestWantedProperties: Property[];
+  latestWantedProperties: RentRequest[];
   companyPhone?: string;
 };
 

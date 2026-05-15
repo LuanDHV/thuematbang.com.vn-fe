@@ -10,5 +10,6 @@ export * from "./news";
 export * from "./post";
 export * from "./project";
 export * from "./property";
+export * from "./rent-request";
 export * from "./saved-search";
 export * from "./user";

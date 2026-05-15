@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
+import { RentRequest } from "@/types/rent-request";
 import { PropertyFilterDrawer } from "./PropertyFilterDrawer";
 import {
   AreaDetailTab,
@@ -33,9 +34,10 @@ import { buildPropertyFilterPath } from "@/lib/flat-url";
 
 type Props = {
   basePath: string;
+  listingMode?: "property" | "rentRequest";
   initialFilters?: AdvancedFilterValue;
-  sourceProperties: Property[];
-  onFilteredChange: (items: Property[]) => void;
+  sourceProperties: Property[] | RentRequest[];
+  onFilteredChange: (items: Property[] | RentRequest[]) => void;
 };
 
 const cityMap = mockCities.reduce<Record<string, Record<string, string[]>>>(
@@ -64,6 +66,7 @@ const normalize = (value: string) =>
 
 export default function PropertyFilterToolbar({
   basePath,
+  listingMode = "property",
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
   sourceProperties,
   onFilteredChange,
@@ -106,67 +109,131 @@ export default function PropertyFilterToolbar({
     const minArea = Number(activeFilters.areaMin || 0);
     const maxArea = Number(activeFilters.areaMax || 0);
 
-    const filtered = sourceProperties.filter((property) => {
-      const categoryName = property.category?.name ?? "";
-      const cityName = property.city?.name ?? "";
-      const wardName = property.ward?.name ?? "";
-      const streetName = property.street?.name ?? "";
-      const haystack = normalize(
-        `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName}`,
-      );
+    const filtered =
+      listingMode === "rentRequest"
+        ? (sourceProperties as RentRequest[]).filter((request) => {
+            const categoryName = request.category?.name ?? "";
+            const cityName = request.desiredCity?.name ?? "";
+            const wardName = request.desiredWard?.name ?? "";
+            const streetName = request.preferredStreet ?? "";
+            const haystack = normalize(
+              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName} ${request.businessType ?? ""}`,
+            );
 
-      if (keywordText && !haystack.includes(keywordText)) return false;
+            if (keywordText && !haystack.includes(keywordText)) return false;
 
-      if (activeFilters.propertyTypes.length > 0) {
-        const normalizedCategory = normalize(categoryName);
-        const matched = activeFilters.propertyTypes.some(
-          (type) => normalizedCategory === normalize(type),
-        );
-        if (!matched) return false;
-      }
+            if (activeFilters.propertyTypes.length > 0) {
+              const normalizedCategory = normalize(categoryName);
+              const matched = activeFilters.propertyTypes.some(
+                (type) => normalizedCategory === normalize(type),
+              );
+              if (!matched) return false;
+            }
 
-      const priceValue = Number(property.price || 0);
-      if (minPrice > 0 && priceValue < minPrice) return false;
-      if (maxPrice > 0 && priceValue > maxPrice) return false;
+            const requestMinBudget = Number(request.minBudget || 0);
+            const requestMaxBudget = Number(request.maxBudget || 0);
+            if (minPrice > 0 && requestMaxBudget > 0 && requestMaxBudget < minPrice)
+              return false;
+            if (maxPrice > 0 && requestMinBudget > maxPrice) return false;
 
-      const areaValue = property.area ?? 0;
-      if (minArea > 0 && areaValue < minArea) return false;
-      if (maxArea > 0 && areaValue > maxArea) return false;
+            const requestMinArea = request.minArea ?? 0;
+            const requestMaxArea = request.maxArea ?? 0;
+            if (minArea > 0 && requestMaxArea > 0 && requestMaxArea < minArea)
+              return false;
+            if (maxArea > 0 && requestMinArea > maxArea) return false;
 
-      if (activeFilters.city && property.city?.name !== activeFilters.city)
-        return false;
-      if (activeFilters.ward && property.ward?.name !== activeFilters.ward)
-        return false;
-      if (
-        activeFilters.street &&
-        property.street?.name !== activeFilters.street
-      )
-        return false;
+            if (
+              activeFilters.city &&
+              request.desiredCity?.name !== activeFilters.city
+            )
+              return false;
+            if (
+              activeFilters.ward &&
+              request.desiredWard?.name !== activeFilters.ward
+            )
+              return false;
+            if (
+              activeFilters.street &&
+              normalize(request.preferredStreet ?? "") !==
+                normalize(activeFilters.street) &&
+              !normalize(request.preferredStreet ?? "").includes(
+                normalize(activeFilters.street),
+              )
+            )
+              return false;
 
-      if (activeFilters.bedrooms.length > 0) {
-        const bedMatched = activeFilters.bedrooms.some((item) => {
-          if (item === "5+") return (property.bedrooms ?? 0) >= 5;
-          return String(property.bedrooms ?? 0) === item;
-        });
-        if (!bedMatched) return false;
-      }
+            if (activeFilters.directions.length > 0) {
+              const direction = (request.preferredDirection ?? "")
+                .toString()
+                .toUpperCase();
+              if (!activeFilters.directions.includes(direction)) return false;
+            }
 
-      if (activeFilters.bathrooms.length > 0) {
-        const bathMatched = activeFilters.bathrooms.some((item) => {
-          if (item === "5+") return (property.bathrooms ?? 0) >= 5;
-          return String(property.bathrooms ?? 0) === item;
-        });
-        if (!bathMatched) return false;
-      }
+            return true;
+          })
+        : (sourceProperties as Property[]).filter((property) => {
+            const categoryName = property.category?.name ?? "";
+            const cityName = property.city?.name ?? "";
+            const wardName = property.ward?.name ?? "";
+            const streetName = property.street?.name ?? "";
+            const haystack = normalize(
+              `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName}`,
+            );
 
-      if (activeFilters.directions.length > 0) {
-        const direction = (property.direction ?? "").toString().toUpperCase();
-        if (!activeFilters.directions.includes(direction)) return false;
-      }
+            if (keywordText && !haystack.includes(keywordText)) return false;
 
-      if (activeFilters.negotiable && !property.isNegotiable) return false;
-      return true;
-    });
+            if (activeFilters.propertyTypes.length > 0) {
+              const normalizedCategory = normalize(categoryName);
+              const matched = activeFilters.propertyTypes.some(
+                (type) => normalizedCategory === normalize(type),
+              );
+              if (!matched) return false;
+            }
+
+            const priceValue = Number(property.price || 0);
+            if (minPrice > 0 && priceValue < minPrice) return false;
+            if (maxPrice > 0 && priceValue > maxPrice) return false;
+
+            const areaValue = property.area ?? 0;
+            if (minArea > 0 && areaValue < minArea) return false;
+            if (maxArea > 0 && areaValue > maxArea) return false;
+
+            if (activeFilters.city && property.city?.name !== activeFilters.city)
+              return false;
+            if (activeFilters.ward && property.ward?.name !== activeFilters.ward)
+              return false;
+            if (
+              activeFilters.street &&
+              property.street?.name !== activeFilters.street
+            )
+              return false;
+
+            if (activeFilters.bedrooms.length > 0) {
+              const bedMatched = activeFilters.bedrooms.some((item) => {
+                if (item === "5+") return (property.bedrooms ?? 0) >= 5;
+                return String(property.bedrooms ?? 0) === item;
+              });
+              if (!bedMatched) return false;
+            }
+
+            if (activeFilters.bathrooms.length > 0) {
+              const bathMatched = activeFilters.bathrooms.some((item) => {
+                if (item === "5+") return (property.bathrooms ?? 0) >= 5;
+                return String(property.bathrooms ?? 0) === item;
+              });
+              if (!bathMatched) return false;
+            }
+
+            if (activeFilters.directions.length > 0) {
+              const direction = (property.direction ?? "")
+                .toString()
+                .toUpperCase();
+              if (!activeFilters.directions.includes(direction)) return false;
+            }
+
+            if (activeFilters.negotiable && !property.isNegotiable) return false;
+            return true;
+          });
 
     return filtered;
   };
@@ -243,6 +310,10 @@ export default function PropertyFilterToolbar({
                   ? 1
                   : 0)
               }
+              defaultDemandTab={
+                listingMode === "rentRequest" ? "can-thue" : "cho-thue"
+              }
+              listingMode={listingMode}
               propertyTypeOptions={mockFilterPropertyTypes}
               cityMap={cityMap}
               value={advancedFilters}

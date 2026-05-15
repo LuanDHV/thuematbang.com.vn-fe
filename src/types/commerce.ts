@@ -10,8 +10,8 @@ import { User } from "./user";
 export interface UserPostingQuota {
   id: number;
   userId: number;
-  freePostsTotal: number;
-  freePostsRemaining: number;
+  freePropertyPostsTotal: number;
+  freePropertyPostsRemaining: number;
   createdAt?: Date | string | null;
   updatedAt?: Date | string | null;
   user?: User;
@@ -56,8 +56,8 @@ export interface PaymentTransaction {
   id: number;
   userId: number;
   purchaseType: PurchaseType | string;
-  packageOrderId?: number | null;
-  boostOrderId?: number | null;
+  propertyPackageOrderId?: number | null;
+  propertyBoostOrderId?: number | null;
   provider: string;
   providerTxnId?: string | null;
   amount: number;

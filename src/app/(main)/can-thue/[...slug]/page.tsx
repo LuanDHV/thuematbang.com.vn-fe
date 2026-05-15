@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
@@ -13,17 +13,15 @@ import {
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/mocks/pageSeoFaq";
-import { mockProperties } from "@/mocks/properties";
+import { mockRentRequests } from "@/mocks/rentRequests";
 import { mockUsers } from "@/mocks/users";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-function getPropertyDetail(slug: string) {
-  return mockProperties.find(
-    (property) => property.listingType === "RENT_WANTED" && property.slug === slug,
-  );
+function getRentRequestDetail(slug: string) {
+  return mockRentRequests.find((request) => request.slug === slug);
 }
 
 export async function generateMetadata({
@@ -31,14 +29,14 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const rawSlug = slug.join("-");
-  const property = getPropertyDetail(rawSlug);
+  const rentRequest = getRentRequestDetail(rawSlug);
 
-  if (property) {
+  if (rentRequest) {
     return createPageMetadata({
-      title: property.title,
-      description: property.description || "Chi tiết nhu cầu cần thuê.",
-      pathname: `/can-thue/${property.slug}`,
-      image: property.thumbnailUrl || undefined,
+      title: rentRequest.title,
+      description: rentRequest.requirementText || "Chi tiết nhu cầu cần thuê.",
+      pathname: `/can-thue/${rentRequest.slug}`,
+      image: rentRequest.thumbnailUrl || undefined,
       type: "article",
     });
   }
@@ -53,38 +51,36 @@ export async function generateMetadata({
 export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
   const rawSlug = slug.join("-");
-  const property = getPropertyDetail(rawSlug);
+  const rentRequest = getRentRequestDetail(rawSlug);
 
-  if (property) {
+  if (rentRequest) {
     const cookieStore = await cookies();
     const isLoggedIn =
       Boolean(cookieStore.get("accessToken")?.value) ||
       Boolean(cookieStore.get("token")?.value) ||
       Boolean(cookieStore.get("authToken")?.value);
 
-    const poster = mockUsers.find((user) => user.id === property.userId);
+    const poster = mockUsers.find((user) => user.id === rentRequest.userId);
     const locationText = [
-      property.addressDetail,
-      property.ward?.name,
-      property.district?.name,
-      property.city?.name,
+      rentRequest.preferredStreet,
+      rentRequest.desiredWard?.name,
+      rentRequest.desiredDistrict?.name,
+      rentRequest.desiredCity?.name,
     ]
       .filter(Boolean)
       .join(", ");
 
-    const rentalWantedProperties = mockProperties.filter(
-      (item) => item.listingType === "RENT_WANTED" && item.id !== property.id,
+    const relatedRequests = mockRentRequests.filter(
+      (item) => item.id !== rentRequest.id,
     );
 
-    const featuredProperties = mockProperties
-      .filter((item) => item.listingType === "RENT_WANTED" && item.isFeatured)
+    const featuredRequests = mockRentRequests
+      .filter((item) => item.isFeatured)
       .slice(0, 6);
 
-    const viewedProperties = rentalWantedProperties.slice(0, 3);
-    const latestWantedProperties = mockProperties
-      .filter(
-        (item) => item.listingType === "RENT_WANTED" && item.id !== property.id,
-      )
+    const viewedRequests = relatedRequests.slice(0, 3);
+    const latestWantedRequests = relatedRequests
+      .slice()
       .sort((a, b) => {
         const aTime = new Date(a.createdAt || 0).getTime();
         const bTime = new Date(b.createdAt || 0).getTime();
@@ -93,19 +89,11 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       .slice(0, 10);
 
     const galleryImages = [
-      property.thumbnailUrl || "/imgs/wallpaper-1.jpg",
-      ...rentalWantedProperties
+      rentRequest.thumbnailUrl || "/imgs/wallpaper-1.jpg",
+      ...relatedRequests
         .slice(0, 6)
         .map((item) => item.thumbnailUrl || "/imgs/wallpaper-1.jpg"),
     ];
-
-    const hasCoordinates =
-      typeof property.latitude === "number" &&
-      typeof property.longitude === "number";
-
-    const mapSrc = hasCoordinates
-      ? `https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`
-      : null;
 
     return (
       <article className="mx-auto max-w-7xl px-4 py-8">
@@ -114,23 +102,25 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           items={[
             { label: "Trang chủ", href: "/" },
             { label: "Cần thuê", href: "/can-thue" },
-            { label: property.title },
+            { label: rentRequest.title },
           ]}
         />
 
         <div className="flex flex-col gap-6 lg:flex-row">
           <PropertyDetailMain
-            property={property}
+            listing={rentRequest}
+            listingMode="rentRequest"
             locationText={locationText}
             galleryImages={galleryImages}
-            mapSrc={mapSrc}
-            featuredProperties={featuredProperties}
-            viewedProperties={viewedProperties}
+            mapSrc={null}
+            featuredItems={featuredRequests}
+            viewedItems={viewedRequests}
           />
           <PropertyDetailSidebarRentWanted
             poster={poster}
             isLoggedIn={isLoggedIn}
-            latestWantedProperties={latestWantedProperties}
+            latestWantedProperties={latestWantedRequests}
+            companyPhone={rentRequest.contactPhone ?? "0968688081"}
           />
         </div>
       </article>
@@ -139,9 +129,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
   const pageContent = pageSeoFaq["can-thue"];
-  const rentalDemandProperties = mockProperties.filter(
-    (item) => item.listingType === "RENT_WANTED",
-  );
+  const rentalDemandProperties = mockRentRequests;
 
   if (!rentalDemandProperties.length) {
     notFound();
@@ -152,6 +140,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       <PropertyFilterSection
         title="Cần thuê bất động sản"
         properties={rentalDemandProperties}
+        listingMode="rentRequest"
         basePath="/can-thue"
         initialFilters={initialFilters}
         breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue", rawSlug)}
@@ -165,4 +154,3 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     </>
   );
 }
-

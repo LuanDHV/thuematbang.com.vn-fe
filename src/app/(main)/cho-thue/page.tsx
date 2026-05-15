@@ -15,15 +15,14 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function ChoThuePage() {
   const pageContent = pageSeoFaq["cho-thue"];
-  const rentalOutProperties = mockProperties.filter(
-    (property) => property.listingType === "RENT_OUT",
-  );
+  const rentalOutProperties = mockProperties;
 
   return (
     <>
       <PropertyFilterSection
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}
+        listingMode="property"
         basePath="/cho-thue"
         breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue")}
       />

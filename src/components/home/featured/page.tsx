@@ -6,8 +6,7 @@ import { Property } from "@/types";
 
 export default function FeaturedSection() {
   const featuredProperties = mockProperties.filter(
-    (property) =>
-      property.listingType === "RENT_OUT" && property.isFeatured === true,
+    (property) => property.isFeatured === true,
   );
 
   return (

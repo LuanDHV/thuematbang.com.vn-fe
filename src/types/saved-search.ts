@@ -1,11 +1,12 @@
-import { ListingType } from "./enums";
 import { User } from "./user";
+
+export type SavedSearchTargetType = "PROPERTY" | "RENT_REQUEST";
 
 export interface SavedSearch {
   id: number;
   userId: number;
   name: string;
-  listingType: ListingType | string;
+  targetType: SavedSearchTargetType | string;
   criteria: Record<string, unknown>;
   isDefault: boolean;
   createdAt?: Date | string | null;

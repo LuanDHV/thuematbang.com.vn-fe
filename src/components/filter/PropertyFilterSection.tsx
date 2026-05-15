@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Property } from "@/types/property";
+import { RentRequest } from "@/types/rent-request";
 import PropertyFilterToolbar from "./PropertyFilterToolbar";
 import PropertyListingClient from "@/components/client/PropertyListingClient";
 import {
@@ -12,7 +13,8 @@ import type { BreadcrumbItem } from "@/lib/flat-url";
 
 type Props = {
   title: string;
-  properties: Property[];
+  properties: Property[] | RentRequest[];
+  listingMode?: "property" | "rentRequest";
   basePath: string;
   initialFilters?: AdvancedFilterValue;
   breadcrumbItems?: BreadcrumbItem[];
@@ -21,18 +23,20 @@ type Props = {
 export default function PropertyFilterSection({
   title,
   properties,
+  listingMode = "property",
   basePath,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
   breadcrumbItems,
 }: Props) {
   const [filteredProperties, setFilteredProperties] =
-    useState<Property[]>(properties);
+    useState<Property[] | RentRequest[]>(properties);
 
   return (
     <div className="relative">
       <div className="sticky top-16 z-40 mx-auto max-w-7xl">
         <PropertyFilterToolbar
           basePath={basePath}
+          listingMode={listingMode}
           initialFilters={initialFilters}
           sourceProperties={properties}
           onFilteredChange={setFilteredProperties}
@@ -41,6 +45,7 @@ export default function PropertyFilterSection({
       <PropertyListingClient
         title={title}
         properties={filteredProperties}
+        listingMode={listingMode}
         breadcrumbItems={breadcrumbItems}
       />
     </div>
