@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 
-interface PropertyFilterChipPopoverProps {
+interface ListingFilterChipPopoverProps {
   label: string;
   title: string;
   children: React.ReactNode;
@@ -25,14 +25,14 @@ const bodyClass =
 const footerButtonClass =
   "cursor-pointer rounded-lg px-4 text-xs font-medium tracking-wider uppercase";
 
-export function PropertyFilterChipPopover({
+export function ListingFilterChipPopover({
   label,
   title,
   children,
   onApply,
   onReset,
   isActive = false,
-}: PropertyFilterChipPopoverProps) {
+}: ListingFilterChipPopoverProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export function PropertyFilterChipPopover({
         onOpenAutoFocus={(event) => event.preventDefault()}
         className="w-[min(92vw,320px)] overflow-hidden rounded-2xl border-gray-100 p-0 shadow-xl"
       >
-        <div className="border-b border-gray-100 bg-gray-50/50 p-4">
+        <div className="border-gray-100p-4 border-b">
           <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
         </div>
 

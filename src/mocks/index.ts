@@ -9,5 +9,6 @@ export * from "./locations";
 export * from "./post";
 export * from "./projects";
 export * from "./properties";
+export * from "./rentRequests";
 export * from "./savedSearches";
 export * from "./users";

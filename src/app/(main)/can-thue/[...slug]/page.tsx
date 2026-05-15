@@ -1,26 +1,27 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { createPageMetadata } from "@/lib/metadata";
+import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageFaq from "@/components/common/PageFaq";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
+import RentRequestDetailContent from "@/components/listing-detail/rent-request/RentRequestDetailContent";
+import RentRequestDetailSidebar from "@/components/listing-detail/rent-request/RentRequestDetailSidebar";
 import {
   buildPropertyFilterBreadcrumbs,
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
-import { mockProperties } from "@/mocks/properties";
-import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
-import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import PageSeoContent from "@/components/common/PageSeoContent";
-import PageFaq from "@/components/common/PageFaq";
+import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/mocks/pageSeoFaq";
+import { mockRentRequests } from "@/mocks/rentRequests";
+import { mockUsers } from "@/mocks/users";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-function getPropertyDetail(slug: string) {
-  return mockProperties.find(
-    (property) =>
-      property.listingType === "RENT_WANTED" && property.slug === slug,
-  );
+function getRentRequestDetail(slug: string) {
+  return mockRentRequests.find((request) => request.slug === slug);
 }
 
 export async function generateMetadata({
@@ -28,14 +29,14 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const rawSlug = slug.join("-");
-  const property = getPropertyDetail(rawSlug);
+  const rentRequest = getRentRequestDetail(rawSlug);
 
-  if (property) {
+  if (rentRequest) {
     return createPageMetadata({
-      title: property.title,
-      description: property.description || "Chi tiết nhu cầu cần thuê.",
-      pathname: `/can-thue/${property.slug}`,
-      image: property.thumbnailUrl || undefined,
+      title: rentRequest.title,
+      description: rentRequest.requirementText || "Chi tiết nhu cầu cần thuê.",
+      pathname: `/can-thue/${rentRequest.slug}`,
+      image: rentRequest.thumbnailUrl || undefined,
       type: "article",
     });
   }
@@ -50,37 +51,70 @@ export async function generateMetadata({
 export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
   const rawSlug = slug.join("-");
-  const property = getPropertyDetail(rawSlug);
+  const rentRequest = getRentRequestDetail(rawSlug);
 
-  if (property) {
+  if (rentRequest) {
+    const cookieStore = await cookies();
+    const isLoggedIn =
+      Boolean(cookieStore.get("accessToken")?.value) ||
+      Boolean(cookieStore.get("token")?.value) ||
+      Boolean(cookieStore.get("authToken")?.value);
+
+    const poster = mockUsers.find((user) => user.id === rentRequest.userId);
+    const locationText = [
+      rentRequest.desiredStreet?.name,
+      rentRequest.desiredWard?.name,
+      rentRequest.desiredDistrict?.name,
+      rentRequest.desiredCity?.name,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const relatedRequests = mockRentRequests.filter(
+      (item) => item.id !== rentRequest.id,
+    );
+
+    const viewedRequests = relatedRequests.slice(0, 3);
+    const latestWantedRequests = relatedRequests
+      .slice()
+      .sort((a, b) => {
+        const aTime = new Date(a.createdAt || 0).getTime();
+        const bTime = new Date(b.createdAt || 0).getTime();
+        return bTime - aTime;
+      })
+      .slice(0, 10);
+
     return (
-      <article className="mx-auto max-w-4xl px-4 py-12 lg:py-20">
+      <article className="mx-auto max-w-7xl px-4 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[
             { label: "Trang chủ", href: "/" },
             { label: "Cần thuê", href: "/can-thue" },
-            { label: property.title },
+            { label: rentRequest.title },
           ]}
         />
-        <h1 className="text-3xl leading-tight font-bold">{property.title}</h1>
-        <p className="mt-3 text-base text-gray-600">{property.description}</p>
-        {property.content ? (
-          <div
-            className="mt-6 text-base"
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: property.content }}
+
+        <div className="flex flex-col gap-6 lg:flex-row">
+          <RentRequestDetailContent
+            rentRequest={rentRequest}
+            locationText={locationText}
+            viewedRequests={viewedRequests}
           />
-        ) : null}
+          <RentRequestDetailSidebar
+            poster={poster}
+            isLoggedIn={isLoggedIn}
+            latestWantedProperties={latestWantedRequests}
+            companyPhone={rentRequest.contactPhone ?? "0968688081"}
+          />
+        </div>
       </article>
     );
   }
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
   const pageContent = pageSeoFaq["can-thue"];
-  const rentalDemandProperties = mockProperties.filter(
-    (item) => item.listingType === "RENT_WANTED",
-  );
+  const rentalDemandProperties = mockRentRequests;
 
   if (!rentalDemandProperties.length) {
     notFound();
@@ -88,9 +122,10 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
   return (
     <>
-      <PropertyFilterSection
+      <ListingFilterSection
         title="Cần thuê bất động sản"
         properties={rentalDemandProperties}
+        listingMode="rentRequest"
         basePath="/can-thue"
         initialFilters={initialFilters}
         breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue", rawSlug)}

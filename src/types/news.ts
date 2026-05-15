@@ -1,4 +1,4 @@
-import { Category } from "./category";
+﻿import { Category } from "./category";
 import { PublishStatus } from "./enums";
 
 export interface News {
@@ -7,12 +7,14 @@ export interface News {
   title: string;
   slug: string;
   thumbnailUrl?: string | null;
+  thumbnailPublicId?: string | null;
   summary?: string | null;
   content?: string | null;
-  viewCount?: number | null;
-  status?: PublishStatus | string | null;
-  isFeatured?: boolean | null;
-  createdAt?: Date | string | null;
-  updatedAt?: Date | string | null;
+  viewCount: number;
+  status: PublishStatus;
+  isFeatured: boolean;
+  createdAt: Date | string;
+  updatedAt: Date | string;
   category?: Category | null;
 }
+

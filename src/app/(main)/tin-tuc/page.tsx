@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import NewsListingClient from "@/components/client/NewsListingClient";
+import NewsListingClient from "@/components/listing-client/NewsListingClient";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Tin tức",

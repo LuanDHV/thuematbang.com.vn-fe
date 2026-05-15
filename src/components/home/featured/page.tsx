@@ -1,16 +1,16 @@
 import Title from "@/components/common/Title";
-import { Property } from "@/types/property";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import { mockProperties } from "../../../mocks/properties";
+import { Property } from "@/types";
 
-export default function FeaturedSection({
-  properties = mockProperties,
-}: {
-  properties?: Property[];
-}) {
+export default function FeaturedSection() {
+  const featuredProperties = mockProperties.filter(
+    (property) => property.isFeatured === true,
+  );
+
   return (
-    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
+    <section className="w-full bg-gray-50/50 px-4 py-12">
       <div className="mx-auto w-full max-w-7xl px-4">
         {/* Tái sử dụng Title Component */}
         <Title
@@ -20,7 +20,7 @@ export default function FeaturedSection({
 
         {/* Grid List */}
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {properties.slice(0, 8).map((item) => (
+          {featuredProperties.slice(0, 8).map((item: Property) => (
             <PropertyCard key={item.id} property={item} variant="featured" />
           ))}
         </div>

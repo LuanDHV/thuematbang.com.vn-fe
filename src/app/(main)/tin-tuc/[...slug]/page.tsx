@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import { buildNewsCategoryBreadcrumbs, parseNewsCategoryFromSlug } from "@/lib/flat-url";
+import {
+  buildNewsCategoryBreadcrumbs,
+  parseNewsCategoryFromSlug,
+} from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import NewsListingClient from "@/components/client/NewsListingClient";
+import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import { mockPosts } from "@/mocks/post";
 
 type PageProps = {
@@ -45,7 +48,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
 
   if (post) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-12 lg:py-20">
+      <div className="mx-auto max-w-4xl px-4 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[

@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import ProjectListingClient from "@/components/client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import { buildProjectCategoryBreadcrumbs, parseProjectCategoryFromSlug } from "@/lib/flat-url";
+import PropertyImageGallery from "@/components/common/PropertyImageGallery";
+import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
+import {
+  buildProjectCategoryBreadcrumbs,
+  parseProjectCategoryFromSlug,
+} from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { mockProjects } from "@/mocks/projects";
+import {
+  getProjectGalleryImages,
+  getProjectThumbnailUrl,
+  mockProjects,
+} from "@/mocks/projects";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -26,14 +34,15 @@ export async function generateMetadata({
       title: project.name,
       description: project.addressDetail || "Chi tiết dự án bất động sản.",
       pathname: `/du-an/${project.slug}`,
-      image: project.thumbnailUrl || undefined,
+      image: getProjectThumbnailUrl(project.id),
       type: "article",
     });
   }
 
   return createPageMetadata({
     title: "Dự án",
-    description: "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
+    description:
+      "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
     pathname: `/du-an/${joined}`,
   });
 }
@@ -44,8 +53,10 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
   const project = getProjectBySlug(projectSlug);
 
   if (project) {
+    const galleryImages = getProjectGalleryImages(project.id);
+
     return (
-      <article className="mx-auto max-w-4xl px-4 py-12 lg:py-20">
+      <article className="mx-auto max-w-4xl px-4 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[
@@ -56,6 +67,9 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         />
         <h1 className="text-3xl leading-tight font-bold">{project.name}</h1>
         <p className="mt-3 text-base text-gray-600">{project.addressDetail}</p>
+        <div className="mt-6">
+          <PropertyImageGallery title={project.name} images={galleryImages} />
+        </div>
         {project.content ? (
           <div
             className="mt-6 text-base"

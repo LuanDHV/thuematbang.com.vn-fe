@@ -5,7 +5,7 @@ export const mockSavedSearches: SavedSearch[] = [
     id: 1,
     userId: 1,
     name: "Mặt bằng Q1 dưới 50 triệu",
-    listingType: "RENT_OUT",
+    targetType: "PROPERTY",
     criteria: {
       categoryIds: [101],
       cityId: 1,
@@ -20,7 +20,7 @@ export const mockSavedSearches: SavedSearch[] = [
     id: 2,
     userId: 1,
     name: "Văn phòng Đà Nẵng 50-100m2",
-    listingType: "RENT_OUT",
+    targetType: "RENT_REQUEST",
     criteria: {
       categoryIds: [102],
       cityId: 3,

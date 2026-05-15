@@ -1,4 +1,8 @@
 ﻿import { formatDate, formatPrice } from "@/lib/utils";
+import {
+  getPropertyGalleryImages,
+  getPropertyThumbnailUrl,
+} from "@/mocks/properties";
 import { Property } from "@/types/property";
 import {
   Bath,
@@ -13,16 +17,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 function resolvePropertyHref(property: Property) {
-  return property.listingType === "RENT_WANTED"
-    ? `/can-thue/${property.slug}`
-    : `/cho-thue/${property.slug}`;
+  return `/cho-thue/${property.slug}`;
 }
 
 function getTierLabel(priorityStatus?: string | null) {
   switch (priorityStatus) {
-    case "gold":
+    case "GOLD":
       return "Gold";
-    case "silver":
+    case "SILVER":
       return "Silver";
     default:
       return "Normal";
@@ -98,7 +100,7 @@ function FeaturedCard({ property }: { property: Property }) {
       <div className="relative h-52 overflow-hidden">
         <TierBadge label={getTierLabel(property.priorityStatus)} />
         <Image
-          src={property.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
+          src={getPropertyThumbnailUrl(property.id)}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -126,12 +128,13 @@ function FeaturedCard({ property }: { property: Property }) {
 function GoldCard({
   property,
 }: {
-  property: Property & { images?: string[] };
+  property: Property;
 }) {
-  const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
+  const fallbackImage = getPropertyThumbnailUrl(property.id);
+  const galleryImages = getPropertyGalleryImages(property.id);
   const imagesList =
-    property.images && property.images.length > 0
-      ? property.images
+    galleryImages.length > 0
+      ? galleryImages
       : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
 
   return (
@@ -184,7 +187,7 @@ function GoldCard({
         ) : null}
 
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
-        <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" />
+        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
         <TierBadge label="Gold" />
         <ImageCountBadge count={imagesList.length} />
         <OverlayTitle property={property} large />
@@ -199,12 +202,13 @@ function GoldCard({
 function SilverCard({
   property,
 }: {
-  property: Property & { images?: string[] };
+  property: Property;
 }) {
-  const fallbackImage = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
+  const fallbackImage = getPropertyThumbnailUrl(property.id);
+  const galleryImages = getPropertyGalleryImages(property.id);
   const imagesList =
-    property.images && property.images.length > 0
-      ? property.images
+    galleryImages.length > 0
+      ? galleryImages
       : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
 
   const rightThumbs = [
@@ -243,6 +247,7 @@ function SilverCard({
         </div>
 
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
+        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
         <TierBadge label="Silver" />
         <ImageCountBadge count={imagesList.length} />
         <OverlayTitle property={property} />
@@ -255,7 +260,7 @@ function SilverCard({
 }
 
 function NormalCard({ property }: { property: Property }) {
-  const image = property.thumbnailUrl || "/imgs/wallpaper-1.jpg";
+  const image = getPropertyThumbnailUrl(property.id);
 
   return (
     <article className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
@@ -268,6 +273,7 @@ function NormalCard({ property }: { property: Property }) {
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
+        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
         <TierBadge label="Normal" />
         <OverlayTitle property={property} />
       </div>
@@ -280,6 +286,8 @@ function NormalCard({ property }: { property: Property }) {
 
 function CardBody({ property }: { property: Property }) {
   const location = getLocationText(property) || "Đang cập nhật vị trí";
+  const contentPreview =
+    property.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
     <div className="flex min-h-55 flex-1 flex-col p-4">
@@ -308,8 +316,8 @@ function CardBody({ property }: { property: Property }) {
             {property.bedrooms} phòng ngủ
           </p>
         ) : null}
-        {property.description ? (
-          <p className="line-clamp-2">{property.description}</p>
+        {contentPreview ? (
+          <p className="line-clamp-2">{contentPreview}</p>
         ) : null}
       </div>
 
@@ -332,12 +340,12 @@ export function PropertyCard({
   if (variant === "featured") {
     content = <FeaturedCard property={property} />;
   } else {
-    const tier = property.priorityStatus ?? "normal";
+    const tier = property.priorityStatus ?? "NORMAL";
     switch (tier) {
-      case "gold":
+      case "GOLD":
         content = <GoldCard property={property} />;
         break;
-      case "silver":
+      case "SILVER":
         content = <SilverCard property={property} />;
         break;
       default:
@@ -348,3 +356,5 @@ export function PropertyCard({
 
   return <Link href={href}>{content}</Link>;
 }
+
+

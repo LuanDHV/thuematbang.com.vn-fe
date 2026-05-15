@@ -29,13 +29,15 @@ import {
   LocationDetailTab,
   PriceDetailTab,
   PropertyTypeDetailTab,
-} from "./PropertyFilterPanels";
+} from "./ListingFilterPanels";
 
 type DemandTab = "cho-thue" | "can-thue";
 type DetailTab = "main" | "propertyType" | "location" | "price" | "area";
 
 type Props = {
   filterCount?: number;
+  defaultDemandTab?: DemandTab;
+  listingMode?: "property" | "rentRequest";
   propertyTypeOptions: string[];
   cityMap: Record<string, Record<string, string[]>>;
   value?: AdvancedFilterValue;
@@ -46,8 +48,10 @@ type Props = {
 export { AreaDetailTab, PriceDetailTab, PropertyTypeDetailTab };
 export type { AdvancedFilterValue };
 
-export function PropertyFilterDrawer({
+export function ListingFilterDrawer({
   filterCount = 0,
+  defaultDemandTab = "cho-thue",
+  listingMode = "property",
   propertyTypeOptions,
   cityMap,
   value,
@@ -55,7 +59,7 @@ export function PropertyFilterDrawer({
   onReset,
 }: Props) {
   const [open, setOpen] = useState(false);
-  const [demandTab, setDemandTab] = useState<DemandTab>("cho-thue");
+  const [demandTab, setDemandTab] = useState<DemandTab>(defaultDemandTab);
   const [detailTab, setDetailTab] = useState<DetailTab>("main");
   const [localValue, setLocalValue] = useState<AdvancedFilterValue>(
     value ?? INITIAL_ADVANCED_FILTER_VALUE,
@@ -123,6 +127,7 @@ export function PropertyFilterDrawer({
         setOpen(next);
         if (next) {
           setDetailTab("main");
+          setDemandTab(defaultDemandTab);
           setLocalValue(value ?? INITIAL_ADVANCED_FILTER_VALUE);
         }
       }}
@@ -192,6 +197,7 @@ export function PropertyFilterDrawer({
             {detailTab === "main" ? (
               <AdvancedMainTab
                 current={current}
+                listingMode={listingMode}
                 setDetailTab={(tab) => setDetailTab(tab)}
                 priceSummary={priceSummary}
                 areaSummary={areaSummary}

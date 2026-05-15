@@ -4,7 +4,7 @@ export interface Banner {
   imageUrl: string;
   targetLink?: string | null;
   position: string;
-  sortOrder?: number | null;
-  isActive?: boolean | null;
-  createdAt?: Date | string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: Date | string;
 }

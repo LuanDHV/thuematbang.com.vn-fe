@@ -6,7 +6,6 @@ import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { mockProjects } from "@/mocks/projects";
 import { Project } from "@/types/project";
 import type { BreadcrumbItem } from "@/lib/flat-url";
-import Title from "@/components/common/Title";
 import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";
 import { mockCategoryProject } from "@/mocks/categories";
@@ -70,8 +69,8 @@ export default function ProjectListingClient({
   );
 
   return (
-    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
-      <div className="mx-auto w-full max-w-7xl px-4">
+    <section className="w-full px-4 py-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-8">
         {breadcrumbItems?.length ? (
           <DynamicBreadcrumb items={breadcrumbItems} />
         ) : null}

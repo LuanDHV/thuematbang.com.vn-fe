@@ -9,11 +9,7 @@ export type LeadStatus =
   | "CLOSED"
   | "REJECTED";
 
-export type ListingType = "RENT_OUT" | "RENT_WANTED";
-
 export type PropertyPriority = "NORMAL" | "SILVER" | "GOLD";
-
-export type PropertyPriorityLegacy = "normal" | "silver" | "gold";
 
 export type PropertyDirection =
   | "BAC"
@@ -25,7 +21,9 @@ export type PropertyDirection =
   | "TAY"
   | "TAY_BAC";
 
-export type CategoryType = "PROPERTY" | "PROJECT" | "POST";
+export type CategoryType = "PROPERTY" | "RENT_REQUEST" | "PROJECT" | "NEWS";
+
+export type RentRequestStatus = "ACTIVE" | "MATCHED" | "CLOSED" | "EXPIRED";
 
 export type PaymentStatus =
   | "PENDING"

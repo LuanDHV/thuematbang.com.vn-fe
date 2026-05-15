@@ -1,4 +1,4 @@
-﻿import { Category } from "../types/category";
+﻿import { Category, CategoryTreeNode } from "../types/category";
 
 const now = "2026-05-13T09:00:00.000Z";
 
@@ -101,7 +101,7 @@ export const mockCategoryProject: Category[] = [
 export const mockCategoryNews: Category[] = [
   {
     id: 301,
-    type: "POST",
+    type: "NEWS",
     name: "Kiến trúc xây dựng",
     slug: "kien-truc-xay-dung",
     priority: 1,
@@ -111,7 +111,7 @@ export const mockCategoryNews: Category[] = [
   },
   {
     id: 302,
-    type: "POST",
+    type: "NEWS",
     name: "Tư vấn luật",
     slug: "tu-van-luat",
     priority: 2,
@@ -121,7 +121,7 @@ export const mockCategoryNews: Category[] = [
   },
   {
     id: 303,
-    type: "POST",
+    type: "NEWS",
     name: "Phong thủy",
     slug: "phong-thuy",
     priority: 3,
@@ -131,14 +131,23 @@ export const mockCategoryNews: Category[] = [
   },
 ];
 
+export const mockCategoryRentRequest: Category[] = mockCategoryProperty.map(
+  (category) => ({
+    ...category,
+    id: category.id + 1000,
+    type: "RENT_REQUEST",
+  }),
+);
+
 export const mockCategoryFlat: Category[] = [
   ...mockCategoryProperty,
+  ...mockCategoryRentRequest,
   ...mockCategoryProject,
   ...mockCategoryNews,
 ];
 
 // Legacy format for current header/news category UI.
-export const mockCategories: Category[] = [
+export const mockCategories: CategoryTreeNode[] = [
   {
     id: 1,
     name: "Cho thuê",
@@ -163,9 +172,8 @@ export const mockCategories: Category[] = [
     isActive: true,
     createdAt: now,
     updatedAt: now,
-    children: mockCategoryProperty.map((category) => ({
+    children: mockCategoryRentRequest.map((category) => ({
       ...category,
-      id: category.id + 1000,
       parentId: 2,
       fullPath: `can-thue/${category.slug}`,
     })),
@@ -201,3 +209,4 @@ export const mockCategories: Category[] = [
     })),
   },
 ];
+

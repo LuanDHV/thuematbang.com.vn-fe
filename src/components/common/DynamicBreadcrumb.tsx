@@ -19,7 +19,7 @@ export default function DynamicBreadcrumb({ items, className }: Props) {
   if (!items.length) return null;
 
   return (
-    <div className="my-6">
+    <div className="mb-6">
       <Breadcrumb className={className}>
         <BreadcrumbList>
           {items.map((item, index) => {

@@ -1,45 +1,42 @@
 import { Category } from "./category";
-import { City, District, Street, Ward } from "./location";
-import { User } from "./user";
-import { Project } from "./project";
+import { PropertyBoostOrder, PropertyPackageOrder } from "./commerce";
 import {
-  ListingType,
   PropertyDirection,
   PropertyPriority,
-  PropertyPriorityLegacy,
   PublishSource,
   PublishStatus,
 } from "./enums";
+import { Lead } from "./lead";
+import { City, District, Street, Ward } from "./location";
+import { PropertyImage } from "./media";
+import { User } from "./user";
 
 export interface Property {
   id: number;
-  userId?: number;
-  listingType?: ListingType;
-  projectId?: number | null;
+  userId?: number | null;
   title: string;
   slug: string;
   categoryId: number;
+
   price?: number | null;
-  isNegotiable?: boolean;
+  isNegotiable: boolean;
   area?: number | null;
-  thumbnailUrl?: string | null;
-  direction?: PropertyDirection | string | null;
-  numFloors?: number | null;
+
+  direction?: PropertyDirection | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
-  viewCount?: number | null;
-  priorityStatus?:
-    | PropertyPriority
-    | PropertyPriorityLegacy
-    | string
-    | null;
-  publishSource?: PublishSource | string | null;
-  packageOrderId?: number | null;
-  isBoosted?: boolean;
+  floors?: number | null;
+  frontage?: number | null;
+  roadWidth?: number | null;
+
+  priorityStatus: PropertyPriority;
+  publishSource: PublishSource;
+
+  isBoosted: boolean;
   boostedAt?: Date | string | null;
   boostStartAt?: Date | string | null;
   boostEndAt?: Date | string | null;
-  boostCount?: number | null;
+  boostCount: number;
   lastBoostAt?: Date | string | null;
 
   cityId?: number | null;
@@ -47,17 +44,32 @@ export interface Property {
   wardId?: number | null;
   streetId?: number | null;
   addressDetail?: string | null;
+  longitude?: number | null;
+  latitude?: number | null;
+
+  contactName?: string | null;
+  contactPhone?: string | null;
+
   content?: string | null;
-  description?: string | null;
-  status?: PublishStatus | string | null;
-  isFeatured?: boolean | null;
-  createdAt?: Date | string | null;
-  updatedAt?: Date | string | null;
-  user?: User;
-  project?: Project | null;
-  category?: Category | null;
+  viewCount: number;
+  status: PublishStatus;
+  isFeatured: boolean;
+
+  publishedAt?: Date | string | null;
+  expiredAt?: Date | string | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+
+  propertyPackageOrderId?: number | null;
+
+  user?: User | null;
+  category?: Category;
   city?: City | null;
   district?: District | null;
   ward?: Ward | null;
   street?: Street | null;
+  leads?: Lead[];
+  images?: PropertyImage[];
+  boostOrders?: PropertyBoostOrder[];
+  propertyPackageOrder?: PropertyPackageOrder | null;
 }
