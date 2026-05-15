@@ -211,7 +211,9 @@ export default function PropertyDetailContent({
       <section>
         <div className="flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">Tin đã xem</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Bất động sản đã xem
+          </h2>
         </div>
         <p className="mt-1 text-sm text-gray-500">
           Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ

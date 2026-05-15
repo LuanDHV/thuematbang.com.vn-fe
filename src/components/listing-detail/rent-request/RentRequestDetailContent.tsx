@@ -8,7 +8,6 @@ import Image from "next/image";
 type RentRequestDetailContentProps = {
   rentRequest: RentRequest;
   locationText: string;
-  featuredRequests: RentRequest[];
   viewedRequests: RentRequest[];
 };
 
@@ -44,7 +43,6 @@ function formatAreaRange(request: RentRequest) {
 export default function RentRequestDetailContent({
   rentRequest,
   locationText,
-  featuredRequests,
   viewedRequests,
 }: RentRequestDetailContentProps) {
   const hasArea =
@@ -56,7 +54,7 @@ export default function RentRequestDetailContent({
   return (
     <div className="w-full space-y-6 lg:w-3/4 lg:space-y-8">
       <section>
-        <div className="aspect-image relative w-full overflow-hidden rounded-2xl bg-gray-100">
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
           <Image
             src={rentRequest.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
             alt={rentRequest.title}
@@ -187,24 +185,8 @@ export default function RentRequestDetailContent({
         <div className="flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
-            Nhu cầu cần thuê tương tự
+            Bất động sản đã xem
           </h2>
-        </div>
-        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {featuredRequests.map((item) => (
-            <RentRequestCard
-              key={`suggested-${item.id}`}
-              request={item}
-              variant="featured"
-            />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <div className="flex items-center gap-3">
-          <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">Tin đã xem</h2>
         </div>
         <p className="mt-1 text-sm text-gray-500">
           Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ

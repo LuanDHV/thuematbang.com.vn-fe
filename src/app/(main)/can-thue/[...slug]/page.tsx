@@ -74,10 +74,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       (item) => item.id !== rentRequest.id,
     );
 
-    const featuredRequests = mockRentRequests
-      .filter((item) => item.isFeatured)
-      .slice(0, 6);
-
     const viewedRequests = relatedRequests.slice(0, 3);
     const latestWantedRequests = relatedRequests
       .slice()
@@ -103,7 +99,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           <RentRequestDetailContent
             rentRequest={rentRequest}
             locationText={locationText}
-            featuredRequests={featuredRequests}
             viewedRequests={viewedRequests}
           />
           <RentRequestDetailSidebar
