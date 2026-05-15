@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
-import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
-import PropertyDetailMain from "@/components/property-detail/PropertyDetailMain";
-import PropertyDetailSidebarRentWanted from "@/components/property-detail/PropertyDetailSidebarRentWanted";
+import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
+import RentRequestDetailContent from "@/components/listing-detail/rent-request/RentRequestDetailContent";
+import RentRequestDetailSidebar from "@/components/listing-detail/rent-request/RentRequestDetailSidebar";
 import {
   buildPropertyFilterBreadcrumbs,
   parsePropertyFilterSlug,
@@ -107,16 +107,14 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
         />
 
         <div className="flex flex-col gap-6 lg:flex-row">
-          <PropertyDetailMain
-            listing={rentRequest}
-            listingMode="rentRequest"
+          <RentRequestDetailContent
+            rentRequest={rentRequest}
             locationText={locationText}
             galleryImages={galleryImages}
-            mapSrc={null}
-            featuredItems={featuredRequests}
-            viewedItems={viewedRequests}
+            featuredRequests={featuredRequests}
+            viewedRequests={viewedRequests}
           />
-          <PropertyDetailSidebarRentWanted
+          <RentRequestDetailSidebar
             poster={poster}
             isLoggedIn={isLoggedIn}
             latestWantedProperties={latestWantedRequests}
@@ -137,7 +135,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
   return (
     <>
-      <PropertyFilterSection
+      <ListingFilterSection
         title="Cần thuê bất động sản"
         properties={rentalDemandProperties}
         listingMode="rentRequest"

@@ -29,7 +29,7 @@ import {
   LocationDetailTab,
   PriceDetailTab,
   PropertyTypeDetailTab,
-} from "./PropertyFilterPanels";
+} from "./ListingFilterPanels";
 
 type DemandTab = "cho-thue" | "can-thue";
 type DetailTab = "main" | "propertyType" | "location" | "price" | "area";
@@ -48,7 +48,7 @@ type Props = {
 export { AreaDetailTab, PriceDetailTab, PropertyTypeDetailTab };
 export type { AdvancedFilterValue };
 
-export function PropertyFilterDrawer({
+export function ListingFilterDrawer({
   filterCount = 0,
   defaultDemandTab = "cho-thue",
   listingMode = "property",

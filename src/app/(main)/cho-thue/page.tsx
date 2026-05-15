@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
+import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { mockProperties } from "@/mocks";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import PageFaq from "@/components/common/PageFaq";
@@ -19,7 +19,7 @@ export default function ChoThuePage() {
 
   return (
     <>
-      <PropertyFilterSection
+      <ListingFilterSection
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}
         listingMode="property"

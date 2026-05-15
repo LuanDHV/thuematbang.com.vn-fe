@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
-import { PropertyFilterDrawer } from "./PropertyFilterDrawer";
+import { ListingFilterDrawer } from "./ListingFilterDrawer";
 import {
   AreaDetailTab,
   PriceDetailTab,
   PropertyTypeDetailTab,
-} from "./PropertyFilterPanels";
-import { PropertyFilterChipPopover } from "./PropertyFilterChipPopover";
+} from "./ListingFilterPanels";
+import { ListingFilterChipPopover } from "./ListingFilterChipPopover";
 import {
   mockFilterAreaOptions,
   mockFilterPriceOptions,
@@ -64,7 +64,7 @@ const normalize = (value: string) =>
     .toLowerCase()
     .trim();
 
-export default function PropertyFilterToolbar({
+export default function ListingFilterToolbar({
   basePath,
   listingMode = "property",
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
@@ -295,7 +295,7 @@ export default function PropertyFilterToolbar({
 
         <div className="flex w-full items-center gap-2 lg:w-auto">
           <div className="shrink-0">
-            <PropertyFilterDrawer
+            <ListingFilterDrawer
               filterCount={
                 advancedFilters.propertyTypes.length +
                 (advancedFilters.priceMin ||
@@ -328,7 +328,7 @@ export default function PropertyFilterToolbar({
           <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" />
 
           <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:flex-none lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
-            <PropertyFilterChipPopover
+            <ListingFilterChipPopover
               title="Loại bất động sản"
               label={displayTypeLabel}
               isActive={advancedFilters.propertyTypes.length > 0}
@@ -344,9 +344,9 @@ export default function PropertyFilterToolbar({
                 updateCurrent={updateAdvanced}
                 propertyTypeOptions={mockFilterPropertyTypes}
               />
-            </PropertyFilterChipPopover>
+            </ListingFilterChipPopover>
 
-            <PropertyFilterChipPopover
+            <ListingFilterChipPopover
               title="Khoảng giá"
               label={displayPriceLabel}
               isActive={
@@ -374,9 +374,9 @@ export default function PropertyFilterToolbar({
                   advancedFilters.priceMax,
                 )}
               />
-            </PropertyFilterChipPopover>
+            </ListingFilterChipPopover>
 
-            <PropertyFilterChipPopover
+            <ListingFilterChipPopover
               title="Diện tích"
               label={displayAreaLabel}
               isActive={!!advancedFilters.areaMin || !!advancedFilters.areaMax}
@@ -395,7 +395,7 @@ export default function PropertyFilterToolbar({
                   advancedFilters.areaMax,
                 )}
               />
-            </PropertyFilterChipPopover>
+            </ListingFilterChipPopover>
 
             <Button
               type="button"

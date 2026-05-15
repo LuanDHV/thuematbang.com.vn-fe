@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
-import PropertyFilterSection from "@/components/filter/PropertyFilterSection";
-import PropertyDetailMain from "@/components/property-detail/PropertyDetailMain";
-import PropertyDetailSidebarRentOut from "@/components/property-detail/PropertyDetailSidebarRentOut";
+import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
+import PropertyDetailContent from "@/components/listing-detail/property/PropertyDetailContent";
+import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
 import {
   buildPropertyFilterBreadcrumbs,
   parsePropertyFilterSlug,
@@ -126,16 +126,15 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         />
 
         <div className="flex flex-col gap-6 lg:flex-row">
-          <PropertyDetailMain
-            listing={property}
-            listingMode="property"
+          <PropertyDetailContent
+            property={property}
             locationText={locationText}
             galleryImages={galleryImages}
             mapSrc={mapSrc}
-            featuredItems={featuredProperties}
-            viewedItems={viewedProperties}
+            featuredProperties={featuredProperties}
+            viewedProperties={viewedProperties}
           />
-          <PropertyDetailSidebarRentOut
+          <PropertyDetailSidebar
             poster={poster}
             isLoggedIn={isLoggedIn}
             relatedCategoryCityLinks={relatedCategoryCityLinks}
@@ -155,7 +154,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
   return (
     <>
-      <PropertyFilterSection
+      <ListingFilterSection
         title="Cho thuê bất động sản"
         properties={rentalOutProperties}
         listingMode="property"

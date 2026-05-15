@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import NewsListingClient from "@/components/client/NewsListingClient";
+import NewsListingClient from "@/components/listing-client/NewsListingClient";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Tin tức",
-  description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
+  title: "Tin tá»©c",
+  description: "Tá»•ng há»£p tin tá»©c vÃ  kiáº¿n thá»©c báº¥t Ä‘á»™ng sáº£n má»›i nháº¥t.",
   pathname: "/tin-tuc",
 });
 

@@ -8,17 +8,17 @@ type RelatedCategoryCityLink = {
   href: string;
 };
 
-type PropertyDetailSidebarRentOutProps = {
+type PropertyDetailSidebarProps = {
   poster?: User;
   isLoggedIn: boolean;
   relatedCategoryCityLinks: RelatedCategoryCityLink[];
 };
 
-export default function PropertyDetailSidebarRentOut({
+export default function PropertyDetailSidebar({
   poster,
   isLoggedIn,
   relatedCategoryCityLinks,
-}: PropertyDetailSidebarRentOutProps) {
+}: PropertyDetailSidebarProps) {
   return (
     <aside className="w-full space-y-6 lg:w-1/4">
       <div className="shadow-primary/50 self-start rounded-xl bg-white p-4 shadow lg:sticky lg:top-18">

@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import ProjectListingClient from "@/components/client/ProjectListingClient";
+import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import {
   buildProjectCategoryBreadcrumbs,
@@ -27,7 +27,7 @@ export async function generateMetadata({
   if (project) {
     return createPageMetadata({
       title: project.name,
-      description: project.addressDetail || "Chi tiết dự án bất động sản.",
+      description: project.addressDetail || "Chi tiáº¿t dá»± Ã¡n báº¥t Ä‘á»™ng sáº£n.",
       pathname: `/du-an/${project.slug}`,
       image: project.thumbnailUrl || undefined,
       type: "article",
@@ -35,8 +35,8 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Dự án",
-    description: "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
+    title: "Dá»± Ã¡n",
+    description: "Cáº­p nháº­t thÃ´ng tin dá»± Ã¡n báº¥t Ä‘á»™ng sáº£n ná»•i báº­t vÃ  má»›i nháº¥t.",
     pathname: `/du-an/${joined}`,
   });
 }
@@ -52,8 +52,8 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         <DynamicBreadcrumb
           className="mb-6"
           items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Dự án", href: "/du-an" },
+            { label: "Trang chá»§", href: "/" },
+            { label: "Dá»± Ã¡n", href: "/du-an" },
             { label: project.name },
           ]}
         />

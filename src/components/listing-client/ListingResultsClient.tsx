@@ -34,7 +34,7 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
   },
 };
 
-export default function PropertyListingClient({
+export default function ListingResultsClient({
   properties = mockProperties,
   listingMode = "property",
   breadcrumbItems,

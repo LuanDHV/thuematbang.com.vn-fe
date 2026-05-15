@@ -4,19 +4,19 @@ import PosterContactCard from "@/components/common/PosterContactCard";
 import { RentRequest } from "@/types/rent-request";
 import { User } from "@/types/user";
 
-type PropertyDetailSidebarRentWantedProps = {
+type RentRequestDetailSidebarProps = {
   poster?: User;
   isLoggedIn: boolean;
   latestWantedProperties: RentRequest[];
   companyPhone?: string;
 };
 
-export default function PropertyDetailSidebarRentWanted({
+export default function RentRequestDetailSidebar({
   poster,
   isLoggedIn,
   latestWantedProperties,
   companyPhone = "0968688081",
-}: PropertyDetailSidebarRentWantedProps) {
+}: RentRequestDetailSidebarProps) {
   return (
     <aside className="w-full space-y-6 lg:w-1/4">
       <div className="shadow-primary/50 self-start rounded-xl bg-white p-4 shadow lg:sticky lg:top-18">

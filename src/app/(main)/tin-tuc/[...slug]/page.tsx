@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import {
@@ -6,7 +6,7 @@ import {
   parseNewsCategoryFromSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import NewsListingClient from "@/components/client/NewsListingClient";
+import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import { mockPosts } from "@/mocks/post";
 
 type PageProps = {
@@ -27,7 +27,7 @@ export async function generateMetadata({
   if (post) {
     return createPageMetadata({
       title: post.title,
-      description: post.summary || "Nội dung bài viết tin tức bất động sản.",
+      description: post.summary || "Ná»™i dung bÃ i viáº¿t tin tá»©c báº¥t Ä‘á»™ng sáº£n.",
       pathname: `/tin-tuc/${post.slug}`,
       image: post.thumbnailUrl || undefined,
       type: "article",
@@ -35,8 +35,8 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Tin tức",
-    description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
+    title: "Tin tá»©c",
+    description: "Tá»•ng há»£p tin tá»©c vÃ  kiáº¿n thá»©c báº¥t Ä‘á»™ng sáº£n má»›i nháº¥t.",
     pathname: `/tin-tuc/${joined}`,
   });
 }
@@ -52,8 +52,8 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         <DynamicBreadcrumb
           className="mb-6"
           items={[
-            { label: "Trang chủ", href: "/" },
-            { label: "Tin tức", href: "/tin-tuc" },
+            { label: "Trang chá»§", href: "/" },
+            { label: "Tin tá»©c", href: "/tin-tuc" },
             { label: post.title },
           ]}
         />
