@@ -184,7 +184,7 @@ function GoldCard({
         ) : null}
 
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
-        <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" />
+        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
         <TierBadge label="Gold" />
         <ImageCountBadge count={imagesList.length} />
         <OverlayTitle property={property} large />
@@ -243,6 +243,7 @@ function SilverCard({
         </div>
 
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
+        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
         <TierBadge label="Silver" />
         <ImageCountBadge count={imagesList.length} />
         <OverlayTitle property={property} />
@@ -268,6 +269,7 @@ function NormalCard({ property }: { property: Property }) {
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
+        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
         <TierBadge label="Normal" />
         <OverlayTitle property={property} />
       </div>

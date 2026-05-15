@@ -84,7 +84,7 @@ export default function NewsListingClient({
   };
 
   return (
-    <div className="mx-auto h-auto max-w-7xl px-4 py-12 lg:py-20">
+    <div className="mx-auto h-auto max-w-7xl px-4 py-8">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
@@ -97,8 +97,8 @@ export default function NewsListingClient({
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      <div className="flex flex-col gap-6 lg:flex-row">
+        <div className="w-4/6 space-y-6">
           {featuredPost && <FeaturedNewsCard post={featuredPost} />}
 
           <div className="grid gap-6">
@@ -118,7 +118,7 @@ export default function NewsListingClient({
           ) : null}
         </div>
 
-        <div className="h-fit">
+        <div className="w-2/6 space-y-6">
           <h4 className="mb-4 text-lg font-bold">
             Bài viết được xem nhiều nhất
           </h4>

@@ -79,7 +79,7 @@ export default function PropertyListingClient({
   );
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4">
+    <section className="mx-auto w-full max-w-7xl px-4 py-8">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}

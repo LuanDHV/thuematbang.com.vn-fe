@@ -207,7 +207,7 @@ export default function PropertyFilterToolbar({
         className="flex flex-col gap-3 p-2 lg:flex-row lg:items-center lg:gap-2"
       >
         <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-1">
-          <div className="relative flex min-w-0 flex-1 items-center rounded-xl bg-gray-50/50 px-2">
+          <div className="relative flex min-w-0 flex-1 items-center rounded-xl px-2">
             <Search className="ml-2 h-4 w-4 shrink-0 text-gray-400" />
             <input
               type="text"

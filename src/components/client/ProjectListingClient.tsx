@@ -70,8 +70,8 @@ export default function ProjectListingClient({
   );
 
   return (
-    <section className="w-full bg-gray-50/50 py-12 lg:py-20">
-      <div className="mx-auto w-full max-w-7xl px-4">
+    <section className="w-full px-4 py-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-8">
         {breadcrumbItems?.length ? (
           <DynamicBreadcrumb items={breadcrumbItems} />
         ) : null}

@@ -54,7 +54,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
   if (property) {
     return (
-      <article className="mx-auto max-w-4xl px-4 py-12 lg:py-20">
+      <article className="mx-auto max-w-4xl px-4 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[

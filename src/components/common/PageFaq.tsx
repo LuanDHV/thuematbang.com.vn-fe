@@ -19,7 +19,7 @@ type PageFaqProps = {
 
 export default function PageFaq({ title, description, items }: PageFaqProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 lg:py-20">
+    <section className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-10 text-center">
         <h2 className="text-3xl font-bold tracking-tight text-gray-700 sm:text-4xl">
           {title}

@@ -46,6 +46,8 @@ export interface Property {
   districtId?: number | null;
   wardId?: number | null;
   streetId?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
   addressDetail?: string | null;
   content?: string | null;
   description?: string | null;

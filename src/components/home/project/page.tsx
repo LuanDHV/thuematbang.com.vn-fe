@@ -19,7 +19,7 @@ const categories = [
 
 export default function ProjectSection() {
   return (
-    <section className="to-primary/10 w-full bg-linear-to-b from-white py-12 lg:py-20">
+    <section className="to-primary/10 w-full bg-linear-to-b from-white px-4 py-8">
       <div className="mx-auto w-full max-w-7xl px-4">
         {/* Title component - Thêm chút margin bottom để thoáng hơn */}
         <div className="mb-12">

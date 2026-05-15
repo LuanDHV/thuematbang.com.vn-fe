@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProjectListingClient from "@/components/client/ProjectListingClient";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import { buildProjectCategoryBreadcrumbs, parseProjectCategoryFromSlug } from "@/lib/flat-url";
+import {
+  buildProjectCategoryBreadcrumbs,
+  parseProjectCategoryFromSlug,
+} from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { mockProjects } from "@/mocks/projects";
 
@@ -45,7 +48,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
 
   if (project) {
     return (
-      <article className="mx-auto max-w-4xl px-4 py-12 lg:py-20">
+      <article className="mx-auto max-w-4xl px-4 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[
