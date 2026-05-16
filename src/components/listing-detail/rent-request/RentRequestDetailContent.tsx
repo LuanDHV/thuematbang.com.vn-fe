@@ -1,4 +1,12 @@
-﻿import { Layers, MapPin, Maximize, Navigation, Wallet } from "lucide-react";
+import {
+  CalendarDays,
+  Eye,
+  Layers,
+  MapPin,
+  Maximize,
+  Navigation,
+  Wallet,
+} from "lucide-react";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { DIRECTION_OPTIONS } from "@/mocks/filter";
@@ -49,7 +57,6 @@ export default function RentRequestDetailContent({
     (rentRequest.minArea ?? 0) > 0 || (rentRequest.maxArea ?? 0) > 0;
   const hasDirection = Boolean(rentRequest.preferredDirection);
   const categoryName = rentRequest.category?.name ?? "";
-  const hasCategoryName = Boolean(categoryName);
 
   return (
     <div className="w-full space-y-6 lg:w-3/4 lg:space-y-8">
@@ -64,31 +71,43 @@ export default function RentRequestDetailContent({
             priority
           />
         </div>
+      </section>
 
-        <div className="mt-5">
-          <h1 className="text-2xl leading-tight font-bold text-gray-800 lg:text-4xl">
-            {rentRequest.title}
-          </h1>
+      <section>
+        <h1 className="text-2xl leading-tight font-bold text-gray-800 lg:text-4xl">
+          {rentRequest.title}
+        </h1>
 
-          <p className="mt-3 flex items-start gap-2 text-sm text-gray-600">
-            <MapPin size={16} className="mt-0.5 shrink-0 text-gray-500" />
-            <span>{locationText || "Đang cập nhật địa chỉ"}</span>
-          </p>
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+          {categoryName ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+              <Layers size={12} className="text-primary" />
+              Danh mục: {categoryName}
+            </span>
+          ) : null}
+
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+            <CalendarDays size={12} className="text-primary" />
+            Ngày đăng: {formatDate(rentRequest.createdAt)}
+          </span>
+
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+            <Eye size={12} className="text-primary" />
+            Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
+          </span>
         </div>
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
             Thông tin mô tả
           </h2>
         </div>
-        <div className="mt-4">
-          <p className="mt-5 whitespace-pre-line text-gray-700">
-            {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
-          </p>
-        </div>
+        <p className="whitespace-pre-line text-gray-700">
+          {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
+        </p>
       </section>
 
       <section>
@@ -98,20 +117,31 @@ export default function RentRequestDetailContent({
             Thông tin chi tiết
           </h2>
         </div>
+
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          {hasCategoryName ? (
-            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-              <Layers className="text-primary mt-0.5 h-4 w-4 shrink-0" />
-              <div>
-                <p className="text-xs tracking-wide text-gray-500 uppercase">
-                  Danh mục
-                </p>
-                <p className="text-sm font-semibold text-gray-800">
-                  {categoryName}
-                </p>
-              </div>
+          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <MapPin className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p className="text-xs tracking-wide text-gray-500 uppercase">
+                Khu vực
+              </p>
+              <p className="text-sm font-semibold text-gray-800">
+                {locationText || "Đang cập nhật"}
+              </p>
             </div>
-          ) : null}
+          </div>
+
+          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <Wallet className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p className="text-xs tracking-wide text-gray-500 uppercase">
+                Ngân sách
+              </p>
+              <p className="text-sm font-semibold text-gray-800">
+                {formatBudgetRange(rentRequest)}
+              </p>
+            </div>
+          </div>
 
           {hasArea ? (
             <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
@@ -126,18 +156,6 @@ export default function RentRequestDetailContent({
               </div>
             </div>
           ) : null}
-
-          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-            <Wallet className="text-primary mt-0.5 h-4 w-4 shrink-0" />
-            <div>
-              <p className="text-xs tracking-wide text-gray-500 uppercase">
-                Ngân sách
-              </p>
-              <p className="text-sm font-semibold text-gray-800">
-                {formatBudgetRange(rentRequest)}
-              </p>
-            </div>
-          </div>
 
           {hasDirection ? (
             <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
@@ -158,48 +176,13 @@ export default function RentRequestDetailContent({
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
-          <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">
-            Thông tin thêm
-          </h2>
-        </div>
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Ngày đăng
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              {formatDate(rentRequest.createdAt)}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Ngày hết hạn
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              {formatDate(rentRequest.expiredAt || rentRequest.updatedAt)}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Mã tin
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              #{rentRequest.id}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
             Bất động sản đã xem
           </h2>
         </div>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="text-sm text-gray-500">
           Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ
           localStorage/cookie.
         </p>

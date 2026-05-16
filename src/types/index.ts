@@ -7,7 +7,6 @@ export * from "./lead";
 export * from "./location";
 export * from "./media";
 export * from "./news";
-export * from "./post";
 export * from "./project";
 export * from "./property";
 export * from "./rent-request";

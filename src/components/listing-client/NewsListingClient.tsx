@@ -8,10 +8,10 @@ import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import { CategoryChips } from "@/components/common/CategoryChips";
-import { mockPosts } from "../../mocks/post";
-import { mockCategories } from "../../mocks/categories";
+import { mockNews } from "@/mocks/news";
+import { mockCategories } from "@/mocks/categories";
 
-const INITIAL_VISIBLE_POSTS = 4;
+const INITIAL_VISIBLE_NEWS = 4;
 const LOAD_MORE_STEP = 4;
 
 export default function NewsListingClient({
@@ -24,9 +24,8 @@ export default function NewsListingClient({
   const router = useRouter();
   const [selectedCategorySlug, setSelectedCategorySlug] =
     useState<string>(initialCategorySlug);
-  const [visiblePostsCount, setVisiblePostsCount] = useState(
-    INITIAL_VISIBLE_POSTS,
-  );
+  const [visibleNewsCount, setVisibleNewsCount] =
+    useState(INITIAL_VISIBLE_NEWS);
 
   const tintucCategory = mockCategories.find((cat) => cat.slug === "tin-tuc");
 
@@ -48,7 +47,7 @@ export default function NewsListingClient({
 
   const handleSelectCategory = (categorySlug: string) => {
     setSelectedCategorySlug(categorySlug);
-    setVisiblePostsCount(INITIAL_VISIBLE_POSTS);
+    setVisibleNewsCount(INITIAL_VISIBLE_NEWS);
     router.replace(
       categorySlug === "tin-tuc" ? "/tin-tuc" : `/tin-tuc/${categorySlug}`,
       {
@@ -57,30 +56,30 @@ export default function NewsListingClient({
     );
   };
 
-  const posts = useMemo(() => {
+  const newsList = useMemo(() => {
     if (selectedCategorySlug === "tin-tuc") {
-      return mockPosts.filter((post) =>
+      return mockNews.filter((newsItem) =>
         ["kien-truc-xay-dung", "tu-van-luat", "phong-thuy"].includes(
-          post.category?.slug || "",
+          newsItem.category?.slug || "",
         ),
       );
     }
-    return mockPosts.filter(
-      (post) => post.category?.slug === selectedCategorySlug,
+    return mockNews.filter(
+      (newsItem) => newsItem.category?.slug === selectedCategorySlug,
     );
   }, [selectedCategorySlug]);
 
-  const featuredPost = posts[0];
-  const remainingPosts = posts.slice(1);
-  const visibleRemainingPosts = remainingPosts.slice(0, visiblePostsCount);
-  const hasMorePosts = visiblePostsCount < remainingPosts.length;
+  const featuredNews = newsList[0];
+  const remainingNews = newsList.slice(1);
+  const visibleRemainingNews = remainingNews.slice(0, visibleNewsCount);
+  const hasMoreNews = visibleNewsCount < remainingNews.length;
 
-  const mostViewedPosts = [...remainingPosts]
+  const mostViewedNews = [...remainingNews]
     .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
     .slice(0, 6);
 
   const handleLoadMore = () => {
-    setVisiblePostsCount((currentCount) => currentCount + LOAD_MORE_STEP);
+    setVisibleNewsCount((currentCount) => currentCount + LOAD_MORE_STEP);
   };
 
   return (
@@ -98,34 +97,34 @@ export default function NewsListingClient({
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="w-4/6 space-y-6">
-          {featuredPost && <FeaturedNewsCard post={featuredPost} />}
+        <div className="w-full space-y-6 lg:w-4/6">
+          {featuredNews && <FeaturedNewsCard news={featuredNews} />}
 
           <div className="grid gap-6">
-            {visibleRemainingPosts.length > 0 ? (
-              visibleRemainingPosts.map((post) => (
-                <NewsCard key={post.id} post={post} />
+            {visibleRemainingNews.length > 0 ? (
+              visibleRemainingNews.map((newsItem) => (
+                <NewsCard key={newsItem.id} news={newsItem} />
               ))
-            ) : posts.length === 0 ? (
+            ) : newsList.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-gray-500">Không có bài viết nào</p>
               </div>
             ) : null}
           </div>
 
-          {remainingPosts.length > 0 && hasMorePosts ? (
+          {remainingNews.length > 0 && hasMoreNews ? (
             <SeeMoreButton onClick={handleLoadMore} />
           ) : null}
         </div>
 
-        <div className="w-2/6 space-y-6">
+        <div className="w-full space-y-6 lg:w-2/6">
           <h4 className="mb-4 text-lg font-bold">
             Bài viết được xem nhiều nhất
           </h4>
           <div className="grid gap-6">
-            {mostViewedPosts.length > 0 ? (
-              mostViewedPosts.map((post) => (
-                <NewsCard key={post.id} post={post} />
+            {mostViewedNews.length > 0 ? (
+              mostViewedNews.map((newsItem) => (
+                <NewsCard key={newsItem.id} news={newsItem} />
               ))
             ) : (
               <p className="text-gray-500">Không có bài viết</p>
