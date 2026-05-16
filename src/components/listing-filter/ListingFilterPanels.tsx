@@ -126,7 +126,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="0"
-            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
@@ -146,7 +146,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="60000"
-            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
           />
         </div>
       </div>
@@ -236,7 +236,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Từ"
-            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
@@ -251,7 +251,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Đến"
-            className="focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
           />
         </div>
       </div>

@@ -66,7 +66,7 @@ export default function Footer() {
       {/* SECTION 2: MAIN CONTENT */}
       <div className="w-full">
         <div className="mx-auto max-w-7xl px-4 py-8">
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* CỘT TRÁI (1/2): Logo & Social */}
             <div className="space-y-8">
               <div className="relative h-20 w-64 sm:h-24 sm:w-72">

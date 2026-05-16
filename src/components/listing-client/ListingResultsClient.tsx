@@ -26,11 +26,11 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
   },
   SILVER: {
     title: "Silver",
-    gridClass: "grid grid-cols-1 gap-4 lg:grid-cols-3",
+    gridClass: "grid grid-cols-1 gap-4  md:grid-cols-2 lg:grid-cols-3",
   },
   NORMAL: {
     title: "Normal",
-    gridClass: "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4",
+    gridClass: "grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4",
   },
 };
 
