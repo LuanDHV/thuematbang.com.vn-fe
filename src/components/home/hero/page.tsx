@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <div className="relative flex min-h-175 w-full items-center justify-center bg-[url('/imgs/wallpaper-1.jpg')] bg-cover bg-center">
+    <div className="relative flex min-h-175 w-full items-center justify-center bg-[url('/imgs/wallpaper-3.jpg')] bg-cover bg-center">
       {/* Lớp phủ đen sang trọng (độ mờ 60% để nổi bật text) */}
       <div className="absolute inset-0 bg-black/40"></div>
 

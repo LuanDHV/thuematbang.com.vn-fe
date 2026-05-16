@@ -77,57 +77,114 @@ export default function PropertyDetailContent({
       </section>
 
       <section>
+        <div className="mb-3 flex items-center gap-3">
+          <span className="bg-primary h-6 w-1 rounded-full" />
+          <h2 className="text-xl font-semibold text-gray-800">
+            Thông tin chi tiết
+          </h2>
+        </div>
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          {hasArea ? (
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Maximize className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Diện tích
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {property.area} m²
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          {hasBathrooms ? (
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Bath className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Phòng tắm
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {property.bathrooms}
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          {hasBedrooms ? (
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Bed className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Phòng ngủ
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {property.bedrooms}
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          {hasDirection ? (
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Navigation className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Hướng
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {getDirectionLabel(property.direction?.toString())}
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section>
         <div className="flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
-            Đặc điểm bất động sản
+            Thông tin thêm
           </h2>
         </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {hasArea ? (
+
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {hasPriorityStatus ? (
             <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Maximize size={14} className="text-gray-500" />
-                Diện tích
+              <p className="text-xs tracking-wide text-gray-500 uppercase">
+                Loại tin
               </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {property.area} m²
+              <p className="mt-1 text-sm font-semibold text-gray-800 capitalize">
+                {property.priorityStatus}
               </p>
             </div>
           ) : null}
-          {hasBathrooms ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Bath size={14} className="text-gray-500" />
-                Phòng tắm
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {property.bathrooms}
-              </p>
-            </div>
-          ) : null}
-          {hasBedrooms ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Bed size={14} className="text-gray-500" />
-                Phòng ngủ
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {property.bedrooms}
-              </p>
-            </div>
-          ) : null}
-          {hasDirection ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Navigation size={14} className="text-gray-500" />
-                Hướng
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {getDirectionLabel(property.direction?.toString())}
-              </p>
-            </div>
-          ) : null}
+          <div className="rounded-2xl bg-gray-50 px-4 py-3">
+            <p className="text-xs tracking-wide text-gray-500 uppercase">
+              Ngày đăng
+            </p>
+            <p className="mt-1 text-sm font-semibold text-gray-800">
+              {formatDate(property.createdAt)}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-gray-50 px-4 py-3">
+            <p className="text-xs tracking-wide text-gray-500 uppercase">
+              Ngày hết hạn
+            </p>
+            <p className="mt-1 text-sm font-semibold text-gray-800">
+              {formatDate(property.expiredAt || property.updatedAt)}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-gray-50 px-4 py-3">
+            <p className="text-xs tracking-wide text-gray-500 uppercase">
+              Mã tin
+            </p>
+            <p className="mt-1 text-sm font-semibold text-gray-800">
+              #{property.id}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -151,43 +208,6 @@ export default function PropertyDetailContent({
             Tin đăng chưa có tọa độ để hiển thị bản đồ.
           </div>
         )}
-
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Ngày đăng
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              {formatDate(property.createdAt)}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Ngày hết hạn
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              {formatDate(property.boostEndAt || property.updatedAt)}
-            </p>
-          </div>
-          {hasPriorityStatus ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="text-xs tracking-wide text-gray-500 uppercase">
-                Loại tin
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800 capitalize">
-                {property.priorityStatus}
-              </p>
-            </div>
-          ) : null}
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Mã tin
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              #{property.id}
-            </p>
-          </div>
-        </div>
       </section>
 
       <section>

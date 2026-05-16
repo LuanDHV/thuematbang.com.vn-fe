@@ -135,16 +135,18 @@ export function ListingFilterDrawer({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className={`h-10 w-10 cursor-pointer rounded-xl border px-4 text-xs font-semibold shadow-sm transition-all hover:-translate-y-px hover:shadow ${
+          className={`h-10 cursor-pointer items-center justify-center rounded-xl border text-xs font-semibold shadow-sm transition-all hover:-translate-y-px hover:shadow ${
+            displayedCount > 0 ? "gap-1.5 px-3" : "w-10 px-0"
+          } ${
             activeCount > 0
               ? "border-primary text-primary bg-primary/5 hover:bg-primary/10"
               : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
           }`}
         >
-          <Filter size={12} />
+          <Filter size={14} />
 
           {displayedCount > 0 ? (
-            <span className="bg-primary ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white">
+            <span className="bg-primary inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white">
               {displayedCount}
             </span>
           ) : null}

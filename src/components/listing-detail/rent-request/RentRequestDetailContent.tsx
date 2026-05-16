@@ -1,4 +1,4 @@
-import { MapPin, Maximize, Navigation, Wallet } from "lucide-react";
+﻿import { Layers, MapPin, Maximize, Navigation, Wallet } from "lucide-react";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { DIRECTION_OPTIONS } from "@/mocks/filter";
@@ -81,66 +81,77 @@ export default function RentRequestDetailContent({
         <div className="flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
-            Nhu cầu thuê chi tiết
+            Thông tin mô tả
           </h2>
         </div>
         <div className="mt-4">
           <p className="mt-5 whitespace-pre-line text-gray-700">
-            {rentRequest.requirementText || "Đang cập nhật nội dung nhu cầu."}
+            {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
           </p>
         </div>
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
-            Tiêu chí cần thuê
+            Thông tin chi tiết
           </h2>
         </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {hasArea ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Maximize size={14} className="text-gray-500" />
-                Diện tích cần thuê
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {formatAreaRange(rentRequest)}
-              </p>
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          {hasCategoryName ? (
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Layers className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Danh mục
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {categoryName}
+                </p>
+              </div>
             </div>
           ) : null}
 
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-              <Wallet size={14} className="text-gray-500" />
-              Ngân sách
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              {formatBudgetRange(rentRequest)}
-            </p>
+          {hasArea ? (
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Maximize className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Diện tích cần thuê
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {formatAreaRange(rentRequest)}
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <Wallet className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p className="text-xs tracking-wide text-gray-500 uppercase">
+                Ngân sách
+              </p>
+              <p className="text-sm font-semibold text-gray-800">
+                {formatBudgetRange(rentRequest)}
+              </p>
+            </div>
           </div>
 
           {hasDirection ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Navigation size={14} className="text-gray-500" />
-                Hướng
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {getDirectionLabel(rentRequest.preferredDirection?.toString())}
-              </p>
-            </div>
-          ) : null}
-
-          {hasCategoryName ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="text-xs tracking-wide text-gray-500 uppercase">
-                Danh mục
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {categoryName}
-              </p>
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Navigation className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Hướng
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {getDirectionLabel(
+                    rentRequest.preferredDirection?.toString(),
+                  )}
+                </p>
+              </div>
             </div>
           ) : null}
         </div>
