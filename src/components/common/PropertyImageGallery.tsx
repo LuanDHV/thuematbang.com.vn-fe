@@ -62,13 +62,13 @@ export default function PropertyImageGallery({
         </div>
       </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto">
+      <div className="mt-3 flex gap-2 overflow-x-auto px-1">
         {safeImages.map((image, index) => (
           <button
             key={`${image}-${index}`}
             type="button"
             onClick={() => setActiveIndex(index)}
-            className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-lg ${index === activeIndex ? "ring-primary ring-2" : "ring-1 ring-gray-200"}`}
+            className={`relative h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded-lg ${index === activeIndex ? "ring-primary ring-2" : "ring-1 ring-gray-200"}`}
             aria-label={`Xem ảnh ${index + 1}`}
           >
             <Image

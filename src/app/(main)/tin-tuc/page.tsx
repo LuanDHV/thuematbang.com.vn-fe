@@ -1,7 +1,7 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import NewsListingClient from "@/components/listing-client/NewsListingClient";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Tin tức",
@@ -10,5 +10,9 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function TinTucPage() {
-  return <NewsListingClient breadcrumbItems={buildNewsCategoryBreadcrumbs()} />;
+  return (
+    <>
+      <NewsListingClient breadcrumbItems={buildNewsCategoryBreadcrumbs()} />
+    </>
+  );
 }

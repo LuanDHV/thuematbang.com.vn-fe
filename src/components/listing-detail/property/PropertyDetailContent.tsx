@@ -1,4 +1,15 @@
-import { Bath, Bed, MapPin, Maximize, Navigation } from "lucide-react";
+import {
+  Bath,
+  Bed,
+  CalendarDays,
+  Eye,
+  Layers,
+  MapPin,
+  Maximize,
+  Navigation,
+  Tag,
+  Wallet,
+} from "lucide-react";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
 import { formatDate, formatPrice } from "@/lib/utils";
@@ -37,161 +48,179 @@ export default function PropertyDetailContent({
   const hasBedrooms =
     typeof property.bedrooms === "number" && property.bedrooms > 0;
   const hasDirection = Boolean(property.direction);
-  const hasPriorityStatus = Boolean(property.priorityStatus);
 
   return (
     <div className="w-full space-y-6 lg:w-3/4 lg:space-y-8">
       <section>
         <PropertyImageGallery title={property.title} images={galleryImages} />
+      </section>
 
-        <div className="mt-5">
-          <h1 className="text-2xl leading-tight font-bold text-gray-800 lg:text-4xl">
-            {property.title}
-          </h1>
-          <p className="text-primary mt-2 text-3xl font-bold tracking-tight">
-            {formatPrice(property.price || 0)}
-          </p>
-          <p className="mt-3 flex items-start gap-2 text-sm text-gray-600">
-            <MapPin size={16} className="mt-0.5 shrink-0 text-gray-500" />
-            <span>{locationText || "Đang cập nhật địa chỉ"}</span>
-          </p>
+      <section>
+        <h1 className="text-2xl leading-tight font-bold text-gray-800 lg:text-4xl">
+          {property.title}
+        </h1>
+
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+          {property.category?.name ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+              <Layers size={12} className="text-primary" />
+              Danh mục: {property.category.name}
+            </span>
+          ) : null}
+
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+            <Tag size={12} className="text-primary" />
+            Loại tin đăng: {property.priorityStatus}
+          </span>
+
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+            <CalendarDays size={12} className="text-primary" />
+            Ngày đăng: {formatDate(property.createdAt)}
+          </span>
+
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+            <Eye size={12} className="text-primary" />
+            Lượt xem: {(property.viewCount || 0).toLocaleString("vi-VN")}
+          </span>
         </div>
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
             Thông tin mô tả
           </h2>
         </div>
-        <div className="mt-4">
-          {property.content ? (
-            <div
-              className="prose prose-sm mt-5 max-w-none text-gray-700"
-              suppressHydrationWarning
-              dangerouslySetInnerHTML={{ __html: property.content }}
-            />
-          ) : null}
-        </div>
+        {property.content ? (
+          <div
+            className="prose prose-sm prose-gray prose-headings:font-semibold prose-p:leading-relaxed max-w-none text-gray-700"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: property.content }}
+          />
+        ) : (
+          <p className="text-sm text-gray-600">
+            Đang cập nhật thông tin mô tả.
+          </p>
+        )}
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
-            Đặc điểm bất động sản
+            Thông tin chi tiết
           </h2>
         </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <Wallet className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p className="text-xs tracking-wide text-gray-500 uppercase">
+                Giá thuê
+              </p>
+              <p className="text-sm font-semibold text-gray-800">
+                {formatPrice(property.price || 0)}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <MapPin className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p className="text-xs tracking-wide text-gray-500 uppercase">
+                Địa chỉ
+              </p>
+              <p className="text-sm font-semibold text-gray-800">
+                {locationText || "Đang cập nhật"}
+              </p>
+            </div>
+          </div>
+
           {hasArea ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Maximize size={14} className="text-gray-500" />
-                Diện tích
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {property.area} m²
-              </p>
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Maximize className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Diện tích
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {property.area} m²
+                </p>
+              </div>
             </div>
           ) : null}
-          {hasBathrooms ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Bath size={14} className="text-gray-500" />
-                Phòng tắm
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {property.bathrooms}
-              </p>
-            </div>
-          ) : null}
+
           {hasBedrooms ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Bed size={14} className="text-gray-500" />
-                Phòng ngủ
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {property.bedrooms}
-              </p>
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Bed className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Phòng ngủ
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {property.bedrooms}
+                </p>
+              </div>
             </div>
           ) : null}
+
+          {hasBathrooms ? (
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Bath className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Phòng tắm
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {property.bathrooms}
+                </p>
+              </div>
+            </div>
+          ) : null}
+
           {hasDirection ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="flex items-center gap-2 text-xs tracking-wide text-gray-500 uppercase">
-                <Navigation size={14} className="text-gray-500" />
-                Hướng
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800">
-                {getDirectionLabel(property.direction?.toString())}
-              </p>
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+              <Navigation className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                  Hướng
+                </p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {getDirectionLabel(property.direction?.toString())}
+                </p>
+              </div>
             </div>
           ) : null}
         </div>
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
             Xem trên bản đồ
           </h2>
         </div>
+
         {mapSrc ? (
           <iframe
             title={`Bản đồ vị trí ${property.title}`}
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="mt-4 h-80 w-full rounded-2xl"
+            className="h-80 w-full rounded-2xl"
           />
         ) : (
-          <div className="mt-4 rounded-2xl bg-gray-50 p-4 text-sm text-gray-600">
+          <div className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-600">
             Tin đăng chưa có tọa độ để hiển thị bản đồ.
           </div>
         )}
-
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Ngày đăng
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              {formatDate(property.createdAt)}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Ngày hết hạn
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              {formatDate(property.boostEndAt || property.updatedAt)}
-            </p>
-          </div>
-          {hasPriorityStatus ? (
-            <div className="rounded-2xl bg-gray-50 px-4 py-3">
-              <p className="text-xs tracking-wide text-gray-500 uppercase">
-                Loại tin
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-800 capitalize">
-                {property.priorityStatus}
-              </p>
-            </div>
-          ) : null}
-          <div className="rounded-2xl bg-gray-50 px-4 py-3">
-            <p className="text-xs tracking-wide text-gray-500 uppercase">
-              Mã tin
-            </p>
-            <p className="mt-1 text-sm font-semibold text-gray-800">
-              #{property.id}
-            </p>
-          </div>
-        </div>
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
             Bất động sản dành cho bạn
@@ -209,13 +238,13 @@ export default function PropertyDetailContent({
       </section>
 
       <section>
-        <div className="flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
             Bất động sản đã xem
           </h2>
         </div>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="text-sm text-gray-500">
           Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ
           localStorage/cookie.
         </p>

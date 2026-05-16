@@ -70,32 +70,30 @@ export default function ProjectListingClient({
 
   return (
     <section className="w-full px-4 py-8">
-      <div className="mx-auto w-full max-w-7xl px-4 py-8">
-        {breadcrumbItems?.length ? (
-          <DynamicBreadcrumb items={breadcrumbItems} />
-        ) : null}
+      {breadcrumbItems?.length ? (
+        <DynamicBreadcrumb items={breadcrumbItems} />
+      ) : null}
 
-        <div className="my-6">
-          <CategoryChips
-            activeValue={selectedCategorySlug}
-            onChange={handleSelectCategory}
-            items={categoryItems}
-          />
-        </div>
+      <div className="my-6">
+        <CategoryChips
+          activeValue={selectedCategorySlug}
+          onChange={handleSelectCategory}
+          items={categoryItems}
+        />
+      </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {pageItems.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {pageItems.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
+      </div>
 
-        <div className="mt-8">
-          <Pagination
-            page={currentPage}
-            totalPages={totalPages}
-            onChange={setPage}
-          />
-        </div>
+      <div className="mt-8">
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          onChange={setPage}
+        />
       </div>
     </section>
   );

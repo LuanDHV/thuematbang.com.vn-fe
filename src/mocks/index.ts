@@ -6,7 +6,7 @@ export * from "./faqs";
 export * from "./filter";
 export * from "./leads";
 export * from "./locations";
-export * from "./post";
+export * from "./news";
 export * from "./projects";
 export * from "./properties";
 export * from "./rentRequests";
