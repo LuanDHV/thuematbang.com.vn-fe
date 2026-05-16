@@ -66,7 +66,7 @@ export function ListingFilterChipPopover({
         onOpenAutoFocus={(event) => event.preventDefault()}
         className="w-[min(92vw,320px)] overflow-hidden rounded-2xl border-gray-100 p-0 shadow-xl"
       >
-        <div className="border-gray-100p-4 border-b">
+        <div className="border-b border-gray-100 p-4">
           <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
         </div>
 
