@@ -3,12 +3,7 @@ import {
   mockCategoryProject,
   mockCategoryProperty,
 } from "@/mocks/categories";
-import {
-  DIRECTION_OPTIONS,
-  FILTER_LIMITS,
-  mockFilterAreaOptions,
-  mockFilterPriceOptions,
-} from "@/mocks/filter";
+import { DIRECTION_OPTIONS, FILTER_LIMITS } from "@/mocks/filter";
 import { mockCities, mockStreets, mockWards } from "@/mocks/locations";
 import {
   AdvancedFilterValue,
@@ -47,10 +42,23 @@ const BEDROOM_TOKEN_PREFIX = "phong-ngu-";
 const BATHROOM_TOKEN_PREFIX = "phong-tam-";
 const DIRECTION_TOKEN_PREFIX = "huong-";
 
-// -----------------------------------------------------------------------------
-// Nhóm hàm build token (từ state filter -> token gắn vào flat URL)
-// Mỗi tiêu chí filter có 1 prefix riêng để parse ngược không bị nhập nhằng.
-// -----------------------------------------------------------------------------
+const CATEGORY_SLUG_TO_TOKEN = new Map<string, string>([
+  ["van-phong", "van-phong"],
+  ["mat-bang", "mat-bang"],
+  ["kho-xuong", "kho-xuong"],
+  ["khu-cong-nghiep", "khu-cong-nghiep"],
+  ["can-ho-chung-cu", "can-ho-chung-cu"],
+  ["trung-tam-thuong-mai", "trung-tam-thuong-mai"],
+  ["nha-tro-phong-tro", "nha-tro-phong-tro"],
+]);
+const CATEGORY_TOKEN_TO_SLUG = new Map(
+  Array.from(CATEGORY_SLUG_TO_TOKEN.entries()).map(([slug, token]) => [
+    token,
+    slug,
+  ]),
+);
+CATEGORY_TOKEN_TO_SLUG.set("mat-bang", "mat-bang");
+
 function millionsLabel(value: number) {
   if (value >= 1000) {
     const ty = value / 1000;
@@ -58,10 +66,13 @@ function millionsLabel(value: number) {
       ? `${ty}-ty`
       : `${ty.toFixed(1).replace(".", "-")}-ty`;
   }
-
   return `${value}-trieu`;
 }
 
+// -----------------------------------------------------------------------------
+// Nhóm hàm build token (từ state filter -> token gắn vào flat URL)
+// Mỗi tiêu chí filter có 1 prefix riêng để parse ngược không bị nhập nhằng.
+// -----------------------------------------------------------------------------
 function buildPriceToken(
   priceMin: string,
   priceMax: string,
@@ -70,7 +81,6 @@ function buildPriceToken(
   if (negotiable) return `${PRICE_TOKEN_PREFIX}thoa-thuan`;
   const min = Number(priceMin || 0) / 1_000_000;
   const max = Number(priceMax || 0) / 1_000_000;
-
   if (!min && !max) return "";
   if (!min && max) return `${PRICE_TOKEN_PREFIX}duoi-${millionsLabel(max)}`;
   if (min && !max) return `${PRICE_TOKEN_PREFIX}tren-${millionsLabel(min)}`;
@@ -80,7 +90,6 @@ function buildPriceToken(
 function buildAreaToken(areaMin: string, areaMax: string) {
   const min = Number(areaMin || 0);
   const max = Number(areaMax || 0);
-
   if (!min && !max) return "";
   if (!min && max) return `${AREA_TOKEN_PREFIX}duoi-${max}m2`;
   if (min && !max) return `${AREA_TOKEN_PREFIX}tren-${min}m2`;
@@ -88,7 +97,16 @@ function buildAreaToken(areaMin: string, areaMax: string) {
 }
 
 function buildLocationToken(city: string, ward: string, street: string) {
-  const cityPart = city ? `${LOCATION_CITY_PREFIX}${compact(city)}` : "";
+  const cityValue = compact(city);
+  const citySlugRaw = city
+    ? (mockCities.find(
+        (cityItem) =>
+          compact(cityItem.name) === cityValue ||
+          compact(cityItem.slug) === cityValue,
+      )?.slug ?? cityValue)
+    : "";
+  const citySlug = citySlugRaw.replace(/^tp-/, "");
+  const cityPart = citySlug ? `${LOCATION_CITY_PREFIX}${citySlug}` : "";
   const wardPart = ward ? `${LOCATION_WARD_PREFIX}${compact(ward)}` : "";
   const streetPart = street
     ? `${LOCATION_STREET_PREFIX}${compact(street)}`
@@ -125,37 +143,25 @@ function buildDirectionToken(values: string[]) {
 // Nhóm lookup map phục vụ parse ngược (token -> giá trị hiển thị / id nội bộ)
 // Ý tưởng: luôn parse theo slug rồi map về dữ liệu gốc trong mock/options.
 // -----------------------------------------------------------------------------
-const propertyTypeSlugToName = new Map(
+const propertyTypeSlugToName = new Map<string, string>(
   mockCategoryProperty.map((category) => [category.slug, category.name]),
 );
-
-const areaTokenMatchers = mockFilterAreaOptions
-  .filter((option) => option.min || option.max)
-  .map((option) => ({
-    token: buildAreaToken(option.min, option.max),
-    min: option.min,
-    max: option.max,
-  }))
-  .filter((item) => item.token)
-  .sort((left, right) => right.token.length - left.token.length);
-
-const priceTokenMatchers = mockFilterPriceOptions
-  .filter((option) => option.min || option.max || option.isNegotiable)
-  .map((option) => ({
-    token: buildPriceToken(
-      option.min,
-      option.max,
-      Boolean(option.isNegotiable),
-    ),
-    min: option.min,
-    max: option.max,
-    negotiable: Boolean(option.isNegotiable),
-  }))
-  .filter((item) => item.token)
-  .sort((left, right) => right.token.length - left.token.length);
+for (const category of mockCategoryProperty) {
+  const beToken = CATEGORY_SLUG_TO_TOKEN.get(category.slug);
+  if (beToken) {
+    propertyTypeSlugToName.set(beToken, category.name);
+  }
+}
 
 const citySlugToName = new Map(
-  mockCities.map((city) => [compact(city.name), city.name]),
+  mockCities.flatMap((city) => {
+    const normalizedSlug = compact(city.slug).replace(/^tp-/, "");
+    return [
+      [compact(city.name), city.name],
+      [compact(city.slug), city.name],
+      [normalizedSlug, city.name],
+    ];
+  }),
 );
 const wardSlugToName = new Map(
   mockWards.map((ward) => [compact(ward.name), ward.name]),
@@ -164,7 +170,7 @@ const streetSlugToName = new Map(
   mockStreets.map((street) => [compact(street.name), street.name]),
 );
 
-const directionSlugToId = new Map(
+const directionSlugToId = new Map<string, string>(
   DIRECTION_OPTIONS.map((option) => [
     compact(option.id.replaceAll("_", "-")),
     option.id,
@@ -172,13 +178,6 @@ const directionSlugToId = new Map(
 );
 const directionSlugPattern = Array.from(directionSlugToId.keys()).join("|");
 const bedBathSinglePattern = "(?:1|2|3|4|5-plus)";
-
-function matchSuffixToken<T extends { token: string }>(
-  value: string,
-  candidates: T[],
-) {
-  return candidates.find((candidate) => value.endsWith(candidate.token));
-}
 
 function removeMatchedSuffix(value: string, token: string) {
   if (value === token) return "";
@@ -265,6 +264,94 @@ function parseLocationToken(pending: string) {
   };
 }
 
+type ParsedPrice = {
+  minPrice?: number;
+  maxPrice?: number;
+  isNegotiable?: boolean;
+};
+
+type ParsedArea = {
+  minArea?: number;
+  maxArea?: number;
+};
+
+function parseMoneyPartToVnd(value: string): number | undefined {
+  const tyMatch = value.match(/^(\d+)(?:-(\d+))?-ty$/);
+  if (tyMatch) {
+    const decimal = tyMatch[2] ? Number(`0.${tyMatch[2]}`) : 0;
+    const amount = (Number(tyMatch[1]) + decimal) * 1_000_000_000;
+    return Number.isFinite(amount) ? Math.round(amount) : undefined;
+  }
+
+  const trieuMatch = value.match(/^(\d+)(?:-(\d+))?-trieu$/);
+  if (trieuMatch) {
+    const decimal = trieuMatch[2] ? Number(`0.${trieuMatch[2]}`) : 0;
+    const amount = (Number(trieuMatch[1]) + decimal) * 1_000_000;
+    return Number.isFinite(amount) ? Math.round(amount) : undefined;
+  }
+
+  return undefined;
+}
+
+function parsePriceToken(token: string): ParsedPrice | undefined {
+  if (token === `${PRICE_TOKEN_PREFIX}thoa-thuan`) {
+    return { isNegotiable: true };
+  }
+
+  const raw = token.replace(PRICE_TOKEN_PREFIX, "");
+
+  if (raw.startsWith("duoi-")) {
+    const max = parseMoneyPartToVnd(raw.replace(/^duoi-/, ""));
+    return max ? { maxPrice: max } : undefined;
+  }
+
+  if (raw.startsWith("tren-")) {
+    const min = parseMoneyPartToVnd(raw.replace(/^tren-/, ""));
+    return min ? { minPrice: min } : undefined;
+  }
+
+  const moneyPattern = String.raw`\d+(?:-\d+)?-(?:trieu|ty)`;
+  const match = raw.match(new RegExp(`^(${moneyPattern})-(${moneyPattern})$`));
+
+  if (!match) return undefined;
+
+  const min = parseMoneyPartToVnd(match[1]);
+  const max = parseMoneyPartToVnd(match[2]);
+
+  if (!min || !max) return undefined;
+
+  return {
+    minPrice: min,
+    maxPrice: max,
+  };
+}
+
+function parseAreaToken(token: string): ParsedArea | undefined {
+  const raw = token.replace(AREA_TOKEN_PREFIX, "");
+  const belowMatch = raw.match(/^duoi-(\d+)m2$/);
+  if (belowMatch) return { maxArea: Number(belowMatch[1]) };
+
+  const aboveMatch = raw.match(/^tren-(\d+)m2$/);
+  if (aboveMatch) return { minArea: Number(aboveMatch[1]) };
+
+  const betweenMatch = raw.match(/^(\d+)-(\d+)m2$/);
+  if (betweenMatch) {
+    return {
+      minArea: Number(betweenMatch[1]),
+      maxArea: Number(betweenMatch[2]),
+    };
+  }
+
+  return undefined;
+}
+
+function extractSuffixToken(value: string, prefix: string) {
+  const regex = new RegExp(`${prefix}[a-z0-9-]+$`);
+  const match = value.match(regex);
+  if (!match?.[0]) return undefined;
+  return match[0];
+}
+
 // -----------------------------------------------------------------------------
 // Build flat URL canonical từ state filter hiện tại.
 // Thứ tự token trong URL đang dùng:
@@ -277,9 +364,14 @@ export function buildPropertyFilterPath(
 ) {
   const tokens: string[] = [];
 
-  const propertyTypeName = value.propertyTypes[0];
+  const propertyTypeName = value.propertyTypes[0] ?? "";
   if (propertyTypeName) {
-    tokens.push(compact(propertyTypeName));
+    const category = mockCategoryProperty.find(
+      (item) => item.name === propertyTypeName,
+    );
+    if (category) {
+      tokens.push(CATEGORY_SLUG_TO_TOKEN.get(category.slug) ?? category.slug);
+    }
   }
 
   const priceToken = buildPriceToken(
@@ -356,22 +448,38 @@ export function parsePropertyFilterSlug(rawSlug: string | undefined) {
   initial.ward = locationParsed.ward;
   initial.street = locationParsed.street;
 
-  const areaMatch = matchSuffixToken(pending, areaTokenMatchers);
-  if (areaMatch) {
-    initial.areaMin = areaMatch.min;
-    initial.areaMax = areaMatch.max;
-    pending = removeMatchedSuffix(pending, areaMatch.token);
+  const areaToken = extractSuffixToken(pending, AREA_TOKEN_PREFIX);
+  if (areaToken) {
+    const area = parseAreaToken(areaToken);
+    if (area) {
+      initial.areaMin = area.minArea ? String(area.minArea) : "";
+      initial.areaMax = area.maxArea ? String(area.maxArea) : "";
+      if (!area.minArea && area.maxArea) {
+        initial.areaMin = "";
+      }
+      pending = removeMatchedSuffix(pending, areaToken);
+    }
   }
 
-  const priceMatch = matchSuffixToken(pending, priceTokenMatchers);
-  if (priceMatch) {
-    initial.priceMin = priceMatch.min;
-    initial.priceMax = priceMatch.max || String(FILTER_LIMITS.PRICE_MAX);
-    initial.negotiable = priceMatch.negotiable;
-    pending = removeMatchedSuffix(pending, priceMatch.token);
+  const priceToken = extractSuffixToken(pending, PRICE_TOKEN_PREFIX);
+  if (priceToken) {
+    const price = parsePriceToken(priceToken);
+    if (price) {
+      initial.priceMin = price.minPrice ? String(price.minPrice) : "";
+      initial.priceMax = price.maxPrice ? String(price.maxPrice) : "";
+      initial.negotiable = Boolean(price.isNegotiable);
+      if (!price.minPrice && price.maxPrice) {
+        initial.priceMin = "";
+      }
+      if (price.minPrice && !price.maxPrice) {
+        initial.priceMax = String(FILTER_LIMITS.PRICE_MAX);
+      }
+      pending = removeMatchedSuffix(pending, priceToken);
+    }
   }
 
-  const typeName = propertyTypeSlugToName.get(pending);
+  const typeSlug = CATEGORY_TOKEN_TO_SLUG.get(pending) ?? pending;
+  const typeName = propertyTypeSlugToName.get(typeSlug);
   if (typeName) {
     initial.propertyTypes = [typeName];
   }

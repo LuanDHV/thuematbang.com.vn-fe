@@ -104,7 +104,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           )
           .map((item) => ({
             label: `${item.category?.name} khu vực ${property.city?.name}`,
-            href: `/cho-thue/${item.category?.slug}-khu-vuc-tp-${citySlug}`,
+            href: `/cho-thue/${item.category?.slug}-khu-vuc-${citySlug}`,
           }))
           .filter(
             (item, index, arr) =>
