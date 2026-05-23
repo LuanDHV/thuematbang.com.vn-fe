@@ -1,8 +1,8 @@
-export interface PropertyImage {
+﻿export interface PropertyImage {
   id: number;
   propertyId: number;
-  fileUrl: string;
-  publicId?: string | null;
+  imageUrl: string;
+  imagePublicId?: string | null;
   sortOrder: number;
   createdAt: Date | string;
 }
@@ -10,8 +10,8 @@ export interface PropertyImage {
 export interface ProjectImage {
   id: number;
   projectId: number;
-  fileUrl: string;
-  publicId?: string | null;
+  imageUrl: string;
+  imagePublicId?: string | null;
   sortOrder: number;
   createdAt: Date | string;
 }

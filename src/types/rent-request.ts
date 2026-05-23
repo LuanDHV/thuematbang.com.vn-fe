@@ -1,6 +1,6 @@
 ﻿import { Category } from "./category";
-import { RentRequestStatus, PropertyDirection } from "./enums";
-import { City, District, Street, Ward } from "./location";
+import { PropertyDirection, RentRequestStatus } from "./enums";
+import { Province, Street, Ward } from "./location";
 import { User } from "./user";
 
 export interface RentRequest {
@@ -9,10 +9,9 @@ export interface RentRequest {
   title: string;
   slug: string;
   categoryId?: number | null;
-  thumbnailUrl?: string | null;
-  thumbnailPublicId?: string | null;
-  desiredCityId?: number | null;
-  desiredDistrictId?: number | null;
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
+  desiredProvinceId?: number | null;
   desiredWardId?: number | null;
   desiredStreetId?: number | null;
   minBudget?: number | null;
@@ -32,9 +31,7 @@ export interface RentRequest {
   updatedAt: Date | string;
   user?: User | null;
   category?: Category | null;
-  desiredCity?: City | null;
-  desiredDistrict?: District | null;
+  desiredProvince?: Province | null;
   desiredWard?: Ward | null;
   desiredStreet?: Street | null;
 }
-

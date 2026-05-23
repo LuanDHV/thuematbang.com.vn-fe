@@ -73,4 +73,3 @@ export interface PaymentTransaction {
   propertyPackageOrder?: PropertyPackageOrder | null;
   propertyBoostOrder?: PropertyBoostOrder | null;
 }
-

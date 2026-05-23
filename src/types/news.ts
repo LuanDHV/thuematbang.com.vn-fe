@@ -6,8 +6,8 @@ export interface News {
   categoryId: number;
   title: string;
   slug: string;
-  thumbnailUrl?: string | null;
-  thumbnailPublicId?: string | null;
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
   summary?: string | null;
   content?: string | null;
   viewCount: number;
@@ -17,4 +17,3 @@ export interface News {
   updatedAt: Date | string;
   category?: Category | null;
 }
-
