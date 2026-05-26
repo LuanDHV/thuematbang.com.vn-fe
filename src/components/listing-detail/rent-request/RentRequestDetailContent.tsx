@@ -1,4 +1,4 @@
-import {
+﻿import {
   CalendarDays,
   Eye,
   Layers,
@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { formatDate, formatPrice } from "@/lib/utils";
-import { DIRECTION_OPTIONS } from "@/mocks/filter";
+import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RentRequest } from "@/types/rent-request";
 import Image from "next/image";
 
@@ -63,7 +63,7 @@ export default function RentRequestDetailContent({
       <section>
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
           <Image
-            src={rentRequest.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
+            src={rentRequest.imageUrl || "/imgs/wallpaper-1.jpg"}
             alt={rentRequest.title}
             fill
             sizes="(max-width: 1024px) 100vw, 75vw"

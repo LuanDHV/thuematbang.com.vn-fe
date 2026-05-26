@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
@@ -9,37 +9,56 @@ import PropertyDetailContent from "@/components/listing-detail/property/Property
 import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
 import {
   buildPropertyFilterBreadcrumbs,
+  parsePagedSlugSegments,
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/mocks/pageSeoFaq";
-import { getPropertyGalleryImages, getPropertyThumbnailUrl, mockProperties } from "@/mocks/properties";
-import { mockUsers } from "@/mocks/users";
+import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { Property } from "@/types/property";
+import { propertyService } from "@/services/property.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-function getPropertyDetail(slug: string) {
-  return mockProperties.find((property) => property.slug === slug);
+function extractPropertyImages(property: Property) {
+  const imageUrls =
+    property.images
+      ?.slice()
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((image) => image.imageUrl)
+      .filter(Boolean) ?? [];
+
+  if (imageUrls.length > 0) return imageUrls;
+  return ["/imgs/wallpaper-1.jpg"];
+}
+
+async function resolveProperty(rawSlug: string) {
+  try {
+    return await propertyService.getBySlug(rawSlug);
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const rawSlug = slug.join("-");
-  const property = getPropertyDetail(rawSlug);
+  const { rawSlug } = parsePagedSlugSegments(slug);
+  const property = rawSlug ? await resolveProperty(rawSlug) : null;
 
   if (property) {
     const propertyDescription =
       property.content?.replace(/<[^>]+>/g, "").trim() ||
       "Chi tiết tin đăng cho thuê.";
+    const image = extractPropertyImages(property)[0];
+
     return createPageMetadata({
       title: property.title,
       description: propertyDescription,
       pathname: `/cho-thue/${property.slug}`,
-      image: getPropertyThumbnailUrl(property.id),
+      image,
       type: "article",
     });
   }
@@ -53,57 +72,56 @@ export async function generateMetadata({
 
 export default async function DynamicChoThuePage({ params }: PageProps) {
   const { slug } = await params;
-  const rawSlug = slug.join("-");
-  const property = getPropertyDetail(rawSlug);
+  const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const limit = 12;
+  const pageContent = pageSeoFaq["cho-thue"];
+  const property = rawSlug ? await resolveProperty(rawSlug) : null;
 
   if (property) {
-    const cookieStore = await cookies();
-    const isLoggedIn =
-      Boolean(cookieStore.get("accessToken")?.value) ||
-      Boolean(cookieStore.get("token")?.value) ||
-      Boolean(cookieStore.get("authToken")?.value);
+    let properties: Property[] = [];
+    try {
+      const pagePayload = await propertyService.getAll({ page: 1, limit: 24 });
+      properties = pagePayload.data ?? [];
+    } catch {
+      properties = [];
+    }
 
-    const poster = mockUsers.find((user) => user.id === property.userId);
+    const poster = property.user ?? undefined;
     const locationText = [
       property.addressDetail,
       property.ward?.name,
-      property.district?.name,
-      property.city?.name,
+      property.province?.name,
     ]
       .filter(Boolean)
       .join(", ");
 
-    const rentalOutProperties = mockProperties.filter(
+    const rentalOutProperties = properties.filter(
       (item) => item.id !== property.id,
     );
-
-    const featuredProperties = mockProperties
+    const featuredProperties = properties
       .filter((item) => item.isFeatured)
       .slice(0, 6);
-
     const viewedProperties = rentalOutProperties.slice(0, 3);
-
-    const galleryImages = getPropertyGalleryImages(property.id);
+    const galleryImages = extractPropertyImages(property);
 
     const hasCoordinates =
       typeof property.latitude === "number" &&
       typeof property.longitude === "number";
-
     const mapSrc = hasCoordinates
       ? `https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`
       : null;
 
-    const citySlug = property.city?.slug;
+    const citySlug = property.province?.slug;
     const relatedCategoryCityLinks = citySlug
-      ? mockProperties
+      ? properties
           .filter(
             (item) =>
-              item.cityId === property.cityId &&
+              item.provinceId === property.provinceId &&
               item.category?.slug &&
               item.category?.name,
           )
           .map((item) => ({
-            label: `${item.category?.name} khu vực ${property.city?.name}`,
+            label: `${item.category?.name}  khu vực ${property.province?.name}`,
             href: `/cho-thue/${item.category?.slug}-khu-vuc-${citySlug}`,
           }))
           .filter(
@@ -134,7 +152,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           />
           <PropertyDetailSidebar
             poster={poster}
-            isLoggedIn={isLoggedIn}
+            isLoggedIn
             relatedCategoryCityLinks={relatedCategoryCityLinks}
           />
         </div>
@@ -143,23 +161,38 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   }
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
-  const pageContent = pageSeoFaq["cho-thue"];
-  const rentalOutProperties = mockProperties;
-
-  if (!rentalOutProperties.length) {
-    notFound();
-  }
+  const listFetcher = rawSlug
+    ? propertyService.getAllByFlatSlug({ flatSlug: rawSlug, page, limit })
+    : propertyService.getAll({ page, limit });
+  const paginationBasePath = rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue";
 
   return (
     <>
-      <ListingFilterSection
-        title="Cho thuê bất động sản"
-        properties={rentalOutProperties}
-        listingMode="property"
-        basePath="/cho-thue"
-        initialFilters={initialFilters}
-        breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue", rawSlug)}
-      />
+      <SafeFetch fetcher={listFetcher}>
+        {(response) => {
+          const rentalOutProperties = response.data ?? [];
+          if (!rentalOutProperties.length) {
+            notFound();
+          }
+
+          return (
+            <ListingFilterSection
+              title="Cho thuê bất động sản"
+              properties={rentalOutProperties}
+              listingMode="property"
+              serverDriven
+              basePath="/cho-thue"
+              paginationBasePath={paginationBasePath}
+              initialFilters={initialFilters}
+              breadcrumbItems={buildPropertyFilterBreadcrumbs(
+                "/cho-thue",
+                rawSlug,
+              )}
+              paginationMeta={response.meta}
+            />
+          );
+        }}
+      </SafeFetch>
       <PageSeoContent content={pageContent.seoContent} />
       <PageFaq
         title={pageContent.faqTitle}
@@ -169,4 +202,3 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     </>
   );
 }
-

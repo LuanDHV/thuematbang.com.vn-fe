@@ -1,4 +1,4 @@
-import { formatDate, formatPrice } from "@/lib/utils";
+﻿import { formatDate, formatPrice } from "@/lib/utils";
 import { RentRequest } from "@/types/rent-request";
 import { Calendar, Eye, MapPin, Maximize, Wallet } from "lucide-react";
 import Image from "next/image";
@@ -27,7 +27,7 @@ function formatAreaRange(request: RentRequest) {
 }
 
 function getLocationText(request: RentRequest) {
-  return [request.desiredDistrict?.name, request.desiredCity?.name]
+  return [request.desiredWard?.name, request.desiredProvince?.name]
     .filter(Boolean)
     .join(", ");
 }
@@ -40,7 +40,7 @@ export function RentRequestCard({
   variant?: "default" | "featured";
 }) {
   const location = getLocationText(request) || "Toàn quốc";
-  const image = request.thumbnailUrl || "/imgs/wallpaper-1.jpg";
+  const image = request.imageUrl || "/imgs/wallpaper-1.jpg";
   const isFeatured = variant === "featured";
   const categoryName = request.category?.name ?? "";
 
@@ -48,10 +48,14 @@ export function RentRequestCard({
     <Link href={`/can-thue/${request.slug}`}>
       <article
         className={`group overflow-hidden border bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
-          isFeatured ? "rounded-2xl border-gray-200" : "rounded-xl border-gray-200"
+          isFeatured
+            ? "rounded-2xl border-gray-200"
+            : "rounded-xl border-gray-200"
         }`}
       >
-        <div className={`relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}>
+        <div
+          className={`relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
+        >
           <Image
             src={image}
             alt={request.title}

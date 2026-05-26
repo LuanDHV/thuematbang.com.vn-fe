@@ -1,11 +1,12 @@
-import axiosClient from "@/lib/axios";
-import { ApiResponse } from "@/types/api";
-import { Category } from "@/types/category";
+﻿import { Category } from "@/types/category";
+import { getApiResponse } from "./shared/api-client";
 
 export const categoryService = {
-  getAll: async () => {
-    return await axiosClient.get<unknown, ApiResponse<Category[]>>(
-      `/categories`,
-    );
-  },
+  getAll: async () =>
+    getApiResponse<Category[]>("/categories", {
+      revalidate: 300,
+      tags: ["categories"],
+    }),
 };
+
+

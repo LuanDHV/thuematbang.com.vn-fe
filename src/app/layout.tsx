@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/metadata";
-
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-});
+import AppProviders from "@/components/providers/AppProviders";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -52,8 +47,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${montserrat.variable} h-full antialiased`}>
-      <body className="min-h-screen">{children}</body>
+    <html lang="vi" className="h-full antialiased">
+      <body className="min-h-screen">
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }

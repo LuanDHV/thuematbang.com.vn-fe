@@ -1,8 +1,4 @@
 ﻿import { formatDate, formatPrice } from "@/lib/utils";
-import {
-  getPropertyGalleryImages,
-  getPropertyThumbnailUrl,
-} from "@/mocks/properties";
 import { Property } from "@/types/property";
 import {
   Bath,
@@ -16,8 +12,32 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
+const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
+
 function resolvePropertyHref(property: Property) {
   return `/cho-thue/${property.slug}`;
+}
+
+function getSortedPropertyImageUrls(property: Property) {
+  return (
+    property.images
+      ?.slice()
+      .sort((left, right) => left.sortOrder - right.sortOrder)
+      .map((image) => image.imageUrl)
+      .filter(Boolean) ?? []
+  );
+}
+
+function getPropertyThumbnailUrl(property: Property) {
+  return getSortedPropertyImageUrls(property)[0] || DEFAULT_PROPERTY_IMAGE;
+}
+
+function getPropertyGalleryImages(property: Property) {
+  const images = getSortedPropertyImageUrls(property);
+  if (images.length > 0) return images;
+
+  const fallbackImage = getPropertyThumbnailUrl(property);
+  return [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
 }
 
 function getTierLabel(priorityStatus?: string | null) {
@@ -32,7 +52,7 @@ function getTierLabel(priorityStatus?: string | null) {
 }
 
 function getLocationText(property: Property) {
-  return [property.district?.name, property.city?.name]
+  return [property.ward?.name, property.province?.name]
     .filter(Boolean)
     .join(", ");
 }
@@ -100,7 +120,7 @@ function FeaturedCard({ property }: { property: Property }) {
       <div className="relative h-52 overflow-hidden">
         <TierBadge label={getTierLabel(property.priorityStatus)} />
         <Image
-          src={getPropertyThumbnailUrl(property.id)}
+          src={getPropertyThumbnailUrl(property)}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -130,8 +150,8 @@ function GoldCard({
 }: {
   property: Property;
 }) {
-  const fallbackImage = getPropertyThumbnailUrl(property.id);
-  const galleryImages = getPropertyGalleryImages(property.id);
+  const fallbackImage = getPropertyThumbnailUrl(property);
+  const galleryImages = getPropertyGalleryImages(property);
   const imagesList =
     galleryImages.length > 0
       ? galleryImages
@@ -204,8 +224,8 @@ function SilverCard({
 }: {
   property: Property;
 }) {
-  const fallbackImage = getPropertyThumbnailUrl(property.id);
-  const galleryImages = getPropertyGalleryImages(property.id);
+  const fallbackImage = getPropertyThumbnailUrl(property);
+  const galleryImages = getPropertyGalleryImages(property);
   const imagesList =
     galleryImages.length > 0
       ? galleryImages
@@ -260,7 +280,7 @@ function SilverCard({
 }
 
 function NormalCard({ property }: { property: Property }) {
-  const image = getPropertyThumbnailUrl(property.id);
+  const image = getPropertyThumbnailUrl(property);
 
   return (
     <article className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
@@ -356,5 +376,7 @@ export function PropertyCard({
 
   return <Link href={href}>{content}</Link>;
 }
+
+
 
 

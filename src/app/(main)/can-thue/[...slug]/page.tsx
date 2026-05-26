@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
@@ -9,34 +9,39 @@ import RentRequestDetailContent from "@/components/listing-detail/rent-request/R
 import RentRequestDetailSidebar from "@/components/listing-detail/rent-request/RentRequestDetailSidebar";
 import {
   buildPropertyFilterBreadcrumbs,
+  parsePagedSlugSegments,
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/mocks/pageSeoFaq";
-import { mockRentRequests } from "@/mocks/rentRequests";
-import { mockUsers } from "@/mocks/users";
+import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { RentRequest } from "@/types/rent-request";
+import { rentRequestService } from "@/services/rent-request.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-function getRentRequestDetail(slug: string) {
-  return mockRentRequests.find((request) => request.slug === slug);
+async function resolveRentRequest(rawSlug: string) {
+  try {
+    return await rentRequestService.getBySlug(rawSlug);
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const rawSlug = slug.join("-");
-  const rentRequest = getRentRequestDetail(rawSlug);
+  const { rawSlug } = parsePagedSlugSegments(slug);
+  const rentRequest = rawSlug ? await resolveRentRequest(rawSlug) : null;
 
   if (rentRequest) {
     return createPageMetadata({
       title: rentRequest.title,
       description: rentRequest.requirementText || "Chi tiết nhu cầu cần thuê.",
       pathname: `/can-thue/${rentRequest.slug}`,
-      image: rentRequest.thumbnailUrl || undefined,
+      image: rentRequest.imageUrl || undefined,
       type: "article",
     });
   }
@@ -50,38 +55,43 @@ export async function generateMetadata({
 
 export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
-  const rawSlug = slug.join("-");
-  const rentRequest = getRentRequestDetail(rawSlug);
+  const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const limit = 12;
+  const pageContent = pageSeoFaq["can-thue"];
+  const rentRequest = rawSlug ? await resolveRentRequest(rawSlug) : null;
 
   if (rentRequest) {
-    const cookieStore = await cookies();
-    const isLoggedIn =
-      Boolean(cookieStore.get("accessToken")?.value) ||
-      Boolean(cookieStore.get("token")?.value) ||
-      Boolean(cookieStore.get("authToken")?.value);
+    let rentRequests: RentRequest[] = [];
+    try {
+      const pagePayload = await rentRequestService.getAll({
+        page: 1,
+        limit: 24,
+      });
+      rentRequests = pagePayload.data ?? [];
+    } catch {
+      rentRequests = [];
+    }
 
-    const poster = mockUsers.find((user) => user.id === rentRequest.userId);
+    const poster = rentRequest.user ?? undefined;
     const locationText = [
       rentRequest.desiredStreet?.name,
       rentRequest.desiredWard?.name,
-      rentRequest.desiredDistrict?.name,
-      rentRequest.desiredCity?.name,
+      rentRequest.desiredProvince?.name,
     ]
       .filter(Boolean)
       .join(", ");
 
-    const relatedRequests = mockRentRequests.filter(
+    const relatedRequests = rentRequests.filter(
       (item) => item.id !== rentRequest.id,
     );
-
     const viewedRequests = relatedRequests.slice(0, 3);
     const latestWantedRequests = relatedRequests
       .slice()
-      .sort((a, b) => {
-        const aTime = new Date(a.createdAt || 0).getTime();
-        const bTime = new Date(b.createdAt || 0).getTime();
-        return bTime - aTime;
-      })
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt || 0).getTime() -
+          new Date(a.createdAt || 0).getTime(),
+      )
       .slice(0, 10);
 
     return (
@@ -103,7 +113,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           />
           <RentRequestDetailSidebar
             poster={poster}
-            isLoggedIn={isLoggedIn}
+            isLoggedIn
             latestWantedProperties={latestWantedRequests}
             companyPhone={rentRequest.contactPhone ?? "0968688081"}
           />
@@ -113,23 +123,38 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
   }
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
-  const pageContent = pageSeoFaq["can-thue"];
-  const rentalDemandProperties = mockRentRequests;
-
-  if (!rentalDemandProperties.length) {
-    notFound();
-  }
+  const listFetcher = rawSlug
+    ? rentRequestService.getAllByFlatSlug({ flatSlug: rawSlug, page, limit })
+    : rentRequestService.getAll({ page, limit });
+  const paginationBasePath = rawSlug ? `/can-thue/${rawSlug}` : "/can-thue";
 
   return (
     <>
-      <ListingFilterSection
-        title="Cần thuê bất động sản"
-        properties={rentalDemandProperties}
-        listingMode="rentRequest"
-        basePath="/can-thue"
-        initialFilters={initialFilters}
-        breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue", rawSlug)}
-      />
+      <SafeFetch fetcher={listFetcher}>
+        {(response) => {
+          const rentRequests = response.data ?? [];
+          if (!rentRequests.length) {
+            notFound();
+          }
+
+          return (
+            <ListingFilterSection
+              title="Cần thuê bất động sản"
+              properties={rentRequests}
+              listingMode="rentRequest"
+              serverDriven
+              basePath="/can-thue"
+              paginationBasePath={paginationBasePath}
+              initialFilters={initialFilters}
+              breadcrumbItems={buildPropertyFilterBreadcrumbs(
+                "/can-thue",
+                rawSlug,
+              )}
+              paginationMeta={response.meta}
+            />
+          );
+        }}
+      </SafeFetch>
       <PageSeoContent content={pageContent.seoContent} />
       <PageFaq
         title={pageContent.faqTitle}

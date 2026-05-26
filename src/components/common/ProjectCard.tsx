@@ -1,8 +1,20 @@
-﻿import { getProjectThumbnailUrl } from "@/mocks/projects";
-import { Project } from "@/types/project";
+﻿import { Project } from "@/types/project";
 import { Building2, Calendar, Eye, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
+
+function getProjectThumbnailUrl(project: Project) {
+  const sortedImages =
+    project.images
+      ?.slice()
+      .sort((left, right) => left.sortOrder - right.sortOrder)
+      .map((image) => image.imageUrl)
+      .filter(Boolean) ?? [];
+
+  return sortedImages[0] || DEFAULT_PROJECT_IMAGE;
+}
 
 function formatProjectPrice(value?: number | null) {
   if (!value) return "Liên hệ";
@@ -21,9 +33,9 @@ function formatDate(value?: Date | string | null) {
 }
 
 export function ProjectCard({ project }: { project: Project }) {
-  const thumbnailUrl = getProjectThumbnailUrl(project.id);
+  const thumbnailImageUrl = getProjectThumbnailUrl(project);
   const location =
-    [project.ward?.name, project.district?.name, project.city?.name]
+    [project.ward?.name, project.ward?.name, project.province?.name]
       .filter(Boolean)
       .join(", ") || "Đang cập nhật vị trí";
 
@@ -34,7 +46,7 @@ export function ProjectCard({ project }: { project: Project }) {
     >
       <div className="relative h-64 overflow-hidden">
         <Image
-          src={thumbnailUrl}
+          src={thumbnailImageUrl}
           alt={project.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -111,5 +123,6 @@ export function ProjectCard({ project }: { project: Project }) {
     </Link>
   );
 }
+
 
 

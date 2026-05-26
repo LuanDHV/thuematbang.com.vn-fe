@@ -4,17 +4,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { mockCategories } from "@/mocks/categories";
+import { useUIStore } from "@/stores/ui-store";
+import { useAuthMe } from "@/hooks/use-auth";
+
+const HEADER_ITEMS = [
+  { id: "cho-thue", name: "Cho thuê", href: "/cho-thue" },
+  { id: "can-thue", name: "Cần thuê", href: "/can-thue" },
+  { id: "du-an", name: "Dự án", href: "/du-an" },
+  { id: "tin-tuc", name: "Tin tức", href: "/tin-tuc" },
+];
 
 export default function Header() {
-  const parentCategories = [...mockCategories]
-    .filter((category) => category.isActive !== false)
-    .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
-    .map((category) => ({
-      id: category.id,
-      name: category.name,
-      slug: category.slug,
-    }));
+  const { data: authUser } = useAuthMe();
+  const displayName = authUser?.fullName || authUser?.email || "Tài khoản";
+  const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
+  const setMobileMenuOpen = useUIStore((state) => state.setMobileMenuOpen);
+  const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 bg-white shadow backdrop-blur-lg">
@@ -37,28 +42,35 @@ export default function Header() {
           </Link>
 
           <div className="hidden items-center gap-1 lg:flex lg:flex-1 lg:justify-center">
-            {parentCategories.map((parent) => (
+            {HEADER_ITEMS.map((item) => (
               <Link
-                key={parent.id}
-                href={`/${parent.slug}`}
+                key={item.id}
+                href={item.href}
                 className="hover:text-primary after:bg-primary relative rounded-md px-3 py-2 text-sm font-semibold tracking-wider text-gray-700 uppercase transition-colors after:absolute after:right-3 after:bottom-1 after:left-3 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
               >
-                {parent.name}
+                {item.name}
               </Link>
             ))}
           </div>
 
           <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3 lg:flex-none lg:justify-start">
-            <Button
-              asChild
-              size="lg"
-              className="border-primary text-primary hover:border-primary hover:bg-primary/10 hidden cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px lg:inline-flex"
-            >
-              <Link href="/dang-nhap">
+            {authUser ? (
+              <div className="border-primary/25 text-primary hidden items-center gap-2 rounded-xl border bg-white px-4 py-2 text-sm font-semibold lg:inline-flex">
                 <User className="h-5 w-5 object-cover" />
-                Đăng nhập
-              </Link>
-            </Button>
+                <span className="max-w-36 truncate">{displayName}</span>
+              </div>
+            ) : (
+              <Button
+                asChild
+                size="lg"
+                className="border-primary text-primary hover:border-primary hover:bg-primary/10 hidden cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px lg:inline-flex"
+              >
+                <Link href="/dang-nhap">
+                  <User className="h-5 w-5 object-cover" />
+                  Đăng nhập
+                </Link>
+              </Button>
+            )}
             <Button
               asChild
               size="lg"
@@ -71,7 +83,7 @@ export default function Header() {
             </Button>
 
             <div className="absolute right-0 lg:static lg:hidden">
-              <Sheet>
+              <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon-lg">
                     <Menu className="h-6 w-6" />
@@ -87,34 +99,42 @@ export default function Header() {
                       Danh mục
                     </div>
                     <div className="space-y-2">
-                      {parentCategories.map((parent) => (
+                      {HEADER_ITEMS.map((item) => (
                         <Link
-                          key={parent.id}
-                          href={`/${parent.slug}`}
+                          key={item.id}
+                          href={item.href}
+                          onClick={closeMobileMenu}
                           className="hover:text-primary block rounded-md px-2 py-1 text-sm font-semibold tracking-wide text-gray-700 uppercase transition-colors"
                         >
-                          {parent.name}
+                          {item.name}
                         </Link>
                       ))}
                     </div>
                     <div className="border-t border-gray-200/80 pt-3" />
                     <div className="space-y-2">
-                      <Button
-                        asChild
-                        size="lg"
-                        className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
-                      >
-                        <Link href="/dang-nhap">
-                          Đăng nhập
+                      {authUser ? (
+                        <div className="border-primary/25 text-primary flex w-full items-center justify-between rounded-xl border bg-white px-4 py-2 text-sm font-semibold">
+                          <span className="truncate">{displayName}</span>
                           <User className="h-5 w-5 object-cover" />
-                        </Link>
-                      </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          asChild
+                          size="lg"
+                          className="border-primary text-primary hover:border-primary hover:bg-primary/10 w-full cursor-pointer rounded-xl border bg-transparent px-4 text-sm font-medium tracking-wider uppercase transition-all duration-300 ease-in-out hover:-translate-y-px"
+                        >
+                          <Link href="/dang-nhap" onClick={closeMobileMenu}>
+                            Đăng nhập
+                            <User className="h-5 w-5 object-cover" />
+                          </Link>
+                        </Button>
+                      )}
                       <Button
                         asChild
                         size="lg"
                         className="bg-primary w-full cursor-pointer rounded-xl px-4 text-sm font-medium tracking-wider text-white uppercase shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-px hover:brightness-110"
                       >
-                        <Link href="#">
+                        <Link href="#" onClick={closeMobileMenu}>
                           Đăng tin
                           <SquarePlus className="h-5 w-5 object-cover" />
                         </Link>
@@ -130,3 +150,4 @@ export default function Header() {
     </header>
   );
 }
+

@@ -1,14 +1,15 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Pagination } from "@/components/common/Pagination";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
-import type { BreadcrumbItem } from "@/lib/flat-url";
-import { mockProperties } from "@/mocks/properties";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
+import { PaginationMeta } from "@/types/api";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["GOLD", "SILVER", "NORMAL"] as const;
@@ -35,15 +36,22 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
 };
 
 export default function ListingResultsClient({
-  properties = mockProperties,
+  properties,
   listingMode = "property",
   breadcrumbItems,
+  paginationMeta,
+  paginationBasePath,
 }: {
-  properties?: Property[] | RentRequest[];
+  properties: Property[] | RentRequest[];
   listingMode?: "property" | "rentRequest";
   title?: string;
   breadcrumbItems?: BreadcrumbItem[];
+  paginationMeta?: PaginationMeta;
+  paginationBasePath?: string;
 }) {
+  const router = useRouter();
+  const isServerPagination = Boolean(paginationMeta);
+
   const orderedProperties = useMemo(() => {
     if (listingMode === "rentRequest") {
       return [...properties].sort((left, right) => {
@@ -79,15 +87,15 @@ export default function ListingResultsClient({
   }, [listingMode, properties]);
 
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(
-    1,
-    Math.ceil(orderedProperties.length / PAGE_SIZE),
-  );
-  const currentPage = Math.min(page, totalPages);
-  const pageItems = orderedProperties.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
+  const totalPages = isServerPagination
+    ? Math.max(1, paginationMeta?.totalPage ?? 1)
+    : Math.max(1, Math.ceil(orderedProperties.length / PAGE_SIZE));
+  const currentPage = isServerPagination
+    ? Math.max(1, paginationMeta?.currentPage ?? 1)
+    : Math.min(page, totalPages);
+  const pageItems = isServerPagination
+    ? orderedProperties
+    : orderedProperties.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const groupedPageItems =
     listingMode === "property"
@@ -101,6 +109,16 @@ export default function ListingResultsClient({
           {} as Record<TierKey, Property[]>,
         )
       : null;
+
+  const handlePageChange = (nextPage: number) => {
+    if (!isServerPagination) {
+      setPage(nextPage);
+      return;
+    }
+
+    const targetPath = buildPagedPath(paginationBasePath ?? "", nextPage);
+    router.replace(targetPath, { scroll: false });
+  };
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-8">
@@ -144,7 +162,7 @@ export default function ListingResultsClient({
         <Pagination
           page={currentPage}
           totalPages={totalPages}
-          onChange={setPage}
+          onChange={handlePageChange}
         />
       </div>
     </section>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
@@ -17,8 +18,7 @@ import {
   mockFilterAreaOptions,
   mockFilterPriceOptions,
   mockFilterPropertyTypes,
-} from "@/mocks/filter";
-import { mockCities, mockStreets, mockWards } from "@/mocks/locations";
+} from "@/constants/filter";
 import {
   parseNumericInput,
   resolveAreaSummary,
@@ -30,32 +30,18 @@ import {
   INITIAL_ADVANCED_FILTER_VALUE,
   type AdvancedFilterValue,
 } from "@/types/filter";
-import { buildPropertyFilterPath } from "@/lib/flat-url";
+import { buildPagedPath, buildPropertyFilterPath } from "@/lib/flat-url";
+import { locationService } from "@/services/location.service";
+import { Province, Ward } from "@/types/location";
 
 type Props = {
   basePath: string;
   listingMode?: "property" | "rentRequest";
+  serverDriven?: boolean;
   initialFilters?: AdvancedFilterValue;
   sourceProperties: Property[] | RentRequest[];
   onFilteredChange: (items: Property[] | RentRequest[]) => void;
 };
-
-const cityMap = mockCities.reduce<Record<string, Record<string, string[]>>>(
-  (accumulator, city) => {
-    const cityWards = mockWards.filter((ward) => ward.cityId === city.id);
-    accumulator[city.name] = cityWards.reduce<Record<string, string[]>>(
-      (wardAccumulator, ward) => {
-        wardAccumulator[ward.name] = mockStreets
-          .filter((street) => street.wardId === ward.id)
-          .map((street) => street.name);
-        return wardAccumulator;
-      },
-      {},
-    );
-    return accumulator;
-  },
-  {},
-);
 
 const normalize = (value: string) =>
   value
@@ -67,6 +53,7 @@ const normalize = (value: string) =>
 export default function ListingFilterToolbar({
   basePath,
   listingMode = "property",
+  serverDriven = false,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
   sourceProperties,
   onFilteredChange,
@@ -75,6 +62,97 @@ export default function ListingFilterToolbar({
   const [keyword, setKeyword] = useState("");
   const [advancedFilters, setAdvancedFilters] =
     useState<AdvancedFilterValue>(initialFilters);
+
+  const { data: provincesData = [] } = useQuery({
+    queryKey: ["locations", "provinces"],
+    queryFn: () => locationService.getProvinces(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const { data: wardsData = [] } = useQuery({
+    queryKey: [
+      "locations",
+      "wards",
+      provincesData.map((item) => item.id).join(","),
+    ],
+    queryFn: async () => {
+      if (!provincesData.length) return [];
+      const grouped = await Promise.all(
+        provincesData.map((province) => locationService.getWards(province.id)),
+      );
+      return grouped.flat();
+    },
+    enabled: provincesData.length > 0,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const sourceLocationMap = useMemo(() => {
+    const provinceMap = new Map<string, Province>();
+    const wardMap = new Map<string, Ward[]>();
+
+    for (const item of sourceProperties) {
+      const province =
+        listingMode === "rentRequest"
+          ? (item as RentRequest).desiredProvince
+          : (item as Property).province;
+      const ward =
+        listingMode === "rentRequest"
+          ? (item as RentRequest).desiredWard
+          : (item as Property).ward;
+
+      if (province?.name && !provinceMap.has(province.name)) {
+        provinceMap.set(province.name, {
+          id: province.id,
+          name: province.name,
+          slug: province.slug,
+        });
+      }
+      if (province?.name && ward?.name) {
+        const existing = wardMap.get(province.name) ?? [];
+        if (!existing.some((x) => x.name === ward.name)) {
+          existing.push({
+            id: ward.id,
+            provinceId: ward.provinceId,
+            name: ward.name,
+            slug: ward.slug,
+          });
+          wardMap.set(province.name, existing);
+        }
+      }
+    }
+
+    return { provinceMap, wardMap };
+  }, [listingMode, sourceProperties]);
+
+  const cityMap = useMemo<Record<string, Record<string, string[]>>>(() => {
+    const provinces = provincesData.length
+      ? provincesData
+      : Array.from(sourceLocationMap.provinceMap.values());
+    const wards = wardsData.length
+      ? wardsData
+      : Array.from(sourceLocationMap.wardMap.values()).flat();
+
+    return provinces.reduce<Record<string, Record<string, string[]>>>(
+      (acc, province) => {
+        const provinceWards = wards.filter(
+          (ward) => ward.provinceId === province.id,
+        );
+        acc[province.name] = provinceWards.reduce<Record<string, string[]>>(
+          (wardAcc, ward) => {
+            wardAcc[ward.name] = [];
+            return wardAcc;
+          },
+          {},
+        );
+        return acc;
+      },
+      {},
+    );
+  }, [
+    provincesData,
+    sourceLocationMap.provinceMap,
+    sourceLocationMap.wardMap,
+    wardsData,
+  ]);
 
   const displayTypeLabel =
     advancedFilters.propertyTypes.length > 0
@@ -113,12 +191,11 @@ export default function ListingFilterToolbar({
       listingMode === "rentRequest"
         ? (sourceProperties as RentRequest[]).filter((request) => {
             const categoryName = request.category?.name ?? "";
-            const cityName = request.desiredCity?.name ?? "";
-            const districtName = request.desiredDistrict?.name ?? "";
+            const cityName = request.desiredProvince?.name ?? "";
             const wardName = request.desiredWard?.name ?? "";
             const streetName = request.desiredStreet?.name ?? "";
             const haystack = normalize(
-              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${cityName} ${districtName} ${wardName} ${streetName}`,
+              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName}`,
             );
 
             if (keywordText && !haystack.includes(keywordText)) return false;
@@ -133,7 +210,11 @@ export default function ListingFilterToolbar({
 
             const requestMinBudget = Number(request.minBudget || 0);
             const requestMaxBudget = Number(request.maxBudget || 0);
-            if (minPrice > 0 && requestMaxBudget > 0 && requestMaxBudget < minPrice)
+            if (
+              minPrice > 0 &&
+              requestMaxBudget > 0 &&
+              requestMaxBudget < minPrice
+            )
               return false;
             if (maxPrice > 0 && requestMinBudget > maxPrice) return false;
 
@@ -145,17 +226,12 @@ export default function ListingFilterToolbar({
 
             if (
               activeFilters.city &&
-              request.desiredCity?.name !== activeFilters.city
+              request.desiredProvince?.name !== activeFilters.city
             )
               return false;
             if (
               activeFilters.ward &&
               request.desiredWard?.name !== activeFilters.ward
-            )
-              return false;
-            if (
-              activeFilters.street &&
-              request.desiredStreet?.name !== activeFilters.street
             )
               return false;
 
@@ -170,7 +246,7 @@ export default function ListingFilterToolbar({
           })
         : (sourceProperties as Property[]).filter((property) => {
             const categoryName = property.category?.name ?? "";
-            const cityName = property.city?.name ?? "";
+            const cityName = property.province?.name ?? "";
             const wardName = property.ward?.name ?? "";
             const streetName = property.street?.name ?? "";
             const haystack = normalize(
@@ -195,13 +271,14 @@ export default function ListingFilterToolbar({
             if (minArea > 0 && areaValue < minArea) return false;
             if (maxArea > 0 && areaValue > maxArea) return false;
 
-            if (activeFilters.city && property.city?.name !== activeFilters.city)
-              return false;
-            if (activeFilters.ward && property.ward?.name !== activeFilters.ward)
+            if (
+              activeFilters.city &&
+              property.province?.name !== activeFilters.city
+            )
               return false;
             if (
-              activeFilters.street &&
-              property.street?.name !== activeFilters.street
+              activeFilters.ward &&
+              property.ward?.name !== activeFilters.ward
             )
               return false;
 
@@ -228,7 +305,8 @@ export default function ListingFilterToolbar({
               if (!activeFilters.directions.includes(direction)) return false;
             }
 
-            if (activeFilters.negotiable && !property.isNegotiable) return false;
+            if (activeFilters.negotiable && !property.isNegotiable)
+              return false;
             return true;
           });
 
@@ -240,26 +318,34 @@ export default function ListingFilterToolbar({
     options?: { syncUrl?: boolean },
   ) => {
     const activeFilters = nextFilters ?? advancedFilters;
-    onFilteredChange(getFilteredProperties(activeFilters));
+    if (!serverDriven) {
+      onFilteredChange(getFilteredProperties(activeFilters));
+    }
 
     if (options?.syncUrl !== false) {
-      router.replace(buildPropertyFilterPath(basePath, activeFilters), {
-        scroll: false,
-      });
+      router.replace(
+        buildPagedPath(buildPropertyFilterPath(basePath, activeFilters), 1),
+        {
+          scroll: false,
+        },
+      );
     }
   };
 
   const resetAll = () => {
     setKeyword("");
     setAdvancedFilters(INITIAL_ADVANCED_FILTER_VALUE);
-    onFilteredChange(sourceProperties);
-    router.replace(basePath, { scroll: false });
+    if (!serverDriven) {
+      onFilteredChange(sourceProperties);
+    }
+    router.replace(buildPagedPath(basePath, 1), { scroll: false });
   };
 
   useEffect(() => {
+    if (serverDriven) return;
     onFilteredChange(getFilteredProperties(initialFilters));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialFilters, sourceProperties]);
+  }, [initialFilters, serverDriven, sourceProperties]);
 
   return (
     <div className="mx-auto max-w-7xl rounded-lg bg-white shadow backdrop-blur-md transition-all duration-300">
@@ -301,11 +387,7 @@ export default function ListingFilterToolbar({
                   ? 1
                   : 0) +
                 (advancedFilters.areaMin || advancedFilters.areaMax ? 1 : 0) +
-                (advancedFilters.city ||
-                advancedFilters.ward ||
-                advancedFilters.street
-                  ? 1
-                  : 0)
+                (advancedFilters.city || advancedFilters.ward ? 1 : 0)
               }
               defaultDemandTab={
                 listingMode === "rentRequest" ? "can-thue" : "cho-thue"
@@ -326,7 +408,7 @@ export default function ListingFilterToolbar({
 
           <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:flex-none lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
             <ListingFilterChipPopover
-              title="Loại bất động sản"
+              title="Lo?i b?t d?ng s?n"
               label={displayTypeLabel}
               isActive={advancedFilters.propertyTypes.length > 0}
               onReset={() => {

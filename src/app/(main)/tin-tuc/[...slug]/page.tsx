@@ -1,39 +1,50 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, Eye, Layers } from "lucide-react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import {
   buildNewsCategoryBreadcrumbs,
+  parsePagedSlugSegments,
   parseNewsCategoryFromSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { formatDate } from "@/lib/utils";
-import { mockNews } from "@/mocks/news";
+import { News } from "@/types/news";
+import { Category } from "@/types/category";
+import { categoryService } from "@/services/category.service";
+import { newsService } from "@/services/news.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-const getNewsBySlug = (slug: string) =>
-  mockNews.find((newsItem) => newsItem.slug === slug);
+async function resolveNews(slug: string) {
+  try {
+    return await newsService.getBySlug(slug);
+  } catch {
+    return null;
+  }
+}
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const { rawSlug } = parsePagedSlugSegments(slug);
   const joined = slug.join("/");
-  const newsSlug = slug.join("-");
-  const news = getNewsBySlug(newsSlug);
+  const newsSlug = rawSlug ?? slug.join("-");
+  const news = await resolveNews(newsSlug);
 
   if (news) {
     return createPageMetadata({
       title: news.title,
       description: news.summary || "Nội dung bài viết tin tức bất động sản.",
       pathname: `/tin-tuc/${news.slug}`,
-      image: news.thumbnailUrl || undefined,
+      image: news.imageUrl || undefined,
       type: "article",
     });
   }
@@ -47,11 +58,27 @@ export async function generateMetadata({
 
 export default async function TinTucDynamicPage({ params }: PageProps) {
   const { slug } = await params;
-  const newsSlug = slug.join("-");
-  const news = getNewsBySlug(newsSlug);
+  const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const limit = 12;
+  const newsSlug = rawSlug ?? slug.join("-");
+  const news = await resolveNews(newsSlug);
+  let categories: Category[] = [];
+  try {
+    const categoryResponse = await categoryService.getAll();
+    categories = categoryResponse.data ?? [];
+  } catch {
+    categories = [];
+  }
 
   if (news) {
-    const viewedNews = mockNews
+    let newsItems: News[] = [];
+    try {
+      const listResponse = await newsService.getAll();
+      newsItems = listResponse.data ?? [];
+    } catch {
+      newsItems = [];
+    }
+    const viewedNews = newsItems
       .filter((item) => item.id !== news.id)
       .slice(0, 10);
 
@@ -71,7 +98,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
             <section>
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 shadow-sm">
                 <Image
-                  src={news.thumbnailUrl || "/imgs/wallpaper-1.jpg"}
+                  src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
                   alt={news.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 66vw"
@@ -168,16 +195,28 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
     );
   }
 
-  if (slug.length !== 1) {
+  if (slug.length > 2) {
     notFound();
   }
 
-  const initialCategorySlug = parseNewsCategoryFromSlug(slug[0]);
+  const initialCategorySlug = parseNewsCategoryFromSlug(rawSlug, categories);
+
+  const categoryFetch =
+    initialCategorySlug === "tin-tuc"
+      ? newsService.getAll({ page, limit })
+      : newsService.getAll({ categorySlug: initialCategorySlug, page, limit });
 
   return (
-    <NewsListingClient
-      initialCategorySlug={initialCategorySlug}
-      breadcrumbItems={buildNewsCategoryBreadcrumbs(slug[0])}
-    />
+    <SafeFetch fetcher={categoryFetch}>
+      {(response) => (
+        <NewsListingClient
+          newsList={response.data ?? []}
+          categories={categories}
+          initialCategorySlug={initialCategorySlug}
+          breadcrumbItems={buildNewsCategoryBreadcrumbs(rawSlug, categories)}
+          paginationMeta={response.meta}
+        />
+      )}
+    </SafeFetch>
   );
 }

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Slider } from "@/components/ui/slider";
 import {
@@ -21,7 +21,7 @@ import {
   FILTER_LIMITS,
   mockFilterAreaOptions,
   mockFilterPriceOptions,
-} from "@/mocks/filter";
+} from "@/constants/filter";
 import { AdvancedFilterValue } from "@/types/filter";
 import {
   formatArea,
@@ -126,7 +126,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="0"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="focus:ring-primary h-11 w-full [appearance:textfield] rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
@@ -146,7 +146,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="60000"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="focus:ring-primary h-11 w-full [appearance:textfield] rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -236,7 +236,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Từ"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="focus:ring-primary h-11 w-full [appearance:textfield] rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
@@ -251,7 +251,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Đến"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="focus:ring-primary h-11 w-full [appearance:textfield] rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -306,15 +306,10 @@ export function LocationDetailTab({
   current,
   updateCurrent,
   cityMap,
-  onDone,
 }: DetailTabSharedProps & {
   cityMap: Record<string, Record<string, string[]>>;
 }) {
   const wards = current.city ? Object.keys(cityMap[current.city] ?? {}) : [];
-  const streets =
-    current.city && current.ward
-      ? (cityMap[current.city]?.[current.ward] ?? [])
-      : [];
 
   return (
     <div className="space-y-3">
@@ -325,7 +320,6 @@ export function LocationDetailTab({
             ...prev,
             city: valueItem,
             ward: "",
-            street: "",
           }))
         }
       >
@@ -355,26 +349,6 @@ export function LocationDetailTab({
           {wards.map((ward) => (
             <SelectItem key={ward} value={ward} className="cursor-pointer">
               {ward}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      <Select
-        value={current.street}
-        onValueChange={(valueItem) => {
-          updateCurrent((prev) => ({ ...prev, street: valueItem }));
-          onDone?.();
-        }}
-        disabled={!current.ward}
-      >
-        <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
-          <SelectValue placeholder="Chọn đường / phố" />
-        </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {streets.map((street) => (
-            <SelectItem key={street} value={street} className="cursor-pointer">
-              {street}
             </SelectItem>
           ))}
         </SelectContent>

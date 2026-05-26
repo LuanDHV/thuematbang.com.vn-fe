@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import {
@@ -12,7 +12,10 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Filter } from "lucide-react";
-import { mockFilterAreaOptions, mockFilterPriceOptions } from "@/mocks/filter";
+import {
+  mockFilterAreaOptions,
+  mockFilterPriceOptions,
+} from "@/constants/filter";
 import {
   INITIAL_ADVANCED_FILTER_VALUE,
   type AdvancedFilterValue,

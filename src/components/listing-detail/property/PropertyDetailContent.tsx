@@ -13,7 +13,7 @@ import {
 import { PropertyCard } from "@/components/common/PropertyCard";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
 import { formatDate, formatPrice } from "@/lib/utils";
-import { DIRECTION_OPTIONS } from "@/mocks/filter";
+import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { Property } from "@/types/property";
 
 type PropertyDetailContentProps = {

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -10,26 +10,22 @@ import {
   Maximize,
 } from "lucide-react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import SafeFetch from "@/components/common/SafeFetch";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
 import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import {
   buildProjectCategoryBreadcrumbs,
+  parsePagedSlugSegments,
   parseProjectCategoryFromSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { formatDate } from "@/lib/utils";
-import {
-  getProjectGalleryImages,
-  getProjectThumbnailUrl,
-  mockProjects,
-} from "@/mocks/projects";
+import { Project } from "@/types/project";
+import { projectService } from "@/services/project.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
-
-const getProjectBySlug = (slug: string) =>
-  mockProjects.find((project) => project.slug === slug);
 
 const formatProjectPrice = (value?: number | null) => {
   if (!value) return "Liên hệ";
@@ -45,20 +41,40 @@ const formatProjectArea = (value?: number | null) => {
   return `${value.toLocaleString("vi-VN")} m²`;
 };
 
+function extractProjectImages(project: Project) {
+  const images =
+    project.images
+      ?.slice()
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((image) => image.imageUrl)
+      .filter(Boolean) ?? [];
+
+  return images.length > 0 ? images : ["/imgs/wallpaper-1.jpg"];
+}
+
+async function resolveProject(slug: string) {
+  try {
+    return await projectService.getBySlug(slug);
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const { rawSlug } = parsePagedSlugSegments(slug);
   const joined = slug.join("/");
-  const projectSlug = slug.join("-");
-  const project = getProjectBySlug(projectSlug);
+  const projectSlug = rawSlug ?? slug.join("-");
+  const project = await resolveProject(projectSlug);
 
   if (project) {
     return createPageMetadata({
       title: project.name,
       description: project.addressDetail || "Chi tiết dự án bất động sản.",
       pathname: `/du-an/${project.slug}`,
-      image: getProjectThumbnailUrl(project.id),
+      image: extractProjectImages(project)[0],
       type: "article",
     });
   }
@@ -72,11 +88,14 @@ export async function generateMetadata({
 
 export default async function DuAnDynamicPage({ params }: PageProps) {
   const { slug } = await params;
-  const projectSlug = slug.join("-");
-  const project = getProjectBySlug(projectSlug);
+  const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const limit = 12;
+  const projectSlug = rawSlug ?? slug.join("-");
+  const project = await resolveProject(projectSlug);
 
   if (project) {
-    const galleryImages = getProjectGalleryImages(project.id);
+    const galleryImages = extractProjectImages(project);
+
     const hasCoordinates =
       typeof project.latitude === "number" &&
       typeof project.longitude === "number";
@@ -85,9 +104,16 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
       ? `https://maps.google.com/maps?q=${project.latitude},${project.longitude}&z=15&output=embed`
       : null;
 
-    const viewedProjects = mockProjects
-      .filter((item) => item.id !== project.id)
-      .slice(0, 10);
+    let viewedProjects: Project[] = [];
+
+    try {
+      const listResponse = await projectService.getAll();
+      viewedProjects = (listResponse.data ?? [])
+        .filter((item) => item.id !== project.id)
+        .slice(0, 10);
+    } catch {
+      viewedProjects = [];
+    }
 
     return (
       <article className="mx-auto max-w-7xl px-4 py-8">
@@ -141,6 +167,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   Thông tin mô tả
                 </h2>
               </div>
+
               {project.content ? (
                 <div
                   className="prose prose-gray prose-headings:font-semibold prose-p:leading-relaxed max-w-none text-gray-700"
@@ -161,6 +188,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   Thông tin chi tiết
                 </h2>
               </div>
+
               <div className="mt-2 grid gap-3 sm:grid-cols-2">
                 <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
                   <Landmark className="text-primary mt-0.5 h-4 w-4 shrink-0" />
@@ -252,16 +280,30 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
     );
   }
 
-  if (slug.length !== 1) {
+  if (slug.length > 2) {
     notFound();
   }
 
-  const initialCategorySlug = parseProjectCategoryFromSlug(slug[0]);
+  const initialCategorySlug = parseProjectCategoryFromSlug(rawSlug);
+  const categoryFetch =
+    initialCategorySlug === "du-an"
+      ? projectService.getAll({ page, limit })
+      : projectService.getAll({
+          categorySlug: initialCategorySlug,
+          page,
+          limit,
+        });
 
   return (
-    <ProjectListingClient
-      initialCategorySlug={initialCategorySlug}
-      breadcrumbItems={buildProjectCategoryBreadcrumbs(slug[0])}
-    />
+    <SafeFetch fetcher={categoryFetch}>
+      {(response) => (
+        <ProjectListingClient
+          projects={response.data ?? []}
+          initialCategorySlug={initialCategorySlug}
+          breadcrumbItems={buildProjectCategoryBreadcrumbs(rawSlug)}
+          paginationMeta={response.meta}
+        />
+      )}
+    </SafeFetch>
   );
 }
