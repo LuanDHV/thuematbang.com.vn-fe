@@ -91,11 +91,15 @@ export default function ListingResultsClient({
     ? Math.max(1, paginationMeta?.totalPage ?? 1)
     : Math.max(1, Math.ceil(orderedProperties.length / PAGE_SIZE));
   const currentPage = isServerPagination
-    ? Math.max(1, paginationMeta?.currentPage ?? 1)
+    ? Math.min(totalPages, Math.max(1, paginationMeta?.currentPage ?? 1))
     : Math.min(page, totalPages);
   const pageItems = isServerPagination
     ? orderedProperties
-    : orderedProperties.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+    : orderedProperties.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE,
+      );
+  const hasItems = pageItems.length > 0;
 
   const groupedPageItems =
     listingMode === "property"
@@ -127,6 +131,17 @@ export default function ListingResultsClient({
       ) : null}
 
       <div className="space-y-10">
+        {!hasItems ? (
+          <section className="p-8 text-center">
+            <h3 className="text-lg font-semibold text-gray-700">
+              Không có bất động sản phù hợp
+            </h3>
+            <p className="mt-2 text-sm text-gray-500">
+              Hãy điều chỉnh bộ lọc khác.
+            </p>
+          </section>
+        ) : null}
+
         {listingMode === "property" && groupedPageItems
           ? TIER_ORDER.map((tier) => {
               const tierItems = groupedPageItems[tier];

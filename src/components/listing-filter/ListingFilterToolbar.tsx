@@ -50,6 +50,56 @@ const normalize = (value: string) =>
     .toLowerCase()
     .trim();
 
+const reconcileLocationFilter = (
+  value: AdvancedFilterValue,
+  provinceWardMap: Record<string, Record<string, string[]>>,
+): AdvancedFilterValue => {
+  const provinceEntries = Object.keys(provinceWardMap);
+  if (!provinceEntries.length) return value;
+
+  const matchedProvince =
+    provinceEntries.find(
+      (province) => normalize(province) === normalize(value.province),
+    ) ?? "";
+
+  if (!matchedProvince) {
+    return {
+      ...value,
+      province: "",
+      ward: "",
+      street: "",
+    };
+  }
+
+  const wardEntries = Object.keys(provinceWardMap[matchedProvince] ?? {});
+  const matchedWard =
+    wardEntries.find((ward) => normalize(ward) === normalize(value.ward)) ?? "";
+
+  return {
+    ...value,
+    province: matchedProvince,
+    ward: matchedWard,
+    street: matchedWard ? value.street : "",
+  };
+};
+
+const isSameFilterValue = (
+  left: AdvancedFilterValue,
+  right: AdvancedFilterValue,
+) =>
+  left.province === right.province &&
+  left.ward === right.ward &&
+  left.street === right.street &&
+  left.priceMin === right.priceMin &&
+  left.priceMax === right.priceMax &&
+  left.negotiable === right.negotiable &&
+  left.areaMin === right.areaMin &&
+  left.areaMax === right.areaMax &&
+  left.propertyTypes.join("|") === right.propertyTypes.join("|") &&
+  left.bedrooms.join("|") === right.bedrooms.join("|") &&
+  left.bathrooms.join("|") === right.bathrooms.join("|") &&
+  left.directions.join("|") === right.directions.join("|");
+
 export default function ListingFilterToolbar({
   basePath,
   listingMode = "property",
@@ -123,7 +173,7 @@ export default function ListingFilterToolbar({
     return { provinceMap, wardMap };
   }, [listingMode, sourceProperties]);
 
-  const cityMap = useMemo<Record<string, Record<string, string[]>>>(() => {
+  const provinceWardMap = useMemo<Record<string, Record<string, string[]>>>(() => {
     const provinces = provincesData.length
       ? provincesData
       : Array.from(sourceLocationMap.provinceMap.values());
@@ -225,8 +275,8 @@ export default function ListingFilterToolbar({
             if (maxArea > 0 && requestMinArea > maxArea) return false;
 
             if (
-              activeFilters.city &&
-              request.desiredProvince?.name !== activeFilters.city
+              activeFilters.province &&
+              request.desiredProvince?.name !== activeFilters.province
             )
               return false;
             if (
@@ -272,8 +322,8 @@ export default function ListingFilterToolbar({
             if (maxArea > 0 && areaValue > maxArea) return false;
 
             if (
-              activeFilters.city &&
-              property.province?.name !== activeFilters.city
+              activeFilters.province &&
+              property.province?.name !== activeFilters.province
             )
               return false;
             if (
@@ -315,16 +365,17 @@ export default function ListingFilterToolbar({
 
   const runFilter = (
     nextFilters?: AdvancedFilterValue,
-    options?: { syncUrl?: boolean },
+    options?: { syncUrl?: boolean; targetBasePath?: string },
   ) => {
     const activeFilters = nextFilters ?? advancedFilters;
+    const nextBasePath = options?.targetBasePath ?? basePath;
     if (!serverDriven) {
       onFilteredChange(getFilteredProperties(activeFilters));
     }
 
     if (options?.syncUrl !== false) {
       router.replace(
-        buildPagedPath(buildPropertyFilterPath(basePath, activeFilters), 1),
+        buildPagedPath(buildPropertyFilterPath(nextBasePath, activeFilters), 1),
         {
           scroll: false,
         },
@@ -342,10 +393,18 @@ export default function ListingFilterToolbar({
   };
 
   useEffect(() => {
+    const nextFilters = reconcileLocationFilter(initialFilters, provinceWardMap);
+
+    queueMicrotask(() => {
+      setAdvancedFilters((prev) =>
+        isSameFilterValue(prev, nextFilters) ? prev : nextFilters,
+      );
+    });
+
     if (serverDriven) return;
-    onFilteredChange(getFilteredProperties(initialFilters));
+    onFilteredChange(getFilteredProperties(nextFilters));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialFilters, serverDriven, sourceProperties]);
+  }, [initialFilters, provinceWardMap, serverDriven, sourceProperties]);
 
   return (
     <div className="mx-auto max-w-7xl rounded-lg bg-white shadow backdrop-blur-md transition-all duration-300">
@@ -387,18 +446,20 @@ export default function ListingFilterToolbar({
                   ? 1
                   : 0) +
                 (advancedFilters.areaMin || advancedFilters.areaMax ? 1 : 0) +
-                (advancedFilters.city || advancedFilters.ward ? 1 : 0)
+                (advancedFilters.province || advancedFilters.ward ? 1 : 0)
               }
               defaultDemandTab={
                 listingMode === "rentRequest" ? "can-thue" : "cho-thue"
               }
               listingMode={listingMode}
               propertyTypeOptions={mockFilterPropertyTypes}
-              cityMap={cityMap}
+              provinceWardMap={provinceWardMap}
               value={advancedFilters}
-              onApply={(value) => {
+              onApply={(value, demandTab) => {
                 setAdvancedFilters(value);
-                runFilter(value);
+                const targetBasePath =
+                  demandTab === "can-thue" ? "/can-thue" : "/cho-thue";
+                runFilter(value, { targetBasePath });
               }}
               onReset={resetAll}
             />
@@ -408,7 +469,7 @@ export default function ListingFilterToolbar({
 
           <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:flex-none lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
             <ListingFilterChipPopover
-              title="Lo?i b?t d?ng s?n"
+              title="Loại bất động sản"
               label={displayTypeLabel}
               isActive={advancedFilters.propertyTypes.length > 0}
               onReset={() => {

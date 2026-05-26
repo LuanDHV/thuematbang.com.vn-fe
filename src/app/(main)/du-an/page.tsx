@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
@@ -6,6 +6,7 @@ import ProjectListingClient from "@/components/listing-client/ProjectListingClie
 import { buildProjectCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { categoryService } from "@/services/category.service";
 import { projectService } from "@/services/project.service";
 
 export const metadata: Metadata = createPageMetadata({
@@ -14,22 +15,26 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/du-an",
 });
 
-export default async function DuAnPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ page?: string }>;
-}) {
+export default async function DuAnPage() {
+  // Fetch project categories for tabs/chips.
+  const projectCategories = await categoryService.getProjectCategories();
+  // Load static SEO/FAQ content for project page.
   const pageContent = pageSeoFaq["du-an"];
-  const params = searchParams ? await searchParams : undefined;
-  const page = Math.max(1, Number(params?.page || "1") || 1);
-  const limit = 12;
+  console.log("[server] Fetch projects", {
+    limit: 8,
+  });
 
   return (
     <>
-      <SafeFetch fetcher={projectService.getAll({ page, limit })}>
+      <SafeFetch
+        fetcher={projectService.getAll({
+          limit: 24,
+        })}
+      >
         {(response) => (
           <ProjectListingClient
             projects={response.data ?? []}
+            categories={projectCategories}
             breadcrumbItems={buildProjectCategoryBreadcrumbs()}
             paginationMeta={response.meta}
           />
@@ -44,8 +49,3 @@ export default async function DuAnPage({
     </>
   );
 }
-
-
-
-
-

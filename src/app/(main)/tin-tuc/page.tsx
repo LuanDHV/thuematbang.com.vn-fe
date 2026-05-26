@@ -5,7 +5,6 @@ import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
-import { Category } from "@/types/category";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Tin tức",
@@ -13,25 +12,19 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/tin-tuc",
 });
 
-export default async function TinTucPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ page?: string }>;
-}) {
-  const params = searchParams ? await searchParams : undefined;
-  const page = Math.max(1, Number(params?.page || "1") || 1);
-  const limit = 12;
-
-  let categories: Category[] = [];
-  try {
-    const categoryResponse = await categoryService.getAll();
-    categories = categoryResponse.data ?? [];
-  } catch {
-    categories = [];
-  }
+export default async function TinTucPage() {
+  // Fetch news categories for listing filter tabs.
+  const categories = await categoryService.getNewsCategories();
+  console.log("[server] Fetch news", {
+    limit: 8,
+  });
 
   return (
-    <SafeFetch fetcher={newsService.getAll({ page, limit })}>
+    <SafeFetch
+      fetcher={newsService.getAll({
+        limit: 8,
+      })}
+    >
       {(response) => (
         <NewsListingClient
           newsList={response.data ?? []}
@@ -43,3 +36,4 @@ export default async function TinTucPage({
     </SafeFetch>
   );
 }
+

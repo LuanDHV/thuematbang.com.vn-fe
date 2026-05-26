@@ -42,9 +42,9 @@ type Props = {
   defaultDemandTab?: DemandTab;
   listingMode?: "property" | "rentRequest";
   propertyTypeOptions: string[];
-  cityMap: Record<string, Record<string, string[]>>;
+  provinceWardMap: Record<string, Record<string, string[]>>;
   value?: AdvancedFilterValue;
-  onApply?: (value: AdvancedFilterValue) => void;
+  onApply?: (value: AdvancedFilterValue, demandTab: DemandTab) => void;
   onReset?: () => void;
 };
 
@@ -56,7 +56,7 @@ export function ListingFilterDrawer({
   defaultDemandTab = "cho-thue",
   listingMode = "property",
   propertyTypeOptions,
-  cityMap,
+  provinceWardMap,
   value,
   onApply,
   onReset,
@@ -94,7 +94,7 @@ export function ListingFilterDrawer({
   const activeCount = useMemo(() => {
     return [
       current.propertyTypes.length,
-      current.city || current.ward || current.street ? 1 : 0,
+      current.province || current.ward || current.street ? 1 : 0,
       current.priceMin || current.priceMax || current.negotiable ? 1 : 0,
       current.areaMin || current.areaMax ? 1 : 0,
     ].filter(Boolean).length;
@@ -114,7 +114,7 @@ export function ListingFilterDrawer({
   const goMain = () => setDetailTab("main");
 
   const handleApply = () => {
-    onApply?.(localValue);
+    onApply?.(localValue, demandTab);
     setOpen(false);
   };
 
@@ -222,7 +222,7 @@ export function ListingFilterDrawer({
               <LocationDetailTab
                 current={current}
                 updateCurrent={setLocalValue}
-                cityMap={cityMap}
+                provinceWardMap={provinceWardMap}
               />
             ) : null}
 

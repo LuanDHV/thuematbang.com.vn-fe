@@ -14,13 +14,14 @@ import {
 import { createPageMetadata } from "@/lib/metadata";
 import { formatDate } from "@/lib/utils";
 import { News } from "@/types/news";
-import { Category } from "@/types/category";
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
+
+const RELATED_ITEMS_LIMIT = 8;
 
 async function resolveNews(slug: string) {
   try {
@@ -36,8 +37,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const { rawSlug } = parsePagedSlugSegments(slug);
   const joined = slug.join("/");
+  const categories = await categoryService.getNewsCategories();
+  const isCategorySlug =
+    Boolean(rawSlug) &&
+    parseNewsCategoryFromSlug(rawSlug, categories) !== "tin-tuc";
   const newsSlug = rawSlug ?? slug.join("-");
-  const news = await resolveNews(newsSlug);
+  const news = !isCategorySlug && newsSlug ? await resolveNews(newsSlug) : null;
 
   if (news) {
     return createPageMetadata({
@@ -57,23 +62,26 @@ export async function generateMetadata({
 }
 
 export default async function TinTucDynamicPage({ params }: PageProps) {
+  // Parse slug + optional /pN segment from dynamic route.
   const { slug } = await params;
   const { rawSlug, page } = parsePagedSlugSegments(slug);
-  const limit = 12;
+  const categories = await categoryService.getNewsCategories();
+  const initialCategorySlug = parseNewsCategoryFromSlug(rawSlug, categories);
+  const isCategoryListing =
+    Boolean(rawSlug) && initialCategorySlug !== "tin-tuc";
+  const shouldTryDetail = Boolean(rawSlug) && !isCategoryListing;
   const newsSlug = rawSlug ?? slug.join("-");
-  const news = await resolveNews(newsSlug);
-  let categories: Category[] = [];
-  try {
-    const categoryResponse = await categoryService.getAll();
-    categories = categoryResponse.data ?? [];
-  } catch {
-    categories = [];
-  }
+  const news = shouldTryDetail ? await resolveNews(newsSlug) : null;
 
+  // Detail branch: render a single news article when slug is a real article slug.
   if (news) {
     let newsItems: News[] = [];
     try {
-      const listResponse = await newsService.getAll();
+      // Fetch side list for "related news" in detail view.
+      const listResponse = await newsService.getAll({
+        page: 1,
+        limit: RELATED_ITEMS_LIMIT,
+      });
       newsItems = listResponse.data ?? [];
     } catch {
       newsItems = [];
@@ -196,15 +204,19 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
   }
 
   if (slug.length > 2) {
+    // Guard invalid nested paths under /tin-tuc.
     notFound();
   }
 
-  const initialCategorySlug = parseNewsCategoryFromSlug(rawSlug, categories);
-
+  // Listing branch: render category/all news with parsed page.
   const categoryFetch =
     initialCategorySlug === "tin-tuc"
-      ? newsService.getAll({ page, limit })
-      : newsService.getAll({ categorySlug: initialCategorySlug, page, limit });
+      ? newsService.getAll({ page, limit: RELATED_ITEMS_LIMIT })
+      : newsService.getAll({
+          categorySlug: initialCategorySlug,
+          page,
+          limit: RELATED_ITEMS_LIMIT,
+        });
 
   return (
     <SafeFetch fetcher={categoryFetch}>

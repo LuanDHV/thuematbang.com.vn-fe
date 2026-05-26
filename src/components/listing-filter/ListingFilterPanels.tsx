@@ -183,6 +183,34 @@ export function PriceDetailTab({
                 type="checkbox"
                 checked={isSelected}
                 onChange={() => {
+                  const isAllOption =
+                    option.min === "" &&
+                    option.max === "" &&
+                    !option.isNegotiable;
+                  const isNegotiableOption = Boolean(option.isNegotiable);
+
+                  if (isAllOption) {
+                    updateCurrent((prev) => ({
+                      ...prev,
+                      priceMin: "",
+                      priceMax: "",
+                      negotiable: false,
+                    }));
+                    onDone?.();
+                    return;
+                  }
+
+                  if (isNegotiableOption) {
+                    updateCurrent((prev) => ({
+                      ...prev,
+                      priceMin: "",
+                      priceMax: "",
+                      negotiable: true,
+                    }));
+                    onDone?.();
+                    return;
+                  }
+
                   const minMillion = Math.round(
                     parseNumericInput(option.min || "0") / 1_000_000,
                   );
@@ -194,7 +222,7 @@ export function PriceDetailTab({
                     ...prev,
                     priceMin: String(millionToVnd(minMillion)),
                     priceMax: String(millionToVnd(maxMillion)),
-                    negotiable: Boolean(option.isNegotiable),
+                    negotiable: false,
                   }));
                   onDone?.();
                 }}
@@ -305,20 +333,22 @@ export function AreaDetailTab({
 export function LocationDetailTab({
   current,
   updateCurrent,
-  cityMap,
+  provinceWardMap,
 }: DetailTabSharedProps & {
-  cityMap: Record<string, Record<string, string[]>>;
+  provinceWardMap: Record<string, Record<string, string[]>>;
 }) {
-  const wards = current.city ? Object.keys(cityMap[current.city] ?? {}) : [];
+  const wards = current.province
+    ? Object.keys(provinceWardMap[current.province] ?? {})
+    : [];
 
   return (
     <div className="space-y-3">
       <Select
-        value={current.city}
+        value={current.province}
         onValueChange={(valueItem) =>
           updateCurrent((prev) => ({
             ...prev,
-            city: valueItem,
+            province: valueItem,
             ward: "",
           }))
         }
@@ -327,9 +357,13 @@ export function LocationDetailTab({
           <SelectValue placeholder="Chọn tỉnh / thành phố" />
         </SelectTrigger>
         <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {Object.keys(cityMap).map((city) => (
-            <SelectItem key={city} value={city} className="cursor-pointer">
-              {city}
+          {Object.keys(provinceWardMap).map((province) => (
+            <SelectItem
+              key={province}
+              value={province}
+              className="cursor-pointer"
+            >
+              {province}
             </SelectItem>
           ))}
         </SelectContent>
@@ -340,7 +374,7 @@ export function LocationDetailTab({
         onValueChange={(valueItem) =>
           updateCurrent((prev) => ({ ...prev, ward: valueItem, street: "" }))
         }
-        disabled={!current.city}
+        disabled={!current.province}
       >
         <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
           <SelectValue placeholder="Chọn phường / xã" />
@@ -378,7 +412,7 @@ export function AdvancedMainTab({
   const quickCellClass =
     "hover:border-primary mt-2 hover:text-primary cursor-pointer rounded-xl border border-gray-200 px-4 py-1 text-sm font-medium text-gray-600 transition-colors";
   const selectedQuickCellClass = "border-primary bg-primary/5 text-primary";
-  const locationSummary = [current.city, current.ward]
+  const locationSummary = [current.province, current.ward]
     .filter(Boolean)
     .join(", ");
   const propertyTypeSummary =

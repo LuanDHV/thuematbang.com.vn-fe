@@ -14,19 +14,19 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/cho-thue",
 });
 
-export default async function ChoThuePage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ page?: string }>;
-}) {
+export default async function ChoThuePage() {
+  // Load static SEO/FAQ content for rental listing page.
   const pageContent = pageSeoFaq["cho-thue"];
-  const params = searchParams ? await searchParams : undefined;
-  const page = Math.max(1, Number(params?.page || "1") || 1);
-  const limit = 12;
-
+  console.log("[server] Fetch properties", {
+    limit: 8,
+  });
   return (
     <>
-      <SafeFetch fetcher={propertyService.getAll({ page, limit })}>
+      <SafeFetch
+        fetcher={propertyService.getAll({
+          limit: 24,
+        })}
+      >
         {(response) => (
           <ListingFilterSection
             title="Cho thuê bất động sản"

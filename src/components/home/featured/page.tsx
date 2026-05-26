@@ -6,10 +6,17 @@ import { propertyService } from "@/services/property.service";
 import DataErrorCard from "@/components/common/DataErrorCard";
 
 export default async function FeaturedSection() {
-  let properties: Property[] = [];
+  let featuredProperties: Property[] = [];
   try {
-    const response = await propertyService.getAll();
-    properties = response.data ?? [];
+    // Fetch featured properties for homepage section.
+    console.log("[server] Fetch featured properties", {
+      limit: 8,
+    });
+    const response = await propertyService.getAll({
+      filters: { isFeatured: true },
+      limit: 8,
+    });
+    featuredProperties = response.data ?? [];
   } catch {
     return (
       <section className="w-full px-4 py-12">
@@ -26,10 +33,6 @@ export default async function FeaturedSection() {
     );
   }
 
-  const featuredProperties = properties.filter(
-    (property) => property.isFeatured === true,
-  );
-
   return (
     <section className="w-full px-4 py-12">
       <div className="mx-auto w-full max-w-7xl px-4">
@@ -39,7 +42,7 @@ export default async function FeaturedSection() {
         />
         {/* Grid List */}
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {featuredProperties.slice(0, 8).map((item: Property) => (
+          {featuredProperties.map((item: Property) => (
             <PropertyCard key={item.id} property={item} variant="featured" />
           ))}
         </div>

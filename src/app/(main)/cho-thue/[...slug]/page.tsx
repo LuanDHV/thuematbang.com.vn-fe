@@ -1,5 +1,4 @@
 ﻿import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
@@ -9,6 +8,7 @@ import PropertyDetailContent from "@/components/listing-detail/property/Property
 import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
 import {
   buildPropertyFilterBreadcrumbs,
+  isLikelyPropertyFilterSlug,
   parsePagedSlugSegments,
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
@@ -16,10 +16,39 @@ import { createPageMetadata } from "@/lib/metadata";
 import { pageSeoFaq } from "@/constants/pageSeoFaq";
 import { Property } from "@/types/property";
 import { propertyService } from "@/services/property.service";
+import { locationService } from "@/services/location.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
+const RELATED_ITEMS_LIMIT = 24;
+
+// Build province/ward label sources from current payload as breadcrumb fallback.
+function buildLocationContextFromProperties(properties: Property[]) {
+  const provinces = Array.from(
+    new Map(
+      properties
+        .filter((item) => item.province?.name && item.province?.slug)
+        .map((item) => [item.province!.slug, item.province!]),
+    ).values(),
+  ).map((province) => ({
+    name: province.name,
+    slug: province.slug,
+  }));
+
+  const wards = Array.from(
+    new Map(
+      properties
+        .filter((item) => item.ward?.name && item.ward?.slug)
+        .map((item) => [item.ward!.slug, item.ward!]),
+    ).values(),
+  ).map((ward) => ({
+    name: ward.name,
+    slug: ward.slug,
+  }));
+
+  return { provinces, wards };
+}
 
 function extractPropertyImages(property: Property) {
   const imageUrls =
@@ -41,12 +70,20 @@ async function resolveProperty(rawSlug: string) {
   }
 }
 
+async function resolvePropertyIfDetailSlug(rawSlug?: string) {
+  // A filter-like slug should be handled by listing mode, not detail mode.
+  if (!rawSlug || isLikelyPropertyFilterSlug(rawSlug)) {
+    return null;
+  }
+  return resolveProperty(rawSlug);
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { rawSlug } = parsePagedSlugSegments(slug);
-  const property = rawSlug ? await resolveProperty(rawSlug) : null;
+  const property = await resolvePropertyIfDetailSlug(rawSlug);
 
   if (property) {
     const propertyDescription =
@@ -71,16 +108,21 @@ export async function generateMetadata({
 }
 
 export default async function DynamicChoThuePage({ params }: PageProps) {
+  // Parse slug + optional /pN segment from dynamic route.
   const { slug } = await params;
   const { rawSlug, page } = parsePagedSlugSegments(slug);
-  const limit = 12;
   const pageContent = pageSeoFaq["cho-thue"];
-  const property = rawSlug ? await resolveProperty(rawSlug) : null;
+  const property = await resolvePropertyIfDetailSlug(rawSlug);
 
+  // Detail branch: render a single property page when slug is a real property slug.
   if (property) {
     let properties: Property[] = [];
     try {
-      const pagePayload = await propertyService.getAll({ page: 1, limit: 24 });
+      // Fetch related properties for detail sidebar blocks.
+      const pagePayload = await propertyService.getAll({
+        page: 1,
+        limit: RELATED_ITEMS_LIMIT,
+      });
       properties = pagePayload.data ?? [];
     } catch {
       properties = [];
@@ -161,24 +203,55 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   }
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
+  // Listing branch: fetch paginated data from API using parsed page.
   const listFetcher = rawSlug
-    ? propertyService.getAllByFlatSlug({ flatSlug: rawSlug, page, limit })
-    : propertyService.getAll({ page, limit });
+    ? propertyService.getAllByFlatSlug({
+        flatSlug: rawSlug,
+        page,
+        limit: RELATED_ITEMS_LIMIT,
+      })
+    : propertyService.getAll({ page, limit: RELATED_ITEMS_LIMIT });
   const paginationBasePath = rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue";
+  let locationContext: ReturnType<typeof buildLocationContextFromProperties> = {
+    provinces: [],
+    wards: [],
+  };
+  try {
+    // Prefer canonical location labels from API for breadcrumb accuracy.
+    const provinces = await locationService.getProvinces();
+    const wardsByProvince = await Promise.all(
+      provinces.map((province) => locationService.getWards(province.id)),
+    );
+    locationContext = {
+      provinces: provinces.map((item) => ({
+        name: item.name,
+        slug: item.slug,
+      })),
+      wards: wardsByProvince.flat().map((item) => ({
+        name: item.name,
+        slug: item.slug,
+      })),
+    };
+  } catch {
+    locationContext = { provinces: [], wards: [] };
+  }
 
   return (
     <>
       <SafeFetch fetcher={listFetcher}>
         {(response) => {
-          const rentalOutProperties = response.data ?? [];
-          if (!rentalOutProperties.length) {
-            notFound();
-          }
-
+          // Fallback to payload-derived labels when location API is unavailable.
+          const fallbackLocationContext = buildLocationContextFromProperties(
+            response.data ?? [],
+          );
+          const breadcrumbLocationContext =
+            locationContext.provinces.length || locationContext.wards.length
+              ? locationContext
+              : fallbackLocationContext;
           return (
             <ListingFilterSection
               title="Cho thuê bất động sản"
-              properties={rentalOutProperties}
+              properties={response.data ?? []}
               listingMode="property"
               serverDriven
               basePath="/cho-thue"
@@ -187,6 +260,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
               breadcrumbItems={buildPropertyFilterBreadcrumbs(
                 "/cho-thue",
                 rawSlug,
+                breadcrumbLocationContext,
               )}
               paginationMeta={response.meta}
             />

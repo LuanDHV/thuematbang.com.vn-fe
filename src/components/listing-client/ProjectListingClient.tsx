@@ -1,9 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Project } from "@/types/project";
+import { Category } from "@/types/category";
 import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
 import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";
@@ -12,11 +13,13 @@ import type { PaginationMeta } from "@/types/api";
 
 export default function ProjectListingClient({
   projects,
+  categories = [],
   initialCategorySlug = "du-an",
   breadcrumbItems,
   paginationMeta,
 }: {
   projects: Project[];
+  categories?: Category[];
   initialCategorySlug?: string;
   breadcrumbItems?: BreadcrumbItem[];
   paginationMeta?: PaginationMeta;
@@ -28,28 +31,13 @@ export default function ProjectListingClient({
   const categoryItems = useMemo(
     () => [
       { id: "all", label: "Tất cả", value: "du-an" },
-      ...Array.from(
-        new Map(
-          projects
-            .filter(
-              (project) => project.category?.slug && project.category?.name,
-            )
-            .map((project) => [
-              project.category!.slug,
-              {
-                id: String(project.categoryId ?? project.category?.slug),
-                label: project.category!.name,
-                value: project.category!.slug,
-              },
-            ]),
-        ).values(),
-      ).map((category) => ({
-        id: category.id,
-        label: category.label,
-        value: category.value,
+      ...categories.map((category) => ({
+        id: String(category.id),
+        label: category.name,
+        value: category.slug,
       })),
     ],
-    [projects],
+    [categories],
   );
 
   const handleSelectCategory = (value: string) => {

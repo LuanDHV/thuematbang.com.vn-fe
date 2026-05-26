@@ -14,19 +14,20 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/can-thue",
 });
 
-export default async function CanThuePage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ page?: string }>;
-}) {
+export default async function CanThuePage() {
+  // Load static SEO/FAQ content for rent request page.
   const pageContent = pageSeoFaq["can-thue"];
-  const params = searchParams ? await searchParams : undefined;
-  const page = Math.max(1, Number(params?.page || "1") || 1);
-  const limit = 12;
+  console.log("[server] Fetch rent requests", {
+    limit: 8,
+  });
 
   return (
     <>
-      <SafeFetch fetcher={rentRequestService.getAll({ page, limit })}>
+      <SafeFetch
+        fetcher={rentRequestService.getAll({
+          limit: 24,
+        })}
+      >
         {(response) => (
           <ListingFilterSection
             title="Cần thuê bất động sản"

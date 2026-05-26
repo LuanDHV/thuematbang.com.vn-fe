@@ -1,4 +1,4 @@
-﻿import { Category } from "@/types/category";
+import { Category } from "@/types/category";
 import {
   AdvancedFilterValue,
   INITIAL_ADVANCED_FILTER_VALUE,
@@ -57,6 +57,15 @@ const CATEGORY_TOKEN_TO_SLUG = new Map(
   ]),
 );
 CATEGORY_TOKEN_TO_SLUG.set("mat-bang", "mat-bang");
+const CATEGORY_SLUG_TO_LABEL = new Map<string, string>([
+  ["van-phong", "Văn Phòng"],
+  ["mat-bang", "Mặt Bằng"],
+  ["kho-xuong", "Kho Xưởng"],
+  ["khu-cong-nghiep", "Khu Công Nghiệp"],
+  ["can-ho-chung-cu", "Căn Hộ, Chung Cư"],
+  ["trung-tam-thuong-mai", "Trung Tâm Thương Mại"],
+  ["nha-tro-phong-tro", "Nhà Trọ, Phòng Trọ"],
+]);
 
 const normalize = (value: string) =>
   value
@@ -112,9 +121,13 @@ function buildAreaToken(areaMin: string, areaMax: string) {
   return `${AREA_TOKEN_PREFIX}${min}-${max}m2`;
 }
 
-function buildLocationToken(city: string, ward: string, context?: FlatUrlContext) {
-  const cityValue = compact(city);
-  const citySlugRaw = city
+function buildLocationToken(
+  province: string,
+  ward: string,
+  context?: FlatUrlContext,
+) {
+  const cityValue = compact(province);
+  const citySlugRaw = province
     ? (context?.provinces?.find(
         (cityItem) =>
           compact(cityItem.name) === cityValue ||
@@ -189,7 +202,7 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
   if (!locationMatch?.[0]) {
     return {
       pending,
-      city: "",
+      province: "",
       ward: "",
       street: "",
     };
@@ -215,8 +228,9 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
   }
 
   const cityName =
-    context?.provinces?.find((item) => compact(item.slug).replace(/^tp-/, "") === citySlug)
-      ?.name ?? humanizeSlug(citySlug);
+    context?.provinces?.find(
+      (item) => compact(item.slug).replace(/^tp-/, "") === citySlug,
+    )?.name ?? humanizeSlug(citySlug);
 
   const wardName =
     context?.wards?.find((item) => compact(item.slug) === wardSlug)?.name ??
@@ -224,7 +238,7 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
 
   return {
     pending: removeMatchedSuffix(pending, locationMatch[0]),
-    city: citySlug ? cityName : "",
+    province: citySlug ? cityName : "",
     ward: wardSlug ? wardName : "",
     street: "",
   };
@@ -318,14 +332,22 @@ function extractSuffixToken(value: string, prefix: string) {
   return match[0];
 }
 
-function findCategorySlugByName(name: string, categories?: Array<Pick<Category, "name" | "slug">>) {
+function findCategorySlugByName(
+  name: string,
+  categories?: Array<Pick<Category, "name" | "slug">>,
+) {
   const target = compact(name);
   const found = categories?.find((item) => compact(item.name) === target);
   return found?.slug;
 }
 
-function findCategoryNameBySlug(slug: string, categories?: Array<Pick<Category, "name" | "slug">>) {
-  const found = categories?.find((item) => compact(item.slug) === compact(slug));
+function findCategoryNameBySlug(
+  slug: string,
+  categories?: Array<Pick<Category, "name" | "slug">>,
+) {
+  const found = categories?.find(
+    (item) => compact(item.slug) === compact(slug),
+  );
   return found?.name;
 }
 
@@ -338,7 +360,9 @@ export function buildPropertyFilterPath(
 
   const propertyTypeName = value.propertyTypes[0] ?? "";
   if (propertyTypeName) {
-    const slug = findCategorySlugByName(propertyTypeName, context?.propertyCategories) ?? compact(propertyTypeName);
+    const slug =
+      findCategorySlugByName(propertyTypeName, context?.propertyCategories) ??
+      compact(propertyTypeName);
     tokens.push(CATEGORY_SLUG_TO_TOKEN.get(slug) ?? slug);
   }
 
@@ -352,7 +376,7 @@ export function buildPropertyFilterPath(
   const areaToken = buildAreaToken(value.areaMin, value.areaMax);
   if (areaToken) tokens.push(areaToken);
 
-  const locationToken = buildLocationToken(value.city, value.ward, context);
+  const locationToken = buildLocationToken(value.province, value.ward, context);
   if (locationToken) tokens.push(locationToken);
 
   const bedroomToken = buildBedroomToken(value.bedrooms);
@@ -417,7 +441,7 @@ export function parsePropertyFilterSlug(
 
   const locationParsed = parseLocationToken(pending, context);
   pending = locationParsed.pending;
-  initial.city = locationParsed.city;
+  initial.province = locationParsed.province;
   initial.ward = locationParsed.ward;
   initial.street = locationParsed.street;
 
@@ -454,6 +478,7 @@ export function parsePropertyFilterSlug(
   const typeSlug = CATEGORY_TOKEN_TO_SLUG.get(pending) ?? pending;
   const typeName =
     findCategoryNameBySlug(typeSlug, context?.propertyCategories) ??
+    CATEGORY_SLUG_TO_LABEL.get(typeSlug) ??
     humanizeSlug(typeSlug);
 
   if (typeName) {
@@ -461,6 +486,26 @@ export function parsePropertyFilterSlug(
   }
 
   return initial;
+}
+
+export function isLikelyPropertyFilterSlug(rawSlug?: string) {
+  if (!rawSlug) return false;
+  const slug = compact(rawSlug);
+
+  if (CATEGORY_TOKEN_TO_SLUG.has(slug)) return true;
+
+  const tokenPrefixes = [
+    PRICE_TOKEN_PREFIX,
+    AREA_TOKEN_PREFIX,
+    LOCATION_TOKEN_PREFIX,
+    BEDROOM_TOKEN_PREFIX,
+    BATHROOM_TOKEN_PREFIX,
+    DIRECTION_TOKEN_PREFIX,
+  ];
+
+  return tokenPrefixes.some(
+    (prefix) => slug.startsWith(prefix) || slug.includes(`-${prefix}`),
+  );
 }
 
 export function parseNewsCategoryFromSlug(
@@ -530,7 +575,10 @@ export function buildNewsCategoryBreadcrumbs(
   return items;
 }
 
-export function buildProjectCategoryBreadcrumbs(slug?: string, categories?: Category[]) {
+export function buildProjectCategoryBreadcrumbs(
+  slug?: string,
+  categories?: Category[],
+) {
   const categorySlug = parseProjectCategoryFromSlug(slug, categories);
   const items: BreadcrumbItem[] = [
     { label: "Trang chủ", href: "/" },
@@ -616,7 +664,7 @@ export function buildPropertyFilterBreadcrumbs(
     }
   }
 
-  const locationLabel = [parsed.city, parsed.ward, parsed.street]
+  const locationLabel = [parsed.province, parsed.ward, parsed.street]
     .filter(Boolean)
     .join(", ");
   if (locationLabel) {

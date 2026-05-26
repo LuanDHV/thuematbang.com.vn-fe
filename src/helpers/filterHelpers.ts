@@ -1,4 +1,4 @@
-import { FILTER_LIMITS } from "@/mocks/filter";
+import { FILTER_LIMITS } from "@/constants/filter";
 
 type RangeOption = {
   label: string;

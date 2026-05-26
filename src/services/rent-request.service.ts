@@ -1,7 +1,11 @@
 ﻿import { RentRequest } from "@/types/rent-request";
 import { PropertyDirection, RentRequestStatus } from "@/types/enums";
 import { getApiResponse } from "./shared/api-client";
-import { buildListPath, buildListTags, buildScopedListPath } from "./shared/list-service";
+import {
+  buildListPath,
+  buildListTags,
+  buildScopedListPath,
+} from "./shared/list-service";
 
 export type RentRequestSortBy =
   | "createdAt"
@@ -57,10 +61,14 @@ export const rentRequestService = {
 
   getAllByFlatSlug: async (params: RentRequestGetByFlatSlugParams) =>
     getApiResponse<RentRequest[]>(
-      buildScopedListPath("/rent-requests/search/by-slug", params.flatSlug, {
-        page: params.page,
-        limit: params.limit,
-      }),
+      buildScopedListPath(
+        "/rent-requests/search/by-slug",
+        params.flatSlug,
+        {
+          page: params.page,
+          limit: params.limit,
+        },
+      ),
       {
         cache: "no-store",
         tags: buildListTags("rent-requests", {

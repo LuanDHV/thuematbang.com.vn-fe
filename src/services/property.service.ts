@@ -6,7 +6,11 @@ import {
   PublishStatus,
 } from "@/types/enums";
 import { getApiResponse } from "./shared/api-client";
-import { buildListPath, buildListTags, buildScopedListPath } from "./shared/list-service";
+import {
+  buildListPath,
+  buildListTags,
+  buildScopedListPath,
+} from "./shared/list-service";
 
 export type PropertySortBy =
   | "createdAt"
@@ -69,10 +73,14 @@ export const propertyService = {
 
   getAllByFlatSlug: async (params: PropertyGetByFlatSlugParams) =>
     getApiResponse<Property[]>(
-      buildScopedListPath("/properties/search/by-slug", params.flatSlug, {
-        page: params.page,
-        limit: params.limit,
-      }),
+      buildScopedListPath(
+        "/properties/search/by-slug",
+        params.flatSlug,
+        {
+          page: params.page,
+          limit: params.limit,
+        },
+      ),
       {
         cache: "no-store",
         tags: buildListTags("properties", {
