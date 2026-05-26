@@ -173,7 +173,9 @@ export default function ListingFilterToolbar({
     return { provinceMap, wardMap };
   }, [listingMode, sourceProperties]);
 
-  const provinceWardMap = useMemo<Record<string, Record<string, string[]>>>(() => {
+  const provinceWardMap = useMemo<
+    Record<string, Record<string, string[]>>
+  >(() => {
     const provinces = provincesData.length
       ? provincesData
       : Array.from(sourceLocationMap.provinceMap.values());
@@ -393,7 +395,10 @@ export default function ListingFilterToolbar({
   };
 
   useEffect(() => {
-    const nextFilters = reconcileLocationFilter(initialFilters, provinceWardMap);
+    const nextFilters = reconcileLocationFilter(
+      initialFilters,
+      provinceWardMap,
+    );
 
     queueMicrotask(() => {
       setAdvancedFilters((prev) =>
