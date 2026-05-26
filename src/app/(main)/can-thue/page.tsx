@@ -17,9 +17,6 @@ export const metadata: Metadata = createPageMetadata({
 export default async function CanThuePage() {
   // Load static SEO/FAQ content for rent request page.
   const pageContent = pageSeoFaq["can-thue"];
-  console.log("[server] Fetch rent requests", {
-    limit: 8,
-  });
 
   return (
     <>
@@ -27,6 +24,7 @@ export default async function CanThuePage() {
         fetcher={rentRequestService.getAll({
           limit: 24,
         })}
+        debugLabel="Rent-Requests Response"
       >
         {(response) => (
           <ListingFilterSection

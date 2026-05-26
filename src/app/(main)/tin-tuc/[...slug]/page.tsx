@@ -1,19 +1,25 @@
 ﻿import type { Metadata } from "next";
+import { cache } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, Eye, Layers } from "lucide-react";
+
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
+
 import {
   buildNewsCategoryBreadcrumbs,
   parsePagedSlugSegments,
   parseNewsCategoryFromSlug,
 } from "@/lib/flat-url";
+
 import { createPageMetadata } from "@/lib/metadata";
 import { formatDate } from "@/lib/utils";
+
 import { News } from "@/types/news";
+
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
 
@@ -21,28 +27,52 @@ type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-const RELATED_ITEMS_LIMIT = 8;
-
-async function resolveNews(slug: string) {
+const resolveNews = cache(async (slug: string) => {
   try {
     return await newsService.getBySlug(slug);
   } catch {
     return null;
   }
+});
+
+const resolveNewsCategories = cache(async () => {
+  return categoryService.getNewsCategories();
+});
+
+async function resolveNewsPageContext(slugSegments: string[]) {
+  const { rawSlug, page } = parsePagedSlugSegments(slugSegments);
+
+  const categories = await resolveNewsCategories();
+
+  const initialCategorySlug = parseNewsCategoryFromSlug(rawSlug, categories);
+
+  const isCategoryListing =
+    Boolean(rawSlug) && initialCategorySlug !== "tin-tuc";
+
+  const shouldTryDetail = Boolean(rawSlug) && !isCategoryListing;
+
+  const newsSlug = rawSlug ?? slugSegments.join("-");
+
+  const news = shouldTryDetail && newsSlug ? await resolveNews(newsSlug) : null;
+
+  return {
+    rawSlug,
+    page,
+    categories,
+    initialCategorySlug,
+    isCategoryListing,
+    shouldTryDetail,
+    newsSlug,
+    news,
+  };
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { rawSlug } = parsePagedSlugSegments(slug);
-  const joined = slug.join("/");
-  const categories = await categoryService.getNewsCategories();
-  const isCategorySlug =
-    Boolean(rawSlug) &&
-    parseNewsCategoryFromSlug(rawSlug, categories) !== "tin-tuc";
-  const newsSlug = rawSlug ?? slug.join("-");
-  const news = !isCategorySlug && newsSlug ? await resolveNews(newsSlug) : null;
+
+  const { news } = await resolveNewsPageContext(slug);
 
   if (news) {
     return createPageMetadata({
@@ -57,38 +87,32 @@ export async function generateMetadata({
   return createPageMetadata({
     title: "Tin tức",
     description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
-    pathname: `/tin-tuc/${joined}`,
+    pathname: `/tin-tuc/${slug.join("/")}`,
   });
 }
 
 export default async function TinTucDynamicPage({ params }: PageProps) {
-  // Parse slug + optional /pN segment from dynamic route.
   const { slug } = await params;
-  const { rawSlug, page } = parsePagedSlugSegments(slug);
-  const categories = await categoryService.getNewsCategories();
-  const initialCategorySlug = parseNewsCategoryFromSlug(rawSlug, categories);
-  const isCategoryListing =
-    Boolean(rawSlug) && initialCategorySlug !== "tin-tuc";
-  const shouldTryDetail = Boolean(rawSlug) && !isCategoryListing;
-  const newsSlug = rawSlug ?? slug.join("-");
-  const news = shouldTryDetail ? await resolveNews(newsSlug) : null;
 
-  // Detail branch: render a single news article when slug is a real article slug.
+  const { rawSlug, page, categories, initialCategorySlug, news } =
+    await resolveNewsPageContext(slug);
+
+  // Detail branch
   if (news) {
-    let newsItems: News[] = [];
+    let viewedNews: News[] = [];
+
     try {
-      // Fetch side list for "related news" in detail view.
-      const listResponse = await newsService.getAll({
+      const { data } = await newsService.getAll({
         page: 1,
-        limit: RELATED_ITEMS_LIMIT,
+        limit: 8,
       });
-      newsItems = listResponse.data ?? [];
+
+      viewedNews = (data ?? [])
+        .filter((item) => item.id !== news.id)
+        .slice(0, 8);
     } catch {
-      newsItems = [];
+      viewedNews = [];
     }
-    const viewedNews = newsItems
-      .filter((item) => item.id !== news.id)
-      .slice(0, 10);
 
     return (
       <article className="mx-auto max-w-7xl px-4 py-8">
@@ -148,6 +172,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
                   Thông tin mô tả
                 </h2>
               </div>
+
               <p className="text-base leading-relaxed text-gray-600">
                 {news.summary || "Đang cập nhật thông tin mô tả."}
               </p>
@@ -204,22 +229,23 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
   }
 
   if (slug.length > 2) {
-    // Guard invalid nested paths under /tin-tuc.
     notFound();
   }
 
-  // Listing branch: render category/all news with parsed page.
   const categoryFetch =
     initialCategorySlug === "tin-tuc"
-      ? newsService.getAll({ page, limit: RELATED_ITEMS_LIMIT })
+      ? newsService.getAll({
+          page,
+          limit: 8,
+        })
       : newsService.getAll({
           categorySlug: initialCategorySlug,
           page,
-          limit: RELATED_ITEMS_LIMIT,
+          limit: 8,
         });
 
   return (
-    <SafeFetch fetcher={categoryFetch}>
+    <SafeFetch fetcher={categoryFetch} debugLabel="News Dynamic Response">
       {(response) => (
         <NewsListingClient
           newsList={response.data ?? []}

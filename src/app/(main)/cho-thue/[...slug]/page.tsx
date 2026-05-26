@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { cache } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
@@ -21,10 +22,15 @@ import { locationService } from "@/services/location.service";
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
-const RELATED_ITEMS_LIMIT = 24;
 
-// Build province/ward label sources from current payload as breadcrumb fallback.
-function buildLocationContextFromProperties(properties: Property[]) {
+type LocationContext = {
+  provinces: { name: string; slug: string }[];
+  wards: { name: string; slug: string }[];
+};
+
+function buildLocationContextFromProperties(
+  properties: Property[],
+): LocationContext {
   const provinces = Array.from(
     new Map(
       properties
@@ -58,25 +64,47 @@ function extractPropertyImages(property: Property) {
       .map((image) => image.imageUrl)
       .filter(Boolean) ?? [];
 
-  if (imageUrls.length > 0) return imageUrls;
-  return ["/imgs/wallpaper-1.jpg"];
+  return imageUrls.length > 0 ? imageUrls : ["/imgs/wallpaper-1.jpg"];
 }
 
-async function resolveProperty(rawSlug: string) {
+const resolveProperty = cache(async (rawSlug: string) => {
   try {
     return await propertyService.getBySlug(rawSlug);
   } catch {
     return null;
   }
-}
+});
 
 async function resolvePropertyIfDetailSlug(rawSlug?: string) {
-  // A filter-like slug should be handled by listing mode, not detail mode.
   if (!rawSlug || isLikelyPropertyFilterSlug(rawSlug)) {
     return null;
   }
+
   return resolveProperty(rawSlug);
 }
+
+const resolveLocationContext = cache(async (): Promise<LocationContext> => {
+  try {
+    const provinces = await locationService.getProvinces();
+
+    const wardsByProvince = await Promise.all(
+      provinces.map((province) => locationService.getWards(province.id)),
+    );
+
+    return {
+      provinces: provinces.map((item) => ({
+        name: item.name,
+        slug: item.slug,
+      })),
+      wards: wardsByProvince.flat().map((item) => ({
+        name: item.name,
+        slug: item.slug,
+      })),
+    };
+  } catch {
+    return { provinces: [], wards: [] };
+  }
+});
 
 export async function generateMetadata({
   params,
@@ -89,6 +117,7 @@ export async function generateMetadata({
     const propertyDescription =
       property.content?.replace(/<[^>]+>/g, "").trim() ||
       "Chi tiết tin đăng cho thuê.";
+
     const image = extractPropertyImages(property)[0];
 
     return createPageMetadata({
@@ -108,27 +137,27 @@ export async function generateMetadata({
 }
 
 export default async function DynamicChoThuePage({ params }: PageProps) {
-  // Parse slug + optional /pN segment from dynamic route.
   const { slug } = await params;
   const { rawSlug, page } = parsePagedSlugSegments(slug);
   const pageContent = pageSeoFaq["cho-thue"];
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
-  // Detail branch: render a single property page when slug is a real property slug.
   if (property) {
     let properties: Property[] = [];
+
     try {
-      // Fetch related properties for detail sidebar blocks.
-      const pagePayload = await propertyService.getAll({
+      const { data } = await propertyService.getAll({
         page: 1,
-        limit: RELATED_ITEMS_LIMIT,
+        limit: 24,
       });
-      properties = pagePayload.data ?? [];
+
+      properties = data ?? [];
     } catch {
       properties = [];
     }
 
     const poster = property.user ?? undefined;
+
     const locationText = [
       property.addressDetail,
       property.ward?.name,
@@ -137,23 +166,28 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       .filter(Boolean)
       .join(", ");
 
-    const rentalOutProperties = properties.filter(
+    const relatedProperties = properties.filter(
       (item) => item.id !== property.id,
     );
-    const featuredProperties = properties
+
+    const featuredProperties = relatedProperties
       .filter((item) => item.isFeatured)
       .slice(0, 6);
-    const viewedProperties = rentalOutProperties.slice(0, 3);
+
+    const viewedProperties = relatedProperties.slice(0, 3);
+
     const galleryImages = extractPropertyImages(property);
 
     const hasCoordinates =
       typeof property.latitude === "number" &&
       typeof property.longitude === "number";
+
     const mapSrc = hasCoordinates
       ? `https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`
       : null;
 
     const citySlug = property.province?.slug;
+
     const relatedCategoryCityLinks = citySlug
       ? properties
           .filter(
@@ -163,7 +197,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
               item.category?.name,
           )
           .map((item) => ({
-            label: `${item.category?.name}  khu vực ${property.province?.name}`,
+            label: `${item.category?.name} khu vực ${property.province?.name}`,
             href: `/cho-thue/${item.category?.slug}-khu-vuc-${citySlug}`,
           }))
           .filter(
@@ -192,6 +226,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
             featuredProperties={featuredProperties}
             viewedProperties={viewedProperties}
           />
+
           <PropertyDetailSidebar
             poster={poster}
             isLoggedIn
@@ -203,55 +238,39 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   }
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
-  // Listing branch: fetch paginated data from API using parsed page.
+
   const listFetcher = rawSlug
     ? propertyService.getAllByFlatSlug({
         flatSlug: rawSlug,
         page,
-        limit: RELATED_ITEMS_LIMIT,
+        limit: 24,
       })
-    : propertyService.getAll({ page, limit: RELATED_ITEMS_LIMIT });
+    : propertyService.getAll({
+        page,
+        limit: 24,
+      });
+
   const paginationBasePath = rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue";
-  let locationContext: ReturnType<typeof buildLocationContextFromProperties> = {
-    provinces: [],
-    wards: [],
-  };
-  try {
-    // Prefer canonical location labels from API for breadcrumb accuracy.
-    const provinces = await locationService.getProvinces();
-    const wardsByProvince = await Promise.all(
-      provinces.map((province) => locationService.getWards(province.id)),
-    );
-    locationContext = {
-      provinces: provinces.map((item) => ({
-        name: item.name,
-        slug: item.slug,
-      })),
-      wards: wardsByProvince.flat().map((item) => ({
-        name: item.name,
-        slug: item.slug,
-      })),
-    };
-  } catch {
-    locationContext = { provinces: [], wards: [] };
-  }
+  const locationContext = await resolveLocationContext();
 
   return (
     <>
-      <SafeFetch fetcher={listFetcher}>
+      <SafeFetch fetcher={listFetcher} debugLabel="Properties Dynamic Response">
         {(response) => {
-          // Fallback to payload-derived labels when location API is unavailable.
-          const fallbackLocationContext = buildLocationContextFromProperties(
-            response.data ?? [],
-          );
+          const properties = response.data ?? [];
+
+          const fallbackLocationContext =
+            buildLocationContextFromProperties(properties);
+
           const breadcrumbLocationContext =
             locationContext.provinces.length || locationContext.wards.length
               ? locationContext
               : fallbackLocationContext;
+
           return (
             <ListingFilterSection
               title="Cho thuê bất động sản"
-              properties={response.data ?? []}
+              properties={properties}
               listingMode="property"
               serverDriven
               basePath="/cho-thue"
@@ -267,7 +286,9 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           );
         }}
       </SafeFetch>
+
       <PageSeoContent content={pageContent.seoContent} />
+
       <PageFaq
         title={pageContent.faqTitle}
         description={pageContent.faqDescription}

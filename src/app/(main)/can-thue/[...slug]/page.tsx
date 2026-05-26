@@ -1,4 +1,5 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import { cache } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
@@ -21,10 +22,15 @@ import { locationService } from "@/services/location.service";
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
-const RELATED_ITEMS_LIMIT = 24;
 
-// Build province/ward label sources from current payload as breadcrumb fallback.
-function buildLocationContextFromRentRequests(requests: RentRequest[]) {
+type LocationContext = {
+  provinces: { name: string; slug: string }[];
+  wards: { name: string; slug: string }[];
+};
+
+function buildLocationContextFromRentRequests(
+  requests: RentRequest[],
+): LocationContext {
   const provinces = Array.from(
     new Map(
       requests
@@ -52,21 +58,44 @@ function buildLocationContextFromRentRequests(requests: RentRequest[]) {
   return { provinces, wards };
 }
 
-async function resolveRentRequest(rawSlug: string) {
+const resolveRentRequest = cache(async (rawSlug: string) => {
   try {
     return await rentRequestService.getBySlug(rawSlug);
   } catch {
     return null;
   }
-}
+});
 
 async function resolveRentRequestIfDetailSlug(rawSlug?: string) {
-  // A filter-like slug should be handled by listing mode, not detail mode.
   if (!rawSlug || isLikelyPropertyFilterSlug(rawSlug)) {
     return null;
   }
+
   return resolveRentRequest(rawSlug);
 }
+
+const resolveLocationContext = cache(async (): Promise<LocationContext> => {
+  try {
+    const provinces = await locationService.getProvinces();
+
+    const wardsByProvince = await Promise.all(
+      provinces.map((province) => locationService.getWards(province.id)),
+    );
+
+    return {
+      provinces: provinces.map((item) => ({
+        name: item.name,
+        slug: item.slug,
+      })),
+      wards: wardsByProvince.flat().map((item) => ({
+        name: item.name,
+        slug: item.slug,
+      })),
+    };
+  } catch {
+    return { provinces: [], wards: [] };
+  }
+});
 
 export async function generateMetadata({
   params,
@@ -93,27 +122,27 @@ export async function generateMetadata({
 }
 
 export default async function DynamicCanThuePage({ params }: PageProps) {
-  // Parse slug + optional /pN segment from dynamic route.
   const { slug } = await params;
   const { rawSlug, page } = parsePagedSlugSegments(slug);
   const pageContent = pageSeoFaq["can-thue"];
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
-  // Detail branch: render a single rent request page when slug is a real detail slug.
   if (rentRequest) {
     let rentRequests: RentRequest[] = [];
+
     try {
-      // Fetch related rent requests for detail sidebar blocks.
-      const pagePayload = await rentRequestService.getAll({
+      const { data } = await rentRequestService.getAll({
         page: 1,
-        limit: RELATED_ITEMS_LIMIT,
+        limit: 24,
       });
-      rentRequests = pagePayload.data ?? [];
+
+      rentRequests = data ?? [];
     } catch {
       rentRequests = [];
     }
 
     const poster = rentRequest.user ?? undefined;
+
     const locationText = [
       rentRequest.desiredStreet?.name,
       rentRequest.desiredWard?.name,
@@ -125,7 +154,9 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     const relatedRequests = rentRequests.filter(
       (item) => item.id !== rentRequest.id,
     );
+
     const viewedRequests = relatedRequests.slice(0, 3);
+
     const latestWantedRequests = relatedRequests
       .slice()
       .sort(
@@ -152,6 +183,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
             locationText={locationText}
             viewedRequests={viewedRequests}
           />
+
           <RentRequestDetailSidebar
             poster={poster}
             isLoggedIn
@@ -164,56 +196,42 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
   }
 
   const initialFilters = parsePropertyFilterSlug(rawSlug);
-  // Listing branch: fetch paginated data from API using parsed page.
+
   const listFetcher = rawSlug
     ? rentRequestService.getAllByFlatSlug({
         flatSlug: rawSlug,
         page,
-        limit: RELATED_ITEMS_LIMIT,
+        limit: 24,
       })
-    : rentRequestService.getAll({ page, limit: RELATED_ITEMS_LIMIT });
+    : rentRequestService.getAll({
+        page,
+        limit: 24,
+      });
+
   const paginationBasePath = rawSlug ? `/can-thue/${rawSlug}` : "/can-thue";
-  let locationContext: ReturnType<typeof buildLocationContextFromRentRequests> =
-    {
-      provinces: [],
-      wards: [],
-    };
-  try {
-    // Prefer canonical location labels from API for breadcrumb accuracy.
-    const provinces = await locationService.getProvinces();
-    const wardsByProvince = await Promise.all(
-      provinces.map((province) => locationService.getWards(province.id)),
-    );
-    locationContext = {
-      provinces: provinces.map((item) => ({
-        name: item.name,
-        slug: item.slug,
-      })),
-      wards: wardsByProvince.flat().map((item) => ({
-        name: item.name,
-        slug: item.slug,
-      })),
-    };
-  } catch {
-    locationContext = { provinces: [], wards: [] };
-  }
+  const locationContext = await resolveLocationContext();
 
   return (
     <>
-      <SafeFetch fetcher={listFetcher}>
+      <SafeFetch
+        fetcher={listFetcher}
+        debugLabel="Rent-Requests Dynamic Response"
+      >
         {(response) => {
-          // Fallback to payload-derived labels when location API is unavailable.
-          const fallbackLocationContext = buildLocationContextFromRentRequests(
-            response.data ?? [],
-          );
+          const rentRequests = response.data ?? [];
+
+          const fallbackLocationContext =
+            buildLocationContextFromRentRequests(rentRequests);
+
           const breadcrumbLocationContext =
             locationContext.provinces.length || locationContext.wards.length
               ? locationContext
               : fallbackLocationContext;
+
           return (
             <ListingFilterSection
               title="Cần thuê bất động sản"
-              properties={response.data ?? []}
+              properties={rentRequests}
               listingMode="rentRequest"
               serverDriven
               basePath="/can-thue"
@@ -229,7 +247,9 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           );
         }}
       </SafeFetch>
+
       <PageSeoContent content={pageContent.seoContent} />
+
       <PageFaq
         title={pageContent.faqTitle}
         description={pageContent.faqDescription}

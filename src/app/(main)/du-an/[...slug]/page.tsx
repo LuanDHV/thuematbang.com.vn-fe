@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { cache } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -28,9 +29,9 @@ type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-
 const formatProjectPrice = (value?: number | null) => {
   if (!value) return "Liên hệ";
+
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
@@ -40,6 +41,7 @@ const formatProjectPrice = (value?: number | null) => {
 
 const formatProjectArea = (value?: number | null) => {
   if (!value) return "Đang cập nhật";
+
   return `${value.toLocaleString("vi-VN")} m²`;
 };
 
@@ -54,25 +56,48 @@ function extractProjectImages(project: Project) {
   return images.length > 0 ? images : ["/imgs/wallpaper-1.jpg"];
 }
 
-async function resolveProject(slug: string) {
+const resolveProject = cache(async (slug: string) => {
   try {
     return await projectService.getBySlug(slug);
   } catch {
     return null;
   }
+});
+
+const resolveProjectCategories = cache(async () => {
+  return categoryService.getProjectCategories();
+});
+
+async function resolveProjectPageContext(slugSegments: string[]) {
+  const { rawSlug, page } = parsePagedSlugSegments(slugSegments);
+  const projectCategories = await resolveProjectCategories();
+
+  const initialCategorySlug = parseProjectCategoryFromSlug(
+    rawSlug,
+    projectCategories,
+  );
+
+  const isCategoryListing = Boolean(rawSlug) && initialCategorySlug !== "du-an";
+
+  const projectSlug = rawSlug ?? slugSegments.join("-");
+  const project = isCategoryListing ? null : await resolveProject(projectSlug);
+
+  return {
+    rawSlug,
+    page,
+    projectCategories,
+    initialCategorySlug,
+    isCategoryListing,
+    projectSlug,
+    project,
+  };
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { rawSlug } = parsePagedSlugSegments(slug);
-  const joined = slug.join("/");
-  const projectCategories = await categoryService.getProjectCategories();
-  const categorySlug = parseProjectCategoryFromSlug(rawSlug, projectCategories);
-  const isCategorySlug = Boolean(rawSlug) && categorySlug !== "du-an";
-  const projectSlug = rawSlug ?? slug.join("-");
-  const project = isCategorySlug ? null : await resolveProject(projectSlug);
+  const { project } = await resolveProjectPageContext(slug);
 
   if (project) {
     return createPageMetadata({
@@ -87,24 +112,16 @@ export async function generateMetadata({
   return createPageMetadata({
     title: "Dự án",
     description: "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
-    pathname: `/du-an/${joined}`,
+    pathname: `/du-an/${slug.join("/")}`,
   });
 }
 
 export default async function DuAnDynamicPage({ params }: PageProps) {
-  // Parse slug + optional /pN segment from dynamic route.
   const { slug } = await params;
-  const { rawSlug, page } = parsePagedSlugSegments(slug);
-  const projectCategories = await categoryService.getProjectCategories();
-  const initialCategorySlug = parseProjectCategoryFromSlug(
-    rawSlug,
-    projectCategories,
-  );
-  const isCategoryListing = Boolean(rawSlug) && initialCategorySlug !== "du-an";
-  const projectSlug = rawSlug ?? slug.join("-");
-  const project = isCategoryListing ? null : await resolveProject(projectSlug);
 
-  // Detail branch: render a single project page when slug is a real project slug.
+  const { rawSlug, page, projectCategories, initialCategorySlug, project } =
+    await resolveProjectPageContext(slug);
+
   if (project) {
     const galleryImages = extractProjectImages(project);
 
@@ -119,11 +136,13 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
     let viewedProjects: Project[] = [];
 
     try {
-      // Fetch side list for "related projects" in detail view.
-      const listResponse = await projectService.getAll();
-      viewedProjects = (listResponse.data ?? [])
+      const { data } = await projectService.getAll({
+        limit: 24,
+      });
+
+      viewedProjects = (data ?? [])
         .filter((item) => item.id !== project.id)
-        .slice(0, 10);
+        .slice(0, 24);
     } catch {
       viewedProjects = [];
     }
@@ -294,14 +313,15 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
   }
 
   if (slug.length > 2) {
-    // Guard invalid nested paths under /du-an.
     notFound();
   }
 
-  // Listing branch: render category/all projects with parsed page.
   const categoryFetch =
     initialCategorySlug === "du-an"
-      ? projectService.getAll({ page, limit: 24 })
+      ? projectService.getAll({
+          page,
+          limit: 24,
+        })
       : projectService.getAll({
           categorySlug: initialCategorySlug,
           page,
@@ -309,7 +329,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         });
 
   return (
-    <SafeFetch fetcher={categoryFetch}>
+    <SafeFetch fetcher={categoryFetch} debugLabel="Projects Dynamic Response">
       {(response) => (
         <ProjectListingClient
           projects={response.data ?? []}
@@ -325,4 +345,3 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
     </SafeFetch>
   );
 }
-

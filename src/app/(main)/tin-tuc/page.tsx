@@ -15,15 +15,13 @@ export const metadata: Metadata = createPageMetadata({
 export default async function TinTucPage() {
   // Fetch news categories for listing filter tabs.
   const categories = await categoryService.getNewsCategories();
-  console.log("[server] Fetch news", {
-    limit: 8,
-  });
 
   return (
     <SafeFetch
       fetcher={newsService.getAll({
         limit: 8,
       })}
+      debugLabel="News Response"
     >
       {(response) => (
         <NewsListingClient
@@ -36,4 +34,3 @@ export default async function TinTucPage() {
     </SafeFetch>
   );
 }
-

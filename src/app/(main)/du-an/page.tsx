@@ -20,9 +20,6 @@ export default async function DuAnPage() {
   const projectCategories = await categoryService.getProjectCategories();
   // Load static SEO/FAQ content for project page.
   const pageContent = pageSeoFaq["du-an"];
-  console.log("[server] Fetch projects", {
-    limit: 8,
-  });
 
   return (
     <>
@@ -30,6 +27,7 @@ export default async function DuAnPage() {
         fetcher={projectService.getAll({
           limit: 24,
         })}
+        debugLabel="Projects Response"
       >
         {(response) => (
           <ProjectListingClient

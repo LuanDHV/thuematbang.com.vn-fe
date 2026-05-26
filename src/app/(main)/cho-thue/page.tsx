@@ -17,15 +17,14 @@ export const metadata: Metadata = createPageMetadata({
 export default async function ChoThuePage() {
   // Load static SEO/FAQ content for rental listing page.
   const pageContent = pageSeoFaq["cho-thue"];
-  console.log("[server] Fetch properties", {
-    limit: 8,
-  });
+
   return (
     <>
       <SafeFetch
         fetcher={propertyService.getAll({
           limit: 24,
         })}
+        debugLabel="Properties Response"
       >
         {(response) => (
           <ListingFilterSection
