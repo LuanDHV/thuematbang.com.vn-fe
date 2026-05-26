@@ -145,11 +145,7 @@ function FeaturedCard({ property }: { property: Property }) {
     </article>
   );
 }
-function GoldCard({
-  property,
-}: {
-  property: Property;
-}) {
+function GoldCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
   const galleryImages = getPropertyGalleryImages(property);
   const imagesList =
@@ -219,11 +215,7 @@ function GoldCard({
   );
 }
 
-function SilverCard({
-  property,
-}: {
-  property: Property;
-}) {
+function SilverCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
   const galleryImages = getPropertyGalleryImages(property);
   const imagesList =
@@ -306,11 +298,10 @@ function NormalCard({ property }: { property: Property }) {
 
 function CardBody({ property }: { property: Property }) {
   const location = getLocationText(property) || "Đang cập nhật vị trí";
-  const contentPreview =
-    property.content?.replace(/<[^>]+>/g, "").trim() || "";
+  const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
-    <div className="flex min-h-55 flex-1 flex-col p-4">
+    <div className="flex min-h-60 flex-1 flex-col p-4">
       <p className="text-primary mt-1 text-base font-bold">
         {formatPrice(property.price || 0)}
       </p>
@@ -376,7 +367,3 @@ export function PropertyCard({
 
   return <Link href={href}>{content}</Link>;
 }
-
-
-
-
