@@ -12,5 +12,4 @@ export * from "./news";
 export * from "./project";
 export * from "./property";
 export * from "./rent-request";
-export * from "./saved-search";
 export * from "./user";

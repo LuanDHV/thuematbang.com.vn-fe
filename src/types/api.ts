@@ -1,3 +1,4 @@
+﻿// Standardized pagination metadata for frontend usage
 export interface PaginationMeta {
   total: number;
   currentPage: number;
@@ -7,7 +8,17 @@ export interface PaginationMeta {
   hasPreviousPage: boolean;
 }
 
-// Đây là Wrapper chung dùng Generic <T>
+// Raw pagination format returned from the backend API
+export interface BackendPagination {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+// Global wrapper structure for all API responses
 export interface ApiResponse<T> {
   data: T;
   meta?: PaginationMeta;
