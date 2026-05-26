@@ -32,7 +32,8 @@ export const formatCurrencyShort = (value: number) => {
   return `${Number.isInteger(million) ? million : million.toFixed(1)} triệu`;
 };
 
-export const formatArea = (value: number) => `${value.toLocaleString("vi-VN")} m²`;
+export const formatArea = (value: number) =>
+  `${value.toLocaleString("vi-VN")} m²`;
 
 export const resolvePriceSummary = (
   value: FilterValueLike,

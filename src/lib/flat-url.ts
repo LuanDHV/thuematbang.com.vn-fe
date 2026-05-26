@@ -1,46 +1,45 @@
-import {
-  mockCategoryNews,
-  mockCategoryProject,
-  mockCategoryProperty,
-} from "@/mocks/categories";
-import { DIRECTION_OPTIONS, FILTER_LIMITS } from "@/mocks/filter";
-import { mockCities, mockStreets, mockWards } from "@/mocks/locations";
+﻿import { Category } from "@/types/category";
 import {
   AdvancedFilterValue,
   INITIAL_ADVANCED_FILTER_VALUE,
 } from "@/types/filter";
+import { Province, Ward } from "@/types/location";
 
 export type BreadcrumbItem = {
   label: string;
   href?: string;
 };
 
-// -----------------------------------------------------------------------------
-// Nhóm tiện ích chuẩn hóa chuỗi cho URL
-// - normalize: bỏ dấu tiếng Việt, chuyển lowercase, trim
-// - compact: chuyển mọi cụm ký tự không hợp lệ thành dấu "-" để tạo slug ổn định
-// -----------------------------------------------------------------------------
-const normalize = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
+export type FlatUrlContext = {
+  propertyCategories?: Array<Pick<Category, "name" | "slug">>;
+  newsCategories?: Array<Pick<Category, "name" | "slug" | "type">>;
+  projectCategories?: Array<Pick<Category, "name" | "slug" | "type">>;
+  provinces?: Array<Pick<Province, "name" | "slug">>;
+  wards?: Array<Pick<Ward, "name" | "slug">>;
+};
 
-const compact = (value: string) =>
-  normalize(value)
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+const PAGE_SEGMENT_REGEX = /^p([1-9]\d*)$/i;
+const DEFAULT_PRICE_MAX = 500_000_000_000;
 
 const AREA_TOKEN_PREFIX = "dien-tich-";
 const PRICE_TOKEN_PREFIX = "gia-";
 const LOCATION_TOKEN_PREFIX = "khu-vuc-";
 const LOCATION_CITY_PREFIX = "tp-";
 const LOCATION_WARD_PREFIX = "phuong-";
-const LOCATION_STREET_PREFIX = "duong-";
 const BEDROOM_TOKEN_PREFIX = "phong-ngu-";
 const BATHROOM_TOKEN_PREFIX = "phong-tam-";
 const DIRECTION_TOKEN_PREFIX = "huong-";
+
+const DIRECTION_OPTIONS = [
+  { id: "BAC", label: "Bắc" },
+  { id: "DONG_BAC", label: "Đông Bắc" },
+  { id: "DONG", label: "Đông" },
+  { id: "DONG_NAM", label: "Đông Nam" },
+  { id: "NAM", label: "Nam" },
+  { id: "TAY_NAM", label: "Tây Nam" },
+  { id: "TAY", label: "Tây" },
+  { id: "TAY_BAC", label: "Tây Bắc" },
+] as const;
 
 const CATEGORY_SLUG_TO_TOKEN = new Map<string, string>([
   ["van-phong", "van-phong"],
@@ -59,6 +58,27 @@ const CATEGORY_TOKEN_TO_SLUG = new Map(
 );
 CATEGORY_TOKEN_TO_SLUG.set("mat-bang", "mat-bang");
 
+const normalize = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
+const compact = (value: string) =>
+  normalize(value)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+function humanizeSlug(slug: string) {
+  if (!slug) return "";
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 function millionsLabel(value: number) {
   if (value >= 1000) {
     const ty = value / 1000;
@@ -69,10 +89,6 @@ function millionsLabel(value: number) {
   return `${value}-trieu`;
 }
 
-// -----------------------------------------------------------------------------
-// Nhóm hàm build token (từ state filter -> token gắn vào flat URL)
-// Mỗi tiêu chí filter có 1 prefix riêng để parse ngược không bị nhập nhằng.
-// -----------------------------------------------------------------------------
 function buildPriceToken(
   priceMin: string,
   priceMax: string,
@@ -96,10 +112,10 @@ function buildAreaToken(areaMin: string, areaMax: string) {
   return `${AREA_TOKEN_PREFIX}${min}-${max}m2`;
 }
 
-function buildLocationToken(city: string, ward: string, street: string) {
+function buildLocationToken(city: string, ward: string, context?: FlatUrlContext) {
   const cityValue = compact(city);
   const citySlugRaw = city
-    ? (mockCities.find(
+    ? (context?.provinces?.find(
         (cityItem) =>
           compact(cityItem.name) === cityValue ||
           compact(cityItem.slug) === cityValue,
@@ -108,10 +124,7 @@ function buildLocationToken(city: string, ward: string, street: string) {
   const citySlug = citySlugRaw.replace(/^tp-/, "");
   const cityPart = citySlug ? `${LOCATION_CITY_PREFIX}${citySlug}` : "";
   const wardPart = ward ? `${LOCATION_WARD_PREFIX}${compact(ward)}` : "";
-  const streetPart = street
-    ? `${LOCATION_STREET_PREFIX}${compact(street)}`
-    : "";
-  const parts = [cityPart, wardPart, streetPart].filter(Boolean);
+  const parts = [cityPart, wardPart].filter(Boolean);
   if (parts.length === 0) return "";
   return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
 }
@@ -138,46 +151,6 @@ function buildDirectionToken(values: string[]) {
   if (!values.length) return "";
   return `${DIRECTION_TOKEN_PREFIX}${compact(values[0].replaceAll("_", "-"))}`;
 }
-
-// -----------------------------------------------------------------------------
-// Nhóm lookup map phục vụ parse ngược (token -> giá trị hiển thị / id nội bộ)
-// Ý tưởng: luôn parse theo slug rồi map về dữ liệu gốc trong mock/options.
-// -----------------------------------------------------------------------------
-const propertyTypeSlugToName = new Map<string, string>(
-  mockCategoryProperty.map((category) => [category.slug, category.name]),
-);
-for (const category of mockCategoryProperty) {
-  const beToken = CATEGORY_SLUG_TO_TOKEN.get(category.slug);
-  if (beToken) {
-    propertyTypeSlugToName.set(beToken, category.name);
-  }
-}
-
-const citySlugToName = new Map(
-  mockCities.flatMap((city) => {
-    const normalizedSlug = compact(city.slug).replace(/^tp-/, "");
-    return [
-      [compact(city.name), city.name],
-      [compact(city.slug), city.name],
-      [normalizedSlug, city.name],
-    ];
-  }),
-);
-const wardSlugToName = new Map(
-  mockWards.map((ward) => [compact(ward.name), ward.name]),
-);
-const streetSlugToName = new Map(
-  mockStreets.map((street) => [compact(street.name), street.name]),
-);
-
-const directionSlugToId = new Map<string, string>(
-  DIRECTION_OPTIONS.map((option) => [
-    compact(option.id.replaceAll("_", "-")),
-    option.id,
-  ]),
-);
-const directionSlugPattern = Array.from(directionSlugToId.keys()).join("|");
-const bedBathSinglePattern = "(?:1|2|3|4|5-plus)";
 
 function removeMatchedSuffix(value: string, token: string) {
   if (value === token) return "";
@@ -208,7 +181,7 @@ function parseSingleListToken(
   };
 }
 
-function parseLocationToken(pending: string) {
+function parseLocationToken(pending: string, context?: FlatUrlContext) {
   const locationTokenPattern = new RegExp(
     `${LOCATION_TOKEN_PREFIX}[a-z0-9-]+$`,
   );
@@ -223,44 +196,37 @@ function parseLocationToken(pending: string) {
   }
 
   const locationRaw = locationMatch[0].replace(LOCATION_TOKEN_PREFIX, "");
-
   const wardMarker = `-${LOCATION_WARD_PREFIX}`;
-  const streetMarker = `-${LOCATION_STREET_PREFIX}`;
   const cityPrefix = LOCATION_CITY_PREFIX;
 
   let citySlug = "";
   let wardSlug = "";
-  let streetSlug = "";
 
   if (locationRaw.startsWith(cityPrefix)) {
     const afterCity = locationRaw.slice(cityPrefix.length);
     const wardIndex = afterCity.indexOf(wardMarker);
-    const streetIndex = afterCity.indexOf(streetMarker);
 
     if (wardIndex >= 0) {
       citySlug = afterCity.slice(0, wardIndex);
-      const wardAndStreet = afterCity.slice(wardIndex + wardMarker.length);
-      const streetInWard = wardAndStreet.indexOf(streetMarker);
-
-      if (streetInWard >= 0) {
-        wardSlug = wardAndStreet.slice(0, streetInWard);
-        streetSlug = wardAndStreet.slice(streetInWard + streetMarker.length);
-      } else {
-        wardSlug = wardAndStreet;
-      }
-    } else if (streetIndex >= 0) {
-      citySlug = afterCity.slice(0, streetIndex);
-      streetSlug = afterCity.slice(streetIndex + streetMarker.length);
+      wardSlug = afterCity.slice(wardIndex + wardMarker.length);
     } else {
       citySlug = afterCity;
     }
   }
 
+  const cityName =
+    context?.provinces?.find((item) => compact(item.slug).replace(/^tp-/, "") === citySlug)
+      ?.name ?? humanizeSlug(citySlug);
+
+  const wardName =
+    context?.wards?.find((item) => compact(item.slug) === wardSlug)?.name ??
+    humanizeSlug(wardSlug);
+
   return {
     pending: removeMatchedSuffix(pending, locationMatch[0]),
-    city: citySlugToName.get(citySlug) ?? "",
-    ward: wardSlugToName.get(wardSlug) ?? "",
-    street: streetSlugToName.get(streetSlug) ?? "",
+    city: citySlug ? cityName : "",
+    ward: wardSlug ? wardName : "",
+    street: "",
   };
 }
 
@@ -352,26 +318,28 @@ function extractSuffixToken(value: string, prefix: string) {
   return match[0];
 }
 
-// -----------------------------------------------------------------------------
-// Build flat URL canonical từ state filter hiện tại.
-// Thứ tự token trong URL đang dùng:
-//   loai -> gia -> dien-tich -> khu-vuc -> phong-ngu -> phong-tam -> huong
-// Parse ngược cũng dựa đúng thứ tự này (đi từ phải qua trái).
-// -----------------------------------------------------------------------------
+function findCategorySlugByName(name: string, categories?: Array<Pick<Category, "name" | "slug">>) {
+  const target = compact(name);
+  const found = categories?.find((item) => compact(item.name) === target);
+  return found?.slug;
+}
+
+function findCategoryNameBySlug(slug: string, categories?: Array<Pick<Category, "name" | "slug">>) {
+  const found = categories?.find((item) => compact(item.slug) === compact(slug));
+  return found?.name;
+}
+
 export function buildPropertyFilterPath(
   basePath: string,
   value: AdvancedFilterValue,
+  context?: FlatUrlContext,
 ) {
   const tokens: string[] = [];
 
   const propertyTypeName = value.propertyTypes[0] ?? "";
   if (propertyTypeName) {
-    const category = mockCategoryProperty.find(
-      (item) => item.name === propertyTypeName,
-    );
-    if (category) {
-      tokens.push(CATEGORY_SLUG_TO_TOKEN.get(category.slug) ?? category.slug);
-    }
+    const slug = findCategorySlugByName(propertyTypeName, context?.propertyCategories) ?? compact(propertyTypeName);
+    tokens.push(CATEGORY_SLUG_TO_TOKEN.get(slug) ?? slug);
   }
 
   const priceToken = buildPriceToken(
@@ -384,11 +352,7 @@ export function buildPropertyFilterPath(
   const areaToken = buildAreaToken(value.areaMin, value.areaMax);
   if (areaToken) tokens.push(areaToken);
 
-  const locationToken = buildLocationToken(
-    value.city,
-    value.ward,
-    value.street,
-  );
+  const locationToken = buildLocationToken(value.city, value.ward, context);
   if (locationToken) tokens.push(locationToken);
 
   const bedroomToken = buildBedroomToken(value.bedrooms);
@@ -404,7 +368,10 @@ export function buildPropertyFilterPath(
   return `${basePath}/${tokens.join("-")}`;
 }
 
-export function parsePropertyFilterSlug(rawSlug: string | undefined) {
+export function parsePropertyFilterSlug(
+  rawSlug: string | undefined,
+  context?: FlatUrlContext,
+) {
   const initial = { ...INITIAL_ADVANCED_FILTER_VALUE };
 
   if (!rawSlug) {
@@ -412,9 +379,15 @@ export function parsePropertyFilterSlug(rawSlug: string | undefined) {
   }
 
   let pending = compact(rawSlug);
+  const directionSlugToId = new Map<string, string>(
+    DIRECTION_OPTIONS.map((option) => [
+      compact(option.id.replaceAll("_", "-")),
+      option.id,
+    ]),
+  );
+  const directionSlugPattern = Array.from(directionSlugToId.keys()).join("|");
+  const bedBathSinglePattern = "(?:1|2|3|4|5-plus)";
 
-  // Parse từ phải sang trái vì token được append theo thứ tự cố định ở hàm build.
-  // Cách này giúp tránh token phía trước "ăn" nhầm token phía sau.
   const directionParsed = parseSingleListToken(
     pending,
     DIRECTION_TOKEN_PREFIX,
@@ -442,7 +415,7 @@ export function parsePropertyFilterSlug(rawSlug: string | undefined) {
   pending = bedroomParsed.pending;
   initial.bedrooms = bedroomParsed.value ? [bedroomParsed.value] : [];
 
-  const locationParsed = parseLocationToken(pending);
+  const locationParsed = parseLocationToken(pending, context);
   pending = locationParsed.pending;
   initial.city = locationParsed.city;
   initial.ward = locationParsed.ward;
@@ -472,14 +445,17 @@ export function parsePropertyFilterSlug(rawSlug: string | undefined) {
         initial.priceMin = "";
       }
       if (price.minPrice && !price.maxPrice) {
-        initial.priceMax = String(FILTER_LIMITS.PRICE_MAX);
+        initial.priceMax = String(DEFAULT_PRICE_MAX);
       }
       pending = removeMatchedSuffix(pending, priceToken);
     }
   }
 
   const typeSlug = CATEGORY_TOKEN_TO_SLUG.get(pending) ?? pending;
-  const typeName = propertyTypeSlugToName.get(typeSlug);
+  const typeName =
+    findCategoryNameBySlug(typeSlug, context?.propertyCategories) ??
+    humanizeSlug(typeSlug);
+
   if (typeName) {
     initial.propertyTypes = [typeName];
   }
@@ -487,52 +463,86 @@ export function parsePropertyFilterSlug(rawSlug: string | undefined) {
   return initial;
 }
 
-export function parseNewsCategoryFromSlug(slug?: string) {
+export function parseNewsCategoryFromSlug(
+  slug?: string,
+  categories?: Category[],
+) {
   if (!slug) return "tin-tuc";
-  const matched = mockCategoryNews.find((item) => item.slug === slug);
+  const source = (categories ?? []).filter((item) => item.type === "NEWS");
+  const matched = source.find((item) => item.slug === slug);
   return matched ? matched.slug : "tin-tuc";
 }
 
-export function parseProjectCategoryFromSlug(slug?: string) {
+export function parsePagedSlugSegments(segments?: string[]) {
+  if (!segments?.length) {
+    return { rawSlug: undefined as string | undefined, page: 1 };
+  }
+
+  const last = segments[segments.length - 1];
+  const pageMatch = last.match(PAGE_SEGMENT_REGEX);
+  const page = pageMatch ? Number(pageMatch[1]) : 1;
+  const core = pageMatch ? segments.slice(0, -1) : segments;
+  const rawSlug = core.length > 0 ? core.join("-") : undefined;
+
+  return {
+    rawSlug,
+    page: Number.isFinite(page) && page > 0 ? page : 1,
+  };
+}
+
+export function buildPagedPath(basePath: string, page: number) {
+  const normalizedBase = basePath.replace(/\/+$/, "");
+  if (page <= 1) return normalizedBase || "/";
+  return `${normalizedBase}/p${page}`;
+}
+
+export function parseProjectCategoryFromSlug(
+  slug?: string,
+  categories?: Category[],
+) {
   if (!slug) return "du-an";
-  const matched = mockCategoryProject.find((item) => item.slug === slug);
+  const source = (categories ?? []).filter((item) => item.type === "PROJECT");
+  if (!source.length) {
+    return slug;
+  }
+  const matched = source.find((item) => item.slug === slug);
   return matched ? matched.slug : "du-an";
 }
 
-// Hàm hỗ trợ flat url slug cho dynamic breadcrumb
-export function buildNewsCategoryBreadcrumbs(slug?: string) {
-  const categorySlug = parseNewsCategoryFromSlug(slug);
+export function buildNewsCategoryBreadcrumbs(
+  slug?: string,
+  categories?: Category[],
+) {
+  const categorySlug = parseNewsCategoryFromSlug(slug, categories);
   const items: BreadcrumbItem[] = [
     { label: "Trang chủ", href: "/" },
     { label: "Tin tức", href: "/tin-tuc" },
   ];
 
   if (categorySlug !== "tin-tuc") {
-    const category = mockCategoryNews.find(
-      (item) => item.slug === categorySlug,
-    );
-    if (category) {
-      items.push({ label: category.name });
-    }
+    const category = (categories ?? [])
+      .filter((item) => item.type === "NEWS")
+      .find((item) => item.slug === categorySlug);
+
+    items.push({ label: category?.name ?? humanizeSlug(categorySlug) });
   }
 
   return items;
 }
 
-export function buildProjectCategoryBreadcrumbs(slug?: string) {
-  const categorySlug = parseProjectCategoryFromSlug(slug);
+export function buildProjectCategoryBreadcrumbs(slug?: string, categories?: Category[]) {
+  const categorySlug = parseProjectCategoryFromSlug(slug, categories);
   const items: BreadcrumbItem[] = [
     { label: "Trang chủ", href: "/" },
     { label: "Dự án", href: "/du-an" },
   ];
 
   if (categorySlug !== "du-an") {
-    const category = mockCategoryProject.find(
-      (item) => item.slug === categorySlug,
-    );
-    if (category) {
-      items.push({ label: category.name });
-    }
+    const category = (categories ?? [])
+      .filter((item) => item.type === "PROJECT")
+      .find((item) => item.slug === categorySlug);
+
+    items.push({ label: category?.name ?? humanizeSlug(categorySlug) });
   }
 
   return items;
@@ -550,20 +560,17 @@ function formatVndLabel(value: string) {
   const trieu = Math.round(amount / 1_000_000);
   return `${trieu} triệu`;
 }
+
 function formatAreaLabel(value: string) {
   const amount = Number(value || 0);
   if (!amount) return "";
   return `${amount}m2`;
 }
 
-// -----------------------------------------------------------------------------
-// Build breadcrumb từ kết quả parse URL để đảm bảo:
-// - Rule hiển thị breadcrumb luôn đồng bộ với rule encode/decode URL
-// - Tránh tình trạng URL đúng nhưng breadcrumb lệch nghĩa
-// -----------------------------------------------------------------------------
 export function buildPropertyFilterBreadcrumbs(
   basePath: "/cho-thue" | "/can-thue",
   rawSlug?: string,
+  context?: FlatUrlContext,
 ) {
   const rootLabel = basePath === "/cho-thue" ? "Cho thuê" : "Cần thuê";
   const items: BreadcrumbItem[] = [
@@ -575,7 +582,7 @@ export function buildPropertyFilterBreadcrumbs(
     return items;
   }
 
-  const parsed = parsePropertyFilterSlug(rawSlug);
+  const parsed = parsePropertyFilterSlug(rawSlug, context);
 
   if (parsed.propertyTypes[0]) {
     items.push({ label: parsed.propertyTypes[0] });
