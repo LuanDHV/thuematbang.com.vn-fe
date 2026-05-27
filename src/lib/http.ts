@@ -80,6 +80,50 @@ function withDefaultHeaders(headers?: HeadersInit): HeadersInit {
   };
 }
 
+const REFRESH_ENDPOINT = "/auth/refresh";
+
+function shouldAttemptTokenRefresh(url: string) {
+  return !url.includes(REFRESH_ENDPOINT);
+}
+
+function resolveRefreshUrl(url: string) {
+  const API_PREFIX = "/api/v1";
+
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    const parsedUrl = new URL(url);
+    const apiPrefixIndex = parsedUrl.pathname.indexOf(API_PREFIX);
+    const basePath =
+      apiPrefixIndex >= 0
+        ? parsedUrl.pathname.slice(0, apiPrefixIndex + API_PREFIX.length)
+        : API_PREFIX;
+    return `${parsedUrl.origin}${basePath}${REFRESH_ENDPOINT}`;
+  }
+
+  const apiPrefixIndex = url.indexOf(API_PREFIX);
+  const basePath =
+    apiPrefixIndex >= 0 ? url.slice(0, apiPrefixIndex + API_PREFIX.length) : API_PREFIX;
+  return `${basePath}${REFRESH_ENDPOINT}`;
+}
+
+async function tryRefreshToken(url: string, signal?: AbortSignal) {
+  if (!shouldAttemptTokenRefresh(url)) {
+    return false;
+  }
+
+  const refreshUrl = resolveRefreshUrl(url);
+  const refreshResponse = await fetch(refreshUrl, {
+    method: "POST",
+    cache: "no-store",
+    signal,
+    credentials: "include",
+    headers: withDefaultHeaders({
+      "Content-Type": "application/json",
+    }),
+  });
+
+  return refreshResponse.ok;
+}
+
 // Shortcut wrapper for GET JSON requests
 export async function getJson<T>(url: string, options?: JsonRequestOptions) {
   return requestJson<T>("GET", url, options);
@@ -100,12 +144,14 @@ async function requestJson<T>(
   url: string,
   options?: JsonRequestOptions,
   body?: unknown,
+  allowRetryOnUnauthorized = true,
 ) {
   const response = await fetch(url, {
     method,
     cache: options?.cache,
     next: options?.next,
     signal: options?.signal,
+    credentials: "include",
     headers: withDefaultHeaders({
       "Content-Type": "application/json",
       ...options?.headers,
@@ -114,6 +160,14 @@ async function requestJson<T>(
   });
 
   const payload = await parseJsonSafe(response);
+
+  if (
+    response.status === 401 &&
+    allowRetryOnUnauthorized &&
+    (await tryRefreshToken(url, options?.signal))
+  ) {
+    return requestJson<T>(method, url, options, body, false);
+  }
 
   if (!response.ok) {
     throw new HttpError(
