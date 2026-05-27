@@ -62,7 +62,7 @@ export function ListingFilterChipPopover({
       </PopoverTrigger>
 
       <PopoverContent
-        align="start"
+        align="center"
         onOpenAutoFocus={(event) => event.preventDefault()}
         className="w-[min(92vw,320px)] overflow-hidden rounded-2xl border-gray-100 p-0 shadow-xl"
       >
