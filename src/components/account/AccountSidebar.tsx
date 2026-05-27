@@ -73,10 +73,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
                 )}
               />
               <Icon
-                className={cn(
-                  "h-4 w-4",
-                  isActive ? "text-primary" : "text-gray-600",
-                )}
+                className={cn("size-5", isActive ? "text-primary" : "text-gray-600")}
               />
               <span>{item.label}</span>
             </Link>
@@ -91,7 +88,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
           onClick={() => logoutMutation.mutate()}
           disabled={logoutMutation.isPending}
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="size-5" />
           <span>Đăng xuất</span>
         </button>
       </div>

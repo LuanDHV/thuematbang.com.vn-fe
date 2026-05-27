@@ -31,7 +31,7 @@ export default function AccountManagementShell({
     return (
       <section className="py-8">
         <div className="mx-auto w-full max-w-4xl px-4">
-          <div className="space-y-4 rounded-2xl bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm">
             <h1 className="text-xl font-semibold text-gray-900">
               Quản lý tài khoản
             </h1>

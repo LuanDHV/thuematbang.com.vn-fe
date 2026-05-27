@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { cache } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import SafeFetch from "@/components/common/SafeFetch";
@@ -207,7 +207,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       : [];
 
     return (
-      <article className="mx-auto max-w-7xl px-4 py-8">
+      <article className="mx-auto max-w-7xl px-5 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[

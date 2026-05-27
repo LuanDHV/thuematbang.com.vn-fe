@@ -112,18 +112,18 @@ export default function Header() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  align="end"
+                  align="center"
                   sideOffset={10}
                   className="w-56 min-w-56 rounded-2xl border-gray-200 p-2 shadow-2xl"
                 >
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <Link
                       href="/quan-li-tai-khoan"
                       onClick={() => setUserMenuOpen(false)}
                       className="hover:bg-primary/10 hover:text-primary flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors"
                     >
                       Quản lí tài khoản
-                      <Settings className="h-4 w-4" />
+                      <Settings className="size-5" />
                     </Link>
                     <button
                       type="button"
@@ -134,7 +134,7 @@ export default function Header() {
                       {logoutMutation.isPending
                         ? "Đang đăng xuất..."
                         : "Đăng xuất"}
-                      <LogOut className="h-4 w-4" />
+                      <LogOut className="size-5" />
                     </button>
                   </div>
                 </PopoverContent>
@@ -164,11 +164,11 @@ export default function Header() {
                   className="w-72 bg-white"
                   srTitle="Menu điều hướng"
                 >
-                  <div className="mt-6 space-y-5 px-5">
+                  <div className="mt-6 flex flex-col gap-5 px-5">
                     <div className="text-xs font-bold tracking-[0.18em] text-gray-400 uppercase">
                       Danh mục
                     </div>
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                       {HEADER_ITEMS.map((item) => (
                         <Link
                           key={item.id}
@@ -181,7 +181,7 @@ export default function Header() {
                       ))}
                     </div>
                     <div className="border-t border-gray-200/80 pt-4" />
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                       <Button
                         asChild
                         size="lg"
@@ -193,7 +193,7 @@ export default function Header() {
                         </Link>
                       </Button>
                       {authUser ? (
-                        <div className="space-y-2">
+                        <div className="flex flex-col gap-2">
                           <Button
                             asChild
                             size="lg"

@@ -167,7 +167,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       .slice(0, 10);
 
     return (
-      <article className="mx-auto max-w-7xl px-4 py-8">
+      <article className="mx-auto max-w-7xl px-5 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[

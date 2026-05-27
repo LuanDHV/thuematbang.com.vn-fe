@@ -74,8 +74,8 @@ export default function EditProfileForm() {
   const avatarDisplay = previewUrl || authUser.avatarUrl || null;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5 rounded-2xl border border-gray-200 bg-white p-5 md:p-6">
-      <div>
+    <div className="mx-auto flex max-w-2xl flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-5 md:p-6">
+      <div className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold text-gray-900">
           Chỉnh sửa thông tin
         </h1>
@@ -84,7 +84,7 @@ export default function EditProfileForm() {
         </p>
       </div>
 
-      <form className="space-y-5" onSubmit={onSubmit}>
+      <form className="flex flex-col gap-5" onSubmit={onSubmit}>
         <div className="flex justify-center">
           <label className="group block w-full max-w-sm cursor-pointer">
             <input
@@ -121,7 +121,7 @@ export default function EditProfileForm() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5 sm:col-span-2">
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
             <label className="text-sm font-medium text-gray-700">
               Họ và tên
             </label>
@@ -133,7 +133,7 @@ export default function EditProfileForm() {
             ) : null}
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700">
               Số điện thoại
             </label>
@@ -145,7 +145,7 @@ export default function EditProfileForm() {
             ) : null}
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700">Email</label>
             <Input {...form.register("email")} disabled readOnly />
             {form.formState.errors.email ? (
@@ -175,7 +175,7 @@ export default function EditProfileForm() {
           <Button type="submit" size="lg" disabled={updateMutation.isPending}>
             {updateMutation.isPending ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="size-5 animate-spin" />
                 Đang lưu...
               </>
             ) : (

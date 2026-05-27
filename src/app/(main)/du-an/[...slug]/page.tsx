@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { cache } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -148,7 +148,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
     }
 
     return (
-      <article className="mx-auto max-w-7xl px-4 py-8">
+      <article className="mx-auto max-w-7xl px-5 py-8">
         <DynamicBreadcrumb
           className="mb-6"
           items={[
