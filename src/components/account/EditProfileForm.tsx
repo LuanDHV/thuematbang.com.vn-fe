@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { useForm } from "react-hook-form";
 import { Loader2, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -98,11 +98,12 @@ export default function EditProfileForm() {
             />
             <span className="group-hover:border-primary/60 group-hover:bg-primary/5 flex min-h-45 flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center transition-colors">
               {avatarDisplay ? (
-                <Image
+                <CloudinaryImage
                   src={avatarDisplay}
                   alt="Avatar"
-                  width={48}
-                  height={48}
+                  width={96}
+                  height={96}
+                  cldQuality="auto:best"
                   className="h-24 w-24 rounded-full border border-gray-200 object-cover"
                 />
               ) : (

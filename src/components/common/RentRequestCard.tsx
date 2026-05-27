@@ -1,7 +1,7 @@
 import { formatDate, formatPrice } from "@/lib/utils";
 import { RentRequest } from "@/types/rent-request";
 import { Calendar, Eye, MapPin, Maximize, Wallet } from "lucide-react";
-import Image from "next/image";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import Link from "next/link";
 
 function formatBudgetRange(request: RentRequest) {
@@ -56,11 +56,12 @@ export function RentRequestCard({
         <div
           className={`relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
         >
-          <Image
+          <CloudinaryImage
             src={image}
             alt={request.title}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
+            cldQuality="auto:best"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />

@@ -11,7 +11,7 @@ import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RentRequest } from "@/types/rent-request";
-import Image from "next/image";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 
 type RentRequestDetailContentProps = {
   rentRequest: RentRequest;
@@ -62,11 +62,12 @@ export default function RentRequestDetailContent({
     <div className="flex flex-col w-full gap-6 lg:w-3/4 lg:gap-8">
       <section>
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
-          <Image
+          <CloudinaryImage
             src={rentRequest.imageUrl || "/imgs/wallpaper-1.jpg"}
             alt={rentRequest.title}
             fill
             sizes="(max-width: 1024px) 100vw, 75vw"
+            cldQuality="auto:best"
             className="object-cover"
             priority
           />

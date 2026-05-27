@@ -1,3 +1,4 @@
+"use client";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Property } from "@/types/property";
 import {
@@ -9,7 +10,7 @@ import {
   MapPin,
   Maximize,
 } from "lucide-react";
-import Image from "next/image";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import Link from "next/link";
 
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
@@ -119,12 +120,13 @@ function FeaturedCard({ property }: { property: Property }) {
     <article className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative h-52 overflow-hidden">
         <TierBadge label={getTierLabel(property.priorityStatus)} />
-        <Image
+        <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
+          cldQuality="auto:best"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/20 to-transparent" />
 
@@ -159,43 +161,47 @@ function GoldCard({ property }: { property: Property }) {
         <div
           className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
         >
-          <Image
+          <CloudinaryImage
             src={imagesList[0]}
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
+            cldQuality="auto:best"
           />
         </div>
 
         {imagesList.length > 1 ? (
           <div className="flex w-1/3 flex-col gap-0.5">
             <div className="relative h-1/2 w-full overflow-hidden">
-              <Image
+              <CloudinaryImage
                 src={imagesList[1] || fallbackImage}
                 alt={`${property.title} - ảnh 2`}
                 fill
                 sizes="(max-width: 768px) 40vw, 20vw"
                 className="object-cover"
+                cldQuality="auto:best"
               />
             </div>
             <div className="flex h-1/2 w-full gap-0.5">
               <div className="relative h-full w-1/2 overflow-hidden">
-                <Image
+                <CloudinaryImage
                   src={imagesList[2] || fallbackImage}
                   alt={`${property.title} - ảnh 3`}
                   fill
                   sizes="(max-width: 768px) 30vw, 15vw"
                   className="object-cover"
+                  cldQuality="auto:best"
                 />
               </div>
               <div className="relative h-full w-1/2 overflow-hidden">
-                <Image
+                <CloudinaryImage
                   src={imagesList[3] || fallbackImage}
                   alt={`${property.title} - ảnh 4`}
                   fill
                   sizes="(max-width: 768px) 30vw, 15vw"
                   className="object-cover"
+                  cldQuality="auto:best"
                 />
               </div>
             </div>
@@ -232,12 +238,13 @@ function SilverCard({ property }: { property: Property }) {
     <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden bg-gray-100">
         <div className="relative w-2/3 overflow-hidden">
-          <Image
+          <CloudinaryImage
             src={imagesList[0]}
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
+            cldQuality="auto:best"
           />
         </div>
 
@@ -247,12 +254,13 @@ function SilverCard({ property }: { property: Property }) {
               key={`${property.id}-right-thumb-${index}`}
               className="relative h-1/2 overflow-hidden"
             >
-              <Image
+              <CloudinaryImage
                 src={src}
                 alt={`${property.title} - ảnh phụ ${index + 1}`}
                 fill
                 sizes="(max-width: 768px) 30vw, 15vw"
                 className="object-cover"
+                cldQuality="auto:best"
               />
             </div>
           ))}
@@ -277,12 +285,13 @@ function NormalCard({ property }: { property: Property }) {
   return (
     <article className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
       <div className="relative h-40 overflow-hidden">
-        <Image
+        <CloudinaryImage
           src={image}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
+          cldQuality="auto:best"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
         {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
@@ -306,7 +315,7 @@ function CardBody({ property }: { property: Property }) {
         {formatPrice(property.price || 0)}
       </p>
 
-      <div className="flex flex-col my-2 gap-1 text-sm text-gray-500">
+      <div className="my-2 flex flex-col gap-1 text-sm text-gray-500">
         <p className="flex items-start gap-1">
           <MapPin size={12} className="mt-0.5 text-gray-400" />
           <span className="line-clamp-1">{location}</span>

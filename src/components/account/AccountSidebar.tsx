@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { KeyRound, LogOut, User } from "lucide-react";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { useLogoutMutation } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { User as UserType } from "@/types";
@@ -33,11 +33,12 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
     <aside className="flex h-full min-h-160 flex-col rounded-2xl bg-white shadow-sm">
       <div className="border-b border-gray-100 px-5 py-6">
         {user.avatarUrl ? (
-          <Image
+          <CloudinaryImage
             src={user.avatarUrl}
             alt="Avatar người dùng"
             width={80}
             height={80}
+            cldQuality="auto:best"
             className="mx-auto h-20 w-20 rounded-full border border-gray-200 object-cover"
           />
         ) : (
@@ -46,7 +47,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
           </div>
         )}
         <p className="mt-3 text-center text-base font-semibold text-heading">
-          {user.fullName || "Luân Vũ"}
+          {user.fullName || "Người dùng"}
         </p>
       </div>
 
@@ -73,7 +74,10 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
                 )}
               />
               <Icon
-                className={cn("size-5", isActive ? "text-primary" : "text-secondary")}
+                className={cn(
+                  "size-5",
+                  isActive ? "text-primary" : "text-secondary",
+                )}
               />
               <span>{item.label}</span>
             </Link>
@@ -95,3 +99,4 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
     </aside>
   );
 }
+

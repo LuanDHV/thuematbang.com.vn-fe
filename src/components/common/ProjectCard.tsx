@@ -1,6 +1,6 @@
 import { Project } from "@/types/project";
 import { Building2, Calendar, Eye, MapPin } from "lucide-react";
-import Image from "next/image";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import Link from "next/link";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
@@ -45,11 +45,12 @@ export function ProjectCard({ project }: { project: Project }) {
       className="group block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       <div className="relative h-64 overflow-hidden">
-        <Image
+        <CloudinaryImage
           src={thumbnailImageUrl}
           alt={project.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          cldQuality="auto:best"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />

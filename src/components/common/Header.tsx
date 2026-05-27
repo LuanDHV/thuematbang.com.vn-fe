@@ -5,6 +5,7 @@ import { LogOut, Menu, Settings, SquarePlus, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { useAuthMe, useLogoutMutation } from "@/hooks/use-auth";
 import { useUIStore } from "@/stores/ui-store";
 import { Button } from "@/components/ui/button";
@@ -97,11 +98,12 @@ export default function Header() {
                     aria-label="Tài khoản người dùng"
                   >
                     {avatarUrl ? (
-                      <Image
+                      <CloudinaryImage
                         src={avatarUrl}
                         alt={displayName}
                         width={32}
                         height={32}
+                        cldQuality="auto:best"
                         className="size-8 rounded-full object-cover"
                       />
                     ) : (

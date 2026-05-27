@@ -118,21 +118,20 @@ export default function ListingFilterToolbar({
     queryFn: () => locationService.getProvinces(),
     staleTime: 5 * 60 * 1000,
   });
-  const { data: wardsData = [] } = useQuery({
-    queryKey: [
-      "locations",
-      "wards",
-      provincesData.map((item) => item.id).join(","),
-    ],
-    queryFn: async () => {
-      if (!provincesData.length) return [];
-      const grouped = await Promise.all(
-        provincesData.map((province) => locationService.getWards(province.id)),
-      );
-      return grouped.flat();
-    },
-    enabled: provincesData.length > 0,
-    staleTime: 5 * 60 * 1000,
+  const selectedProvinceId = useMemo(() => {
+    if (!advancedFilters.province || !provincesData.length) return null;
+    const selected = provincesData.find(
+      (province) => province.name === advancedFilters.province,
+    );
+    return selected?.id ?? null;
+  }, [advancedFilters.province, provincesData]);
+
+  const { data: selectedProvinceWards = [] } = useQuery({
+    queryKey: ["locations", "wards", selectedProvinceId],
+    queryFn: () => locationService.getWards(selectedProvinceId ?? undefined),
+    enabled: typeof selectedProvinceId === "number",
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
   });
 
   const sourceLocationMap = useMemo(() => {
@@ -179,31 +178,34 @@ export default function ListingFilterToolbar({
     const provinces = provincesData.length
       ? provincesData
       : Array.from(sourceLocationMap.provinceMap.values());
-    const wards = wardsData.length
-      ? wardsData
-      : Array.from(sourceLocationMap.wardMap.values()).flat();
+    const sourceWardsByProvince = sourceLocationMap.wardMap;
 
     return provinces.reduce<Record<string, Record<string, string[]>>>(
       (acc, province) => {
-        const provinceWards = wards.filter(
-          (ward) => ward.provinceId === province.id,
-        );
-        acc[province.name] = provinceWards.reduce<Record<string, string[]>>(
+        const sourceWards = sourceWardsByProvince.get(province.name) ?? [];
+        const wardsForProvince =
+          selectedProvinceId === province.id
+            ? selectedProvinceWards
+            : sourceWards;
+
+        acc[province.name] = wardsForProvince.reduce<Record<string, string[]>>(
           (wardAcc, ward) => {
             wardAcc[ward.name] = [];
             return wardAcc;
           },
           {},
         );
+
         return acc;
       },
       {},
     );
   }, [
     provincesData,
+    selectedProvinceId,
+    selectedProvinceWards,
     sourceLocationMap.provinceMap,
     sourceLocationMap.wardMap,
-    wardsData,
   ]);
 
   const displayTypeLabel =

@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 
 type PropertyImageGalleryProps = {
   title: string;
@@ -30,11 +30,12 @@ export default function PropertyImageGallery({
   return (
     <div>
       <div className="relative h-64 overflow-hidden rounded-2xl bg-gray-100 lg:h-96">
-        <Image
+        <CloudinaryImage
           src={activeImage}
           alt={title}
           fill
           sizes="(max-width: 1024px) 100vw, 66vw"
+          cldQuality="auto:best"
           className="object-cover"
         />
         {safeImages.length > 1 ? (
@@ -71,11 +72,12 @@ export default function PropertyImageGallery({
             className={`relative h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded-lg ${index === activeIndex ? "ring-primary ring-2" : "ring-1 ring-gray-200"}`}
             aria-label={`Xem ảnh ${index + 1}`}
           >
-            <Image
+            <CloudinaryImage
               src={image}
               alt={`${title} - ảnh ${index + 1}`}
               fill
               sizes="96px"
+              cldQuality="auto:good"
               className="object-cover"
             />
           </button>
@@ -84,3 +86,4 @@ export default function PropertyImageGallery({
     </div>
   );
 }
+

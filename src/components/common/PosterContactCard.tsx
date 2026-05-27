@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { PhoneCall } from "lucide-react";
 import { useMemo } from "react";
-import Image from "next/image";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 
 type PosterContactCardProps = {
   fullName?: string | null;
@@ -53,11 +53,12 @@ export default function PosterContactCard({
       <div className="mt-3 flex items-center gap-3">
         {avatarUrl ? (
           <div className="relative h-12 w-12 overflow-hidden rounded-full">
-            <Image
+            <CloudinaryImage
               src={avatarUrl}
               alt={fullName || "Người đăng"}
               fill
               sizes="48px"
+              cldQuality="auto:best"
               className="object-cover"
             />
           </div>
