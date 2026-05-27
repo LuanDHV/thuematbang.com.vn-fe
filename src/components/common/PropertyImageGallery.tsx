@@ -43,7 +43,7 @@ export default function PropertyImageGallery({
             <button
               type="button"
               onClick={goPrev}
-              className="hover:bg-primary absolute top-1/2 left-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/90 p-2 text-gray-700 shadow-sm transition-colors duration-200 ease-in-out hover:text-white"
+              className="absolute top-1/2 left-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/92 p-2 text-body shadow-[0_14px_28px_rgba(15,23,42,0.12)] transition-colors duration-200 ease-in-out hover:bg-primary hover:text-white"
               aria-label="Ảnh trước"
             >
               <ChevronLeft size={18} />
@@ -51,7 +51,7 @@ export default function PropertyImageGallery({
             <button
               type="button"
               onClick={goNext}
-              className="hover:bg-primary absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/90 p-2 text-gray-700 shadow-sm transition-colors duration-200 ease-in-out hover:text-white"
+              className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/92 p-2 text-body shadow-[0_14px_28px_rgba(15,23,42,0.12)] transition-colors duration-200 ease-in-out hover:bg-primary hover:text-white"
               aria-label="Ảnh sau"
             >
               <ChevronRight size={18} />
@@ -86,4 +86,3 @@ export default function PropertyImageGallery({
     </div>
   );
 }
-

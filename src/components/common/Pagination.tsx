@@ -24,10 +24,10 @@ export function Pagination({
             type="button"
             onClick={() => onChange(nextPage)}
             className={cn(
-              "flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-colors",
+              "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
               active
-                ? "border-primary bg-primary text-white"
-                : "hover:border-primary/40 hover:bg-primary/5 border-gray-200 bg-white text-gray-500",
+                ? "border-primary bg-primary text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)]"
+                : "border-black/8 bg-white text-muted shadow-[0_10px_24px_rgba(15,23,42,0.06)] hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
             )}
           >
             {nextPage}

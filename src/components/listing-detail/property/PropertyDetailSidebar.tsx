@@ -20,8 +20,8 @@ export default function PropertyDetailSidebar({
   relatedCategoryCityLinks,
 }: PropertyDetailSidebarProps) {
   return (
-    <aside className="flex flex-col w-full gap-6 lg:w-1/4">
-      <div className="shadow-primary/50 self-start rounded-xl bg-white p-4 shadow lg:sticky lg:top-18">
+    <aside className="flex w-full flex-col gap-6 lg:w-1/4">
+      <div className="surface-panel w-full self-start p-5 lg:sticky lg:top-18">
         <PosterContactCard
           fullName={poster?.fullName}
           phone={poster?.phone}
@@ -29,16 +29,18 @@ export default function PropertyDetailSidebar({
         />
       </div>
 
-      <section className="hidden rounded-2xl bg-white p-4 shadow-sm lg:block">
-        <h3 className="text-base font-semibold text-body">Gợi ý theo khu vực</h3>
+      <section className="surface-card hidden p-5 lg:block">
+        <h3 className="text-heading text-base font-semibold tracking-[-0.02em]">
+          Gợi ý theo khu vực
+        </h3>
         {relatedCategoryCityLinks.length > 0 ? (
           <div className="mt-3">
-            <div className="grid divide-y divide-gray-100">
+            <div className="grid divide-y divide-black/6">
               {relatedCategoryCityLinks.map((item) => (
                 <Link
                   href={item.href}
                   key={item.href}
-                  className="group hover:text-primary flex items-center justify-between py-2.5 text-sm text-body transition-colors duration-200 ease-in-out"
+                  className="group text-body hover:text-primary flex items-center justify-between py-3 text-sm transition-colors duration-200 ease-in-out"
                 >
                   <span className="line-clamp-1 font-medium">{item.label}</span>
                   <ArrowRight size={12} />

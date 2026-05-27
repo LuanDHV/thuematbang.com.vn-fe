@@ -60,12 +60,12 @@ function getLocationText(property: Property) {
 
 function CardFooter({ property }: { property: Property }) {
   return (
-    <div className="mt-auto flex items-center justify-between border-t border-dashed border-gray-200 pt-2 text-sm text-gray-500">
-      <span className="inline-flex items-center gap-1">
+    <div className="mt-auto flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-sm text-muted">
+      <span className="inline-flex items-center gap-1 metric-mono">
         <Calendar size={11} />
         {formatDate(property.createdAt)}
       </span>
-      <span className="inline-flex items-center gap-1">
+      <span className="inline-flex items-center gap-1 metric-mono">
         <Eye size={11} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
@@ -75,7 +75,7 @@ function CardFooter({ property }: { property: Property }) {
 
 function TierBadge({ label }: { label: string }) {
   return (
-    <span className="bg-primary absolute top-3 left-3 z-20 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wider text-white uppercase shadow-sm">
+    <span className="absolute top-3 left-3 z-20 rounded-full bg-white/92 px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
       {label}
     </span>
   );
@@ -83,8 +83,8 @@ function TierBadge({ label }: { label: string }) {
 
 function ImageCountBadge({ count }: { count: number }) {
   return (
-    <div className="absolute top-3 right-3 z-30 rounded-md bg-black/55 px-2 py-1 text-sm font-semibold text-white">
-      <span className="inline-flex items-center gap-1">
+    <div className="absolute top-3 right-3 z-30 rounded-lg bg-black/52 px-2.5 py-1 text-sm font-semibold text-white">
+      <span className="inline-flex items-center gap-1 metric-mono">
         <Images size={13} />
         {count}
       </span>
@@ -102,12 +102,12 @@ function OverlayTitle({
   return (
     <div className="absolute right-3 bottom-3 left-3 z-20">
       {property.category?.name ? (
-        <span className="text-primary rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold uppercase">
+        <span className="rounded-full bg-white/92 px-2.5 py-1 text-[10px] font-semibold uppercase text-primary">
           {property.category.name}
         </span>
       ) : null}
       <h3
-        className={`mt-2 line-clamp-2 font-bold text-white ${large ? "text-xl leading-tight" : "text-lg leading-tight"}`}
+        className={`mt-2 line-clamp-2 font-semibold tracking-[-0.02em] text-white ${large ? "text-xl leading-tight" : "text-lg leading-tight"}`}
       >
         {property.title}
       </h3>
@@ -117,7 +117,7 @@ function OverlayTitle({
 
 function FeaturedCard({ property }: { property: Property }) {
   return (
-    <article className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="surface-card interactive-lift group overflow-hidden rounded-2xl">
       <div className="relative h-52 overflow-hidden">
         <TierBadge label={getTierLabel(property.priorityStatus)} />
         <CloudinaryImage
@@ -125,28 +125,29 @@ function FeaturedCard({ property }: { property: Property }) {
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/62 via-black/18 to-transparent" />
 
         <div className="absolute right-3 bottom-3 left-3">
           {property.category?.name ? (
-            <span className="text-primary rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase">
+            <span className="rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase text-primary">
               {property.category.name}
             </span>
           ) : null}
-          <h3 className="mt-2 line-clamp-2 text-lg leading-tight font-bold text-white">
+          <h3 className="mt-2 line-clamp-2 text-lg leading-tight font-semibold tracking-[-0.02em] text-white">
             {property.title}
           </h3>
         </div>
       </div>
 
       <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
+
 function GoldCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
   const galleryImages = getPropertyGalleryImages(property);
@@ -156,7 +157,7 @@ function GoldCard({ property }: { property: Property }) {
       : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
 
   return (
-    <article className="group overflow-hidden rounded-2xl border border-amber-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="surface-card interactive-lift group overflow-hidden rounded-2xl border-primary/12">
       <div className="relative flex h-60 w-full gap-0.5 overflow-hidden bg-gray-100">
         <div
           className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
@@ -166,7 +167,7 @@ function GoldCard({ property }: { property: Property }) {
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             cldQuality="auto:best"
           />
         </div>
@@ -208,15 +209,14 @@ function GoldCard({ property }: { property: Property }) {
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
-        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
         <TierBadge label="Gold" />
         <ImageCountBadge count={imagesList.length} />
         <OverlayTitle property={property} large />
       </div>
 
       <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
@@ -235,7 +235,7 @@ function SilverCard({ property }: { property: Property }) {
   ];
 
   return (
-    <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <article className="surface-card interactive-lift group overflow-hidden rounded-2xl">
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden bg-gray-100">
         <div className="relative w-2/3 overflow-hidden">
           <CloudinaryImage
@@ -243,7 +243,7 @@ function SilverCard({ property }: { property: Property }) {
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             cldQuality="auto:best"
           />
         </div>
@@ -266,15 +266,14 @@ function SilverCard({ property }: { property: Property }) {
           ))}
         </div>
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
-        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
         <TierBadge label="Silver" />
         <ImageCountBadge count={imagesList.length} />
         <OverlayTitle property={property} />
       </div>
 
       <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
@@ -283,24 +282,23 @@ function NormalCard({ property }: { property: Property }) {
   const image = getPropertyThumbnailUrl(property);
 
   return (
-    <article className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+    <article className="surface-card interactive-lift group overflow-hidden rounded-xl">
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage
           src={image}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
-        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/22 to-transparent" />
         <TierBadge label="Normal" />
         <OverlayTitle property={property} />
       </div>
 
       <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
@@ -310,35 +308,35 @@ function CardBody({ property }: { property: Property }) {
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
-    <div className="flex min-h-60 flex-1 flex-col p-4">
-      <p className="text-primary mt-1 text-base font-bold">
+    <div className="flex min-h-60 flex-1 flex-col p-5">
+      <p className="metric-mono mt-1 text-base font-semibold text-heading">
         {formatPrice(property.price || 0)}
       </p>
 
-      <div className="my-2 flex flex-col gap-1 text-sm text-gray-500">
-        <p className="flex items-start gap-1">
-          <MapPin size={12} className="mt-0.5 text-gray-400" />
+      <div className="my-3 flex flex-col gap-1.5 text-sm text-muted">
+        <p className="flex items-start gap-1.5">
+          <MapPin size={12} className="mt-0.5 text-primary/70" />
           <span className="line-clamp-1">{location}</span>
         </p>
-        <p className="flex items-start gap-1">
-          <Maximize size={12} className="mt-0.5 text-gray-400" />
-          {property.area ? `${property.area} m²` : "Đang cập nhật diện tích"}
+        <p className="flex items-start gap-1.5">
+          <Maximize size={12} className="mt-0.5 text-primary/70" />
+          <span className="metric-mono">
+            {property.area ? `${property.area} m²` : "Đang cập nhật diện tích"}
+          </span>
         </p>
         {property.bathrooms ? (
-          <p className="flex items-start gap-1">
-            <Bath size={12} className="mt-0.5 text-gray-400" />
-            {property.bathrooms} phòng tắm
+          <p className="flex items-start gap-1.5">
+            <Bath size={12} className="mt-0.5 text-primary/70" />
+            <span className="metric-mono">{property.bathrooms} phòng tắm</span>
           </p>
         ) : null}
         {property.bedrooms ? (
-          <p className="flex items-start gap-1">
-            <Bed size={12} className="mt-0.5 text-gray-400" />
-            {property.bedrooms} phòng ngủ
+          <p className="flex items-start gap-1.5">
+            <Bed size={12} className="mt-0.5 text-primary/70" />
+            <span className="metric-mono">{property.bedrooms} phòng ngủ</span>
           </p>
         ) : null}
-        {contentPreview ? (
-          <p className="line-clamp-2">{contentPreview}</p>
-        ) : null}
+        {contentPreview ? <p className="line-clamp-2">{contentPreview}</p> : null}
       </div>
 
       <CardFooter property={property} />

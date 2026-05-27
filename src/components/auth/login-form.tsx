@@ -44,17 +44,17 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden rounded-2xl border-none p-0 shadow-2xl">
+      <Card className="overflow-hidden border-black/6 p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <div className="bg-muted relative hidden md:block">
+          <div className="surface-elevated relative hidden md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
               alt="Hình nền đăng nhập"
               fill
               sizes="(min-width: 768px) 50vw, 0px"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.3] dark:grayscale"
+              className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent"></div>
+            <div className="absolute inset-0 bg-linear-to-t from-black/38 via-black/10 to-transparent" />
           </div>
 
           <form
@@ -63,16 +63,16 @@ export function LoginForm({
           >
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
-                <h1 className="text-foreground text-2xl font-bold tracking-tight">
+                <h1 className="text-2xl font-semibold tracking-[-0.03em] text-heading">
                   Chào mừng trở lại
                 </h1>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm leading-7 text-muted">
                   Vui lòng nhập thông tin để đăng nhập vào tài khoản
                 </p>
               </div>
 
               <Field className="flex flex-col gap-2">
-                <FieldLabel htmlFor="identifier" className="text-foreground font-semibold">
+                <FieldLabel htmlFor="identifier" className="font-semibold text-heading">
                   SĐT hoặc email
                 </FieldLabel>
                 <Input
@@ -80,7 +80,6 @@ export function LoginForm({
                   type="text"
                   autoComplete="username"
                   placeholder="SĐT hoặc email"
-                  className="focus-visible:ring-primary h-11 transition-all"
                   {...register("identifier")}
                 />
                 {errors.identifier?.message ? (
@@ -90,12 +89,12 @@ export function LoginForm({
 
               <Field className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <FieldLabel htmlFor="password" className="text-foreground font-semibold">
+                  <FieldLabel htmlFor="password" className="font-semibold text-heading">
                     Mật khẩu
                   </FieldLabel>
                   <Link
                     href="#"
-                    className="text-muted-foreground hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
+                    className="text-sm font-medium text-muted underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
                   >
                     Quên mật khẩu?
                   </Link>
@@ -104,7 +103,6 @@ export function LoginForm({
                   id="password"
                   type="password"
                   placeholder="Mật khẩu"
-                  className="focus-visible:ring-primary h-11 transition-all"
                   {...register("password")}
                 />
                 {errors.password?.message ? (
@@ -116,7 +114,7 @@ export function LoginForm({
                 <Button
                   type="submit"
                   disabled={isSubmitting || loginMutation.isPending}
-                  className="h-11 w-full font-medium text-white shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
+                  className="h-11 w-full"
                 >
                   {isSubmitting || loginMutation.isPending
                     ? "Đang đăng nhập..."
@@ -130,7 +128,7 @@ export function LoginForm({
                 </p>
               ) : null}
 
-              <FieldSeparator className="*:data-[slot=field-separator-content]:text-muted-foreground mb-1 py-2 text-gray-500 *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
+              <FieldSeparator className="mb-1 py-2 text-muted *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase *:data-[slot=field-separator-content]:text-muted">
                 Hoặc
               </FieldSeparator>
 
@@ -139,7 +137,7 @@ export function LoginForm({
                   asChild
                   variant="outline"
                   type="button"
-                  className="h-11 w-full bg-white font-medium transition-colors duration-200 hover:bg-gray-50"
+                  className="h-11 w-full"
                 >
                   <a href="/api/v1/auth/google">
                     <svg
@@ -157,11 +155,11 @@ export function LoginForm({
                 </Button>
               </Field>
 
-              <div className="text-muted-foreground mt-4 text-center text-sm">
+              <div className="mt-4 text-center text-sm text-muted">
                 Chưa có tài khoản?{" "}
                 <Link
                   href="/dang-ky"
-                  className="text-muted-foreground hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
+                  className="text-sm font-medium text-muted underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
                 >
                   Đăng ký
                 </Link>
@@ -173,4 +171,3 @@ export function LoginForm({
     </div>
   );
 }
-

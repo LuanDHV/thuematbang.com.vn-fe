@@ -51,12 +51,12 @@ export default function PropertyDetailContent({
 
   return (
     <div className="flex flex-col w-full gap-6 lg:w-3/4 lg:gap-8">
-      <section>
+      <section className="surface-card overflow-hidden p-2">
         <PropertyImageGallery title={property.title} images={galleryImages} />
       </section>
 
-      <section>
-        <h1 className="text-2xl leading-tight font-bold text-gray-800 lg:text-4xl">
+      <section className="surface-panel p-6 md:p-7">
+        <h1 className="text-2xl leading-tight font-semibold tracking-[-0.03em] text-heading lg:text-4xl">
           {property.title}
         </h1>
 
@@ -85,7 +85,7 @@ export default function PropertyDetailContent({
         </div>
       </section>
 
-      <section>
+      <section className="surface-card p-6 md:p-7">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
@@ -94,7 +94,7 @@ export default function PropertyDetailContent({
         </div>
         {property.content ? (
           <div
-            className="prose prose-sm prose-gray prose-headings:font-semibold prose-p:leading-relaxed max-w-none text-body"
+            className="premium-prose prose prose-sm max-w-none prose-p:leading-relaxed prose-headings:font-semibold text-body"
             suppressHydrationWarning
             dangerouslySetInnerHTML={{ __html: property.content }}
           />
@@ -105,7 +105,7 @@ export default function PropertyDetailContent({
         )}
       </section>
 
-      <section>
+      <section className="surface-card p-6 md:p-7">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
@@ -114,38 +114,38 @@ export default function PropertyDetailContent({
         </div>
 
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+          <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
             <Wallet className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
               <p className="text-xs tracking-wide text-secondary uppercase">
                 Giá thuê
               </p>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="metric-mono text-sm font-semibold text-heading">
                 {formatPrice(property.price || 0)}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+          <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
             <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
               <p className="text-xs tracking-wide text-secondary uppercase">
                 Địa chỉ
               </p>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-semibold text-heading">
                 {locationText || "Đang cập nhật"}
               </p>
             </div>
           </div>
 
           {hasArea ? (
-            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
               <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
                 <p className="text-xs tracking-wide text-secondary uppercase">
                   Diện tích
                 </p>
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="metric-mono text-sm font-semibold text-heading">
                   {property.area} m²
                 </p>
               </div>
@@ -153,13 +153,13 @@ export default function PropertyDetailContent({
           ) : null}
 
           {hasBedrooms ? (
-            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
               <Bed className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
                 <p className="text-xs tracking-wide text-secondary uppercase">
                   Phòng ngủ
                 </p>
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="metric-mono text-sm font-semibold text-heading">
                   {property.bedrooms}
                 </p>
               </div>
@@ -167,13 +167,13 @@ export default function PropertyDetailContent({
           ) : null}
 
           {hasBathrooms ? (
-            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
               <Bath className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
                 <p className="text-xs tracking-wide text-secondary uppercase">
                   Phòng tắm
                 </p>
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="metric-mono text-sm font-semibold text-heading">
                   {property.bathrooms}
                 </p>
               </div>
@@ -181,13 +181,13 @@ export default function PropertyDetailContent({
           ) : null}
 
           {hasDirection ? (
-            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
+            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
               <Navigation className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
                 <p className="text-xs tracking-wide text-secondary uppercase">
                   Hướng
                 </p>
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="text-sm font-semibold text-heading">
                   {getDirectionLabel(property.direction?.toString())}
                 </p>
               </div>
@@ -196,7 +196,7 @@ export default function PropertyDetailContent({
         </div>
       </section>
 
-      <section>
+      <section className="surface-card p-6 md:p-7">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
@@ -210,10 +210,10 @@ export default function PropertyDetailContent({
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="h-80 w-full rounded-2xl"
+            className="h-80 w-full rounded-2xl border border-black/6 shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
           />
         ) : (
-          <div className="rounded-2xl bg-gray-50 p-4 text-sm text-secondary">
+          <div className="surface-panel rounded-2xl p-4 text-sm text-secondary">
             Tin đăng chưa có tọa độ để hiển thị bản đồ.
           </div>
         )}

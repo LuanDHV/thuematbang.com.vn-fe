@@ -17,8 +17,8 @@ export default function RentRequestDetailSidebar({
   companyPhone = "0968688081",
 }: RentRequestDetailSidebarProps) {
   return (
-    <aside className="flex flex-col w-full gap-6 lg:w-1/4">
-      <div className="shadow-primary/50 self-start rounded-xl bg-white p-4 shadow lg:sticky lg:top-18">
+    <aside className="flex w-full flex-col gap-6 lg:w-1/4">
+      <div className="surface-panel self-start p-5 lg:sticky lg:top-18">
         <PosterContactCard
           fullName={poster?.fullName}
           phone={companyPhone}
@@ -26,17 +26,17 @@ export default function RentRequestDetailSidebar({
         />
       </div>
 
-      <section className="hidden rounded-2xl bg-white p-4 shadow-sm lg:block">
-        <h3 className="text-base font-semibold text-body">
+      <section className="surface-card hidden p-5 lg:block">
+        <h3 className="text-base font-semibold tracking-[-0.02em] text-heading">
           Tin cần thuê mới nhất
         </h3>
         {latestWantedProperties.length > 0 ? (
-          <div className="mt-3 grid divide-y divide-gray-100">
+          <div className="mt-3 grid divide-y divide-black/6">
             {latestWantedProperties.map((item) => (
               <Link
                 href={`/can-thue/${item.slug}`}
                 key={item.id}
-                className="group hover:text-primary flex items-center justify-between py-2.5 text-sm text-body transition-colors duration-200 ease-in-out"
+                className="group flex items-center justify-between py-3 text-sm text-body transition-colors duration-200 ease-in-out hover:text-primary"
               >
                 <span className="line-clamp-2 font-medium">{item.title}</span>
               </Link>

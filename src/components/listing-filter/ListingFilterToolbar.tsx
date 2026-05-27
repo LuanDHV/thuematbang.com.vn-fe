@@ -414,29 +414,29 @@ export default function ListingFilterToolbar({
   }, [initialFilters, provinceWardMap, serverDriven, sourceProperties]);
 
   return (
-    <div className="mx-auto max-w-7xl rounded-lg bg-white shadow backdrop-blur-md transition-all duration-300">
+    <div className="surface-float mx-auto max-w-7xl rounded-xl transition-all duration-300">
       <form
         onSubmit={(event) => {
           event.preventDefault();
           runFilter();
         }}
-        className="flex flex-col gap-3 p-2 lg:flex-row lg:items-center lg:gap-2"
+        className="flex flex-col gap-3 p-2.5 lg:flex-row lg:items-center lg:gap-2"
       >
         <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-1">
-          <div className="relative flex min-w-0 flex-1 items-center rounded-xl px-2">
+          <div className="relative flex min-w-0 flex-1 items-center rounded-lg bg-white/72 px-2">
             <Search className="ml-2 size-5 shrink-0 text-gray-400" />
             <input
               type="text"
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="Bạn muốn thuê ở đâu?"
-              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400 focus:ring-0"
+              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-body outline-none placeholder:text-muted focus:ring-0"
             />
           </div>
 
           <Button
             type="submit"
-            className="bg-primary flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-xl px-4 font-bold text-white shadow-md transition-all hover:brightness-105 lg:hidden"
+            className="flex h-10 shrink-0 items-center justify-center rounded-lg px-4 lg:hidden"
           >
             <Search className="size-5" />
           </Button>
@@ -472,7 +472,7 @@ export default function ListingFilterToolbar({
             />
           </div>
 
-          <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" />
+          <div className="mx-1 h-6 w-px shrink-0 bg-black/6" />
 
           <div className="[&::-webkit-scrollbar-thumb]:bg-primary/35 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pb-1 lg:w-auto lg:flex-none lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
             <ListingFilterChipPopover
@@ -547,14 +547,14 @@ export default function ListingFilterToolbar({
             <Button
               type="button"
               onClick={resetAll}
-              className="border-primary text-primary hover:bg-primary/10 hidden h-10 cursor-pointer rounded-xl border bg-transparent px-4 lg:flex"
+              className="hidden h-10 px-4 lg:flex"
             >
               Đặt lại
             </Button>
 
             <Button
               type="submit"
-              className="bg-primary ml-auto hidden h-10 shrink-0 cursor-pointer items-center rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105 lg:flex"
+              className="ml-auto hidden h-10 shrink-0 items-center rounded-lg px-6 lg:flex"
             >
               <Search className="mr-2 size-5" />
               <span>Tìm kiếm</span>

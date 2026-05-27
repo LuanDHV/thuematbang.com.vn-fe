@@ -49,7 +49,7 @@ export function SignupForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden rounded-2xl border-none p-0 shadow-2xl">
+      <Card className="overflow-hidden border-black/6 p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
             onSubmit={onSubmit}
@@ -57,26 +57,22 @@ export function SignupForm({
           >
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
-                <h1 className="text-foreground text-2xl font-bold tracking-tight">
+                <h1 className="text-2xl font-semibold tracking-[-0.03em] text-heading">
                   Tạo tài khoản mới
                 </h1>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm leading-7 text-muted">
                   Vui lòng nhập thông tin bên dưới để đăng ký
                 </p>
               </div>
 
               <Field className="flex flex-col gap-2">
-                <FieldLabel
-                  htmlFor="fullName"
-                  className="text-foreground font-semibold"
-                >
+                <FieldLabel htmlFor="fullName" className="font-semibold text-heading">
                   Họ và tên
                 </FieldLabel>
                 <Input
                   id="fullName"
                   type="text"
                   placeholder="Họ và tên"
-                  className="focus-visible:ring-primary h-11 transition-all"
                   {...register("fullName")}
                 />
                 {errors.fullName?.message ? (
@@ -88,17 +84,13 @@ export function SignupForm({
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <Field className="flex flex-col gap-2">
-                  <FieldLabel
-                    htmlFor="email"
-                    className="text-foreground font-semibold"
-                  >
+                  <FieldLabel htmlFor="email" className="font-semibold text-heading">
                     Email
                   </FieldLabel>
                   <Input
                     id="email"
                     type="email"
                     placeholder="email@example.com"
-                    className="focus-visible:ring-primary h-11 transition-all"
                     {...register("email")}
                   />
                   {errors.email?.message ? (
@@ -109,17 +101,13 @@ export function SignupForm({
                 </Field>
 
                 <Field className="flex flex-col gap-2">
-                  <FieldLabel
-                    htmlFor="phone"
-                    className="text-foreground font-semibold"
-                  >
+                  <FieldLabel htmlFor="phone" className="font-semibold text-heading">
                     Số điện thoại
                   </FieldLabel>
                   <Input
                     id="phone"
                     type="text"
                     placeholder="0901234567"
-                    className="focus-visible:ring-primary h-11 transition-all"
                     {...register("phone")}
                   />
                   {errors.phone?.message ? (
@@ -132,17 +120,13 @@ export function SignupForm({
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <Field className="flex flex-col gap-2">
-                  <FieldLabel
-                    htmlFor="password"
-                    className="text-foreground font-semibold"
-                  >
+                  <FieldLabel htmlFor="password" className="font-semibold text-heading">
                     Mật khẩu
                   </FieldLabel>
                   <Input
                     id="password"
                     type="password"
                     placeholder="Mật khẩu"
-                    className="focus-visible:ring-primary h-11 transition-all"
                     {...register("password")}
                   />
                   {errors.password?.message ? (
@@ -155,7 +139,7 @@ export function SignupForm({
                 <Field className="flex flex-col gap-2">
                   <FieldLabel
                     htmlFor="confirmPassword"
-                    className="text-foreground font-semibold"
+                    className="font-semibold text-heading"
                   >
                     Xác nhận mật khẩu
                   </FieldLabel>
@@ -163,7 +147,6 @@ export function SignupForm({
                     id="confirmPassword"
                     type="password"
                     placeholder="Xác nhận mật khẩu"
-                    className="focus-visible:ring-primary h-11 transition-all"
                     {...register("confirmPassword")}
                   />
                   {errors.confirmPassword?.message ? (
@@ -174,7 +157,7 @@ export function SignupForm({
                 </Field>
               </div>
 
-              <FieldDescription className="text-muted-foreground -mt-2.5 text-xs">
+              <FieldDescription className="-mt-2.5 text-xs text-muted">
                 Mật khẩu phải có ít nhất 8 ký tự.
               </FieldDescription>
 
@@ -182,7 +165,7 @@ export function SignupForm({
                 <Button
                   type="submit"
                   disabled={isSubmitting || registerMutation.isPending}
-                  className="h-11 w-full font-medium text-white shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
+                  className="h-11 w-full"
                 >
                   {isSubmitting || registerMutation.isPending
                     ? "Đang đăng ký..."
@@ -196,7 +179,7 @@ export function SignupForm({
                 </p>
               ) : null}
 
-              <FieldSeparator className="*:data-[slot=field-separator-content]:text-muted-foreground mb-1 py-2 text-gray-500 *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
+              <FieldSeparator className="mb-1 py-2 text-muted *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase *:data-[slot=field-separator-content]:text-muted">
                 Hoặc
               </FieldSeparator>
 
@@ -205,7 +188,7 @@ export function SignupForm({
                   asChild
                   variant="outline"
                   type="button"
-                  className="h-11 w-full bg-white font-medium transition-colors duration-200 hover:bg-gray-50"
+                  className="h-11 w-full"
                 >
                   <Link href="/api/v1/auth/google">
                     <svg
@@ -223,11 +206,11 @@ export function SignupForm({
                 </Button>
               </Field>
 
-              <div className="text-muted-foreground mt-4 text-center text-sm">
+              <div className="mt-4 text-center text-sm text-muted">
                 Đã có tài khoản?{" "}
                 <Link
                   href="/dang-nhap"
-                  className="text-muted-foreground hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
+                  className="text-sm font-medium text-muted underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
                 >
                   Đăng nhập
                 </Link>
@@ -235,15 +218,15 @@ export function SignupForm({
             </FieldGroup>
           </form>
 
-          <div className="bg-muted relative hidden md:block">
+          <div className="surface-elevated relative hidden md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
               alt="Hình nền đăng ký"
               fill
               sizes="(min-width: 768px) 50vw, 0px"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.3] dark:grayscale"
+              className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/38 via-black/10 to-transparent" />
           </div>
         </CardContent>
       </Card>

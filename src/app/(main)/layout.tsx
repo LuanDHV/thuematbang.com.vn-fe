@@ -7,7 +7,7 @@ export default async function MainLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-app text-body">
       <Header />
       <main className="grow pt-16">{children}</main>
       <Footer />

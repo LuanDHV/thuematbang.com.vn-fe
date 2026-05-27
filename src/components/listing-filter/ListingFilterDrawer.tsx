@@ -138,12 +138,12 @@ export function ListingFilterDrawer({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className={`h-10 cursor-pointer items-center justify-center rounded-xl border text-xs font-semibold shadow-sm transition-all hover:-translate-y-px hover:shadow ${
+          className={`h-10 items-center justify-center rounded-lg border text-xs font-semibold transition-all ${
             displayedCount > 0 ? "gap-1.5 px-3" : "w-10 px-0"
           } ${
             activeCount > 0
-              ? "border-primary text-primary bg-primary/5 hover:bg-primary/10"
-              : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+              ? "border-primary text-primary bg-primary/5"
+              : "border-black/8 bg-white text-muted hover:border-primary/20 hover:bg-primary/5 hover:text-primary"
           }`}
         >
           <Filter size={14} />
@@ -156,12 +156,12 @@ export function ListingFilterDrawer({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="border-primary/15 flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-3xl border bg-white p-0 shadow-2xl">
-        <DialogHeader className="border-primary/15 from-primary/12 via-primary/6 border-b bg-linear-to-b to-white p-5">
+      <DialogContent className="flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border border-black/6 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+        <DialogHeader className="border-b border-black/6 bg-linear-to-b from-primary/10 via-white to-white p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao
           </DialogTitle>
-          <DialogDescription className="mt-1 text-sm text-gray-700">
+          <DialogDescription className="mt-1 text-sm text-body">
             Chọn các tiêu chí để lọc bất động sản theo nhu cầu của bạn.
           </DialogDescription>
 
@@ -169,7 +169,7 @@ export function ListingFilterDrawer({
             value={demandTab}
             onValueChange={(v) => setDemandTab(v as DemandTab)}
           >
-            <TabsList className="border-primary/20 mt-4 flex h-12 w-full items-stretch rounded-xl border bg-white p-1 shadow-sm">
+            <TabsList className="mt-4 flex h-12 w-full items-stretch rounded-xl border border-black/6 bg-white p-1">
               <TabsTrigger
                 value="cho-thue"
                 className="data-[state=active]:bg-primary h-full flex-1 rounded-lg px-4 text-base font-semibold data-[state=active]:text-white"
@@ -187,12 +187,12 @@ export function ListingFilterDrawer({
         </DialogHeader>
 
         <div className="flex min-h-0 flex-1 flex-col bg-white">
-          <div className="min-h-0 flex-1 overflow-y-auto bg-linear-to-b from-white via-gray-50/50 to-white px-4">
+          <div className="min-h-0 flex-1 overflow-y-auto bg-linear-to-b from-white via-app/60 to-white px-4">
             {detailTab !== "main" ? (
               <Button
                 variant="ghost"
                 onClick={goMain}
-                className="text-primary hover:bg-primary/10 mb-3 h-8 rounded-lg px-2 text-xs font-medium"
+                className="mb-3 h-8 rounded-lg px-2 text-xs font-medium text-primary hover:bg-primary/8"
               >
                 <ArrowLeft className="mr-1 size-5" />
                 Quay lại
@@ -243,17 +243,17 @@ export function ListingFilterDrawer({
             ) : null}
           </div>
 
-          <div className="border-primary/15 flex items-center justify-between gap-2 border-t bg-white/95 p-4 backdrop-blur supports-backdrop-filter:bg-white/75">
+          <div className="flex items-center justify-between gap-2 border-t border-black/6 bg-white/95 p-4 backdrop-blur supports-backdrop-filter:bg-white/75">
             <Button
               variant="outline"
               onClick={handleReset}
-              className="border-primary text-primary hover:bg-primary/10 h-10 rounded-xl px-5 font-semibold"
+              className="h-10 px-5 font-semibold"
             >
               Đặt lại
             </Button>
             <Button
               onClick={handleApply}
-              className="bg-primary h-10 rounded-xl px-6 font-semibold text-white shadow-md hover:brightness-110"
+              className="h-10 rounded-lg px-6 font-semibold"
             >
               Xem kết quả
             </Button>

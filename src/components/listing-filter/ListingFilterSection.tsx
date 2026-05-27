@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Property } from "@/types/property";
@@ -35,8 +35,9 @@ export default function ListingFilterSection({
   paginationMeta,
   paginationBasePath,
 }: Props) {
-  const [filteredProperties, setFilteredProperties] =
-    useState<Property[] | RentRequest[]>(properties);
+  const [filteredProperties, setFilteredProperties] = useState<
+    Property[] | RentRequest[]
+  >(properties);
 
   return (
     <div className="relative">
