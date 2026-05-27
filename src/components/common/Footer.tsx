@@ -21,7 +21,7 @@ export default function Footer() {
     <footer className="to-primary/10 mt-auto w-full border-t border-gray-100 bg-white bg-linear-to-b from-white text-gray-700">
       {/* SECTION 1: TOP INFO BAR */}
       <div className="w-full border-b border-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mx-auto max-w-7xl px-5 py-8">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
@@ -65,10 +65,10 @@ export default function Footer() {
 
       {/* SECTION 2: MAIN CONTENT */}
       <div className="w-full">
-        <div className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mx-auto max-w-7xl px-5 py-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* CỘT TRÁI (1/2): Logo & Social */}
-            <div className="space-y-8">
+            <div className="flex flex-col gap-8">
               <div className="relative h-20 w-64 sm:h-24 sm:w-72">
                 <Link href={"/"} className="block h-full w-full">
                   <Image
@@ -102,7 +102,7 @@ export default function Footer() {
                 <h3 className="after:bg-primary relative mb-3 pb-2 text-base font-bold tracking-tight text-gray-700 uppercase after:absolute after:bottom-0 after:left-0 after:h-0.75 after:w-8 after:rounded-full after:content-['']">
                   Về chúng tôi
                 </h3>
-                <ul className="space-y-3 text-sm text-gray-600">
+                <ul className="flex flex-col gap-3 text-sm text-gray-600">
                   {aboutLinks.map((item) => (
                     <li key={item.label}>
                       <Link
@@ -121,7 +121,7 @@ export default function Footer() {
                 <h3 className="after:bg-primary relative mb-3 pb-2 text-base font-bold tracking-tight text-gray-700 uppercase after:absolute after:bottom-0 after:left-0 after:h-0.75 after:w-8 after:rounded-full after:content-['']">
                   Quy định
                 </h3>
-                <ul className="space-y-3.5 text-sm text-gray-600">
+                <ul className="flex flex-col gap-3.5 text-sm text-gray-600">
                   {policyLinks.map((item) => (
                     <li key={item.label}>
                       <Link

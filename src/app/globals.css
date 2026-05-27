@@ -7,9 +7,9 @@
   --color-primary: #fbaa19;
 
   /* Text colors */
-  --color-text-heading: #1e1b15; /* Tiêu đề: Đen ánh nâu cực đậm, sang trọng */
-  --color-text-body: #3c3830; /* Thông tin chính: Đen xám ấm, dễ đọc, không mỏi mắt */
-  --color-text-secondary: #706a5e; /* Thông tin phụ: Xám đất, phân cấp thông tin rõ ràng */
+  --color-heading: #1e1b15; /* Tiêu đề: Đen ánh nâu cực đậm, sang trọng */
+  --color-body: #3c3830; /* Thông tin chính: Đen xám ấm, dễ đọc, không mỏi mắt */
+  --color-secondary: #706a5e; /* Thông tin phụ: Xám đất, phân cấp thông tin rõ ràng */
 
   --font-family-montserrat: var(--font-montserrat);
 }

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,11 +41,11 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
             className="mx-auto h-20 w-20 rounded-full border border-gray-200 object-cover"
           />
         ) : (
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-secondary">
             <User className="h-9 w-9" />
           </div>
         )}
-        <p className="mt-3 text-center text-base font-semibold text-gray-900">
+        <p className="mt-3 text-center text-base font-semibold text-heading">
           {user.fullName || "Luân Vũ"}
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
                 "group relative flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors",
                 isActive
                   ? "text-primary"
-                  : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
+                  : "text-body hover:bg-gray-50 hover:text-heading",
               )}
             >
               <span
@@ -73,7 +73,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
                 )}
               />
               <Icon
-                className={cn("size-5", isActive ? "text-primary" : "text-gray-600")}
+                className={cn("size-5", isActive ? "text-primary" : "text-secondary")}
               />
               <span>{item.label}</span>
             </Link>
@@ -84,7 +84,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
       <div className="px-5 py-4">
         <button
           type="button"
-          className="flex w-full cursor-pointer items-center gap-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-red-600"
+          className="flex w-full cursor-pointer items-center gap-3 py-2 text-sm font-medium text-body transition-colors hover:text-red-600"
           onClick={() => logoutMutation.mutate()}
           disabled={logoutMutation.isPending}
         >

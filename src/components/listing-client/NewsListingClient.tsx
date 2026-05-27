@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useCallback,
@@ -122,7 +122,7 @@ export default function NewsListingClient({
   );
 
   return (
-    <div className="mx-auto h-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto h-auto max-w-7xl px-5 py-8">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
@@ -136,7 +136,7 @@ export default function NewsListingClient({
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="w-full space-y-6 lg:w-4/6">
+        <div className="flex flex-col w-full gap-6 lg:w-4/6">
           {featuredNews ? <FeaturedNewsCard news={featuredNews} /> : null}
 
           <div className="grid gap-6">
@@ -160,7 +160,7 @@ export default function NewsListingClient({
           ) : null}
         </div>
 
-        <aside className="lg:w-2/lg w-full space-y-6">
+        <aside className="flex flex-col lg:w-2/lg w-full gap-6">
           <h4 className="mb-4 text-lg font-bold">
             Bài viết được xem nhiều nhất
           </h4>

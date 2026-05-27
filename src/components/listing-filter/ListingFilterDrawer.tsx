@@ -194,7 +194,7 @@ export function ListingFilterDrawer({
                 onClick={goMain}
                 className="text-primary hover:bg-primary/10 mb-3 h-8 rounded-lg px-2 text-xs font-medium"
               >
-                <ArrowLeft className="mr-1 h-4 w-4" />
+                <ArrowLeft className="mr-1 size-5" />
                 Quay lại
               </Button>
             ) : null}

@@ -1,4 +1,4 @@
-﻿import Title from "@/components/common/Title";
+import Title from "@/components/common/Title";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
@@ -14,7 +14,7 @@ export default async function NewsSection() {
   } catch {
     return (
       <section className="w-full px-4 py-12">
-        <div className="container mx-auto max-w-7xl px-4">
+        <div className="container mx-auto max-w-7xl px-5">
           <div className="mb-16 text-center">
             <Title
               title="Tin tức"
@@ -33,7 +33,7 @@ export default async function NewsSection() {
 
   return (
     <section className="w-full px-4 py-12">
-      <div className="container mx-auto max-w-7xl px-4">
+      <div className="container mx-auto max-w-7xl px-5">
         <div className="mb-16 text-center">
           <Title
             title="Tin tức"

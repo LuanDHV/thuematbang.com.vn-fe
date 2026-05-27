@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -57,7 +57,7 @@ export function ListingFilterChipPopover({
           }`}
         >
           <span className="truncate">{label}</span>
-          <ChevronDown className="h-4 w-4 opacity-50" />
+          <ChevronDown className="size-5 opacity-50" />
         </Button>
       </PopoverTrigger>
 

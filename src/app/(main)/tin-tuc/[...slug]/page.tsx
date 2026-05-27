@@ -126,7 +126,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="space-y-6 lg:col-span-8">
+          <div className="flex flex-col gap-6 lg:col-span-8">
             <section>
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 shadow-sm">
                 <Image
@@ -201,7 +201,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
           </div>
 
           <aside className="lg:col-span-4">
-            <div className="space-y-4 lg:sticky lg:top-24">
+            <div className="flex flex-col gap-4 lg:sticky lg:top-24">
               <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
                 <h2 className="text-lg font-semibold text-gray-800">
                   Tin tức khác

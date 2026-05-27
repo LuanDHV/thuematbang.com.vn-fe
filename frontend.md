@@ -28,12 +28,12 @@ Mục tiêu: Dùng file này làm context chuẩn cho mọi task xây dựng gia
 - Primary color là token hệ thống:
   - `bg-primary`, `text-primary`, `border-primary`, `focus-visible:*primary*`.
 - Text color ưu tiên theo token trong `globals.css`:
-  - Heading: `text-text-heading`
-  - Body: `text-text-body`
-  - Secondary: `text-text-secondary`
+  - Heading: `text-heading`
+  - Body: `text-body`
+  - Secondary: `text-secondary`
 - Không hardcode màu brand mới khi chưa có yêu cầu.
 - Các vùng nền/card mặc định:
-  - Page background phụ ưu tiên: `to-primary/10 bg-linear-to-b` (thường đi cùng `from-white`).
+  - Page background phụ ưu tiên: `from-white to-primary/10 bg-linear-to-b`.
   - Trường hợp dashboard/account cần nền trung tính có thể dùng `#F3F4F6`.
   - Card: `bg-white`.
   - Border card/input: `border-gray-200` (hoặc gần tương đương theo component gốc).
@@ -81,8 +81,8 @@ Mục tiêu: Dùng file này làm context chuẩn cho mọi task xây dựng gia
 
 - Bo góc mặc định: `rounded-xl` (nhẹ).
 - Typography:
-  - Title: `font-semibold`/`font-bold` + `text-text-heading` (fallback: `text-gray-900` nếu cần tương thích).
-  - Body: `text-sm text-text-body` / `text-text-secondary` theo cấp thông tin.
+  - Title: `font-semibold`/`font-bold` + `text-heading` (fallback: `text-gray-900` nếu cần tương thích).
+  - Body: `text-sm text-body` / `text-secondary` theo cấp thông tin.
 - Motion nhẹ, không lạm dụng:
   - `transition-colors`, `transition-all duration-200/300`.
 
@@ -108,7 +108,6 @@ Sử dụng template sau khi giao task UI mới:
 """
 Hãy implement UI theo rule trong `frontend.md`.
 Bắt buộc:
-
 1. Ưu tiên shadcn components hiện có.
 2. Dùng màu token `primary` cho CTA/active/focus.
 3. Mọi element clickable phải có `cursor-pointer` (hoặc dùng `Button` chuẩn).
@@ -120,9 +119,9 @@ Bắt buộc:
 9. Popover luôn align center với trigger cha.
 10. Ảnh luôn dùng `next/image`; ảnh API/Cloudinary phải có `f_auto,q_auto`.
 11. Icon tối thiểu `h-5 w-5`; nếu vuông thì dùng `size-*`.
-12. Ưu tiên text token `text-text-heading`, `text-text-body`, `text-text-secondary`.
+12. Ưu tiên text token `text-heading`, `text-body`, `text-secondary`.
 13. Background phụ ưu tiên `from-white to-primary/10 bg-linear-to-b`.
 14. Có đầy đủ hover/focus/disabled states.
 15. Không phá vỡ layout/logic hiện có nếu tôi không yêu cầu.
 16. Chạy `npx.cmd tsc --noEmit` sau khi sửa.
-    """
+"""

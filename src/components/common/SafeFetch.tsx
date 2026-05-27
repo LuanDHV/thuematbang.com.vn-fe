@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import DataErrorCard from "@/components/common/DataErrorCard";
 import { extractErrorMessage } from "@/app/api/v1/_utils/api-error";
 import { HttpError } from "@/lib/http";
@@ -80,7 +80,7 @@ export default async function SafeFetch<T>({
 
   if (hasError) {
     return (
-      <section className="mx-auto w-full max-w-7xl px-4 py-8">
+      <section className="mx-auto w-full max-w-7xl px-5 py-8">
         <DataErrorCard message={errorMessage} />
       </section>
     );

@@ -20,7 +20,7 @@ const categories = [
 export default function ProjectSection() {
   return (
     <section className="to-primary/10 w-full bg-linear-to-b from-white px-4 py-12">
-      <div className="mx-auto w-full max-w-7xl px-4">
+      <div className="mx-auto w-full max-w-7xl px-5">
         {/* Title component - Thêm chút margin bottom để thoáng hơn */}
         <div className="mb-12">
           <Title
@@ -43,7 +43,7 @@ export default function ProjectSection() {
               </div>
 
               {/* Tên danh mục */}
-              <h3 className="group-hover:text-primary text-center text-xl font-bold tracking-tight text-gray-700 transition-colors duration-300">
+              <h3 className="group-hover:text-primary text-center text-xl font-bold tracking-tight text-body transition-colors duration-300">
                 {cat.name}
               </h3>
 

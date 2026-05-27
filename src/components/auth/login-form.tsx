@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -71,7 +71,7 @@ export function LoginForm({
                 </p>
               </div>
 
-              <Field className="space-y-2">
+              <Field className="flex flex-col gap-2">
                 <FieldLabel htmlFor="identifier" className="text-foreground font-semibold">
                   SĐT hoặc email
                 </FieldLabel>
@@ -88,7 +88,7 @@ export function LoginForm({
                 ) : null}
               </Field>
 
-              <Field className="space-y-2">
+              <Field className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <FieldLabel htmlFor="password" className="text-foreground font-semibold">
                     Mật khẩu

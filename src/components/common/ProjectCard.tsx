@@ -1,4 +1,4 @@
-﻿import { Project } from "@/types/project";
+import { Project } from "@/types/project";
 import { Building2, Calendar, Eye, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -70,7 +70,7 @@ export function ProjectCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      <div className="space-y-4 p-4">
+      <div className="flex flex-col gap-4 p-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-gray-100 bg-gray-50 p-3">
             <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
@@ -92,7 +92,7 @@ export function ProjectCard({ project }: { project: Project }) {
           </div>
         </div>
 
-        <div className="space-y-2 text-sm text-gray-600">
+        <div className="flex flex-col gap-2 text-sm text-gray-600">
           <p className="flex items-start gap-2">
             <MapPin size={15} className="mt-0.5 shrink-0 text-gray-400" />
             <span className="line-clamp-2">{location}</span>

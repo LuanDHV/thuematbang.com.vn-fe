@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -76,10 +76,10 @@ export default function EditProfileForm() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-5 md:p-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold text-gray-900">
+        <h1 className="text-xl font-semibold text-heading">
           Chỉnh sửa thông tin
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-secondary">
           Cập nhật hồ sơ cá nhân của bạn.
         </p>
       </div>
@@ -110,10 +110,10 @@ export default function EditProfileForm() {
                   <Upload className="h-8 w-8" />
                 </div>
               )}
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-body">
                 Tải ảnh đại diện
               </span>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-secondary">
                 Nhấn để chọn ảnh từ thiết bị
               </span>
             </span>
@@ -122,7 +122,7 @@ export default function EditProfileForm() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-body">
               Họ và tên
             </label>
             <Input {...form.register("fullName")} />
@@ -134,7 +134,7 @@ export default function EditProfileForm() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-body">
               Số điện thoại
             </label>
             <Input {...form.register("phone")} />
@@ -146,7 +146,7 @@ export default function EditProfileForm() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-gray-700">Email</label>
+            <label className="text-sm font-medium text-body">Email</label>
             <Input {...form.register("email")} disabled readOnly />
             {form.formState.errors.email ? (
               <p className="text-xs text-red-600">

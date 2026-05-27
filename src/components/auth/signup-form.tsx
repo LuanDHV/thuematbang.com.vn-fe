@@ -65,7 +65,7 @@ export function SignupForm({
                 </p>
               </div>
 
-              <Field className="space-y-2">
+              <Field className="flex flex-col gap-2">
                 <FieldLabel
                   htmlFor="fullName"
                   className="text-foreground font-semibold"
@@ -87,7 +87,7 @@ export function SignupForm({
               </Field>
 
               <div className="grid gap-4 lg:grid-cols-2">
-                <Field className="space-y-2">
+                <Field className="flex flex-col gap-2">
                   <FieldLabel
                     htmlFor="email"
                     className="text-foreground font-semibold"
@@ -108,7 +108,7 @@ export function SignupForm({
                   ) : null}
                 </Field>
 
-                <Field className="space-y-2">
+                <Field className="flex flex-col gap-2">
                   <FieldLabel
                     htmlFor="phone"
                     className="text-foreground font-semibold"
@@ -131,7 +131,7 @@ export function SignupForm({
               </div>
 
               <div className="grid gap-4 lg:grid-cols-2">
-                <Field className="space-y-2">
+                <Field className="flex flex-col gap-2">
                   <FieldLabel
                     htmlFor="password"
                     className="text-foreground font-semibold"
@@ -152,7 +152,7 @@ export function SignupForm({
                   ) : null}
                 </Field>
 
-                <Field className="space-y-2">
+                <Field className="flex flex-col gap-2">
                   <FieldLabel
                     htmlFor="confirmPassword"
                     className="text-foreground font-semibold"

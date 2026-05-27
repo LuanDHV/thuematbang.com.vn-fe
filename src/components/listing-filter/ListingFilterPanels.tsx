@@ -47,7 +47,7 @@ export function PropertyTypeDetailTab({
   onDone,
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2">
       <label className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-50">
         <span className="text-sm text-gray-700">Tất cả loại mặt bằng</span>
         <input
@@ -61,7 +61,7 @@ export function PropertyTypeDetailTab({
             }));
             onDone?.();
           }}
-          className="accent-primary h-4 w-4 cursor-pointer"
+          className="accent-primary size-5 cursor-pointer"
         />
       </label>
       {propertyTypeOptions.map((type) => (
@@ -81,7 +81,7 @@ export function PropertyTypeDetailTab({
               }));
               onDone?.();
             }}
-            className="accent-primary h-4 w-4 cursor-pointer"
+            className="accent-primary size-5 cursor-pointer"
           />
         </label>
       ))}
@@ -96,7 +96,7 @@ export function PriceDetailTab({
   onDone,
 }: DetailTabSharedProps & { priceRange: [number, number] }) {
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-4 text-sm font-semibold">
         <p>
           Từ:{" "}
@@ -112,7 +112,7 @@ export function PriceDetailTab({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={Math.round(
@@ -130,7 +130,7 @@ export function PriceDetailTab({
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={Math.round(
@@ -226,7 +226,7 @@ export function PriceDetailTab({
                   }));
                   onDone?.();
                 }}
-                className="accent-primary h-4 w-4 cursor-pointer"
+                className="accent-primary size-5 cursor-pointer"
               />
             </label>
           );
@@ -243,7 +243,7 @@ export function AreaDetailTab({
   onDone,
 }: DetailTabSharedProps & { areaRange: [number, number] }) {
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-4 text-sm font-semibold">
         <p>
           Từ: <span className="text-primary">{formatArea(areaRange[0])}</span>
@@ -253,7 +253,7 @@ export function AreaDetailTab({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={current.areaMin}
@@ -268,7 +268,7 @@ export function AreaDetailTab({
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={current.areaMax}
@@ -320,7 +320,7 @@ export function AreaDetailTab({
                   }));
                   onDone?.();
                 }}
-                className="accent-primary h-4 w-4 cursor-pointer"
+                className="accent-primary size-5 cursor-pointer"
               />
             </label>
           );
@@ -342,7 +342,7 @@ export function LocationDetailTab({
     : [];
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3">
       <Select
         value={current.province}
         onValueChange={(valueItem) =>
@@ -419,8 +419,8 @@ export function AdvancedMainTab({
     current.propertyTypes[0] || "Tất cả loại bất động sản";
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">
           Loại bất động sản
         </label>
@@ -430,14 +430,14 @@ export function AdvancedMainTab({
           className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <Building2 className="h-4 w-4" />
+            <Building2 className="size-5" />
             <span className="text-sm">{propertyTypeSummary}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">Khu vực</label>
         <button
           type="button"
@@ -445,14 +445,14 @@ export function AdvancedMainTab({
           className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <MapPin className="h-4 w-4" />
+            <MapPin className="size-5" />
             <span className="text-sm">{locationSummary || "Toàn quốc"}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">
           Khoảng giá
         </label>
@@ -462,14 +462,14 @@ export function AdvancedMainTab({
           className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <CircleDollarSign className="h-4 w-4" />
+            <CircleDollarSign className="size-5" />
             <span className="text-sm">{priceSummary}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">Diện tích</label>
         <button
           type="button"
@@ -477,16 +477,16 @@ export function AdvancedMainTab({
           className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <Maximize className="h-4 w-4" />
+            <Maximize className="size-5" />
             <span className="text-sm">{areaSummary}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
       {listingMode === "property" ? (
         <>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
               Số phòng ngủ
             </label>
@@ -504,7 +504,7 @@ export function AdvancedMainTab({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
               Số phòng tắm, vệ sinh
             </label>
@@ -524,7 +524,7 @@ export function AdvancedMainTab({
         </>
       ) : null}
 
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <label className="text-sm font-semibold text-gray-700">Hướng nhà</label>
         <div className="flex justify-center py-2">
           <svg

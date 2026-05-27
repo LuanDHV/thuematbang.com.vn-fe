@@ -1,4 +1,4 @@
-﻿import { formatDate, formatPrice } from "@/lib/utils";
+import { formatDate, formatPrice } from "@/lib/utils";
 import { Property } from "@/types/property";
 import {
   Bath,
@@ -306,7 +306,7 @@ function CardBody({ property }: { property: Property }) {
         {formatPrice(property.price || 0)}
       </p>
 
-      <div className="my-2 space-y-1 text-sm text-gray-500">
+      <div className="flex flex-col my-2 gap-1 text-sm text-gray-500">
         <p className="flex items-start gap-1">
           <MapPin size={12} className="mt-0.5 text-gray-400" />
           <span className="line-clamp-1">{location}</span>

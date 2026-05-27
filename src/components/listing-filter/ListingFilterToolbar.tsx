@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
@@ -422,7 +422,7 @@ export default function ListingFilterToolbar({
       >
         <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-1">
           <div className="relative flex min-w-0 flex-1 items-center rounded-xl px-2">
-            <Search className="ml-2 h-4 w-4 shrink-0 text-gray-400" />
+            <Search className="ml-2 size-5 shrink-0 text-gray-400" />
             <input
               type="text"
               value={keyword}
@@ -436,7 +436,7 @@ export default function ListingFilterToolbar({
             type="submit"
             className="bg-primary flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-xl px-4 font-bold text-white shadow-md transition-all hover:brightness-105 lg:hidden"
           >
-            <Search className="h-4 w-4" />
+            <Search className="size-5" />
           </Button>
         </div>
 
@@ -554,7 +554,7 @@ export default function ListingFilterToolbar({
               type="submit"
               className="bg-primary ml-auto hidden h-10 shrink-0 cursor-pointer items-center rounded-xl px-6 font-bold text-white shadow-md transition-all hover:brightness-105 lg:flex"
             >
-              <Search className="mr-2 h-4 w-4" />
+              <Search className="mr-2 size-5" />
               <span>Tìm kiếm</span>
             </Button>
           </div>

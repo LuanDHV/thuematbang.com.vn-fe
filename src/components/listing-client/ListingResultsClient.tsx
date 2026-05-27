@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -125,12 +125,12 @@ export default function ListingResultsClient({
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8">
+    <section className="mx-auto w-full max-w-7xl px-5 py-8">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
 
-      <div className="space-y-10">
+      <div className="flex flex-col gap-10">
         {!hasItems ? (
           <section className="p-8 text-center">
             <h3 className="text-lg font-semibold text-gray-700">
@@ -149,7 +149,7 @@ export default function ListingResultsClient({
               if (tierItems.length === 0) return null;
 
               return (
-                <section key={tier} className="space-y-4">
+                <section key={tier} className="flex flex-col gap-4">
                   <div className={TIER_CONFIG[tier].gridClass}>
                     {tierItems.map((property) => (
                       <PropertyCard
@@ -165,7 +165,7 @@ export default function ListingResultsClient({
           : null}
 
         {listingMode === "rentRequest" ? (
-          <section className="space-y-4">
+          <section className="flex flex-col gap-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {(pageItems as RentRequest[]).map((request) => (
                 <RentRequestCard key={request.id} request={request} />

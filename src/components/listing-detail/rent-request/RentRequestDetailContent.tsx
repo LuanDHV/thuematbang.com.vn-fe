@@ -1,4 +1,4 @@
-﻿import {
+import {
   CalendarDays,
   Eye,
   Layers,
@@ -59,7 +59,7 @@ export default function RentRequestDetailContent({
   const categoryName = rentRequest.category?.name ?? "";
 
   return (
-    <div className="w-full space-y-6 lg:w-3/4 lg:space-y-8">
+    <div className="flex flex-col w-full gap-6 lg:w-3/4 lg:gap-8">
       <section>
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
           <Image
@@ -78,20 +78,20 @@ export default function RentRequestDetailContent({
           {rentRequest.title}
         </h1>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-secondary">
           {categoryName ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
               <Layers size={12} className="text-primary" />
               Danh mục: {categoryName}
             </span>
           ) : null}
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
             <CalendarDays size={12} className="text-primary" />
             Ngày đăng: {formatDate(rentRequest.createdAt)}
           </span>
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
             <Eye size={12} className="text-primary" />
             Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
           </span>
@@ -105,7 +105,7 @@ export default function RentRequestDetailContent({
             Thông tin mô tả
           </h2>
         </div>
-        <p className="whitespace-pre-line text-gray-700">
+        <p className="whitespace-pre-line text-body">
           {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
         </p>
       </section>
@@ -120,9 +120,9 @@ export default function RentRequestDetailContent({
 
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
           <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-            <MapPin className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-xs tracking-wide text-gray-500 uppercase">
+              <p className="text-xs tracking-wide text-secondary uppercase">
                 Khu vực
               </p>
               <p className="text-sm font-semibold text-gray-800">
@@ -132,9 +132,9 @@ export default function RentRequestDetailContent({
           </div>
 
           <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-            <Wallet className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <Wallet className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-xs tracking-wide text-gray-500 uppercase">
+              <p className="text-xs tracking-wide text-secondary uppercase">
                 Ngân sách
               </p>
               <p className="text-sm font-semibold text-gray-800">
@@ -145,9 +145,9 @@ export default function RentRequestDetailContent({
 
           {hasArea ? (
             <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-              <Maximize className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                <p className="text-xs tracking-wide text-secondary uppercase">
                   Diện tích cần thuê
                 </p>
                 <p className="text-sm font-semibold text-gray-800">
@@ -159,9 +159,9 @@ export default function RentRequestDetailContent({
 
           {hasDirection ? (
             <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-              <Navigation className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+              <Navigation className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-gray-500 uppercase">
+                <p className="text-xs tracking-wide text-secondary uppercase">
                   Hướng
                 </p>
                 <p className="text-sm font-semibold text-gray-800">
@@ -182,7 +182,7 @@ export default function RentRequestDetailContent({
             Bất động sản đã xem
           </h2>
         </div>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-secondary">
           Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ
           localStorage/cookie.
         </p>

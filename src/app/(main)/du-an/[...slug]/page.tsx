@@ -159,7 +159,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="space-y-6 lg:col-span-8">
+          <div className="flex flex-col gap-6 lg:col-span-8">
             <section>
               <PropertyImageGallery
                 title={project.name}
@@ -223,7 +223,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
 
               <div className="mt-2 grid gap-3 sm:grid-cols-2">
                 <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-                  <Landmark className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+                  <Landmark className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
                     <p className="text-xs tracking-wide text-gray-500 uppercase">
                       Tổng mức đầu tư
@@ -235,7 +235,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                 </div>
 
                 <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-                  <Maximize className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+                  <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
                     <p className="text-xs tracking-wide text-gray-500 uppercase">
                       Quy mô
@@ -247,7 +247,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                 </div>
 
                 <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2">
-                  <Building2 className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+                  <Building2 className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
                     <p className="text-xs tracking-wide text-gray-500 uppercase">
                       Chủ đầu tư
@@ -285,7 +285,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
           </div>
 
           <aside className="lg:col-span-4">
-            <div className="space-y-4 lg:sticky lg:top-24">
+            <div className="flex flex-col gap-4 lg:sticky lg:top-24">
               <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
                 <h2 className="text-lg font-semibold text-gray-800">
                   Dự án khác

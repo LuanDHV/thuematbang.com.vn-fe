@@ -28,7 +28,7 @@ const features = [
 export default function IntroduceSection() {
   return (
     <section className="to-primary/10 relative h-auto w-full overflow-hidden bg-linear-to-b from-white px-4 py-12">
-      <div className="mx-auto w-full max-w-7xl px-4">
+      <div className="mx-auto w-full max-w-7xl px-5">
         <Title
           title="Giới thiệu"
           description="Chúng tôi là nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. Với hệ thống danh mục đa dạng và dịch vụ chuyên nghiệp, chúng tôi cam kết tạo ra trải nghiệm tốt nhất cho khách hàng."
@@ -46,11 +46,11 @@ export default function IntroduceSection() {
                 {feature.icon}
               </div>
 
-              <h3 className="mb-4 text-xl font-bold tracking-tight text-gray-700">
+              <h3 className="mb-4 text-xl font-bold tracking-tight text-body">
                 {feature.title}
               </h3>
 
-              <p className="text-sm leading-relaxed font-light text-gray-500">
+              <p className="text-sm leading-relaxed font-light text-secondary">
                 {feature.description}
               </p>
 

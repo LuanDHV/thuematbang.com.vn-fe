@@ -71,7 +71,7 @@ export default function Header() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="hover:text-primary after:bg-primary relative rounded-md px-3 py-2 text-sm font-semibold tracking-wider text-gray-700 uppercase transition-colors after:absolute after:right-3 after:bottom-1 after:left-3 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
+                className="hover:text-primary after:bg-primary text-body relative rounded-md px-3 py-2 text-sm font-semibold tracking-wider uppercase transition-colors after:absolute after:right-3 after:bottom-1 after:left-3 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
               >
                 {item.name}
               </Link>
@@ -93,7 +93,7 @@ export default function Header() {
               <Popover open={isUserMenuOpen} onOpenChange={setUserMenuOpen}>
                 <PopoverTrigger asChild>
                   <Button
-                    className="hidden size-9 items-center justify-center rounded-full bg-transparent p-0 shadow shadow-none transition-all duration-200 lg:inline-flex"
+                    className="hidden size-9 items-center justify-center rounded-full bg-transparent p-0 shadow transition-all duration-200 lg:inline-flex"
                     aria-label="Tài khoản người dùng"
                   >
                     {avatarUrl ? (
@@ -105,7 +105,7 @@ export default function Header() {
                         className="size-8 rounded-full object-cover"
                       />
                     ) : (
-                      <span className="inline-flex size-8 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                      <span className="text-secondary inline-flex size-8 items-center justify-center rounded-full bg-gray-100">
                         <User className="h-5 w-5" />
                       </span>
                     )}
@@ -174,7 +174,7 @@ export default function Header() {
                           key={item.id}
                           href={item.href}
                           onClick={closeMobileMenu}
-                          className="hover:text-primary hover:bg-primary/5 block rounded-lg px-3 py-2 text-sm font-semibold tracking-wide text-gray-700 uppercase transition-colors"
+                          className="hover:text-primary hover:bg-primary/5 text-body block rounded-lg px-3 py-2 text-sm font-semibold tracking-wide uppercase transition-colors"
                         >
                           {item.name}
                         </Link>
@@ -198,7 +198,7 @@ export default function Header() {
                             asChild
                             size="lg"
                             variant="ghost"
-                            className="hover:border-primary hover:bg-primary/5 hover:text-primary w-full justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold tracking-wide text-gray-700 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-px"
+                            className="hover:border-primary hover:bg-primary/5 hover:text-primary text-body w-full justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold tracking-wide shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-px"
                           >
                             <Link
                               href="/quan-li-tai-khoan"
@@ -213,7 +213,7 @@ export default function Header() {
                             variant="ghost"
                             onClick={handleLogout}
                             disabled={logoutMutation.isPending}
-                            className="hover:border-primary hover:bg-primary/5 hover:text-primary w-full cursor-pointer justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold tracking-wide text-gray-700 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-px"
+                            className="hover:border-primary hover:bg-primary/5 hover:text-primary text-body w-full cursor-pointer justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold tracking-wide shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-px"
                           >
                             {logoutMutation.isPending
                               ? "Đang đăng xuất..."
@@ -225,7 +225,7 @@ export default function Header() {
                         <Button
                           asChild
                           size="lg"
-                          className="hover:border-primary hover:bg-primary/5 w-full justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold tracking-wide text-gray-700 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-px hover:text-white"
+                          className="hover:border-primary hover:bg-primary/5 text-body w-full justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold tracking-wide shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-px hover:text-white"
                         >
                           <Link href="/dang-nhap" onClick={closeMobileMenu}>
                             Đăng nhập

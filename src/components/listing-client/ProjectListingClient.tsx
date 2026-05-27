@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -70,7 +70,7 @@ export default function ProjectListingClient({
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8">
+    <section className="mx-auto w-full max-w-7xl px-5 py-8">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
