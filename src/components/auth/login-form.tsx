@@ -141,7 +141,7 @@ export function LoginForm({
                   type="button"
                   className="h-11 w-full bg-white font-medium transition-colors duration-200 hover:bg-gray-50"
                 >
-                  <Link href="/api/v1/auth/google">
+                  <a href="/api/v1/auth/google">
                     <svg
                       className="mr-2 h-5 w-5"
                       xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +153,7 @@ export function LoginForm({
                       />
                     </svg>
                     Đăng nhập với Google
-                  </Link>
+                  </a>
                 </Button>
               </Field>
 
@@ -173,3 +173,4 @@ export function LoginForm({
     </div>
   );
 }
+

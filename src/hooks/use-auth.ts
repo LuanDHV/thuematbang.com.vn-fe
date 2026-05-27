@@ -47,7 +47,8 @@ export function useLogoutMutation() {
 
   return useMutation({
     mutationFn: authService.logout,
-    onSuccess: async () => {
+    onSettled: async () => {
+      queryClient.setQueryData(AUTH_ME_QUERY_KEY, null);
       await queryClient.invalidateQueries({ queryKey: AUTH_ME_QUERY_KEY });
     },
   });

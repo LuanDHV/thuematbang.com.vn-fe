@@ -10,6 +10,33 @@ interface SafeFetchProps<T> {
   children: (data: T) => React.ReactNode;
 }
 
+// Convert unknown thrown values to serializable objects so logs retain useful error details.
+function serializeErrorForLog(error: unknown) {
+  if (error instanceof HttpError) {
+    return {
+      name: error.name,
+      message: error.message,
+      status: error.status,
+      payload: error.payload,
+      stack: error.stack,
+    };
+  }
+
+  if (error instanceof Error) {
+    return {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    };
+  }
+
+  if (error && typeof error === "object") {
+    return error;
+  }
+
+  return { value: error };
+}
+
 export default async function SafeFetch<T>({
   fetcher,
   fallbackMessage = "Không tải được dữ liệu. Vui lòng thử lại.",
@@ -36,7 +63,10 @@ export default async function SafeFetch<T>({
     }
   } catch (error) {
     hasError = true;
-    console.error("[SafeFetch] error", { debugLabel, error });
+    console.error("[SafeFetch] error", {
+      debugLabel,
+      error: serializeErrorForLog(error),
+    });
 
     if (error instanceof HttpError) {
       const payloadMessage = extractErrorMessage(error.payload);
