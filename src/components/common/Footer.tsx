@@ -18,7 +18,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="to-primary/10 mt-auto w-full border-t border-gray-100 bg-white bg-linear-to-b from-white font-sans text-gray-700">
+    <footer className="to-primary/10 mt-auto w-full border-t border-gray-100 bg-white bg-linear-to-b from-white text-gray-700">
       {/* SECTION 1: TOP INFO BAR */}
       <div className="w-full border-b border-gray-100">
         <div className="mx-auto max-w-7xl px-4 py-8">

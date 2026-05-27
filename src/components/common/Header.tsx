@@ -22,44 +22,13 @@ const HEADER_ITEMS = [
   { id: "tin-tuc", name: "Tin tức", href: "/tin-tuc" },
 ];
 
-function buildInitials(value: string) {
-  const clean = value.trim();
-  if (!clean) return "U";
-
-  const words = clean.split(/\s+/).filter(Boolean);
-  if (words.length >= 2) {
-    return `${words[words.length - 2][0]}${words[words.length - 1][0]}`.toUpperCase();
-  }
-
-  return clean.slice(0, 2).toUpperCase();
-}
-
-function buildGeneratedAvatarUrl(name: string) {
-  const initials = buildInitials(name);
-  const params = new URLSearchParams({
-    name: initials,
-    background: "fbaa19",
-    color: "ffffff",
-    bold: "true",
-    format: "png",
-    size: "36",
-  });
-
-  return `https://ui-avatars.com/api/?${params.toString()}`;
-}
-
 export default function Header() {
   const router = useRouter();
   const { data: authUser } = useAuthMe();
   const logoutMutation = useLogoutMutation();
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   const displayName = authUser?.fullName || authUser?.email || "Tài khoản";
-  const avatarFallback = buildInitials(displayName);
   const avatarUrl = authUser?.avatarUrl?.trim() || "";
-  const authProvider = authUser?.authProvider;
-  const resolvedAvatarUrl =
-    avatarUrl ||
-    (authProvider === "GOOGLE" ? "" : buildGeneratedAvatarUrl(displayName));
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const setMobileMenuOpen = useUIStore((state) => state.setMobileMenuOpen);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
@@ -124,20 +93,20 @@ export default function Header() {
               <Popover open={isUserMenuOpen} onOpenChange={setUserMenuOpen}>
                 <PopoverTrigger asChild>
                   <Button
-                    className="hidden size-9 items-center justify-center rounded-full border border-gray-200 bg-transparent p-0 shadow-none transition-all duration-200 hover:shadow-sm lg:inline-flex"
+                    className="hidden size-9 items-center justify-center rounded-full bg-transparent p-0 shadow shadow-none transition-all duration-200 lg:inline-flex"
                     aria-label="Tài khoản người dùng"
                   >
-                    {resolvedAvatarUrl ? (
+                    {avatarUrl ? (
                       <Image
-                        src={resolvedAvatarUrl}
+                        src={avatarUrl}
                         alt={displayName}
                         width={32}
                         height={32}
                         className="size-8 rounded-full object-cover"
                       />
                     ) : (
-                      <span className="bg-primary text-primary-foreground inline-flex size-8 items-center justify-center rounded-full text-xs font-semibold">
-                        {avatarFallback}
+                      <span className="inline-flex size-8 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                        <User className="h-5 w-5" />
                       </span>
                     )}
                   </Button>
@@ -149,7 +118,7 @@ export default function Header() {
                 >
                   <div className="space-y-1">
                     <Link
-                      href="/ho-so"
+                      href="/quan-li-tai-khoan"
                       onClick={() => setUserMenuOpen(false)}
                       className="hover:bg-primary/10 hover:text-primary flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors"
                     >
@@ -231,7 +200,10 @@ export default function Header() {
                             variant="ghost"
                             className="hover:border-primary hover:bg-primary/5 hover:text-primary w-full justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold tracking-wide text-gray-700 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-px"
                           >
-                            <Link href="/ho-so" onClick={closeMobileMenu}>
+                            <Link
+                              href="/quan-li-tai-khoan"
+                              onClick={closeMobileMenu}
+                            >
                               Quản lí tài khoản
                               <Settings className="h-5 w-5 object-cover" />
                             </Link>
