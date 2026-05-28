@@ -414,7 +414,7 @@ export default function ListingFilterToolbar({
   }, [initialFilters, provinceWardMap, serverDriven, sourceProperties]);
 
   return (
-    <div className="surface-float layout-container rounded-lg transition-all duration-300">
+    <div className="surface-float rounded-lg transition-all duration-300">
       <form
         onSubmit={(event) => {
           event.preventDefault();

@@ -1,19 +1,27 @@
 ﻿"use client";
+
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Property } from "@/types/property";
 import {
   Bath,
   Bed,
   Calendar,
+  Crown,
   Eye,
   Images,
   MapPin,
   Maximize,
+  Star,
 } from "lucide-react";
-import CloudinaryImage from "@/components/common/CloudinaryImage";
 import Link from "next/link";
 
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
+const CARD_HOVER_CLASSES =
+  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(26,18,8,0.13)]";
+
+type CardTone = "gold" | "silver" | "normal";
+type CardDensity = "rich" | "compact";
 
 function resolvePropertyHref(property: Property) {
   return `/cho-thue/${property.slug}`;
@@ -35,17 +43,32 @@ function getPropertyThumbnailUrl(property: Property) {
 
 function getPropertyGalleryImages(property: Property) {
   const images = getSortedPropertyImageUrls(property);
-  if (images.length > 0) return images;
+  const fallbackImage = images[0] || getPropertyThumbnailUrl(property);
+  const normalizedImages = images.length > 0 ? [...images] : [fallbackImage];
 
-  const fallbackImage = getPropertyThumbnailUrl(property);
-  return [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
+  while (normalizedImages.length < 4) {
+    normalizedImages.push(fallbackImage);
+  }
+
+  return normalizedImages.slice(0, 4);
 }
 
-function getTierLabel(priorityStatus?: string | null) {
+function getTierTone(priorityStatus?: string | null): CardTone {
   switch (priorityStatus) {
     case "GOLD":
-      return "Gold";
+      return "gold";
     case "SILVER":
+      return "silver";
+    default:
+      return "normal";
+  }
+}
+
+function getTierLabel(tone: CardTone) {
+  switch (tone) {
+    case "gold":
+      return "Gold";
+    case "silver":
       return "Silver";
     default:
       return "Normal";
@@ -60,32 +83,52 @@ function getLocationText(property: Property) {
 
 function CardFooter({ property }: { property: Property }) {
   return (
-    <div className="text-muted mt-auto flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-sm">
+    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
       <span className="inline-flex items-center gap-1 font-mono">
-        <Calendar size={11} />
+        <Calendar size={12} />
         {formatDate(property.createdAt)}
       </span>
-      <span className="inline-flex items-center gap-1 font-mono">
-        <Eye size={11} />
+      <span className="inline-flex items-center justify-end gap-1 font-mono">
+        <Eye size={12} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
     </div>
   );
 }
 
-function TierBadge({ label }: { label: string }) {
+function TierBadge({ tone }: { tone: CardTone }) {
+  const toneClasses =
+    tone === "gold"
+      ? "bg-primary text-heading"
+      : tone === "silver"
+        ? "bg-white/90 text-body"
+        : "bg-white/80 text-secondary";
+  const sizeClasses =
+    tone === "gold" ? "px-2 py-0.5 text-xs " : "px-2 py-0.5 text-xs";
+  const iconSize = tone === "gold" ? 11 : 11;
+
   return (
-    <span className="text-primary absolute top-3 left-3 z-20 rounded-full bg-white/92 px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
-      {label}
+    <span
+      className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 rounded-full font-semibold tracking-[0.16em] uppercase ${toneClasses} ${sizeClasses}`}
+    >
+      {tone === "gold" ? <Crown size={iconSize} /> : null}
+      {tone === "silver" ? <Star size={iconSize} /> : null}
+      {getTierLabel(tone)}
     </span>
   );
 }
 
-function ImageCountBadge({ count }: { count: number }) {
+function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
+  const badgeSizeClass =
+    tone === "gold" ? "px-2 py-0.5 text-xs" : "px-2 py-0.5 text-xs";
+  const iconSize = tone === "gold" ? 11 : 11;
+
   return (
-    <div className="absolute top-3 right-3 z-30 rounded-lg bg-black/52 px-2.5 py-1 text-sm font-semibold text-white">
+    <div
+      className={`absolute top-3 right-3 z-30 rounded-lg bg-black/52 font-semibold text-white ${badgeSizeClass}`}
+    >
       <span className="inline-flex items-center gap-1 font-mono">
-        <Images size={13} />
+        <Images size={iconSize} />
         {count}
       </span>
     </div>
@@ -94,20 +137,31 @@ function ImageCountBadge({ count }: { count: number }) {
 
 function OverlayTitle({
   property,
-  large = false,
+  tone,
 }: {
   property: Property;
-  large?: boolean;
+  tone: CardTone;
 }) {
+  const titleClass =
+    tone === "gold" ? "text-xl " : tone === "silver" ? "text-lg " : "text-base";
+  const categoryBadgeSizeClass =
+    tone === "gold"
+      ? "px-2 py-0.5 text-xs"
+      : tone === "silver"
+        ? "px-2.5 py-1 text-xs"
+        : "px-2 py-0.5 text-xs";
+
   return (
     <div className="absolute right-3 bottom-3 left-3 z-20">
       {property.category?.name ? (
-        <span className="text-primary rounded-full bg-white/92 px-2.5 py-1 text-[10px] font-semibold uppercase">
+        <span
+          className={`border-primary/30 bg-primary/14 text-primary inline-flex items-center rounded-full border font-semibold tracking-[0.18em] uppercase ${categoryBadgeSizeClass}`}
+        >
           {property.category.name}
         </span>
       ) : null}
       <h3
-        className={`mt-2 line-clamp-2 font-semibold tracking-[-0.02em] text-white ${large ? "text-xl leading-tight" : "text-lg leading-tight"}`}
+        className={`mt-2 line-clamp-2 font-serif leading-snug font-medium tracking-[-0.015em] text-white ${titleClass}`}
       >
         {property.title}
       </h3>
@@ -115,11 +169,19 @@ function OverlayTitle({
   );
 }
 
-function FeaturedCard({ property }: { property: Property }) {
+function CardHoverBar() {
   return (
-    <article className="surface-card interactive-lift group flex h-full flex-col overflow-hidden rounded-2xl">
+    <div className="from-primary to-primary/70 h-0.5 w-0 bg-linear-to-r transition-[width] duration-300 group-hover:w-full" />
+  );
+}
+
+function FeaturedCard({ property }: { property: Property }) {
+  const tone = getTierTone(property.priorityStatus);
+
+  return (
+    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
       <div className="relative h-52 overflow-hidden">
-        <TierBadge label={getTierLabel(property.priorityStatus)} />
+        <TierBadge tone={tone} />
         <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
           alt={property.title || "Bất động sản"}
@@ -129,36 +191,33 @@ function FeaturedCard({ property }: { property: Property }) {
           cldQuality="auto:best"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/62 via-black/18 to-transparent" />
-
-        <div className="absolute right-3 bottom-3 left-3">
-          {property.category?.name ? (
-            <span className="text-primary rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase">
-              {property.category.name}
-            </span>
-          ) : null}
-          <h3 className="mt-2 line-clamp-2 text-lg leading-tight font-semibold tracking-[-0.02em] text-white">
-            {property.title}
-          </h3>
-        </div>
+        <OverlayTitle property={property} tone={tone} />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody
+        property={property}
+        density="rich"
+        tone={tone}
+        showPreview={false}
+      />
+      <CardHoverBar />
     </article>
   );
 }
 
 function GoldCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
-  const galleryImages = getPropertyGalleryImages(property);
-  const imagesList =
-    galleryImages.length > 0
-      ? galleryImages
-      : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
+  const imagesList = getPropertyGalleryImages(property);
+  const realImageCount = Math.max(
+    1,
+    getSortedPropertyImageUrls(property).length,
+  );
 
   return (
-    <article className="surface-card interactive-lift group border-primary/12 flex h-full flex-col overflow-hidden rounded-2xl">
-      <div className="relative flex h-60 w-full gap-0.5 overflow-hidden bg-gray-100">
+    <article
+      className={`surface-card ${CARD_HOVER_CLASSES} border-primary/10 rounded-2xl`}
+    >
+      <div className="bg-elevated relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
           className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
         >
@@ -210,24 +269,24 @@ function GoldCard({ property }: { property: Property }) {
         ) : null}
 
         <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
-        <TierBadge label="Gold" />
-        <ImageCountBadge count={imagesList.length} />
-        <OverlayTitle property={property} large />
+        <TierBadge tone="gold" />
+        <ImageCountBadge count={realImageCount} tone="gold" />
+        <OverlayTitle property={property} tone="gold" />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody property={property} density="rich" tone="gold" showPreview />
+      <CardHoverBar />
     </article>
   );
 }
 
 function SilverCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
-  const galleryImages = getPropertyGalleryImages(property);
-  const imagesList =
-    galleryImages.length > 0
-      ? galleryImages
-      : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
+  const imagesList = getPropertyGalleryImages(property);
+  const realImageCount = Math.max(
+    1,
+    getSortedPropertyImageUrls(property).length,
+  );
 
   const rightThumbs = [
     imagesList[1] || fallbackImage,
@@ -235,8 +294,8 @@ function SilverCard({ property }: { property: Property }) {
   ];
 
   return (
-    <article className="surface-card interactive-lift group flex h-full flex-col overflow-hidden rounded-2xl">
-      <div className="relative flex h-56 w-full gap-0.5 overflow-hidden bg-gray-100">
+    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
+      <div className="bg-elevated relative flex h-56 w-full gap-0.5 overflow-hidden">
         <div className="relative w-2/3 overflow-hidden">
           <CloudinaryImage
             src={imagesList[0]}
@@ -267,13 +326,13 @@ function SilverCard({ property }: { property: Property }) {
         </div>
 
         <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
-        <TierBadge label="Silver" />
-        <ImageCountBadge count={imagesList.length} />
-        <OverlayTitle property={property} />
+        <TierBadge tone="silver" />
+        <ImageCountBadge count={realImageCount} tone="silver" />
+        <OverlayTitle property={property} tone="silver" />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody property={property} density="rich" tone="silver" showPreview />
+      <CardHoverBar />
     </article>
   );
 }
@@ -282,7 +341,7 @@ function NormalCard({ property }: { property: Property }) {
   const image = getPropertyThumbnailUrl(property);
 
   return (
-    <article className="surface-card interactive-lift group flex h-full flex-col overflow-hidden rounded-xl">
+    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-xl`}>
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage
           src={image}
@@ -293,53 +352,103 @@ function NormalCard({ property }: { property: Property }) {
           cldQuality="auto:best"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/22 to-transparent" />
-        <TierBadge label="Normal" />
-        <OverlayTitle property={property} />
+        <TierBadge tone="normal" />
+        <OverlayTitle property={property} tone="normal" />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody
+        property={property}
+        density="compact"
+        tone="normal"
+        showPreview={false}
+      />
+      <CardHoverBar />
     </article>
   );
 }
 
-function CardBody({ property }: { property: Property }) {
+function CardBody({
+  property,
+  density,
+  tone,
+  showPreview,
+}: {
+  property: Property;
+  density: CardDensity;
+  tone: CardTone;
+  showPreview: boolean;
+}) {
   const location = getLocationText(property) || "Đang cập nhật vị trí";
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
+  const isCompact = density === "compact";
+
+  const bedroomsText = property.bedrooms
+    ? `${property.bedrooms} phòng ngủ`
+    : isCompact
+      ? null
+      : "Đang cập nhật phòng ngủ";
+
+  const bathroomsText = property.bathrooms
+    ? `${property.bathrooms} phòng tắm`
+    : isCompact
+      ? null
+      : "Đang cập nhật phòng tắm";
+
+  const metaItems = [
+    { icon: MapPin, text: location },
+    {
+      icon: Maximize,
+      text: property.area ? `${property.area} m²` : "Đang cập nhật diện tích",
+    },
+    bedroomsText ? { icon: Bed, text: bedroomsText } : null,
+    bathroomsText ? { icon: Bath, text: bathroomsText } : null,
+  ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
+
+  const priceClass =
+    tone === "gold" ? "text-2xl " : tone === "silver" ? "text-xl " : "text-lg";
+
+  const metaTextClass =
+    tone === "gold" ? "text-sm" : tone === "silver" ? "text-xs" : "text-xs";
+
+  const previewTextClass = tone === "gold" ? "text-sm" : "text-xs";
+  const metaGridClass =
+    tone === "gold" || tone === "silver"
+      ? "grid-cols-1"
+      : isCompact
+        ? "grid-cols-1"
+        : "grid-cols-2";
 
   return (
     <div className="flex h-full flex-1 flex-col p-5">
-      <p className="text-heading group-hover:text-primary text-base font-semibold transition-colors duration-200 md:text-lg">
+      <p
+        className={`group-hover:text-primary text-heading font-serif transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
+      >
         {formatPrice(property.price || 0)}
       </p>
 
-      <div className="text-muted my-2 flex flex-col gap-1 text-sm">
-        <p className="flex items-start gap-1">
-          <MapPin size={12} className="text-primary/70 mt-0.5" />
-          <span className="line-clamp-1 font-mono">{location}</span>
-        </p>
-        <p className="flex items-start gap-1">
-          <Maximize size={12} className="text-primary/70 mt-0.5" />
-          <span className="font-mono">
-            {property.area ? `${property.area} m²` : "Đang cập nhật diện tích"}
-          </span>
-        </p>
-        {property.bathrooms ? (
-          <p className="flex items-start gap-1">
-            <Bath size={12} className="text-primary/70 mt-0.5" />
-            <span className="font-mono">{property.bathrooms} phòng tắm</span>
+      <div
+        className={`text-secondary my-2 grid gap-x-4 gap-y-1.5 ${metaGridClass}`}
+      >
+        {metaItems.map(({ icon: Icon, text }, index) => (
+          <p
+            key={`${property.id}-meta-${index}`}
+            className="flex items-start gap-1.5"
+          >
+            <Icon size={12} className="text-primary mt-0.5 shrink-0" />
+            <span className={`line-clamp-1 font-mono ${metaTextClass}`}>
+              {text}
+            </span>
           </p>
-        ) : null}
-        {property.bedrooms ? (
-          <p className="flex items-start gap-1">
-            <Bed size={12} className="text-primary/70 mt-0.5" />
-            <span className="font-mono">{property.bedrooms} phòng ngủ</span>
-          </p>
-        ) : null}
-        {contentPreview ? (
-          <p className="line-clamp-2">{contentPreview}</p>
-        ) : null}
+        ))}
       </div>
+
+      {showPreview && contentPreview ? (
+        <p
+          className={`text-secondary mb-2 line-clamp-2 leading-relaxed ${previewTextClass}`}
+        >
+          {contentPreview}
+        </p>
+      ) : null}
 
       <CardFooter property={property} />
     </div>
