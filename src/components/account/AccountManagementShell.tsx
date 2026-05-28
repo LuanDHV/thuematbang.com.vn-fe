@@ -30,7 +30,7 @@ export default function AccountManagementShell({
   return (
     <section className="min-h-screen py-8">
       <div className="layout-container">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(260px,28%)_1fr]">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(260px,28%)_1fr]">
           <AccountSidebar user={authUser} />
           <main className="min-h-screen min-w-0 rounded-2xl bg-white p-4 shadow-sm md:p-6">
             {children}

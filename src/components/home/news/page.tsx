@@ -28,14 +28,14 @@ export default async function NewsSection() {
 
             return (
               <>
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-8">
                   <div className="min-h-105">
                     {featuredNews ? (
                       <FeaturedNewsCard news={featuredNews} />
                     ) : null}
                   </div>
 
-                  <div className="grid grid-cols-1 gap-6">
+                  <div className="grid grid-cols-1 gap-5">
                     {sideNews.map((newsItem) => (
                       <NewsCard key={newsItem.id} news={newsItem} />
                     ))}
