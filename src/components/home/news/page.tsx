@@ -1,35 +1,13 @@
-import Title from "@/components/common/Title";
-import SeeMoreButton from "@/components/common/SeeMoreButton";
+﻿import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import NewsCard from "@/components/common/NewsCard";
-import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
+import SafeFetch from "@/components/common/SafeFetch";
+import SeeMoreButton from "@/components/common/SeeMoreButton";
+import Title from "@/components/common/Title";
 import { newsService } from "@/services/news.service";
-import DataErrorCard from "@/components/common/DataErrorCard";
 import { News } from "@/types/news";
 
 export default async function NewsSection() {
-  let sourceNews: News[] = [];
-  try {
-    const response = await newsService.getAll();
-    sourceNews = response.data ?? [];
-  } catch {
-    return (
-      <section className="layout-section w-full">
-        <div className="layout-container">
-          <div className="mb-16 text-center">
-            <Title
-              title="Tin tức"
-              description="Tổng hợp tin tức, kiến thức và xu hướng bất động sản mới nhất."
-            />
-          </div>
-          <DataErrorCard message="Không tải được danh sách tin tức." />
-        </div>
-      </section>
-    );
-  }
-
-  const newsList = sourceNews.slice(0, 4);
-  const featuredNews = newsList[0];
-  const sideNews = newsList.slice(1, 4);
+  const newsFetch = newsService.getAll();
 
   return (
     <section className="layout-section w-full">
@@ -41,21 +19,36 @@ export default async function NewsSection() {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
-          <div className="min-h-105">
-            {featuredNews && <FeaturedNewsCard news={featuredNews} />}
-          </div>
+        <SafeFetch fetcher={newsFetch} debugLabel="Home News Response">
+          {(response) => {
+            const sourceNews = (response as { data?: News[] })?.data ?? [];
+            const newsList = sourceNews.slice(0, 4);
+            const featuredNews = newsList[0];
+            const sideNews = newsList.slice(1, 4);
 
-          <div className="grid grid-cols-1 gap-6">
-            {sideNews.map((newsItem) => (
-              <NewsCard key={newsItem.id} news={newsItem} />
-            ))}
-          </div>
-        </div>
+            return (
+              <>
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+                  <div className="min-h-105">
+                    {featuredNews ? (
+                      <FeaturedNewsCard news={featuredNews} />
+                    ) : null}
+                  </div>
 
-        <div className="mt-16">
-          <SeeMoreButton href="tin-tuc" />
-        </div>
+                  <div className="grid grid-cols-1 gap-6">
+                    {sideNews.map((newsItem) => (
+                      <NewsCard key={newsItem.id} news={newsItem} />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-16">
+                  <SeeMoreButton href="tin-tuc" />
+                </div>
+              </>
+            );
+          }}
+        </SafeFetch>
       </div>
     </section>
   );

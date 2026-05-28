@@ -73,8 +73,9 @@ export default async function SafeFetch<T>({
       errorMessage =
         payloadMessage ??
         (error.message?.trim() ? error.message : fallbackMessage);
-    } else if (error instanceof Error && error.message.trim()) {
-      errorMessage = error.message;
+    } else if (error instanceof Error) {
+      // Keep technical runtime errors in server logs only. UI should stay user-friendly
+      errorMessage = fallbackMessage;
     }
   }
 
