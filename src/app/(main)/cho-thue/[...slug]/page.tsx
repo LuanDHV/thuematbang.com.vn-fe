@@ -77,11 +77,18 @@ const resolveProperty = cache(async (rawSlug: string) => {
 });
 
 async function resolvePropertyIfDetailSlug(rawSlug?: string) {
-  if (!rawSlug || isLikelyPropertyFilterSlug(rawSlug)) {
+  if (!rawSlug) {
     return null;
   }
 
-  return resolveProperty(rawSlug);
+  try {
+    return await resolveProperty(rawSlug);
+  } catch {
+    if (isLikelyPropertyFilterSlug(rawSlug)) {
+      return null;
+    }
+    return null;
+  }
 }
 
 const resolveLocationContext = cache(async (): Promise<LocationContext> => {

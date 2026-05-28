@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { connection } from "next/server";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import SafeFetch from "@/components/common/SafeFetch";
@@ -15,6 +16,8 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function ChoThuePage() {
+  await connection();
+
   // Load static SEO/FAQ content for rental listing page.
   const pageContent = pageSeoFaq["cho-thue"];
 

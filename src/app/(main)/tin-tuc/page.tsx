@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { connection } from "next/server";
 import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
@@ -13,6 +14,8 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function TinTucPage() {
+  await connection();
+
   // Fetch news categories for listing filter tabs.
   const categories = await categoryService.getNewsCategories();
 

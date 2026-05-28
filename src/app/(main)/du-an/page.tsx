@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { connection } from "next/server";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
@@ -16,6 +17,8 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function DuAnPage() {
+  await connection();
+
   // Fetch project categories for tabs/chips.
   const projectCategories = await categoryService.getProjectCategories();
   // Load static SEO/FAQ content for project page.

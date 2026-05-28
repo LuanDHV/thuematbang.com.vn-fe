@@ -68,11 +68,18 @@ const resolveRentRequest = cache(async (rawSlug: string) => {
 });
 
 async function resolveRentRequestIfDetailSlug(rawSlug?: string) {
-  if (!rawSlug || isLikelyPropertyFilterSlug(rawSlug)) {
+  if (!rawSlug) {
     return null;
   }
 
-  return resolveRentRequest(rawSlug);
+  try {
+    return await resolveRentRequest(rawSlug);
+  } catch {
+    if (isLikelyPropertyFilterSlug(rawSlug)) {
+      return null;
+    }
+    return null;
+  }
 }
 
 const resolveLocationContext = cache(async (): Promise<LocationContext> => {

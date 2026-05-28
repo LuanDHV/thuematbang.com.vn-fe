@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { connection } from "next/server";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
@@ -15,6 +16,8 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function CanThuePage() {
+  await connection();
+
   // Load static SEO/FAQ content for rent request page.
   const pageContent = pageSeoFaq["can-thue"];
 
