@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PosterContactCard from "@/components/common/PosterContactCard";
-import { User } from "@/types/user";
 
 type RelatedCategoryCityLink = {
   label: string;
@@ -9,13 +8,15 @@ type RelatedCategoryCityLink = {
 };
 
 type PropertyDetailSidebarProps = {
-  poster?: User;
+  contactName?: string | null;
+  contactPhone?: string | null;
   isLoggedIn: boolean;
   relatedCategoryCityLinks: RelatedCategoryCityLink[];
 };
 
 export default function PropertyDetailSidebar({
-  poster,
+  contactName,
+  contactPhone,
   isLoggedIn,
   relatedCategoryCityLinks,
 }: PropertyDetailSidebarProps) {
@@ -23,8 +24,8 @@ export default function PropertyDetailSidebar({
     <aside className="flex w-full flex-col gap-6 lg:w-1/4">
       <div className="surface-panel w-full self-start p-5 lg:sticky lg:top-18">
         <PosterContactCard
-          fullName={poster?.fullName}
-          phone={poster?.phone}
+          fullName={contactName}
+          phone={contactPhone}
           canRevealPhone={isLoggedIn}
         />
       </div>

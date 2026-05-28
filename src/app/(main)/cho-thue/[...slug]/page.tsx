@@ -18,6 +18,7 @@ import { pageSeoFaq } from "@/constants/pageSeoFaq";
 import { Property } from "@/types/property";
 import { propertyService } from "@/services/property.service";
 import { locationService } from "@/services/location.service";
+import { readAuthCookies } from "@/app/api/v1/_utils/auth";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -139,6 +140,8 @@ export async function generateMetadata({
 export default async function DynamicChoThuePage({ params }: PageProps) {
   const { slug } = await params;
   const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const { accessToken } = await readAuthCookies();
+  const isLoggedIn = Boolean(accessToken);
   const pageContent = pageSeoFaq["cho-thue"];
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
@@ -155,8 +158,6 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     } catch {
       properties = [];
     }
-
-    const poster = property.user ?? undefined;
 
     const locationText = [
       property.addressDetail,
@@ -228,8 +229,9 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           />
 
           <PropertyDetailSidebar
-            poster={poster}
-            isLoggedIn
+            contactName={property.contactName}
+            contactPhone={property.contactPhone}
+            isLoggedIn={isLoggedIn}
             relatedCategoryCityLinks={relatedCategoryCityLinks}
           />
         </div>

@@ -18,6 +18,7 @@ import { pageSeoFaq } from "@/constants/pageSeoFaq";
 import { RentRequest } from "@/types/rent-request";
 import { rentRequestService } from "@/services/rent-request.service";
 import { locationService } from "@/services/location.service";
+import { readAuthCookies } from "@/app/api/v1/_utils/auth";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -124,6 +125,8 @@ export async function generateMetadata({
 export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
   const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const { accessToken } = await readAuthCookies();
+  const isLoggedIn = Boolean(accessToken);
   const pageContent = pageSeoFaq["can-thue"];
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
@@ -140,8 +143,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     } catch {
       rentRequests = [];
     }
-
-    const poster = rentRequest.user ?? undefined;
 
     const locationText = [
       rentRequest.desiredStreet?.name,
@@ -185,10 +186,10 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           />
 
           <RentRequestDetailSidebar
-            poster={poster}
-            isLoggedIn
+            contactName={rentRequest.contactName}
+            contactPhone={rentRequest.contactPhone}
+            isLoggedIn={isLoggedIn}
             latestWantedProperties={latestWantedRequests}
-            companyPhone={rentRequest.contactPhone ?? "0968688081"}
           />
         </div>
       </article>

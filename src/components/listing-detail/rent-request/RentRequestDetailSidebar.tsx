@@ -1,27 +1,26 @@
 import Link from "next/link";
 import PosterContactCard from "@/components/common/PosterContactCard";
 import { RentRequest } from "@/types/rent-request";
-import { User } from "@/types/user";
 
 type RentRequestDetailSidebarProps = {
-  poster?: User;
+  contactName?: string | null;
+  contactPhone?: string | null;
   isLoggedIn: boolean;
   latestWantedProperties: RentRequest[];
-  companyPhone?: string;
 };
 
 export default function RentRequestDetailSidebar({
-  poster,
+  contactName,
+  contactPhone,
   isLoggedIn,
   latestWantedProperties,
-  companyPhone = "0968688081",
 }: RentRequestDetailSidebarProps) {
   return (
     <aside className="flex w-full flex-col gap-6 lg:w-1/4">
       <div className="surface-panel self-start p-5 lg:sticky lg:top-18">
         <PosterContactCard
-          fullName={poster?.fullName}
-          phone={companyPhone}
+          fullName={contactName}
+          phone={contactPhone}
           canRevealPhone={isLoggedIn}
         />
       </div>
