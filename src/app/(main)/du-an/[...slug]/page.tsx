@@ -159,15 +159,15 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="flex flex-col gap-6 lg:col-span-8">
-            <section className="surface-card overflow-hidden p-5">
+          <div className="surface-panel flex flex-col gap-6 p-5 lg:col-span-8">
+            <section>
               <PropertyImageGallery
                 title={project.name}
                 images={galleryImages}
               />
             </section>
 
-            <section className="surface-panel p-5">
+            <section>
               <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
                 {project.name}
               </h1>
@@ -192,7 +192,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="surface-card p-5">
+            <section>
               <div className="mb-3 flex items-center gap-3">
                 <span className="bg-primary h-6 w-1 rounded-full" />
                 <h2 className="text-xl font-semibold text-gray-800">
@@ -213,7 +213,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
               )}
             </section>
 
-            <section className="surface-card p-5">
+            <section>
               <div className="mb-3 flex items-center gap-3">
                 <span className="bg-primary h-6 w-1 rounded-full" />
                 <h2 className="text-xl font-semibold text-gray-800">
@@ -260,7 +260,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="surface-card p-5">
+            <section>
               <div className="mb-3 flex items-center gap-3">
                 <span className="bg-primary h-6 w-1 rounded-full" />
                 <h2 className="text-xl font-semibold text-gray-800">
@@ -277,7 +277,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   className="h-80 w-full rounded-2xl border border-black/6 shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
                 />
               ) : (
-                <div className="surface-panel rounded-2xl p-4 text-sm text-gray-600">
+                <div className="bg-app/70 rounded-2xl p-4 text-sm text-gray-600">
                   Dự án chưa có tọa độ để hiển thị bản đồ.
                 </div>
               )}

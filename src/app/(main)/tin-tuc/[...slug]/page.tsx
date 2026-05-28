@@ -126,8 +126,8 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="flex flex-col gap-6 lg:col-span-8">
-            <section className="surface-card overflow-hidden p-5">
+          <div className="surface-panel flex flex-col gap-6 p-5 lg:col-span-8">
+            <section>
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
                 <Image
                   src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
@@ -140,7 +140,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="surface-panel p-5">
+            <section>
               <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
                 {news.title}
               </h1>
@@ -165,7 +165,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="surface-card p-5">
+            <section>
               <div className="mb-3 flex items-center gap-3">
                 <span className="bg-primary h-6 w-1 rounded-full" />
                 <h2 className="text-xl font-semibold text-gray-800">
@@ -178,7 +178,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
               </p>
             </section>
 
-            <section className="surface-card p-5">
+            <section>
               <div className="mb-3 flex items-center gap-3">
                 <span className="bg-primary h-6 w-1 rounded-full" />
                 <h2 className="text-xl font-semibold text-gray-800">

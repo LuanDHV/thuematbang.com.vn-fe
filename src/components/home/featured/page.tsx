@@ -8,7 +8,7 @@ import SafeFetch from "@/components/common/SafeFetch";
 export default async function FeaturedSection() {
   return (
     <section className="w-full px-4 py-12">
-      <div className="mx-auto w-full max-w-7xl px-5">
+      <div className="layout-container">
         <Title
           title="Bất động sản nổi bật"
           description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."

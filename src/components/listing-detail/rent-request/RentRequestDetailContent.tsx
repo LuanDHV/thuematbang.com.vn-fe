@@ -60,133 +60,131 @@ export default function RentRequestDetailContent({
 
   return (
     <div className="flex w-full flex-col gap-6 lg:w-3/4 lg:gap-8">
-      <section className="surface-card overflow-hidden p-5">
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
-          <CloudinaryImage
-            src={rentRequest.imageUrl || "/imgs/wallpaper-1.jpg"}
-            alt={rentRequest.title}
-            fill
-            sizes="(max-width: 1024px) 100vw, 75vw"
-            cldQuality="auto:best"
-            className="object-cover"
-            priority
-          />
-        </div>
-      </section>
+      <div className="surface-panel flex flex-col gap-6 p-5 lg:gap-8">
+        <section>
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
+            <CloudinaryImage
+              src={rentRequest.imageUrl || "/imgs/wallpaper-1.jpg"}
+              alt={rentRequest.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 75vw"
+              cldQuality="auto:best"
+              className="object-cover"
+              priority
+            />
+          </div>
+        </section>
 
-      <section className="surface-panel p-5">
-        <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
-          {rentRequest.title}
-        </h1>
+        <section>
+          <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
+            {rentRequest.title}
+          </h1>
 
-        <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
-          {categoryName ? (
-            <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
-              <Layers size={12} className="text-primary" />
-              Danh mục: {categoryName}
+          <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
+            {categoryName ? (
+              <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+                <Layers size={12} className="text-primary" />
+                Danh mục: {categoryName}
+              </span>
+            ) : null}
+
+            <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
+              <CalendarDays size={12} className="text-primary" />
+              Ngày đăng: {formatDate(rentRequest.createdAt)}
             </span>
-          ) : null}
 
-          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
-            <CalendarDays size={12} className="text-primary" />
-            Ngày đăng: {formatDate(rentRequest.createdAt)}
-          </span>
+            <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
+              <Eye size={12} className="text-primary" />
+              Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
+            </span>
+          </div>
+        </section>
 
-          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
-            <Eye size={12} className="text-primary" />
-            Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
-          </span>
-        </div>
-      </section>
+        <section>
+          <div className="mb-3 flex items-center gap-3">
+            <span className="bg-primary h-6 w-1 rounded-full" />
+            <h2 className="text-xl font-semibold text-gray-800">
+              Thông tin mô tả
+            </h2>
+          </div>
+          <p className="text-body whitespace-pre-line">
+            {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
+          </p>
+        </section>
 
-      <section className="surface-card p-5">
-        <div className="mb-3 flex items-center gap-3">
-          <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">
-            Thông tin mô tả
-          </h2>
-        </div>
-        <p className="text-body whitespace-pre-line">
-          {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
-        </p>
-      </section>
-
-      <section className="surface-card p-5">
-        <div className="mb-3 flex items-center gap-3">
-          <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">
-            Thông tin chi tiết
-          </h2>
-        </div>
-
-        <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
-            <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
-            <div>
-              <p className="text-secondary text-xs tracking-wide uppercase">
-                Khu vực
-              </p>
-              <p className="text-heading text-sm font-semibold">
-                {locationText || "Đang cập nhật"}
-              </p>
-            </div>
+        <section>
+          <div className="mb-3 flex items-center gap-3">
+            <span className="bg-primary h-6 w-1 rounded-full" />
+            <h2 className="text-xl font-semibold text-gray-800">
+              Thông tin chi tiết
+            </h2>
           </div>
 
-          <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
-            <Wallet className="text-primary mt-0.5 size-5 shrink-0" />
-            <div>
-              <p className="text-secondary text-xs tracking-wide uppercase">
-                Ngân sách
-              </p>
-              <p className="text-heading text-sm font-semibold">
-                {formatBudgetRange(rentRequest)}
-              </p>
-            </div>
-          </div>
-
-          {hasArea ? (
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
             <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
-              <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
+              <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
                 <p className="text-secondary text-xs tracking-wide uppercase">
-                  Diện tích cần thuê
-                </p>
-                <p className="text-heading font-mono text-sm font-semibold">
-                  {formatAreaRange(rentRequest)}
-                </p>
-              </div>
-            </div>
-          ) : null}
-
-          {hasDirection ? (
-            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
-              <Navigation className="text-primary mt-0.5 size-5 shrink-0" />
-              <div>
-                <p className="text-secondary text-xs tracking-wide uppercase">
-                  Hướng
+                  Khu vực
                 </p>
                 <p className="text-heading text-sm font-semibold">
-                  {getDirectionLabel(
-                    rentRequest.preferredDirection?.toString(),
-                  )}
+                  {locationText || "Đang cập nhật"}
                 </p>
               </div>
             </div>
-          ) : null}
-        </div>
-      </section>
 
-      <section>
+            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
+              <Wallet className="text-primary mt-0.5 size-5 shrink-0" />
+              <div>
+                <p className="text-secondary text-xs tracking-wide uppercase">
+                  Ngân sách
+                </p>
+                <p className="text-heading text-sm font-semibold">
+                  {formatBudgetRange(rentRequest)}
+                </p>
+              </div>
+            </div>
+
+            {hasArea ? (
+              <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
+                <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
+                <div>
+                  <p className="text-secondary text-xs tracking-wide uppercase">
+                    Diện tích cần thuê
+                  </p>
+                  <p className="text-heading font-mono text-sm font-semibold">
+                    {formatAreaRange(rentRequest)}
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
+            {hasDirection ? (
+              <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
+                <Navigation className="text-primary mt-0.5 size-5 shrink-0" />
+                <div>
+                  <p className="text-secondary text-xs tracking-wide uppercase">
+                    Hướng
+                  </p>
+                  <p className="text-heading text-sm font-semibold">
+                    {getDirectionLabel(
+                      rentRequest.preferredDirection?.toString(),
+                    )}
+                  </p>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </section>
+      </div>
+
+      <section className="surface-card p-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
             Bất động sản đã xem
           </h2>
         </div>
-        <p className="text-secondary text-sm">
-          Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ
-          localStorage/cookie.
-        </p>
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
           {viewedRequests.map((item) => (
             <RentRequestCard
