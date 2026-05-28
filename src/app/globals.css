@@ -133,12 +133,6 @@ textarea {
   border-color: var(--hairline-strong);
 }
 
-.metric-mono {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-}
-
 .interactive-lift {
   transition:
     color 0.24s ease,

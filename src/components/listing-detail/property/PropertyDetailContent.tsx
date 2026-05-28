@@ -1,4 +1,4 @@
-import {
+﻿import {
   Bath,
   Bed,
   CalendarDays,
@@ -50,35 +50,35 @@ export default function PropertyDetailContent({
   const hasDirection = Boolean(property.direction);
 
   return (
-    <div className="flex flex-col w-full gap-6 lg:w-3/4 lg:gap-8">
+    <div className="flex w-full flex-col gap-6 lg:w-3/4 lg:gap-8">
       <section className="surface-card overflow-hidden p-2">
         <PropertyImageGallery title={property.title} images={galleryImages} />
       </section>
 
       <section className="surface-panel p-6 md:p-7">
-        <h1 className="text-2xl leading-tight font-semibold tracking-[-0.03em] text-heading lg:text-4xl">
+        <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
           {property.title}
         </h1>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-secondary">
+        <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
           {property.category?.name ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+            <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
               <Layers size={12} className="text-primary" />
               Danh mục: {property.category.name}
             </span>
           ) : null}
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
             <Tag size={12} className="text-primary" />
             Loại tin đăng: {property.priorityStatus}
           </span>
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
             <CalendarDays size={12} className="text-primary" />
             Ngày đăng: {formatDate(property.createdAt)}
           </span>
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
             <Eye size={12} className="text-primary" />
             Lượt xem: {(property.viewCount || 0).toLocaleString("vi-VN")}
           </span>
@@ -94,12 +94,12 @@ export default function PropertyDetailContent({
         </div>
         {property.content ? (
           <div
-            className="premium-prose prose prose-sm max-w-none prose-p:leading-relaxed prose-headings:font-semibold text-body"
+            className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
             suppressHydrationWarning
             dangerouslySetInnerHTML={{ __html: property.content }}
           />
         ) : (
-          <p className="text-sm text-secondary">
+          <p className="text-secondary text-sm">
             Đang cập nhật thông tin mô tả.
           </p>
         )}
@@ -114,38 +114,38 @@ export default function PropertyDetailContent({
         </div>
 
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+          <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
             <Wallet className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-xs tracking-wide text-secondary uppercase">
+              <p className="text-secondary text-xs tracking-wide uppercase">
                 Giá thuê
               </p>
-              <p className="metric-mono text-sm font-semibold text-heading">
+              <p className="text-heading text-sm font-semibold">
                 {formatPrice(property.price || 0)}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+          <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
             <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-xs tracking-wide text-secondary uppercase">
+              <p className="text-secondary text-xs tracking-wide uppercase">
                 Địa chỉ
               </p>
-              <p className="text-sm font-semibold text-heading">
+              <p className="text-heading text-sm font-semibold">
                 {locationText || "Đang cập nhật"}
               </p>
             </div>
           </div>
 
           {hasArea ? (
-            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
               <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-secondary uppercase">
+                <p className="text-secondary text-xs tracking-wide uppercase">
                   Diện tích
                 </p>
-                <p className="metric-mono text-sm font-semibold text-heading">
+                <p className="metric-mono text-heading text-sm font-semibold">
                   {property.area} m²
                 </p>
               </div>
@@ -153,13 +153,13 @@ export default function PropertyDetailContent({
           ) : null}
 
           {hasBedrooms ? (
-            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
               <Bed className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-secondary uppercase">
+                <p className="text-secondary text-xs tracking-wide uppercase">
                   Phòng ngủ
                 </p>
-                <p className="metric-mono text-sm font-semibold text-heading">
+                <p className="text-heading text-sm font-semibold">
                   {property.bedrooms}
                 </p>
               </div>
@@ -167,13 +167,13 @@ export default function PropertyDetailContent({
           ) : null}
 
           {hasBathrooms ? (
-            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
               <Bath className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-secondary uppercase">
+                <p className="text-secondary text-xs tracking-wide uppercase">
                   Phòng tắm
                 </p>
-                <p className="metric-mono text-sm font-semibold text-heading">
+                <p className="text-heading text-sm font-semibold">
                   {property.bathrooms}
                 </p>
               </div>
@@ -181,13 +181,13 @@ export default function PropertyDetailContent({
           ) : null}
 
           {hasDirection ? (
-            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
               <Navigation className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-secondary uppercase">
+                <p className="text-secondary text-xs tracking-wide uppercase">
                   Hướng
                 </p>
-                <p className="text-sm font-semibold text-heading">
+                <p className="text-heading text-sm font-semibold">
                   {getDirectionLabel(property.direction?.toString())}
                 </p>
               </div>
@@ -213,7 +213,7 @@ export default function PropertyDetailContent({
             className="h-80 w-full rounded-2xl border border-black/6 shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
           />
         ) : (
-          <div className="surface-panel rounded-2xl p-4 text-sm text-secondary">
+          <div className="surface-panel text-secondary rounded-2xl p-4 text-sm">
             Tin đăng chưa có tọa độ để hiển thị bản đồ.
           </div>
         )}
@@ -244,7 +244,7 @@ export default function PropertyDetailContent({
             Bất động sản đã xem
           </h2>
         </div>
-        <p className="text-sm text-secondary">
+        <p className="text-secondary text-sm">
           Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ
           localStorage/cookie.
         </p>

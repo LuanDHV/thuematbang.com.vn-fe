@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { cache } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -168,24 +168,24 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
             </section>
 
             <section className="surface-panel p-6 md:p-7">
-              <h1 className="text-2xl leading-tight font-semibold tracking-[-0.03em] text-heading lg:text-4xl">
+              <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
                 {project.name}
               </h1>
 
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-secondary">
+              <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
                 {project.category?.name ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+                  <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
                     <Layers size={12} className="text-primary" />
                     Danh mục: {project.category.name}
                   </span>
                 ) : null}
 
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+                <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
                   <CalendarDays size={12} className="text-primary" />
                   Ngày đăng: {formatDate(project.createdAt)}
                 </span>
 
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+                <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
                   <Eye size={12} className="text-primary" />
                   Lượt xem: {(project.viewCount || 0).toLocaleString("vi-VN")}
                 </span>
@@ -202,7 +202,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
 
               {project.content ? (
                 <div
-                  className="premium-prose prose prose-sm max-w-none prose-p:leading-relaxed prose-headings:font-semibold text-body"
+                  className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
                   suppressHydrationWarning
                   dangerouslySetInnerHTML={{ __html: project.content }}
                 />
@@ -222,37 +222,37 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
               </div>
 
               <div className="mt-2 grid gap-3 sm:grid-cols-2">
-                <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+                <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
                   <Landmark className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
-                    <p className="text-xs tracking-wide text-secondary uppercase">
+                    <p className="text-secondary text-xs tracking-wide uppercase">
                       Tổng mức đầu tư
                     </p>
-                    <p className="metric-mono text-sm font-semibold text-heading">
+                    <p className="text-heading text-sm font-semibold">
                       {formatProjectPrice(project.price)}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+                <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
                   <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
-                    <p className="text-xs tracking-wide text-secondary uppercase">
+                    <p className="text-secondary text-xs tracking-wide uppercase">
                       Quy mô
                     </p>
-                    <p className="metric-mono text-sm font-semibold text-heading">
+                    <p className="text-heading text-sm font-semibold">
                       {formatProjectArea(project.area)}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+                <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
                   <Building2 className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
-                    <p className="text-xs tracking-wide text-secondary uppercase">
+                    <p className="text-secondary text-xs tracking-wide uppercase">
                       Chủ đầu tư
                     </p>
-                    <p className="text-sm font-semibold text-heading">
+                    <p className="text-heading text-sm font-semibold">
                       {project.developer || "Đang cập nhật"}
                     </p>
                   </div>
@@ -277,7 +277,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   className="h-80 w-full rounded-2xl border border-black/6 shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
                 />
               ) : (
-                  <div className="surface-panel rounded-2xl p-4 text-sm text-gray-600">
+                <div className="surface-panel rounded-2xl p-4 text-sm text-gray-600">
                   Dự án chưa có tọa độ để hiển thị bản đồ.
                 </div>
               )}

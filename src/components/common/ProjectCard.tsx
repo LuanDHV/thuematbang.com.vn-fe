@@ -1,4 +1,4 @@
-import { Project } from "@/types/project";
+﻿import { Project } from "@/types/project";
 import { Building2, Calendar, Eye, MapPin } from "lucide-react";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import Link from "next/link";
@@ -56,7 +56,7 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
         {project.category?.name ? (
-          <span className="absolute top-4 left-4 rounded-full bg-white/92 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+          <span className="text-primary absolute top-4 left-4 rounded-full bg-white/92 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
             {project.category.name}
           </span>
         ) : null}
@@ -73,19 +73,19 @@ export function ProjectCard({ project }: { project: Project }) {
 
       <div className="flex flex-col gap-4 p-5">
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl bg-app px-4 py-3">
-            <p className="text-[11px] font-semibold tracking-[0.14em] text-muted uppercase">
+          <div className="bg-app rounded-xl px-4 py-3">
+            <p className="text-muted text-[11px] font-semibold tracking-[0.14em] uppercase">
               Tổng mức
             </p>
-            <p className="metric-mono mt-1 text-sm font-semibold text-heading">
+            <p className="text-heading mt-1 text-sm font-semibold">
               {formatProjectPrice(project.price)}
             </p>
           </div>
-          <div className="rounded-xl bg-app px-4 py-3">
-            <p className="text-[11px] font-semibold tracking-[0.14em] text-muted uppercase">
+          <div className="bg-app rounded-xl px-4 py-3">
+            <p className="text-muted text-[11px] font-semibold tracking-[0.14em] uppercase">
               Quy mô
             </p>
-            <p className="metric-mono mt-1 text-sm font-semibold text-heading">
+            <p className="text-heading mt-1 text-sm font-semibold">
               {project.area
                 ? `${project.area.toLocaleString("vi-VN")} m²`
                 : "Đang cập nhật"}
@@ -93,34 +93,34 @@ export function ProjectCard({ project }: { project: Project }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 text-sm text-body">
+        <div className="text-body flex flex-col gap-2 text-sm">
           <p className="flex items-start gap-2">
-            <MapPin size={15} className="mt-0.5 shrink-0 text-primary/70" />
+            <MapPin size={15} className="text-primary/70 mt-0.5 shrink-0" />
             <span className="line-clamp-2">{location}</span>
           </p>
           <p className="flex items-center gap-2">
-            <Building2 size={15} className="shrink-0 text-primary/70" />
+            <Building2 size={15} className="text-primary/70 shrink-0" />
             <span>{project.developer || "Đang cập nhật chủ đầu tư"}</span>
           </p>
         </div>
 
-        <div className="flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-xs text-muted">
-          <span className="inline-flex items-center gap-1.5 metric-mono">
+        <div className="text-muted flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-xs">
+          <span className="inline-flex items-center gap-1.5">
             <Calendar size={12} />
             {formatDate(project.createdAt)}
           </span>
-          <span className="inline-flex items-center gap-1.5 metric-mono">
+          <span className="inline-flex items-center gap-1.5">
             <Eye size={12} />
             {(project.viewCount || 0).toLocaleString("vi-VN")}
           </span>
         </div>
 
-        <p className="text-sm font-semibold text-primary group-hover:underline">
+        <p className="text-primary text-sm font-semibold group-hover:underline">
           Xem chi tiết dự án
         </p>
       </div>
 
-      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
     </Link>
   );
 }

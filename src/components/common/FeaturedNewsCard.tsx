@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Calendar } from "lucide-react";
 import Image from "next/image";
@@ -36,7 +36,7 @@ export default function FeaturedNewsCard({ news }: FeaturedNewsCardProps) {
           </p>
         </div>
 
-        <div className="metric-mono mt-4 flex items-center gap-4 text-xs font-medium text-muted">
+        <div className="mt-4 flex items-center gap-4 text-xs font-medium text-muted">
           <div className="flex items-center gap-1.5">
             <Calendar size={14} strokeWidth={2.5} className="text-primary/70" />
             <span>{formatDate(news.createdAt)}</span>
@@ -46,3 +46,4 @@ export default function FeaturedNewsCard({ news }: FeaturedNewsCardProps) {
     </Link>
   );
 }
+

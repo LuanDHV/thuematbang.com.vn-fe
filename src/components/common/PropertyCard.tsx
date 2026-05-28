@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Property } from "@/types/property";
 import {
@@ -60,12 +60,12 @@ function getLocationText(property: Property) {
 
 function CardFooter({ property }: { property: Property }) {
   return (
-    <div className="mt-auto flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-sm text-muted">
-      <span className="inline-flex items-center gap-1 metric-mono">
+    <div className="text-muted mt-auto flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-sm">
+      <span className="inline-flex items-center gap-1">
         <Calendar size={11} />
         {formatDate(property.createdAt)}
       </span>
-      <span className="inline-flex items-center gap-1 metric-mono">
+      <span className="inline-flex items-center gap-1">
         <Eye size={11} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
@@ -75,7 +75,7 @@ function CardFooter({ property }: { property: Property }) {
 
 function TierBadge({ label }: { label: string }) {
   return (
-    <span className="absolute top-3 left-3 z-20 rounded-full bg-white/92 px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
+    <span className="text-primary absolute top-3 left-3 z-20 rounded-full bg-white/92 px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase shadow-[0_10px_24px_rgba(15,23,42,0.08)]">
       {label}
     </span>
   );
@@ -84,7 +84,7 @@ function TierBadge({ label }: { label: string }) {
 function ImageCountBadge({ count }: { count: number }) {
   return (
     <div className="absolute top-3 right-3 z-30 rounded-lg bg-black/52 px-2.5 py-1 text-sm font-semibold text-white">
-      <span className="inline-flex items-center gap-1 metric-mono">
+      <span className="inline-flex items-center gap-1">
         <Images size={13} />
         {count}
       </span>
@@ -102,7 +102,7 @@ function OverlayTitle({
   return (
     <div className="absolute right-3 bottom-3 left-3 z-20">
       {property.category?.name ? (
-        <span className="rounded-full bg-white/92 px-2.5 py-1 text-[10px] font-semibold uppercase text-primary">
+        <span className="text-primary rounded-full bg-white/92 px-2.5 py-1 text-[10px] font-semibold uppercase">
           {property.category.name}
         </span>
       ) : null}
@@ -117,7 +117,7 @@ function OverlayTitle({
 
 function FeaturedCard({ property }: { property: Property }) {
   return (
-    <article className="surface-card interactive-lift group overflow-hidden rounded-2xl">
+    <article className="surface-card interactive-lift group flex h-full flex-col overflow-hidden rounded-2xl">
       <div className="relative h-52 overflow-hidden">
         <TierBadge label={getTierLabel(property.priorityStatus)} />
         <CloudinaryImage
@@ -132,7 +132,7 @@ function FeaturedCard({ property }: { property: Property }) {
 
         <div className="absolute right-3 bottom-3 left-3">
           {property.category?.name ? (
-            <span className="rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase text-primary">
+            <span className="text-primary rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase">
               {property.category.name}
             </span>
           ) : null}
@@ -143,7 +143,7 @@ function FeaturedCard({ property }: { property: Property }) {
       </div>
 
       <CardBody property={property} />
-      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
@@ -157,7 +157,7 @@ function GoldCard({ property }: { property: Property }) {
       : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
 
   return (
-    <article className="surface-card interactive-lift group overflow-hidden rounded-2xl border-primary/12">
+    <article className="surface-card interactive-lift group border-primary/12 flex h-full flex-col overflow-hidden rounded-2xl">
       <div className="relative flex h-60 w-full gap-0.5 overflow-hidden bg-gray-100">
         <div
           className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
@@ -216,7 +216,7 @@ function GoldCard({ property }: { property: Property }) {
       </div>
 
       <CardBody property={property} />
-      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
@@ -235,7 +235,7 @@ function SilverCard({ property }: { property: Property }) {
   ];
 
   return (
-    <article className="surface-card interactive-lift group overflow-hidden rounded-2xl">
+    <article className="surface-card interactive-lift group flex h-full flex-col overflow-hidden rounded-2xl">
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden bg-gray-100">
         <div className="relative w-2/3 overflow-hidden">
           <CloudinaryImage
@@ -273,7 +273,7 @@ function SilverCard({ property }: { property: Property }) {
       </div>
 
       <CardBody property={property} />
-      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
@@ -282,7 +282,7 @@ function NormalCard({ property }: { property: Property }) {
   const image = getPropertyThumbnailUrl(property);
 
   return (
-    <article className="surface-card interactive-lift group overflow-hidden rounded-xl">
+    <article className="surface-card interactive-lift group flex h-full flex-col overflow-hidden rounded-xl">
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage
           src={image}
@@ -298,7 +298,7 @@ function NormalCard({ property }: { property: Property }) {
       </div>
 
       <CardBody property={property} />
-      <div className="h-1 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
     </article>
   );
 }
@@ -308,35 +308,37 @@ function CardBody({ property }: { property: Property }) {
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
-    <div className="flex min-h-60 flex-1 flex-col p-5">
-      <p className="metric-mono mt-1 text-base font-semibold text-heading">
+    <div className="flex h-full flex-1 flex-col p-5">
+      <p className="text-heading text-base font-semibold">
         {formatPrice(property.price || 0)}
       </p>
 
-      <div className="my-3 flex flex-col gap-1.5 text-sm text-muted">
-        <p className="flex items-start gap-1.5">
-          <MapPin size={12} className="mt-0.5 text-primary/70" />
+      <div className="text-muted my-2 flex flex-col gap-1 text-sm">
+        <p className="flex items-start gap-1">
+          <MapPin size={12} className="text-primary/70 mt-0.5" />
           <span className="line-clamp-1">{location}</span>
         </p>
-        <p className="flex items-start gap-1.5">
-          <Maximize size={12} className="mt-0.5 text-primary/70" />
-          <span className="metric-mono">
+        <p className="flex items-start gap-1">
+          <Maximize size={12} className="text-primary/70 mt-0.5" />
+          <span>
             {property.area ? `${property.area} m²` : "Đang cập nhật diện tích"}
           </span>
         </p>
         {property.bathrooms ? (
-          <p className="flex items-start gap-1.5">
-            <Bath size={12} className="mt-0.5 text-primary/70" />
-            <span className="metric-mono">{property.bathrooms} phòng tắm</span>
+          <p className="flex items-start gap-1">
+            <Bath size={12} className="text-primary/70 mt-0.5" />
+            <span>{property.bathrooms} phòng tắm</span>
           </p>
         ) : null}
         {property.bedrooms ? (
-          <p className="flex items-start gap-1.5">
-            <Bed size={12} className="mt-0.5 text-primary/70" />
-            <span className="metric-mono">{property.bedrooms} phòng ngủ</span>
+          <p className="flex items-start gap-1">
+            <Bed size={12} className="text-primary/70 mt-0.5" />
+            <span>{property.bedrooms} phòng ngủ</span>
           </p>
         ) : null}
-        {contentPreview ? <p className="line-clamp-2">{contentPreview}</p> : null}
+        {contentPreview ? (
+          <p className="line-clamp-2">{contentPreview}</p>
+        ) : null}
       </div>
 
       <CardFooter property={property} />
@@ -372,5 +374,9 @@ export function PropertyCard({
     }
   }
 
-  return <Link href={href}>{content}</Link>;
+  return (
+    <Link href={href} className="block h-full">
+      {content}
+    </Link>
+  );
 }

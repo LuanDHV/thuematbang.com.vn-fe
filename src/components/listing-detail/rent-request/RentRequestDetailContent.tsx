@@ -1,4 +1,4 @@
-import {
+﻿import {
   CalendarDays,
   Eye,
   Layers,
@@ -59,7 +59,7 @@ export default function RentRequestDetailContent({
   const categoryName = rentRequest.category?.name ?? "";
 
   return (
-    <div className="flex flex-col w-full gap-6 lg:w-3/4 lg:gap-8">
+    <div className="flex w-full flex-col gap-6 lg:w-3/4 lg:gap-8">
       <section className="surface-card overflow-hidden p-2">
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
           <CloudinaryImage
@@ -75,24 +75,24 @@ export default function RentRequestDetailContent({
       </section>
 
       <section className="surface-panel p-6 md:p-7">
-        <h1 className="text-2xl leading-tight font-semibold tracking-[-0.03em] text-heading lg:text-4xl">
+        <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
           {rentRequest.title}
         </h1>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-secondary">
+        <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
           {categoryName ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+            <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
               <Layers size={12} className="text-primary" />
               Danh mục: {categoryName}
             </span>
           ) : null}
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
             <CalendarDays size={12} className="text-primary" />
             Ngày đăng: {formatDate(rentRequest.createdAt)}
           </span>
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-secondary">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
             <Eye size={12} className="text-primary" />
             Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
           </span>
@@ -106,7 +106,7 @@ export default function RentRequestDetailContent({
             Thông tin mô tả
           </h2>
         </div>
-        <p className="whitespace-pre-line text-body">
+        <p className="text-body whitespace-pre-line">
           {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
         </p>
       </section>
@@ -120,38 +120,38 @@ export default function RentRequestDetailContent({
         </div>
 
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+          <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
             <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-xs tracking-wide text-secondary uppercase">
+              <p className="text-secondary text-xs tracking-wide uppercase">
                 Khu vực
               </p>
-              <p className="text-sm font-semibold text-heading">
+              <p className="text-heading text-sm font-semibold">
                 {locationText || "Đang cập nhật"}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+          <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
             <Wallet className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-xs tracking-wide text-secondary uppercase">
+              <p className="text-secondary text-xs tracking-wide uppercase">
                 Ngân sách
               </p>
-              <p className="metric-mono text-sm font-semibold text-heading">
+              <p className="text-heading text-sm font-semibold">
                 {formatBudgetRange(rentRequest)}
               </p>
             </div>
           </div>
 
           {hasArea ? (
-            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
               <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-secondary uppercase">
+                <p className="text-secondary text-xs tracking-wide uppercase">
                   Diện tích cần thuê
                 </p>
-                <p className="metric-mono text-sm font-semibold text-heading">
+                <p className="text-heading text-sm font-semibold">
                   {formatAreaRange(rentRequest)}
                 </p>
               </div>
@@ -159,13 +159,13 @@ export default function RentRequestDetailContent({
           ) : null}
 
           {hasDirection ? (
-            <div className="flex items-center gap-3 rounded-xl bg-app/70 px-3 py-3">
+            <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
               <Navigation className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
-                <p className="text-xs tracking-wide text-secondary uppercase">
+                <p className="text-secondary text-xs tracking-wide uppercase">
                   Hướng
                 </p>
-                <p className="text-sm font-semibold text-heading">
+                <p className="text-heading text-sm font-semibold">
                   {getDirectionLabel(
                     rentRequest.preferredDirection?.toString(),
                   )}
@@ -183,7 +183,7 @@ export default function RentRequestDetailContent({
             Bất động sản đã xem
           </h2>
         </div>
-        <p className="text-sm text-secondary">
+        <p className="text-secondary text-sm">
           Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ
           localStorage/cookie.
         </p>
