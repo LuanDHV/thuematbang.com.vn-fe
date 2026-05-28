@@ -159,7 +159,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="surface-panel flex flex-col gap-6 p-5 lg:col-span-8">
+          <div className="flex flex-col gap-6 lg:col-span-8 lg:gap-8">
             <section>
               <PropertyImageGallery
                 title={project.name}
@@ -174,18 +174,18 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
 
               <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
                 {project.category?.name ? (
-                  <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+                  <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
                     <Layers size={12} className="text-primary" />
                     Danh mục: {project.category.name}
                   </span>
                 ) : null}
 
-                <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
+                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium">
                   <CalendarDays size={12} className="text-primary" />
                   Ngày đăng: {formatDate(project.createdAt)}
                 </span>
 
-                <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
+                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium">
                   <Eye size={12} className="text-primary" />
                   Lượt xem: {(project.viewCount || 0).toLocaleString("vi-VN")}
                 </span>
@@ -222,7 +222,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
               </div>
 
               <div className="mt-2 grid gap-3 sm:grid-cols-2">
-                <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
+                <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
                   <Landmark className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
                     <p className="text-secondary text-xs tracking-wide uppercase">
@@ -234,7 +234,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
+                <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
                   <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
                     <p className="text-secondary text-xs tracking-wide uppercase">
@@ -246,7 +246,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <div className="bg-app/70 flex items-center gap-3 rounded-xl px-3 py-3">
+                <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
                   <Building2 className="text-primary mt-0.5 size-5 shrink-0" />
                   <div>
                     <p className="text-secondary text-xs tracking-wide uppercase">
@@ -277,7 +277,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   className="h-80 w-full rounded-2xl border border-black/6 shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
                 />
               ) : (
-                <div className="bg-app/70 rounded-2xl p-4 text-sm text-gray-600">
+                <div className="surface-card text-secondary rounded-2xl p-4 text-sm">
                   Dự án chưa có tọa độ để hiển thị bản đồ.
                 </div>
               )}
@@ -286,8 +286,9 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
 
           <aside className="lg:col-span-4">
             <div className="flex flex-col gap-4 lg:sticky lg:top-24">
-              <section className="surface-card p-5 md:p-6">
-                <h2 className="text-lg font-semibold text-gray-800">
+              <section className="surface-card rounded-2xl border p-5 md:p-6">
+                <h2 className="text-heading font-serif text-base font-medium">
+                  <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
                   Dự án khác
                 </h2>
 
@@ -296,11 +297,9 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                     <Link
                       key={item.id}
                       href={`/du-an/${item.slug}`}
-                      className="group hover:text-primary py-2.5 text-sm text-gray-700 transition-colors duration-200 ease-in-out"
+                      className="group text-body hover:text-primary py-2.5 text-sm font-medium transition-all duration-200"
                     >
-                      <span className="line-clamp-2 font-medium">
-                        {item.name}
-                      </span>
+                      <span className="line-clamp-2">{item.name}</span>
                     </Link>
                   ))}
                 </div>
