@@ -50,7 +50,7 @@ export default function PropertyDetailContent({
   const hasDirection = Boolean(property.direction);
 
   return (
-    <div className="flex flex-col gap-6 lg:gap-8">
+    <div className="surface-panel flex flex-col gap-6 p-5 lg:gap-8">
       <section>
         <PropertyImageGallery title={property.title} images={galleryImages} />
       </section>

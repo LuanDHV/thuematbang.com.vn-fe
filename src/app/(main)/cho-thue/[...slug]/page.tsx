@@ -216,25 +216,23 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
     return (
       <article className="layout-container layout-section-sm">
+        <DynamicBreadcrumb
+          items={[
+            { label: "Trang chủ", href: "/" },
+            { label: "Cho thuê", href: "/cho-thue" },
+            { label: property.title },
+          ]}
+        />
         <div className="flex flex-col gap-6 lg:flex-row">
-          <div className="surface-panel p-5">
-            <DynamicBreadcrumb
-              items={[
-                { label: "Trang chủ", href: "/" },
-                { label: "Cho thuê", href: "/cho-thue" },
-                { label: property.title },
-              ]}
-            />
+          <PropertyDetailContent
+            property={property}
+            locationText={locationText}
+            galleryImages={galleryImages}
+            mapSrc={mapSrc}
+            featuredProperties={featuredProperties}
+            viewedProperties={viewedProperties}
+          />
 
-            <PropertyDetailContent
-              property={property}
-              locationText={locationText}
-              galleryImages={galleryImages}
-              mapSrc={mapSrc}
-              featuredProperties={featuredProperties}
-              viewedProperties={viewedProperties}
-            />
-          </div>
           <PropertyDetailSidebar
             contactName={property.contactName}
             contactPhone={property.contactPhone}

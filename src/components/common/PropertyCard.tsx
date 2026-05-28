@@ -61,11 +61,11 @@ function getLocationText(property: Property) {
 function CardFooter({ property }: { property: Property }) {
   return (
     <div className="text-muted mt-auto flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-sm">
-      <span className="font-mono inline-flex items-center gap-1">
+      <span className="inline-flex items-center gap-1 font-mono">
         <Calendar size={11} />
         {formatDate(property.createdAt)}
       </span>
-      <span className="font-mono inline-flex items-center gap-1">
+      <span className="inline-flex items-center gap-1 font-mono">
         <Eye size={11} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
@@ -84,7 +84,7 @@ function TierBadge({ label }: { label: string }) {
 function ImageCountBadge({ count }: { count: number }) {
   return (
     <div className="absolute top-3 right-3 z-30 rounded-lg bg-black/52 px-2.5 py-1 text-sm font-semibold text-white">
-      <span className="font-mono inline-flex items-center gap-1">
+      <span className="inline-flex items-center gap-1 font-mono">
         <Images size={13} />
         {count}
       </span>
@@ -309,14 +309,14 @@ function CardBody({ property }: { property: Property }) {
 
   return (
     <div className="flex h-full flex-1 flex-col p-5">
-      <p className="text-heading text-base font-semibold transition-colors duration-200 group-hover:text-primary md:text-lg">
+      <p className="text-heading group-hover:text-primary text-base font-semibold transition-colors duration-200 md:text-lg">
         {formatPrice(property.price || 0)}
       </p>
 
       <div className="text-muted my-2 flex flex-col gap-1 text-sm">
         <p className="flex items-start gap-1">
           <MapPin size={12} className="text-primary/70 mt-0.5" />
-          <span className="font-mono line-clamp-1">{location}</span>
+          <span className="line-clamp-1 font-mono">{location}</span>
         </p>
         <p className="flex items-start gap-1">
           <Maximize size={12} className="text-primary/70 mt-0.5" />

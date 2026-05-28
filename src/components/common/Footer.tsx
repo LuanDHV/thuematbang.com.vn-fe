@@ -18,7 +18,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-elevated text-body mt-auto w-full border-t border-black/6">
+    <footer className="bg-footer text-body mt-auto w-full border-t border-black/6">
       <div className="layout-container py-10 md:py-12">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
           <div className="flex flex-col gap-8">
