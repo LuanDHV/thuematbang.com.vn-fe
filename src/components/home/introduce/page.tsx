@@ -1,4 +1,4 @@
-import Title from "@/components/common/Title";
+﻿import Title from "@/components/common/Title";
 import { ShieldCheck, Users, ListCheck, LockKeyhole } from "lucide-react";
 
 const features = [
@@ -28,7 +28,7 @@ const features = [
 export default function IntroduceSection() {
   return (
     <section className="to-primary/10 relative h-auto w-full overflow-hidden bg-linear-to-b from-white px-4 py-12">
-      <div className="mx-auto w-full max-w-7xl px-5">
+      <div className="layout-container">
         <Title
           title="Giới thiệu"
           description="Chúng tôi là nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. Với hệ thống danh mục đa dạng và dịch vụ chuyên nghiệp, chúng tôi cam kết tạo ra trải nghiệm tốt nhất cho khách hàng."
@@ -39,18 +39,18 @@ export default function IntroduceSection() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-xl border border-gray-100 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
+              className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
             >
               {/* Icon Container */}
               <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
                 {feature.icon}
               </div>
 
-              <h3 className="mb-4 text-xl font-bold tracking-tight text-body">
+              <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
                 {feature.title}
               </h3>
 
-              <p className="text-sm leading-relaxed font-light text-secondary">
+              <p className="text-secondary text-sm leading-relaxed font-light">
                 {feature.description}
               </p>
 

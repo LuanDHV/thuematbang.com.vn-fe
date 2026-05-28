@@ -36,7 +36,7 @@ export default function NewsCard({ news }: NewsCardProps) {
           </p>
         </div>
 
-        <div className="text-muted flex items-center gap-4 text-[10px] font-medium">
+        <div className="text-muted font-mono flex items-center gap-4 text-[10px] font-medium">
           <div className="flex items-center gap-1.5">
             <Calendar size={13} strokeWidth={2.5} className="text-primary/70" />
             <span>{formatDate(news.createdAt)}</span>

@@ -207,7 +207,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       : [];
 
     return (
-      <article className="mx-auto max-w-7xl px-5 py-8">
+      <article className="layout-container layout-section-sm">
         <DynamicBreadcrumb
           className="mb-6"
           items={[

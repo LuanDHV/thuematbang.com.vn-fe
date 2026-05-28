@@ -61,11 +61,11 @@ function getLocationText(property: Property) {
 function CardFooter({ property }: { property: Property }) {
   return (
     <div className="text-muted mt-auto flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-sm">
-      <span className="inline-flex items-center gap-1">
+      <span className="font-mono inline-flex items-center gap-1">
         <Calendar size={11} />
         {formatDate(property.createdAt)}
       </span>
-      <span className="inline-flex items-center gap-1">
+      <span className="font-mono inline-flex items-center gap-1">
         <Eye size={11} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
@@ -84,7 +84,7 @@ function TierBadge({ label }: { label: string }) {
 function ImageCountBadge({ count }: { count: number }) {
   return (
     <div className="absolute top-3 right-3 z-30 rounded-lg bg-black/52 px-2.5 py-1 text-sm font-semibold text-white">
-      <span className="inline-flex items-center gap-1">
+      <span className="font-mono inline-flex items-center gap-1">
         <Images size={13} />
         {count}
       </span>
@@ -316,24 +316,24 @@ function CardBody({ property }: { property: Property }) {
       <div className="text-muted my-2 flex flex-col gap-1 text-sm">
         <p className="flex items-start gap-1">
           <MapPin size={12} className="text-primary/70 mt-0.5" />
-          <span className="line-clamp-1">{location}</span>
+          <span className="font-mono line-clamp-1">{location}</span>
         </p>
         <p className="flex items-start gap-1">
           <Maximize size={12} className="text-primary/70 mt-0.5" />
-          <span>
+          <span className="font-mono">
             {property.area ? `${property.area} m²` : "Đang cập nhật diện tích"}
           </span>
         </p>
         {property.bathrooms ? (
           <p className="flex items-start gap-1">
             <Bath size={12} className="text-primary/70 mt-0.5" />
-            <span>{property.bathrooms} phòng tắm</span>
+            <span className="font-mono">{property.bathrooms} phòng tắm</span>
           </p>
         ) : null}
         {property.bedrooms ? (
           <p className="flex items-start gap-1">
             <Bed size={12} className="text-primary/70 mt-0.5" />
-            <span>{property.bedrooms} phòng ngủ</span>
+            <span className="font-mono">{property.bedrooms} phòng ngủ</span>
           </p>
         ) : null}
         {contentPreview ? (

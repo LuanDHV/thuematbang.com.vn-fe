@@ -13,8 +13,8 @@ export default async function NewsSection() {
     sourceNews = response.data ?? [];
   } catch {
     return (
-      <section className="w-full px-4 py-12">
-        <div className="container mx-auto max-w-7xl px-5">
+      <section className="layout-section w-full">
+        <div className="layout-container">
           <div className="mb-16 text-center">
             <Title
               title="Tin tức"
@@ -32,8 +32,8 @@ export default async function NewsSection() {
   const sideNews = newsList.slice(1, 4);
 
   return (
-    <section className="w-full px-4 py-12">
-      <div className="container mx-auto max-w-7xl px-5">
+    <section className="layout-section w-full">
+      <div className="layout-container">
         <div className="mb-16 text-center">
           <Title
             title="Tin tức"

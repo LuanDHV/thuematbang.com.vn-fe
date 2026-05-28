@@ -41,7 +41,7 @@ export default function ListingFilterSection({
 
   return (
     <div className="relative">
-      <div className="sticky top-16 z-40 mx-auto max-w-7xl">
+      <div className="layout-container sticky top-16 z-40">
         <ListingFilterToolbar
           basePath={basePath}
           listingMode={listingMode}

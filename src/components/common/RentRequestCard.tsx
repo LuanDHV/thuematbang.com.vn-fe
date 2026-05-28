@@ -1,6 +1,6 @@
 import { formatDate, formatPrice } from "@/lib/utils";
 import { RentRequest } from "@/types/rent-request";
-import { Calendar, Eye, MapPin, Maximize, Wallet } from "lucide-react";
+import { Calendar, Eye, MapPin, Maximize } from "lucide-react";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import Link from "next/link";
 
@@ -45,12 +45,10 @@ export function RentRequestCard({
   const categoryName = request.category?.name ?? "";
 
   return (
-    <Link href={`/can-thue/${request.slug}`}>
+    <Link href={`/can-thue/${request.slug}`} className="block h-full">
       <article
-        className={`group overflow-hidden border bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
-          isFeatured
-            ? "rounded-2xl border-gray-200"
-            : "rounded-xl border-gray-200"
+        className={`surface-card interactive-lift group flex h-full flex-col overflow-hidden ${
+          isFeatured ? "rounded-2xl" : "rounded-xl"
         }`}
       >
         <div
@@ -62,50 +60,50 @@ export function RentRequestCard({
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
             cldQuality="auto:best"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/24 to-transparent" />
           {categoryName ? (
-            <span className="text-primary absolute top-3 left-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase">
+            <span className="text-primary absolute top-3 left-3 rounded-full bg-white/92 px-2.5 py-1 text-[10px] font-semibold uppercase">
               {categoryName}
             </span>
           ) : null}
-          <h3 className="absolute right-3 bottom-3 left-3 line-clamp-2 text-lg leading-tight font-bold text-white">
+          <h3 className="absolute right-3 bottom-3 left-3 line-clamp-2 text-lg leading-tight font-semibold tracking-[-0.02em] text-white">
             {request.title}
           </h3>
         </div>
 
-        <div className="flex min-h-55 flex-col p-4">
-          <p className="text-primary mt-1 flex items-start gap-1 text-sm font-bold">
-            <Wallet size={14} className="mt-0.5 shrink-0" />
+        <div className="flex h-full flex-1 flex-col p-5">
+          <p className="text-heading mt-1 gap-1.5 text-base font-semibold uppercase">
             <span>{formatBudgetRange(request)}</span>
           </p>
 
-          <div className="flex flex-col my-2 gap-1 text-sm text-gray-500">
+          <div className="text-muted my-2 flex flex-col gap-1 text-sm">
             <p className="flex items-start gap-1">
-              <MapPin size={12} className="mt-0.5 text-gray-400" />
+              <MapPin size={12} className="text-primary/70 mt-0.5" />
               <span className="line-clamp-1">{location}</span>
             </p>
             <p className="flex items-start gap-1">
-              <Maximize size={12} className="mt-0.5 text-gray-400" />
-              {formatAreaRange(request)}
+              <Maximize size={12} className="text-primary/70 mt-0.5" />
+              <span className="font-mono">{formatAreaRange(request)}</span>
             </p>
             {request.requirementText ? (
               <p className="line-clamp-2">{request.requirementText}</p>
             ) : null}
           </div>
 
-          <div className="mt-auto flex items-center justify-between border-t border-dashed border-gray-200 pt-2 text-sm text-gray-500">
-            <span className="inline-flex items-center gap-1">
+          <div className="text-muted mt-auto flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-sm">
+            <span className="inline-flex items-center gap-1 font-mono">
               <Calendar size={11} />
               {formatDate(request.createdAt)}
             </span>
-            <span className="inline-flex items-center gap-1">
+            <span className="inline-flex items-center gap-1 font-mono">
               <Eye size={11} />
               {(request.viewCount || 0).toLocaleString("vi-VN")}
             </span>
           </div>
         </div>
+        <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
       </article>
     </Link>
   );

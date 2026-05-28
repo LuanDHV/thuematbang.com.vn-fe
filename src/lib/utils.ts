@@ -6,12 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const formatPrice = (price: bigint | number) => {
-  return (
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(Number(price)) + "/tháng"
-  );
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(Number(price));
 };
 
 export const formatDate = (date?: Date | string | null) => {

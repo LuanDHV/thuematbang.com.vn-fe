@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -125,7 +125,7 @@ export default function ListingResultsClient({
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-5 py-8">
+    <section className="layout-container layout-section-sm">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}

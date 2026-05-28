@@ -68,12 +68,12 @@ export default function PropertyDetailContent({
             </span>
           ) : null}
 
-          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+          <span className="text-secondary font-mono inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
             <Tag size={12} className="text-primary" />
             Loại tin đăng: {property.priorityStatus}
           </span>
 
-          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+          <span className="text-secondary font-mono inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
             <CalendarDays size={12} className="text-primary" />
             Ngày đăng: {formatDate(property.createdAt)}
           </span>
@@ -132,7 +132,7 @@ export default function PropertyDetailContent({
               <p className="text-secondary text-xs tracking-wide uppercase">
                 Địa chỉ
               </p>
-              <p className="text-heading text-sm font-semibold">
+              <p className="font-mono text-heading text-sm font-semibold">
                 {locationText || "Đang cập nhật"}
               </p>
             </div>
@@ -145,7 +145,7 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Diện tích
                 </p>
-                <p className="metric-mono text-heading text-sm font-semibold">
+                <p className="font-mono text-heading text-sm font-semibold">
                   {property.area} m²
                 </p>
               </div>
@@ -159,7 +159,7 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Phòng ngủ
                 </p>
-                <p className="text-heading text-sm font-semibold">
+                <p className="font-mono text-heading text-sm font-semibold">
                   {property.bedrooms}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Phòng tắm
                 </p>
-                <p className="text-heading text-sm font-semibold">
+                <p className="font-mono text-heading text-sm font-semibold">
                   {property.bathrooms}
                 </p>
               </div>

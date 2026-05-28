@@ -1,5 +1,5 @@
 ﻿import { Project } from "@/types/project";
-import { Building2, Calendar, Eye, MapPin } from "lucide-react";
+import { Building2, Calendar, Eye, MapPin, Maximize } from "lucide-react";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import Link from "next/link";
 
@@ -71,53 +71,42 @@ export function ProjectCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 p-5">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-app rounded-xl px-4 py-3">
-            <p className="text-muted text-[11px] font-semibold tracking-[0.14em] uppercase">
-              Tổng mức
-            </p>
-            <p className="text-heading mt-1 text-sm font-semibold">
-              {formatProjectPrice(project.price)}
-            </p>
-          </div>
-          <div className="bg-app rounded-xl px-4 py-3">
-            <p className="text-muted text-[11px] font-semibold tracking-[0.14em] uppercase">
-              Quy mô
-            </p>
-            <p className="text-heading mt-1 text-sm font-semibold">
+      <div className="flex flex-col gap-2 p-5">
+        <p className="text-heading mt-1 gap-1.5 text-base font-semibold uppercase">
+          <span> {formatProjectPrice(project.price)}</span>
+        </p>
+
+        <div className="text-muted flex flex-col gap-2 text-sm">
+          <p className="flex items-start gap-2">
+            <MapPin className="text-primary/70 size-5 shrink-0" />
+            <span className="line-clamp-2 font-mono">{location}</span>
+          </p>
+          <p className="flex items-center gap-2">
+            <Building2 className="text-primary/70 size-5 shrink-0" />
+            <span className="font-mono">
+              {project.developer || "Đang cập nhật chủ đầu tư"}
+            </span>
+          </p>
+          <p className="flex items-center gap-2">
+            <Maximize className="text-primary/70 size-5 shrink-0" />
+            <span className="font-mono">
               {project.area
                 ? `${project.area.toLocaleString("vi-VN")} m²`
                 : "Đang cập nhật"}
-            </p>
-          </div>
-        </div>
-
-        <div className="text-body flex flex-col gap-2 text-sm">
-          <p className="flex items-start gap-2">
-            <MapPin size={15} className="text-primary/70 mt-0.5 shrink-0" />
-            <span className="line-clamp-2">{location}</span>
-          </p>
-          <p className="flex items-center gap-2">
-            <Building2 size={15} className="text-primary/70 shrink-0" />
-            <span>{project.developer || "Đang cập nhật chủ đầu tư"}</span>
+            </span>
           </p>
         </div>
 
-        <div className="text-muted flex items-center justify-between border-t border-dashed border-black/8 pt-3 text-xs">
-          <span className="inline-flex items-center gap-1.5">
+        <div className="text-muted flex items-center justify-between border-t border-dashed border-black/8 pt-2 text-sm">
+          <span className="inline-flex items-center gap-1.5 font-mono">
             <Calendar size={12} />
             {formatDate(project.createdAt)}
           </span>
-          <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex items-center gap-1.5 font-mono">
             <Eye size={12} />
             {(project.viewCount || 0).toLocaleString("vi-VN")}
           </span>
         </div>
-
-        <p className="text-primary text-sm font-semibold group-hover:underline">
-          Xem chi tiết dự án
-        </p>
       </div>
 
       <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
