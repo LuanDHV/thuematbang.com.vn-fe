@@ -1,3 +1,5 @@
+"use client";
+
 import Image, { type ImageProps } from "next/image";
 import { CldImage } from "next-cloudinary";
 import { getCloudinaryPublicId, isCloudinaryImageUrl } from "@/lib/cloudinary";

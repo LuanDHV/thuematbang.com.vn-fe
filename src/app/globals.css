@@ -4,9 +4,10 @@
 
 @theme {
   --color-primary: #fbaa19;
-  --color-app: #f3efe8;
-  --color-subtle: #ece7de;
-  --color-elevated: #e3ddd3;
+  --color-app: #f5f1ea;
+  --color-subtle: #efe8dd;
+  --color-elevated: #e4dccc;
+  --color-footer: #ddd4c3;
   --color-heading: #0f172a;
   --color-body: #334155;
   --color-secondary: #64748b;
@@ -17,14 +18,12 @@
 }
 
 :root {
-  --surface-card: #fffdf8;
-  --surface-panel: rgba(255, 251, 245, 0.92);
-  --surface-float: rgba(255, 252, 248, 0.96);
-  --hairline: rgba(61, 44, 22, 0.11);
-  --hairline-strong: rgba(61, 44, 22, 0.16);
-  --shadow-ambient: 0 12px 34px rgba(36, 26, 10, 0.06);
-  --shadow-soft: 0 18px 44px rgba(36, 26, 10, 0.1);
-  --shadow-float: 0 28px 72px rgba(36, 26, 10, 0.14);
+  --surface-color: #fffdfa;
+  --hairline: #3d2c161c;
+  --hairline-strong: #3d2c1629;
+  --shadow-ambient: 0 12px 34px #241a0a0f;
+  --shadow-soft: 0 18px 44px #241a0a1a;
+  --shadow-float: 0 28px 72px #241a0a24;
 }
 
 ::selection {
@@ -52,14 +51,10 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(
-      circle at top,
-      rgba(255, 255, 255, 0.78) 0%,
-      rgba(255, 255, 255, 0) 32%
-    ),
+    radial-gradient(circle at top, #ffffffd1 0%, #ffffff00 32%),
     linear-gradient(
       180deg,
-      #f7f4ee 0%,
+      #f8f4ec 0%,
       var(--color-app) 18%,
       var(--color-app) 100%
     );
@@ -101,22 +96,14 @@ textarea {
 }
 
 .surface-card {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    var(--surface-card) 100%
-  );
+  background-color: var(--surface-color);
   border: 1px solid var(--hairline);
   border-radius: 1rem;
   box-shadow: var(--shadow-soft);
 }
 
 .surface-panel {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.94) 0%,
-    var(--surface-panel) 100%
-  );
+  background-color: var(--surface-color);
   border: 1px solid var(--hairline);
   border-radius: 1.25rem;
   box-shadow: var(--shadow-ambient);
@@ -124,11 +111,7 @@ textarea {
 }
 
 .surface-float {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.97) 0%,
-    var(--surface-float) 100%
-  );
+  background-color: var(--surface-color);
   border: 1px solid var(--hairline);
   box-shadow: var(--shadow-float);
   backdrop-filter: blur(18px);
@@ -140,6 +123,10 @@ textarea {
 
 .surface-elevated {
   background-color: var(--color-elevated);
+}
+
+.bg-footer {
+  background-color: var(--color-footer);
 }
 
 .hairline-divider {
@@ -180,15 +167,15 @@ textarea {
 }
 
 .bg-gray-50 {
-  background-color: rgba(242, 241, 237, 0.82);
+  background-color: #f4efe6d1;
 }
 
 .bg-gray-100 {
-  background-color: rgba(235, 234, 229, 0.88);
+  background-color: #ece5d8e0;
 }
 
 .border-gray-100 {
-  border-color: rgba(15, 23, 42, 0.06);
+  border-color: #0f172a0f;
 }
 
 .border-gray-200 {
