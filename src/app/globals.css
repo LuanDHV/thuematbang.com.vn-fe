@@ -130,7 +130,6 @@ textarea {
     var(--surface-float) 100%
   );
   border: 1px solid var(--hairline);
-  border-radius: 1rem;
   box-shadow: var(--shadow-float);
   backdrop-filter: blur(18px);
 }

@@ -72,7 +72,7 @@ export function ProjectCard({ project }: { project: Project }) {
       </div>
 
       <div className="flex flex-col gap-2 p-5">
-        <p className="text-heading mt-1 gap-1.5 text-base font-semibold uppercase">
+        <p className="text-heading mt-1 gap-1.5 text-base font-semibold uppercase transition-colors duration-200 group-hover:text-primary md:text-lg">
           <span> {formatProjectPrice(project.price)}</span>
         </p>
 

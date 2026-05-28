@@ -60,7 +60,7 @@ export default function RentRequestDetailContent({
 
   return (
     <div className="flex w-full flex-col gap-6 lg:w-3/4 lg:gap-8">
-      <section className="surface-card overflow-hidden p-2">
+      <section className="surface-card overflow-hidden p-5">
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
           <CloudinaryImage
             src={rentRequest.imageUrl || "/imgs/wallpaper-1.jpg"}
@@ -74,7 +74,7 @@ export default function RentRequestDetailContent({
         </div>
       </section>
 
-      <section className="surface-panel p-6 md:p-7">
+      <section className="surface-panel p-5">
         <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
           {rentRequest.title}
         </h1>
@@ -87,19 +87,19 @@ export default function RentRequestDetailContent({
             </span>
           ) : null}
 
-          <span className="text-secondary font-mono inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
             <CalendarDays size={12} className="text-primary" />
             Ngày đăng: {formatDate(rentRequest.createdAt)}
           </span>
 
-          <span className="text-secondary font-mono inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
             <Eye size={12} className="text-primary" />
             Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
           </span>
         </div>
       </section>
 
-      <section className="surface-card p-6 md:p-7">
+      <section className="surface-card p-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
@@ -111,7 +111,7 @@ export default function RentRequestDetailContent({
         </p>
       </section>
 
-      <section className="surface-card p-6 md:p-7">
+      <section className="surface-card p-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
@@ -151,7 +151,7 @@ export default function RentRequestDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Diện tích cần thuê
                 </p>
-                <p className="font-mono text-heading text-sm font-semibold">
+                <p className="text-heading font-mono text-sm font-semibold">
                   {formatAreaRange(rentRequest)}
                 </p>
               </div>

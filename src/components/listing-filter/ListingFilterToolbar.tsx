@@ -414,7 +414,7 @@ export default function ListingFilterToolbar({
   }, [initialFilters, provinceWardMap, serverDriven, sourceProperties]);
 
   return (
-    <div className="surface-float layout-container rounded-xl transition-all duration-300">
+    <div className="surface-float layout-container rounded-lg transition-all duration-300">
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -430,7 +430,7 @@ export default function ListingFilterToolbar({
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="Bạn muốn thuê ở đâu?"
-              className="h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium text-body outline-none placeholder:text-muted focus:ring-0"
+              className="text-body placeholder:text-muted h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium outline-none focus:ring-0"
             />
           </div>
 

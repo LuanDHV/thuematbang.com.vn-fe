@@ -51,11 +51,11 @@ export default function PropertyDetailContent({
 
   return (
     <div className="flex w-full flex-col gap-6 lg:w-3/4 lg:gap-8">
-      <section className="surface-card overflow-hidden p-2">
+      <section className="surface-card overflow-hidden p-5">
         <PropertyImageGallery title={property.title} images={galleryImages} />
       </section>
 
-      <section className="surface-panel p-6 md:p-7">
+      <section className="surface-panel p-5">
         <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
           {property.title}
         </h1>
@@ -68,12 +68,12 @@ export default function PropertyDetailContent({
             </span>
           ) : null}
 
-          <span className="text-secondary font-mono inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
             <Tag size={12} className="text-primary" />
             Loại tin đăng: {property.priorityStatus}
           </span>
 
-          <span className="text-secondary font-mono inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+          <span className="text-secondary inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 font-mono text-xs font-medium">
             <CalendarDays size={12} className="text-primary" />
             Ngày đăng: {formatDate(property.createdAt)}
           </span>
@@ -85,7 +85,7 @@ export default function PropertyDetailContent({
         </div>
       </section>
 
-      <section className="surface-card p-6 md:p-7">
+      <section className="surface-card p-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
@@ -105,7 +105,7 @@ export default function PropertyDetailContent({
         )}
       </section>
 
-      <section className="surface-card p-6 md:p-7">
+      <section className="surface-card p-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">
@@ -132,7 +132,7 @@ export default function PropertyDetailContent({
               <p className="text-secondary text-xs tracking-wide uppercase">
                 Địa chỉ
               </p>
-              <p className="font-mono text-heading text-sm font-semibold">
+              <p className="text-heading font-mono text-sm font-semibold">
                 {locationText || "Đang cập nhật"}
               </p>
             </div>
@@ -145,7 +145,7 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Diện tích
                 </p>
-                <p className="font-mono text-heading text-sm font-semibold">
+                <p className="text-heading font-mono text-sm font-semibold">
                   {property.area} m²
                 </p>
               </div>
@@ -159,7 +159,7 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Phòng ngủ
                 </p>
-                <p className="font-mono text-heading text-sm font-semibold">
+                <p className="text-heading font-mono text-sm font-semibold">
                   {property.bedrooms}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Phòng tắm
                 </p>
-                <p className="font-mono text-heading text-sm font-semibold">
+                <p className="text-heading font-mono text-sm font-semibold">
                   {property.bathrooms}
                 </p>
               </div>
@@ -196,7 +196,7 @@ export default function PropertyDetailContent({
         </div>
       </section>
 
-      <section className="surface-card p-6 md:p-7">
+      <section className="surface-card p-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-xl font-semibold text-gray-800">

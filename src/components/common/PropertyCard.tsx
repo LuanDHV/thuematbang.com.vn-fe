@@ -309,7 +309,7 @@ function CardBody({ property }: { property: Property }) {
 
   return (
     <div className="flex h-full flex-1 flex-col p-5">
-      <p className="text-heading text-base font-semibold">
+      <p className="text-heading text-base font-semibold transition-colors duration-200 group-hover:text-primary md:text-lg">
         {formatPrice(property.price || 0)}
       </p>
 
