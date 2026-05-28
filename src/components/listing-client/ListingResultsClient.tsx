@@ -1,14 +1,15 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Pagination } from "@/components/common/Pagination";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
-import type { BreadcrumbItem } from "@/lib/flat-url";
-import { mockProperties } from "@/mocks/properties";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
+import { PaginationMeta } from "@/types/api";
 
 const PAGE_SIZE = 12;
 const TIER_ORDER = ["GOLD", "SILVER", "NORMAL"] as const;
@@ -35,15 +36,22 @@ const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
 };
 
 export default function ListingResultsClient({
-  properties = mockProperties,
+  properties,
   listingMode = "property",
   breadcrumbItems,
+  paginationMeta,
+  paginationBasePath,
 }: {
-  properties?: Property[] | RentRequest[];
+  properties: Property[] | RentRequest[];
   listingMode?: "property" | "rentRequest";
   title?: string;
   breadcrumbItems?: BreadcrumbItem[];
+  paginationMeta?: PaginationMeta;
+  paginationBasePath?: string;
 }) {
+  const router = useRouter();
+  const isServerPagination = Boolean(paginationMeta);
+
   const orderedProperties = useMemo(() => {
     if (listingMode === "rentRequest") {
       return [...properties].sort((left, right) => {
@@ -79,15 +87,19 @@ export default function ListingResultsClient({
   }, [listingMode, properties]);
 
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(
-    1,
-    Math.ceil(orderedProperties.length / PAGE_SIZE),
-  );
-  const currentPage = Math.min(page, totalPages);
-  const pageItems = orderedProperties.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
+  const totalPages = isServerPagination
+    ? Math.max(1, paginationMeta?.totalPage ?? 1)
+    : Math.max(1, Math.ceil(orderedProperties.length / PAGE_SIZE));
+  const currentPage = isServerPagination
+    ? Math.min(totalPages, Math.max(1, paginationMeta?.currentPage ?? 1))
+    : Math.min(page, totalPages);
+  const pageItems = isServerPagination
+    ? orderedProperties
+    : orderedProperties.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE,
+      );
+  const hasItems = pageItems.length > 0;
 
   const groupedPageItems =
     listingMode === "property"
@@ -102,13 +114,34 @@ export default function ListingResultsClient({
         )
       : null;
 
+  const handlePageChange = (nextPage: number) => {
+    if (!isServerPagination) {
+      setPage(nextPage);
+      return;
+    }
+
+    const targetPath = buildPagedPath(paginationBasePath ?? "", nextPage);
+    router.replace(targetPath, { scroll: false });
+  };
+
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8">
+    <section className="layout-container layout-section-sm">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
 
-      <div className="space-y-10">
+      <div className="flex flex-col gap-10">
+        {!hasItems ? (
+          <section className="p-8 text-center">
+            <h3 className="text-lg font-semibold text-gray-700">
+              Không có bất động sản phù hợp
+            </h3>
+            <p className="mt-2 text-sm text-gray-500">
+              Hãy điều chỉnh bộ lọc khác.
+            </p>
+          </section>
+        ) : null}
+
         {listingMode === "property" && groupedPageItems
           ? TIER_ORDER.map((tier) => {
               const tierItems = groupedPageItems[tier];
@@ -116,7 +149,7 @@ export default function ListingResultsClient({
               if (tierItems.length === 0) return null;
 
               return (
-                <section key={tier} className="space-y-4">
+                <section key={tier} className="flex flex-col gap-4">
                   <div className={TIER_CONFIG[tier].gridClass}>
                     {tierItems.map((property) => (
                       <PropertyCard
@@ -132,7 +165,7 @@ export default function ListingResultsClient({
           : null}
 
         {listingMode === "rentRequest" ? (
-          <section className="space-y-4">
+          <section className="flex flex-col gap-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {(pageItems as RentRequest[]).map((request) => (
                 <RentRequestCard key={request.id} request={request} />
@@ -144,7 +177,7 @@ export default function ListingResultsClient({
         <Pagination
           page={currentPage}
           totalPages={totalPages}
-          onChange={setPage}
+          onChange={handlePageChange}
         />
       </div>
     </section>

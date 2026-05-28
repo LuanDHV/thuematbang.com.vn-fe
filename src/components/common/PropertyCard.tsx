@@ -1,30 +1,74 @@
-﻿import { formatDate, formatPrice } from "@/lib/utils";
-import {
-  getPropertyGalleryImages,
-  getPropertyThumbnailUrl,
-} from "@/mocks/properties";
+﻿"use client";
+
+import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { formatDate, formatPrice } from "@/lib/utils";
 import { Property } from "@/types/property";
 import {
   Bath,
   Bed,
   Calendar,
+  Crown,
   Eye,
   Images,
   MapPin,
   Maximize,
+  Star,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+
+const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
+const CARD_HOVER_CLASSES =
+  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(26,18,8,0.13)]";
+
+type CardTone = "gold" | "silver" | "normal";
+type CardDensity = "rich" | "compact";
 
 function resolvePropertyHref(property: Property) {
   return `/cho-thue/${property.slug}`;
 }
 
-function getTierLabel(priorityStatus?: string | null) {
+function getSortedPropertyImageUrls(property: Property) {
+  return (
+    property.images
+      ?.slice()
+      .sort((left, right) => left.sortOrder - right.sortOrder)
+      .map((image) => image.imageUrl)
+      .filter(Boolean) ?? []
+  );
+}
+
+function getPropertyThumbnailUrl(property: Property) {
+  return getSortedPropertyImageUrls(property)[0] || DEFAULT_PROPERTY_IMAGE;
+}
+
+function getPropertyGalleryImages(property: Property) {
+  const images = getSortedPropertyImageUrls(property);
+  const fallbackImage = images[0] || getPropertyThumbnailUrl(property);
+  const normalizedImages = images.length > 0 ? [...images] : [fallbackImage];
+
+  while (normalizedImages.length < 4) {
+    normalizedImages.push(fallbackImage);
+  }
+
+  return normalizedImages.slice(0, 4);
+}
+
+function getTierTone(priorityStatus?: string | null): CardTone {
   switch (priorityStatus) {
     case "GOLD":
-      return "Gold";
+      return "gold";
     case "SILVER":
+      return "silver";
+    default:
+      return "normal";
+  }
+}
+
+function getTierLabel(tone: CardTone) {
+  switch (tone) {
+    case "gold":
+      return "Gold";
+    case "silver":
       return "Silver";
     default:
       return "Normal";
@@ -32,39 +76,59 @@ function getTierLabel(priorityStatus?: string | null) {
 }
 
 function getLocationText(property: Property) {
-  return [property.district?.name, property.city?.name]
+  return [property.ward?.name, property.province?.name]
     .filter(Boolean)
     .join(", ");
 }
 
 function CardFooter({ property }: { property: Property }) {
   return (
-    <div className="mt-auto flex items-center justify-between border-t border-dashed border-gray-200 pt-2 text-sm text-gray-500">
-      <span className="inline-flex items-center gap-1">
-        <Calendar size={11} />
+    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
+      <span className="inline-flex items-center gap-1 font-mono">
+        <Calendar size={12} />
         {formatDate(property.createdAt)}
       </span>
-      <span className="inline-flex items-center gap-1">
-        <Eye size={11} />
+      <span className="inline-flex items-center justify-end gap-1 font-mono">
+        <Eye size={12} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
     </div>
   );
 }
 
-function TierBadge({ label }: { label: string }) {
+function TierBadge({ tone }: { tone: CardTone }) {
+  const toneClasses =
+    tone === "gold"
+      ? "bg-primary text-heading"
+      : tone === "silver"
+        ? "bg-white/90 text-body"
+        : "bg-white/80 text-secondary";
+  const sizeClasses =
+    tone === "gold" ? "px-2 py-0.5 text-xs " : "px-2 py-0.5 text-xs";
+  const iconSize = tone === "gold" ? 11 : 11;
+
   return (
-    <span className="bg-primary absolute top-3 left-3 z-20 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wider text-white uppercase shadow-sm">
-      {label}
+    <span
+      className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 rounded-full font-semibold tracking-[0.16em] uppercase ${toneClasses} ${sizeClasses}`}
+    >
+      {tone === "gold" ? <Crown size={iconSize} /> : null}
+      {tone === "silver" ? <Star size={iconSize} /> : null}
+      {getTierLabel(tone)}
     </span>
   );
 }
 
-function ImageCountBadge({ count }: { count: number }) {
+function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
+  const badgeSizeClass =
+    tone === "gold" ? "px-2 py-0.5 text-xs" : "px-2 py-0.5 text-xs";
+  const iconSize = tone === "gold" ? 11 : 11;
+
   return (
-    <div className="absolute top-3 right-3 z-30 rounded-md bg-black/55 px-2 py-1 text-sm font-semibold text-white">
-      <span className="inline-flex items-center gap-1">
-        <Images size={13} />
+    <div
+      className={`absolute top-3 right-3 z-30 rounded-lg bg-black/52 font-semibold text-white ${badgeSizeClass}`}
+    >
+      <span className="inline-flex items-center gap-1 font-mono">
+        <Images size={iconSize} />
         {count}
       </span>
     </div>
@@ -73,20 +137,31 @@ function ImageCountBadge({ count }: { count: number }) {
 
 function OverlayTitle({
   property,
-  large = false,
+  tone,
 }: {
   property: Property;
-  large?: boolean;
+  tone: CardTone;
 }) {
+  const titleClass =
+    tone === "gold" ? "text-xl " : tone === "silver" ? "text-lg " : "text-base";
+  const categoryBadgeSizeClass =
+    tone === "gold"
+      ? "px-2 py-0.5 text-xs"
+      : tone === "silver"
+        ? "px-2.5 py-1 text-xs"
+        : "px-2 py-0.5 text-xs";
+
   return (
     <div className="absolute right-3 bottom-3 left-3 z-20">
       {property.category?.name ? (
-        <span className="text-primary rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold uppercase">
+        <span
+          className={`border-primary/30 bg-primary/14 text-primary inline-flex items-center rounded-full border font-semibold tracking-[0.18em] uppercase ${categoryBadgeSizeClass}`}
+        >
           {property.category.name}
         </span>
       ) : null}
       <h3
-        className={`mt-2 line-clamp-2 font-bold text-white ${large ? "text-xl leading-tight" : "text-lg leading-tight"}`}
+        className={`mt-2 line-clamp-2 font-serif leading-snug font-medium tracking-[-0.015em] text-white ${titleClass}`}
       >
         {property.title}
       </h3>
@@ -94,122 +169,124 @@ function OverlayTitle({
   );
 }
 
-function FeaturedCard({ property }: { property: Property }) {
+function CardHoverBar() {
   return (
-    <article className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div className="from-primary to-primary/70 h-0.5 w-0 bg-linear-to-r transition-[width] duration-300 group-hover:w-full" />
+  );
+}
+
+function FeaturedCard({ property }: { property: Property }) {
+  const tone = getTierTone(property.priorityStatus);
+
+  return (
+    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
       <div className="relative h-52 overflow-hidden">
-        <TierBadge label={getTierLabel(property.priorityStatus)} />
-        <Image
-          src={getPropertyThumbnailUrl(property.id)}
+        <TierBadge tone={tone} />
+        <CloudinaryImage
+          src={getPropertyThumbnailUrl(property)}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/20 to-transparent" />
-
-        <div className="absolute right-3 bottom-3 left-3">
-          {property.category?.name ? (
-            <span className="text-primary rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase">
-              {property.category.name}
-            </span>
-          ) : null}
-          <h3 className="mt-2 line-clamp-2 text-lg leading-tight font-bold text-white">
-            {property.title}
-          </h3>
-        </div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/62 via-black/18 to-transparent" />
+        <OverlayTitle property={property} tone={tone} />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody
+        property={property}
+        density="rich"
+        tone={tone}
+        showPreview={false}
+      />
+      <CardHoverBar />
     </article>
   );
 }
-function GoldCard({
-  property,
-}: {
-  property: Property;
-}) {
-  const fallbackImage = getPropertyThumbnailUrl(property.id);
-  const galleryImages = getPropertyGalleryImages(property.id);
-  const imagesList =
-    galleryImages.length > 0
-      ? galleryImages
-      : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
+
+function GoldCard({ property }: { property: Property }) {
+  const fallbackImage = getPropertyThumbnailUrl(property);
+  const imagesList = getPropertyGalleryImages(property);
+  const realImageCount = Math.max(
+    1,
+    getSortedPropertyImageUrls(property).length,
+  );
 
   return (
-    <article className="group overflow-hidden rounded-2xl border border-amber-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <div className="relative flex h-60 w-full gap-0.5 overflow-hidden bg-gray-100">
+    <article
+      className={`surface-card ${CARD_HOVER_CLASSES} border-primary/10 rounded-2xl`}
+    >
+      <div className="bg-elevated relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
           className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
         >
-          <Image
+          <CloudinaryImage
             src={imagesList[0]}
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            cldQuality="auto:best"
           />
         </div>
 
         {imagesList.length > 1 ? (
           <div className="flex w-1/3 flex-col gap-0.5">
             <div className="relative h-1/2 w-full overflow-hidden">
-              <Image
+              <CloudinaryImage
                 src={imagesList[1] || fallbackImage}
                 alt={`${property.title} - ảnh 2`}
                 fill
                 sizes="(max-width: 768px) 40vw, 20vw"
                 className="object-cover"
+                cldQuality="auto:best"
               />
             </div>
             <div className="flex h-1/2 w-full gap-0.5">
               <div className="relative h-full w-1/2 overflow-hidden">
-                <Image
+                <CloudinaryImage
                   src={imagesList[2] || fallbackImage}
                   alt={`${property.title} - ảnh 3`}
                   fill
                   sizes="(max-width: 768px) 30vw, 15vw"
                   className="object-cover"
+                  cldQuality="auto:best"
                 />
               </div>
               <div className="relative h-full w-1/2 overflow-hidden">
-                <Image
+                <CloudinaryImage
                   src={imagesList[3] || fallbackImage}
                   alt={`${property.title} - ảnh 4`}
                   fill
                   sizes="(max-width: 768px) 30vw, 15vw"
                   className="object-cover"
+                  cldQuality="auto:best"
                 />
               </div>
             </div>
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
-        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
-        <TierBadge label="Gold" />
-        <ImageCountBadge count={imagesList.length} />
-        <OverlayTitle property={property} large />
+        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
+        <TierBadge tone="gold" />
+        <ImageCountBadge count={realImageCount} tone="gold" />
+        <OverlayTitle property={property} tone="gold" />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody property={property} density="rich" tone="gold" showPreview />
+      <CardHoverBar />
     </article>
   );
 }
 
-function SilverCard({
-  property,
-}: {
-  property: Property;
-}) {
-  const fallbackImage = getPropertyThumbnailUrl(property.id);
-  const galleryImages = getPropertyGalleryImages(property.id);
-  const imagesList =
-    galleryImages.length > 0
-      ? galleryImages
-      : [fallbackImage, fallbackImage, fallbackImage, fallbackImage];
+function SilverCard({ property }: { property: Property }) {
+  const fallbackImage = getPropertyThumbnailUrl(property);
+  const imagesList = getPropertyGalleryImages(property);
+  const realImageCount = Math.max(
+    1,
+    getSortedPropertyImageUrls(property).length,
+  );
 
   const rightThumbs = [
     imagesList[1] || fallbackImage,
@@ -217,15 +294,16 @@ function SilverCard({
   ];
 
   return (
-    <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      <div className="relative flex h-56 w-full gap-0.5 overflow-hidden bg-gray-100">
+    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
+      <div className="bg-elevated relative flex h-56 w-full gap-0.5 overflow-hidden">
         <div className="relative w-2/3 overflow-hidden">
-          <Image
+          <CloudinaryImage
             src={imagesList[0]}
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            cldQuality="auto:best"
           />
         </div>
 
@@ -235,91 +313,142 @@ function SilverCard({
               key={`${property.id}-right-thumb-${index}`}
               className="relative h-1/2 overflow-hidden"
             >
-              <Image
+              <CloudinaryImage
                 src={src}
                 alt={`${property.title} - ảnh phụ ${index + 1}`}
                 fill
                 sizes="(max-width: 768px) 30vw, 15vw"
                 className="object-cover"
+                cldQuality="auto:best"
               />
             </div>
           ))}
         </div>
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-transparent" />
-        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
-        <TierBadge label="Silver" />
-        <ImageCountBadge count={imagesList.length} />
-        <OverlayTitle property={property} />
+        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
+        <TierBadge tone="silver" />
+        <ImageCountBadge count={realImageCount} tone="silver" />
+        <OverlayTitle property={property} tone="silver" />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody property={property} density="rich" tone="silver" showPreview />
+      <CardHoverBar />
     </article>
   );
 }
 
 function NormalCard({ property }: { property: Property }) {
-  const image = getPropertyThumbnailUrl(property.id);
+  const image = getPropertyThumbnailUrl(property);
 
   return (
-    <article className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-xl`}>
       <div className="relative h-40 overflow-hidden">
-        <Image
+        <CloudinaryImage
           src={image}
           alt={property.title || "Bất động sản"}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
-        {/* <div className="absolute top-0 left-0 h-0 w-0 border-t-56 border-r-56 border-t-white/70 border-r-transparent" /> */}
-        <TierBadge label="Normal" />
-        <OverlayTitle property={property} />
+        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/22 to-transparent" />
+        <TierBadge tone="normal" />
+        <OverlayTitle property={property} tone="normal" />
       </div>
 
-      <CardBody property={property} />
-      <div className="bg-primary h-1 w-0 transition-all duration-300 group-hover:w-full" />
+      <CardBody
+        property={property}
+        density="compact"
+        tone="normal"
+        showPreview={false}
+      />
+      <CardHoverBar />
     </article>
   );
 }
 
-function CardBody({ property }: { property: Property }) {
+function CardBody({
+  property,
+  density,
+  tone,
+  showPreview,
+}: {
+  property: Property;
+  density: CardDensity;
+  tone: CardTone;
+  showPreview: boolean;
+}) {
   const location = getLocationText(property) || "Đang cập nhật vị trí";
-  const contentPreview =
-    property.content?.replace(/<[^>]+>/g, "").trim() || "";
+  const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
+  const isCompact = density === "compact";
+
+  const bedroomsText = property.bedrooms
+    ? `${property.bedrooms} phòng ngủ`
+    : isCompact
+      ? null
+      : "Đang cập nhật phòng ngủ";
+
+  const bathroomsText = property.bathrooms
+    ? `${property.bathrooms} phòng tắm`
+    : isCompact
+      ? null
+      : "Đang cập nhật phòng tắm";
+
+  const metaItems = [
+    { icon: MapPin, text: location },
+    {
+      icon: Maximize,
+      text: property.area ? `${property.area} m²` : "Đang cập nhật diện tích",
+    },
+    bedroomsText ? { icon: Bed, text: bedroomsText } : null,
+    bathroomsText ? { icon: Bath, text: bathroomsText } : null,
+  ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
+
+  const priceClass =
+    tone === "gold" ? "text-2xl " : tone === "silver" ? "text-xl " : "text-lg";
+
+  const metaTextClass =
+    tone === "gold" ? "text-sm" : tone === "silver" ? "text-xs" : "text-xs";
+
+  const previewTextClass = tone === "gold" ? "text-sm" : "text-xs";
+  const metaGridClass =
+    tone === "gold" || tone === "silver"
+      ? "grid-cols-1"
+      : isCompact
+        ? "grid-cols-1"
+        : "grid-cols-2";
 
   return (
-    <div className="flex min-h-55 flex-1 flex-col p-4">
-      <p className="text-primary mt-1 text-base font-bold">
+    <div className="flex h-full flex-1 flex-col p-5">
+      <p
+        className={`group-hover:text-primary text-heading font-serif transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
+      >
         {formatPrice(property.price || 0)}
       </p>
 
-      <div className="my-2 space-y-1 text-sm text-gray-500">
-        <p className="flex items-start gap-1">
-          <MapPin size={12} className="mt-0.5 text-gray-400" />
-          <span className="line-clamp-1">{location}</span>
-        </p>
-        <p className="flex items-start gap-1">
-          <Maximize size={12} className="mt-0.5 text-gray-400" />
-          {property.area ? `${property.area} m²` : "Đang cập nhật diện tích"}
-        </p>
-        {property.bathrooms ? (
-          <p className="flex items-start gap-1">
-            <Bath size={12} className="mt-0.5 text-gray-400" />
-            {property.bathrooms} phòng tắm
+      <div
+        className={`text-secondary my-2 grid gap-x-4 gap-y-1.5 ${metaGridClass}`}
+      >
+        {metaItems.map(({ icon: Icon, text }, index) => (
+          <p
+            key={`${property.id}-meta-${index}`}
+            className="flex items-start gap-1.5"
+          >
+            <Icon size={12} className="text-primary mt-0.5 shrink-0" />
+            <span className={`line-clamp-1 font-mono ${metaTextClass}`}>
+              {text}
+            </span>
           </p>
-        ) : null}
-        {property.bedrooms ? (
-          <p className="flex items-start gap-1">
-            <Bed size={12} className="mt-0.5 text-gray-400" />
-            {property.bedrooms} phòng ngủ
-          </p>
-        ) : null}
-        {contentPreview ? (
-          <p className="line-clamp-2">{contentPreview}</p>
-        ) : null}
+        ))}
       </div>
+
+      {showPreview && contentPreview ? (
+        <p
+          className={`text-secondary mb-2 line-clamp-2 leading-relaxed ${previewTextClass}`}
+        >
+          {contentPreview}
+        </p>
+      ) : null}
 
       <CardFooter property={property} />
     </div>
@@ -354,7 +483,9 @@ export function PropertyCard({
     }
   }
 
-  return <Link href={href}>{content}</Link>;
+  return (
+    <Link href={href} className="block h-full">
+      {content}
+    </Link>
+  );
 }
-
-

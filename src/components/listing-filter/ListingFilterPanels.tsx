@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Slider } from "@/components/ui/slider";
 import {
@@ -21,7 +21,7 @@ import {
   FILTER_LIMITS,
   mockFilterAreaOptions,
   mockFilterPriceOptions,
-} from "@/mocks/filter";
+} from "@/constants/filter";
 import { AdvancedFilterValue } from "@/types/filter";
 import {
   formatArea,
@@ -47,8 +47,8 @@ export function PropertyTypeDetailTab({
   onDone,
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
-    <div className="space-y-2">
-      <label className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-50">
+    <div className="flex flex-col gap-2">
+      <label className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-primary/5">
         <span className="text-sm text-gray-700">Tất cả loại mặt bằng</span>
         <input
           type="checkbox"
@@ -61,13 +61,13 @@ export function PropertyTypeDetailTab({
             }));
             onDone?.();
           }}
-          className="accent-primary h-4 w-4 cursor-pointer"
+          className="accent-primary size-5 cursor-pointer"
         />
       </label>
       {propertyTypeOptions.map((type) => (
         <label
           key={type}
-          className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-50"
+          className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-primary/5"
         >
           <span className="text-sm text-gray-700">{type}</span>
           <input
@@ -81,7 +81,7 @@ export function PropertyTypeDetailTab({
               }));
               onDone?.();
             }}
-            className="accent-primary h-4 w-4 cursor-pointer"
+            className="accent-primary size-5 cursor-pointer"
           />
         </label>
       ))}
@@ -96,8 +96,8 @@ export function PriceDetailTab({
   onDone,
 }: DetailTabSharedProps & { priceRange: [number, number] }) {
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4 text-sm font-semibold">
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-4 text-sm font-semibold text-heading">
         <p>
           Từ:{" "}
           <span className="text-primary">
@@ -112,7 +112,7 @@ export function PriceDetailTab({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={Math.round(
@@ -126,11 +126,11 @@ export function PriceDetailTab({
               }))
             }
             placeholder="0"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={Math.round(
@@ -146,7 +146,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="60000"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -176,13 +176,41 @@ export function PriceDetailTab({
           return (
             <label
               key={option.label}
-              className={`flex cursor-pointer items-center justify-between rounded-lg p-2 text-sm hover:bg-gray-50 ${isSelected ? "text-primary font-semibold" : "text-gray-700"}`}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-primary/5 ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
                 type="checkbox"
                 checked={isSelected}
                 onChange={() => {
+                  const isAllOption =
+                    option.min === "" &&
+                    option.max === "" &&
+                    !option.isNegotiable;
+                  const isNegotiableOption = Boolean(option.isNegotiable);
+
+                  if (isAllOption) {
+                    updateCurrent((prev) => ({
+                      ...prev,
+                      priceMin: "",
+                      priceMax: "",
+                      negotiable: false,
+                    }));
+                    onDone?.();
+                    return;
+                  }
+
+                  if (isNegotiableOption) {
+                    updateCurrent((prev) => ({
+                      ...prev,
+                      priceMin: "",
+                      priceMax: "",
+                      negotiable: true,
+                    }));
+                    onDone?.();
+                    return;
+                  }
+
                   const minMillion = Math.round(
                     parseNumericInput(option.min || "0") / 1_000_000,
                   );
@@ -194,11 +222,11 @@ export function PriceDetailTab({
                     ...prev,
                     priceMin: String(millionToVnd(minMillion)),
                     priceMax: String(millionToVnd(maxMillion)),
-                    negotiable: Boolean(option.isNegotiable),
+                    negotiable: false,
                   }));
                   onDone?.();
                 }}
-                className="accent-primary h-4 w-4 cursor-pointer"
+                className="accent-primary size-5 cursor-pointer"
               />
             </label>
           );
@@ -215,8 +243,8 @@ export function AreaDetailTab({
   onDone,
 }: DetailTabSharedProps & { areaRange: [number, number] }) {
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4 text-sm font-semibold">
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-4 text-sm font-semibold text-heading">
         <p>
           Từ: <span className="text-primary">{formatArea(areaRange[0])}</span>
         </p>
@@ -225,7 +253,7 @@ export function AreaDetailTab({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={current.areaMin}
@@ -236,11 +264,11 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Từ"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
-        <div className="flex-1 space-y-1">
+        <div className="flex flex-col flex-1 gap-1">
           <input
             type="number"
             value={current.areaMax}
@@ -251,7 +279,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Đến"
-            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none focus:ring-primary h-11 w-full rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-1"
+            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -278,7 +306,7 @@ export function AreaDetailTab({
           return (
             <label
               key={option.label}
-              className={`flex cursor-pointer items-center justify-between rounded-lg p-2 text-sm hover:bg-gray-50 ${isSelected ? "text-primary font-semibold" : "text-gray-700"}`}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-primary/5 ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -292,7 +320,7 @@ export function AreaDetailTab({
                   }));
                   onDone?.();
                 }}
-                className="accent-primary h-4 w-4 cursor-pointer"
+                className="accent-primary size-5 cursor-pointer"
               />
             </label>
           );
@@ -305,27 +333,23 @@ export function AreaDetailTab({
 export function LocationDetailTab({
   current,
   updateCurrent,
-  cityMap,
-  onDone,
+  provinceWardMap,
 }: DetailTabSharedProps & {
-  cityMap: Record<string, Record<string, string[]>>;
+  provinceWardMap: Record<string, Record<string, string[]>>;
 }) {
-  const wards = current.city ? Object.keys(cityMap[current.city] ?? {}) : [];
-  const streets =
-    current.city && current.ward
-      ? (cityMap[current.city]?.[current.ward] ?? [])
-      : [];
+  const wards = current.province
+    ? Object.keys(provinceWardMap[current.province] ?? {})
+    : [];
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3">
       <Select
-        value={current.city}
+        value={current.province}
         onValueChange={(valueItem) =>
           updateCurrent((prev) => ({
             ...prev,
-            city: valueItem,
+            province: valueItem,
             ward: "",
-            street: "",
           }))
         }
       >
@@ -333,9 +357,13 @@ export function LocationDetailTab({
           <SelectValue placeholder="Chọn tỉnh / thành phố" />
         </SelectTrigger>
         <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {Object.keys(cityMap).map((city) => (
-            <SelectItem key={city} value={city} className="cursor-pointer">
-              {city}
+          {Object.keys(provinceWardMap).map((province) => (
+            <SelectItem
+              key={province}
+              value={province}
+              className="cursor-pointer"
+            >
+              {province}
             </SelectItem>
           ))}
         </SelectContent>
@@ -346,7 +374,7 @@ export function LocationDetailTab({
         onValueChange={(valueItem) =>
           updateCurrent((prev) => ({ ...prev, ward: valueItem, street: "" }))
         }
-        disabled={!current.city}
+        disabled={!current.province}
       >
         <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
           <SelectValue placeholder="Chọn phường / xã" />
@@ -355,26 +383,6 @@ export function LocationDetailTab({
           {wards.map((ward) => (
             <SelectItem key={ward} value={ward} className="cursor-pointer">
               {ward}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      <Select
-        value={current.street}
-        onValueChange={(valueItem) => {
-          updateCurrent((prev) => ({ ...prev, street: valueItem }));
-          onDone?.();
-        }}
-        disabled={!current.ward}
-      >
-        <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
-          <SelectValue placeholder="Chọn đường / phố" />
-        </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {streets.map((street) => (
-            <SelectItem key={street} value={street} className="cursor-pointer">
-              {street}
             </SelectItem>
           ))}
         </SelectContent>
@@ -402,83 +410,83 @@ export function AdvancedMainTab({
   ) => void;
 }) {
   const quickCellClass =
-    "hover:border-primary mt-2 hover:text-primary cursor-pointer rounded-xl border border-gray-200 px-4 py-1 text-sm font-medium text-gray-600 transition-colors";
+    "mt-2 cursor-pointer rounded-lg border border-black/8 bg-white px-4 py-1.5 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all hover:border-primary/20 hover:bg-primary/5 hover:text-primary";
   const selectedQuickCellClass = "border-primary bg-primary/5 text-primary";
-  const locationSummary = [current.city, current.ward]
+  const locationSummary = [current.province, current.ward]
     .filter(Boolean)
     .join(", ");
   const propertyTypeSummary =
     current.propertyTypes[0] || "Tất cả loại bất động sản";
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">
           Loại bất động sản
         </label>
         <button
           type="button"
           onClick={() => setDetailTab("propertyType")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <Building2 className="h-4 w-4" />
+            <Building2 className="size-5" />
             <span className="text-sm">{propertyTypeSummary}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">Khu vực</label>
         <button
           type="button"
           onClick={() => setDetailTab("location")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <MapPin className="h-4 w-4" />
+            <MapPin className="size-5" />
             <span className="text-sm">{locationSummary || "Toàn quốc"}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">
           Khoảng giá
         </label>
         <button
           type="button"
           onClick={() => setDetailTab("price")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <CircleDollarSign className="h-4 w-4" />
+            <CircleDollarSign className="size-5" />
             <span className="text-sm">{priceSummary}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-gray-700">Diện tích</label>
         <button
           type="button"
           onClick={() => setDetailTab("area")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 hover:bg-gray-50"
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
         >
           <div className="flex items-center gap-2 text-gray-600">
-            <Maximize className="h-4 w-4" />
+            <Maximize className="size-5" />
             <span className="text-sm">{areaSummary}</span>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
 
       {listingMode === "property" ? (
         <>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
               Số phòng ngủ
             </label>
@@ -496,7 +504,7 @@ export function AdvancedMainTab({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
               Số phòng tắm, vệ sinh
             </label>
@@ -516,7 +524,7 @@ export function AdvancedMainTab({
         </>
       ) : null}
 
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <label className="text-sm font-semibold text-gray-700">Hướng nhà</label>
         <div className="flex justify-center py-2">
           <svg

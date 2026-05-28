@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import { connection } from "next/server";
+import PageFaq from "@/components/common/PageFaq";
+import PageSeoContent from "@/components/common/PageSeoContent";
+import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
-import { mockRentRequests } from "@/mocks";
-import PageSeoContent from "@/components/common/PageSeoContent";
-import PageFaq from "@/components/common/PageFaq";
-import { pageSeoFaq } from "@/mocks/pageSeoFaq";
+import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { rentRequestService } from "@/services/rent-request.service";
+import SafeFetch from "@/components/common/SafeFetch";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Cần thuê mặt bằng",
@@ -13,19 +15,33 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/can-thue",
 });
 
-export default function CanThuePage() {
+export default async function CanThuePage() {
+  await connection();
+
+  // Load static SEO/FAQ content for rent request page.
   const pageContent = pageSeoFaq["can-thue"];
-  const rentalDemandProperties = mockRentRequests;
 
   return (
     <>
-      <ListingFilterSection
-        title="Cần thuê bất động sản"
-        properties={rentalDemandProperties}
-        listingMode="rentRequest"
-        basePath="/can-thue"
-        breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue")}
-      />
+      <SafeFetch
+        fetcher={rentRequestService.getAll({
+          limit: 24,
+        })}
+        debugLabel="Rent-Requests Response"
+      >
+        {(response) => (
+          <ListingFilterSection
+            title="Cần thuê bất động sản"
+            properties={response.data ?? []}
+            listingMode="rentRequest"
+            serverDriven
+            basePath="/can-thue"
+            breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue")}
+            paginationMeta={response.meta}
+          />
+        )}
+      </SafeFetch>
+
       <PageSeoContent content={pageContent.seoContent} />
       <PageFaq
         title={pageContent.faqTitle}

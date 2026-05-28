@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Property } from "@/types/property";
@@ -10,33 +10,42 @@ import {
   INITIAL_ADVANCED_FILTER_VALUE,
 } from "@/types/filter";
 import type { BreadcrumbItem } from "@/lib/flat-url";
+import { PaginationMeta } from "@/types/api";
 
 type Props = {
   title: string;
   properties: Property[] | RentRequest[];
   listingMode?: "property" | "rentRequest";
+  serverDriven?: boolean;
   basePath: string;
   initialFilters?: AdvancedFilterValue;
   breadcrumbItems?: BreadcrumbItem[];
+  paginationMeta?: PaginationMeta;
+  paginationBasePath?: string;
 };
 
 export default function ListingFilterSection({
   title,
   properties,
   listingMode = "property",
+  serverDriven = false,
   basePath,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
   breadcrumbItems,
+  paginationMeta,
+  paginationBasePath,
 }: Props) {
-  const [filteredProperties, setFilteredProperties] =
-    useState<Property[] | RentRequest[]>(properties);
+  const [filteredProperties, setFilteredProperties] = useState<
+    Property[] | RentRequest[]
+  >(properties);
 
   return (
     <div className="relative">
-      <div className="sticky top-16 z-40 mx-auto max-w-7xl">
+      <div className="layout-container sticky top-16 z-40">
         <ListingFilterToolbar
           basePath={basePath}
           listingMode={listingMode}
+          serverDriven={serverDriven}
           initialFilters={initialFilters}
           sourceProperties={properties}
           onFilteredChange={setFilteredProperties}
@@ -44,9 +53,11 @@ export default function ListingFilterSection({
       </div>
       <ListingResultsClient
         title={title}
-        properties={filteredProperties}
+        properties={serverDriven ? properties : filteredProperties}
         listingMode={listingMode}
         breadcrumbItems={breadcrumbItems}
+        paginationMeta={paginationMeta}
+        paginationBasePath={paginationBasePath ?? basePath}
       />
     </div>
   );

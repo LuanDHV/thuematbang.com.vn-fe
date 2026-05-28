@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Be_Vietnam_Pro, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/metadata";
+import AppProviders from "@/components/providers/AppProviders";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
+const geistSans = Be_Vietnam_Pro({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-geist-sans",
+});
+
+const geistMono = JetBrains_Mono({
+  weight: ["400", "500", "600"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -52,8 +62,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${montserrat.variable} h-full antialiased`}>
-      <body className="min-h-screen">{children}</body>
+    <html
+      lang="vi"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="bg-app text-body min-h-screen font-sans">
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }

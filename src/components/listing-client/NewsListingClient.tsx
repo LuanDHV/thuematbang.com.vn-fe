@@ -1,89 +1,128 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  startTransition,
+} from "react";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import type { BreadcrumbItem } from "@/lib/flat-url";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
-import SeeMoreButton from "@/components/common/SeeMoreButton";
 import { CategoryChips } from "@/components/common/CategoryChips";
-import { mockNews } from "@/mocks/news";
-import { mockCategories } from "@/mocks/categories";
+import { Pagination } from "@/components/common/Pagination";
+import { News } from "@/types/news";
+import { Category } from "@/types/category";
+import type { PaginationMeta } from "@/types/api";
+import { useMostViewedNews } from "@/hooks/use-news";
 
-const INITIAL_VISIBLE_NEWS = 4;
-const LOAD_MORE_STEP = 4;
-
-export default function NewsListingClient({
-  initialCategorySlug = "tin-tuc",
-  breadcrumbItems,
-}: {
+type NewsListingClientProps = {
+  newsList: News[];
+  categories?: Category[];
   initialCategorySlug?: string;
   breadcrumbItems?: BreadcrumbItem[];
-}) {
-  const router = useRouter();
-  const [selectedCategorySlug, setSelectedCategorySlug] =
-    useState<string>(initialCategorySlug);
-  const [visibleNewsCount, setVisibleNewsCount] =
-    useState(INITIAL_VISIBLE_NEWS);
+  paginationMeta?: PaginationMeta;
+};
 
-  const tintucCategory = mockCategories.find((cat) => cat.slug === "tin-tuc");
+const DEFAULT_CATEGORY_SLUG = "tin-tuc";
+
+function getCategoryPath(categorySlug: string) {
+  return categorySlug === DEFAULT_CATEGORY_SLUG
+    ? "/tin-tuc"
+    : `/tin-tuc/${categorySlug}`;
+}
+
+export default function NewsListingClient({
+  newsList: sourceNews,
+  categories = [],
+  initialCategorySlug = DEFAULT_CATEGORY_SLUG,
+  breadcrumbItems,
+  paginationMeta,
+}: NewsListingClientProps) {
+  const router = useRouter();
+
+  const [selectedCategorySlug, setSelectedCategorySlug] =
+    useState(initialCategorySlug);
+
+  useEffect(() => {
+    if (initialCategorySlug !== selectedCategorySlug) {
+      // Defer the state update to avoid synchronous cascading renders
+      startTransition(() => {
+        setSelectedCategorySlug(initialCategorySlug);
+      });
+    }
+  }, [initialCategorySlug, selectedCategorySlug]);
 
   const categoryItems = useMemo(() => {
-    if (!tintucCategory) return [];
-    return [
-      {
-        id: tintucCategory.id,
-        label: tintucCategory.name,
-        value: tintucCategory.slug,
-      },
-      ...(tintucCategory.children ?? []).map((category) => ({
-        id: category.id,
-        label: category.name,
-        value: category.slug,
-      })),
-    ];
-  }, [tintucCategory]);
+    const newsCategories = categories
+      .filter((item) => item.type === "NEWS")
+      .toSorted((a, b) => a.priority - b.priority)
+      .map((item) => ({
+        id: String(item.id),
+        label: item.name,
+        value: item.slug,
+      }));
 
-  const handleSelectCategory = (categorySlug: string) => {
-    setSelectedCategorySlug(categorySlug);
-    setVisibleNewsCount(INITIAL_VISIBLE_NEWS);
-    router.replace(
-      categorySlug === "tin-tuc" ? "/tin-tuc" : `/tin-tuc/${categorySlug}`,
-      {
+    const hasDefaultCategory = newsCategories.some(
+      (item) => item.value === DEFAULT_CATEGORY_SLUG,
+    );
+
+    return hasDefaultCategory
+      ? newsCategories
+      : [
+          {
+            id: DEFAULT_CATEGORY_SLUG,
+            label: "Tin tức",
+            value: DEFAULT_CATEGORY_SLUG,
+          },
+          ...newsCategories,
+        ];
+  }, [categories]);
+
+  const [featuredNews, remainingNews] = useMemo(() => {
+    return [sourceNews[0], sourceNews.slice(1)];
+  }, [sourceNews]);
+
+  const { data: mostViewedNewsResponse } = useMostViewedNews(
+    selectedCategorySlug,
+    4,
+  );
+
+  const mostViewedNews = useMemo(() => {
+    return mostViewedNewsResponse?.data ?? sourceNews.slice(0, 4);
+  }, [mostViewedNewsResponse?.data, sourceNews]);
+
+  const totalPages = Math.max(1, paginationMeta?.totalPage ?? 1);
+  const currentPage = Math.max(1, paginationMeta?.currentPage ?? 1);
+
+  const handleSelectCategory = useCallback(
+    (categorySlug: string) => {
+      setSelectedCategorySlug(categorySlug);
+
+      router.replace(getCategoryPath(categorySlug), {
         scroll: false,
-      },
-    );
-  };
+      });
+    },
+    [router],
+  );
 
-  const newsList = useMemo(() => {
-    if (selectedCategorySlug === "tin-tuc") {
-      return mockNews.filter((newsItem) =>
-        ["kien-truc-xay-dung", "tu-van-luat", "phong-thuy"].includes(
-          newsItem.category?.slug || "",
-        ),
+  const handlePageChange = useCallback(
+    (nextPage: number) => {
+      router.replace(
+        buildPagedPath(getCategoryPath(selectedCategorySlug), nextPage),
+        {
+          scroll: false,
+        },
       );
-    }
-    return mockNews.filter(
-      (newsItem) => newsItem.category?.slug === selectedCategorySlug,
-    );
-  }, [selectedCategorySlug]);
-
-  const featuredNews = newsList[0];
-  const remainingNews = newsList.slice(1);
-  const visibleRemainingNews = remainingNews.slice(0, visibleNewsCount);
-  const hasMoreNews = visibleNewsCount < remainingNews.length;
-
-  const mostViewedNews = [...remainingNews]
-    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
-    .slice(0, 6);
-
-  const handleLoadMore = () => {
-    setVisibleNewsCount((currentCount) => currentCount + LOAD_MORE_STEP);
-  };
+    },
+    [router, selectedCategorySlug],
+  );
 
   return (
-    <div className="mx-auto h-auto max-w-7xl px-4 py-8">
+    <div className="layout-container layout-section-sm h-auto">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
@@ -97,31 +136,36 @@ export default function NewsListingClient({
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="w-full space-y-6 lg:w-4/6">
-          {featuredNews && <FeaturedNewsCard news={featuredNews} />}
+        <div className="flex w-full flex-col gap-6 lg:w-4/6">
+          {featuredNews ? <FeaturedNewsCard news={featuredNews} /> : null}
 
           <div className="grid gap-6">
-            {visibleRemainingNews.length > 0 ? (
-              visibleRemainingNews.map((newsItem) => (
+            {remainingNews.length > 0 ? (
+              remainingNews.map((newsItem) => (
                 <NewsCard key={newsItem.id} news={newsItem} />
               ))
-            ) : newsList.length === 0 ? (
+            ) : sourceNews.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-gray-500">Không có bài viết nào</p>
               </div>
             ) : null}
           </div>
 
-          {remainingNews.length > 0 && hasMoreNews ? (
-            <SeeMoreButton onClick={handleLoadMore} />
+          {totalPages > 1 ? (
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={handlePageChange}
+            />
           ) : null}
         </div>
 
-        <div className="w-full space-y-6 lg:w-2/6">
+        <aside className="lg:w-2/lg flex w-full flex-col gap-6">
           <h4 className="mb-4 text-lg font-bold">
             Bài viết được xem nhiều nhất
           </h4>
-          <div className="grid gap-6">
+
+          <div className="grid gap-4">
             {mostViewedNews.length > 0 ? (
               mostViewedNews.map((newsItem) => (
                 <NewsCard key={newsItem.id} news={newsItem} />
@@ -130,7 +174,7 @@ export default function NewsListingClient({
               <p className="text-gray-500">Không có bài viết</p>
             )}
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

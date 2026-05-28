@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import { connection } from "next/server";
+import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { categoryService } from "@/services/category.service";
+import { newsService } from "@/services/news.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Tin tức",
@@ -9,10 +13,27 @@ export const metadata: Metadata = createPageMetadata({
   pathname: "/tin-tuc",
 });
 
-export default function TinTucPage() {
+export default async function TinTucPage() {
+  await connection();
+
+  // Fetch news categories for listing filter tabs.
+  const categories = await categoryService.getNewsCategories();
+
   return (
-    <>
-      <NewsListingClient breadcrumbItems={buildNewsCategoryBreadcrumbs()} />
-    </>
+    <SafeFetch
+      fetcher={newsService.getAll({
+        limit: 8,
+      })}
+      debugLabel="News Response"
+    >
+      {(response) => (
+        <NewsListingClient
+          newsList={response.data ?? []}
+          categories={categories}
+          breadcrumbItems={buildNewsCategoryBreadcrumbs(undefined, categories)}
+          paginationMeta={response.meta}
+        />
+      )}
+    </SafeFetch>
   );
 }

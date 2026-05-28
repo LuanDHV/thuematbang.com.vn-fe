@@ -1,75 +1,76 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import { mockProjects } from "@/mocks/projects";
 import { Project } from "@/types/project";
-import type { BreadcrumbItem } from "@/lib/flat-url";
+import { Category } from "@/types/category";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
 import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";
-import { mockCategoryProject } from "@/mocks/categories";
 import { CategoryChips } from "@/components/common/CategoryChips";
-
-const PAGE_SIZE = 6;
+import type { PaginationMeta } from "@/types/api";
 
 export default function ProjectListingClient({
-  projects = mockProjects,
+  projects,
+  categories = [],
   initialCategorySlug = "du-an",
   breadcrumbItems,
+  paginationMeta,
 }: {
-  projects?: Project[];
+  projects: Project[];
+  categories?: Category[];
   initialCategorySlug?: string;
   breadcrumbItems?: BreadcrumbItem[];
+  paginationMeta?: PaginationMeta;
 }) {
   const router = useRouter();
   const [selectedCategorySlug, setSelectedCategorySlug] =
     useState(initialCategorySlug);
+
   const categoryItems = useMemo(
     () => [
       { id: "all", label: "Tất cả", value: "du-an" },
-      ...mockCategoryProject.map((category) => ({
-        id: category.id,
+      ...categories.map((category) => ({
+        id: String(category.id),
         label: category.name,
         value: category.slug,
       })),
     ],
-    [],
+    [categories],
   );
 
   const handleSelectCategory = (value: string) => {
     setSelectedCategorySlug(value);
-    router.replace(value === "du-an" ? "/du-an" : `/du-an/${value}`, {
-      scroll: false,
-    });
+    const targetPath = value === "du-an" ? "/du-an" : `/du-an/${value}`;
+    router.replace(targetPath, { scroll: false });
   };
 
-  const filteredProjects = useMemo(() => {
-    if (selectedCategorySlug === "du-an") return projects;
-    return projects.filter(
-      (project) => project.category?.slug === selectedCategorySlug,
-    );
-  }, [projects, selectedCategorySlug]);
-
   const orderedProjects = useMemo(() => {
-    return [...filteredProjects].sort(
+    return [...projects].sort(
       (left, right) =>
         new Date(right.createdAt ?? 0).getTime() -
         new Date(left.createdAt ?? 0).getTime(),
     );
-  }, [filteredProjects]);
+  }, [projects]);
 
-  const [page, setPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(orderedProjects.length / PAGE_SIZE));
-  const currentPage = Math.min(page, totalPages);
+  const totalPages = Math.max(1, paginationMeta?.totalPage ?? 1);
+  const currentPage = Math.max(1, paginationMeta?.currentPage ?? 1);
 
-  const pageItems = orderedProjects.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
+  const targetPathFromCategory = (categorySlug: string) =>
+    categorySlug === "du-an" ? "/du-an" : `/du-an/${categorySlug}`;
+
+  const handlePageChange = (nextPage: number) => {
+    router.replace(
+      buildPagedPath(targetPathFromCategory(selectedCategorySlug), nextPage),
+      {
+        scroll: false,
+      },
+    );
+  };
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8">
+    <section className="layout-container layout-section-sm">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
@@ -83,7 +84,7 @@ export default function ProjectListingClient({
       </div>
 
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {pageItems.map((project) => (
+        {orderedProjects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>
@@ -92,7 +93,7 @@ export default function ProjectListingClient({
         <Pagination
           page={currentPage}
           totalPages={totalPages}
-          onChange={setPage}
+          onChange={handlePageChange}
         />
       </div>
     </section>

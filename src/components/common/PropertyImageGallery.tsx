@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 
 type PropertyImageGalleryProps = {
   title: string;
@@ -30,11 +30,12 @@ export default function PropertyImageGallery({
   return (
     <div>
       <div className="relative h-64 overflow-hidden rounded-2xl bg-gray-100 lg:h-96">
-        <Image
+        <CloudinaryImage
           src={activeImage}
           alt={title}
           fill
           sizes="(max-width: 1024px) 100vw, 66vw"
+          cldQuality="auto:best"
           className="object-cover"
         />
         {safeImages.length > 1 ? (
@@ -42,7 +43,7 @@ export default function PropertyImageGallery({
             <button
               type="button"
               onClick={goPrev}
-              className="hover:bg-primary absolute top-1/2 left-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/90 p-2 text-gray-700 shadow-sm transition-colors duration-200 ease-in-out hover:text-white"
+              className="absolute top-1/2 left-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/92 p-2 text-body shadow-[0_14px_28px_rgba(15,23,42,0.12)] transition-colors duration-200 ease-in-out hover:bg-primary hover:text-white"
               aria-label="Ảnh trước"
             >
               <ChevronLeft size={18} />
@@ -50,7 +51,7 @@ export default function PropertyImageGallery({
             <button
               type="button"
               onClick={goNext}
-              className="hover:bg-primary absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/90 p-2 text-gray-700 shadow-sm transition-colors duration-200 ease-in-out hover:text-white"
+              className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/92 p-2 text-body shadow-[0_14px_28px_rgba(15,23,42,0.12)] transition-colors duration-200 ease-in-out hover:bg-primary hover:text-white"
               aria-label="Ảnh sau"
             >
               <ChevronRight size={18} />
@@ -71,11 +72,12 @@ export default function PropertyImageGallery({
             className={`relative h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded-lg ${index === activeIndex ? "ring-primary ring-2" : "ring-1 ring-gray-200"}`}
             aria-label={`Xem ảnh ${index + 1}`}
           >
-            <Image
+            <CloudinaryImage
               src={image}
               alt={`${title} - ảnh ${index + 1}`}
               fill
               sizes="96px"
+              cldQuality="auto:good"
               className="object-cover"
             />
           </button>

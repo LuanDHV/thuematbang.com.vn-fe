@@ -19,29 +19,31 @@ type PageFaqProps = {
 
 export default function PageFaq({ title, description, items }: PageFaqProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-8">
+    <section className="layout-container layout-section-sm">
       <div className="mb-10 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-700 sm:text-4xl">
+        <h2 className="text-heading text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
           {title}
         </h2>
-        <p className="mt-4 text-lg text-gray-600">{description}</p>
+        <p className="text-muted mt-4 text-base leading-8 md:text-lg">
+          {description}
+        </p>
       </div>
 
       <Accordion
         type="single"
         collapsible
-        className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+        className="surface-card w-full overflow-hidden"
       >
         {items.map((faq) => (
           <AccordionItem
             key={faq.id}
             value={faq.id}
-            className="border-b border-gray-200 px-6 last:border-b-0"
+            className="border-b border-black/6 px-6 last:border-b-0"
           >
-            <AccordionTrigger className="hover:text-primary cursor-pointer py-5 text-left font-semibold text-gray-700 transition-colors hover:no-underline">
+            <AccordionTrigger className="text-heading hover:text-primary cursor-pointer py-5 text-left font-semibold transition-colors hover:no-underline">
               {faq.question}
             </AccordionTrigger>
-            <AccordionContent className="pb-5 leading-relaxed text-gray-600">
+            <AccordionContent className="text-body pb-5 leading-7">
               {faq.answer}
             </AccordionContent>
           </AccordionItem>

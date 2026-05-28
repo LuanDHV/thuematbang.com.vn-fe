@@ -17,4 +17,3 @@ export interface Lead {
   user?: User | null;
   property?: Property | null;
 }
-

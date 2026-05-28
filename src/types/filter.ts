@@ -1,6 +1,6 @@
 export interface AdvancedFilterValue {
   propertyTypes: string[];
-  city: string;
+  province: string;
   ward: string;
   street: string;
   priceMin: string;
@@ -15,7 +15,7 @@ export interface AdvancedFilterValue {
 
 export const INITIAL_ADVANCED_FILTER_VALUE: AdvancedFilterValue = {
   propertyTypes: [],
-  city: "",
+  province: "",
   ward: "",
   street: "",
   priceMin: "",

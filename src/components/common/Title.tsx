@@ -6,20 +6,15 @@ interface TitleProps {
 export default function Title({ title, description }: TitleProps) {
   return (
     <div className="mx-auto mb-12 max-w-5xl text-center">
-      {/* Title */}
-      <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-gray-700 uppercase md:text-4xl">
+      <h1 className="mb-4 text-3xl font-semibold tracking-[-0.03em] text-heading md:text-5xl">
         {title}
       </h1>
-
-      {/* Decorative Line - Căn giữa */}
-      <div className="bg-primary mx-auto mb-8 h-1.5 w-16 rounded-full"></div>
-
-      {/* Description */}
-      {description && (
-        <p className="mx-auto max-w-2xl text-lg leading-relaxed font-light text-gray-500 md:text-xl">
+      <div className="mx-auto mb-8 h-px w-20 rounded-full bg-primary/70" />
+      {description ? (
+        <p className="mx-auto max-w-2xl text-base leading-8 text-muted md:text-lg">
           {description}
         </p>
-      )}
+      ) : null}
     </div>
   );
 }

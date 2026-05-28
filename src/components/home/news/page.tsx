@@ -1,23 +1,17 @@
-import Title from "@/components/common/Title";
-import SeeMoreButton from "@/components/common/SeeMoreButton";
+﻿import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import NewsCard from "@/components/common/NewsCard";
-import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
-import { mockNews } from "@/mocks/news";
-
-// TODO: Replace mockNews with API call when ready
-// import { postService } from "@/services/post.service";
-// const response = await postService.getByCategorySlug("tin-tuc");
-// const newsList = response.data?.slice(0, 4) || [];
+import SafeFetch from "@/components/common/SafeFetch";
+import SeeMoreButton from "@/components/common/SeeMoreButton";
+import Title from "@/components/common/Title";
+import { newsService } from "@/services/news.service";
+import { News } from "@/types/news";
 
 export default async function NewsSection() {
-  // Using mockData for demo - replace with API call above when ready
-  const newsList = mockNews.slice(0, 4);
-  const featuredNews = newsList[0];
-  const sideNews = newsList.slice(1, 4);
+  const newsFetch = newsService.getAll();
 
   return (
-    <section className="w-full px-4 py-12">
-      <div className="container mx-auto max-w-7xl px-4">
+    <section className="layout-section w-full">
+      <div className="layout-container">
         <div className="mb-16 text-center">
           <Title
             title="Tin tức"
@@ -25,21 +19,36 @@ export default async function NewsSection() {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
-          <div className="min-h-105">
-            {featuredNews && <FeaturedNewsCard news={featuredNews} />}
-          </div>
+        <SafeFetch fetcher={newsFetch} debugLabel="Home News Response">
+          {(response) => {
+            const sourceNews = (response as { data?: News[] })?.data ?? [];
+            const newsList = sourceNews.slice(0, 4);
+            const featuredNews = newsList[0];
+            const sideNews = newsList.slice(1, 4);
 
-          <div className="grid grid-cols-1 gap-6">
-            {sideNews.map((newsItem) => (
-              <NewsCard key={newsItem.id} news={newsItem} />
-            ))}
-          </div>
-        </div>
+            return (
+              <>
+                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-8">
+                  <div className="min-h-105">
+                    {featuredNews ? (
+                      <FeaturedNewsCard news={featuredNews} />
+                    ) : null}
+                  </div>
 
-        <div className="mt-16">
-          <SeeMoreButton href="tin-tuc" />
-        </div>
+                  <div className="grid grid-cols-1 gap-5">
+                    {sideNews.map((newsItem) => (
+                      <NewsCard key={newsItem.id} news={newsItem} />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-16">
+                  <SeeMoreButton href="tin-tuc" />
+                </div>
+              </>
+            );
+          }}
+        </SafeFetch>
       </div>
     </section>
   );

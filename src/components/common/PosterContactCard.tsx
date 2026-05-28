@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { PhoneCall } from "lucide-react";
 import { useMemo } from "react";
-import Image from "next/image";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 
 type PosterContactCardProps = {
   fullName?: string | null;
@@ -48,27 +48,30 @@ export default function PosterContactCard({
 
   return (
     <section>
-      <h2 className="text-lg font-semibold">Thông tin người đăng</h2>
+      <h2 className="text-lg font-semibold tracking-[-0.02em] text-heading">
+        Thông tin người đăng
+      </h2>
 
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-4 flex items-center gap-3">
         {avatarUrl ? (
-          <div className="relative h-12 w-12 overflow-hidden rounded-full">
-            <Image
+          <div className="relative h-12 w-12 overflow-hidden rounded-full ring-1 ring-black/5">
+            <CloudinaryImage
               src={avatarUrl}
               alt={fullName || "Người đăng"}
               fill
               sizes="48px"
+              cldQuality="auto:best"
               className="object-cover"
             />
           </div>
         ) : (
-          <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
             {getInitials(fullName)}
           </div>
         )}
         <div>
-          <p className="text-sm text-gray-500">Người đăng</p>
-          <p className="text-base font-semibold text-gray-800">
+          <p className="text-sm text-muted">Người đăng</p>
+          <p className="text-base font-semibold text-heading">
             {fullName || "Đang cập nhật"}
           </p>
         </div>
@@ -77,7 +80,7 @@ export default function PosterContactCard({
       {canRevealPhone ? (
         <a
           href={normalizedPhone ? `tel:${normalizedPhone}` : undefined}
-          className="bg-primary mt-4 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:opacity-90"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)] transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
         >
           <PhoneCall size={16} />
           {revealLabelPrefix} {directPhone}
@@ -85,7 +88,7 @@ export default function PosterContactCard({
       ) : (
         <Link
           href={loginHref}
-          className="bg-primary mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:opacity-90"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)] transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
         >
           <PhoneCall size={16} />
           {maskedLabelPrefix} {maskedPhone}

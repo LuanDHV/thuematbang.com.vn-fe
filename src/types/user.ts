@@ -1,10 +1,10 @@
-import {
+﻿import {
   PaymentTransaction,
   PropertyBoostOrder,
   PropertyPackageOrder,
   UserPostingQuota,
 } from "./commerce";
-import { UserRole } from "./enums";
+import { AuthProvider, UserRole } from "./enums";
 import { Lead } from "./lead";
 import { Property } from "./property";
 import { RentRequest } from "./rent-request";
@@ -14,7 +14,12 @@ export interface User {
   fullName: string;
   email: string;
   phone?: string | null;
+  phoneNormalized?: string | null;
+  googleId?: string | null;
+  avatarUrl?: string | null;
+  avatarPublicId?: string | null;
   passwordHash?: string | null;
+  authProvider?: AuthProvider;
   role: UserRole;
   createdAt: Date | string;
   updatedAt: Date | string;

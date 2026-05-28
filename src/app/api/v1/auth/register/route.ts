@@ -1,0 +1,26 @@
+import { NextResponse } from "next/server";
+import { proxyJsonRequest } from "@/app/api/v1/_utils/proxy";
+import { applyAuthCookies, extractTokenPair } from "@/app/api/v1/_utils/auth";
+
+// Handle user registration
+export async function POST(request: Request) {
+  const body = await request.json(); // Get registration data from client
+
+  // Proxy registration data to backend API
+  const response = await proxyJsonRequest({
+    backendPath: "/auth/register",
+    method: "POST",
+    body,
+  });
+
+  // Return error response directly if backend fails
+  if (response.status >= 400) {
+    return response;
+  }
+
+  const payload = await response.json();
+  const nextResponse = NextResponse.json(payload, { status: response.status });
+  applyAuthCookies(nextResponse, extractTokenPair(payload)); // Automatically sign in by saving tokens to cookies
+
+  return nextResponse;
+}

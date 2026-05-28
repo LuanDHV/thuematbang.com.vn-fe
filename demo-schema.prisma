@@ -1,0 +1,605 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+/**
+ * ENUMS
+ */
+
+enum UserRole {
+  CUSTOMER // người dùng thường
+  AGENT // môi giới / chủ tin chuyên nghiệp
+  ADMIN // quản trị hệ thống
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
+enum PublishStatus {
+  DRAFT // bản nháp
+  PUBLISHED // đã xuất bản
+  ARCHIVED // đã lưu trữ / ẩn khỏi public
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CLOSED
+  REJECTED
+}
+
+enum PropertyPriority {
+  NORMAL // tin thường
+  SILVER // gói ưu tiên trung bình
+  GOLD // gói ưu tiên cao
+}
+
+enum PropertyDirection {
+  BAC
+  DONG_BAC
+  DONG
+  DONG_NAM
+  NAM
+  TAY_NAM
+  TAY
+  TAY_BAC
+}
+
+enum CategoryType {
+  PROPERTY // danh mục bất động sản cho thuê
+  RENT_REQUEST // danh mục nhu cầu cần thuê
+  PROJECT // danh mục dự án
+  NEWS // danh mục tin tức
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+enum PurchaseType {
+  PROPERTY_POST_PACKAGE // mua gói đăng tin cho thuê
+  PROPERTY_BOOST // mua lượt đẩy tin cho thuê
+}
+
+enum OrderStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  CANCELED
+}
+
+enum PublishSource {
+  FREE_QUOTA // dùng lượt miễn phí
+  PAID_PACKAGE // dùng gói trả phí
+}
+
+enum RentRequestStatus {
+  ACTIVE // đang còn nhu cầu
+  MATCHED // đã tìm được mặt bằng phù hợp
+  CLOSED // người dùng tự đóng
+  EXPIRED // hết hạn hiển thị
+}
+
+/**
+ * USER
+ */
+
+model User {
+  id              Int          @id @default(autoincrement())
+  fullName        String       @map("full_name") @db.VarChar(255) // họ tên
+  email           String       @unique @db.VarChar(255) // email đăng nhập
+  phone           String?      @unique @db.VarChar(20) // số điện thoại
+  phoneNormalized String?      @unique @map("phone_normalized") @db.VarChar(20) // số điện thoại chuẩn hóa (+84...) để chống trùng định dạng
+  googleId        String?      @unique @map("google_id") @db.VarChar(255) // id tài khoản google
+  avatarUrl       String?      @map("avatar_url") @db.VarChar(500) // ảnh đại diện
+  avatarPublicId  String?      @map("avatar_public_id") @db.VarChar(255) // ID file ảnh đại diện trên cloud storage
+  passwordHash    String?      @map("password_hash") @db.VarChar(255) // mật khẩu đã hash
+  authProvider    AuthProvider @default(LOCAL) @map("auth_provider") // nguồn tạo tài khoản
+  role            UserRole     @default(CUSTOMER) // vai trò tài khoản
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  properties    Property[]
+  rentRequests  RentRequest[]
+  leads         Lead[]
+  postingQuota  UserPostingQuota?
+  packageOrders PropertyPackageOrder[]
+  boostOrders   PropertyBoostOrder[]
+  payments      PaymentTransaction[]
+
+  @@index([role])
+  @@map("users")
+}
+
+/**
+ * BANNER
+ */
+
+model Banner {
+  id            Int     @id @default(autoincrement())
+  title         String  @db.VarChar(255)
+  imageUrl      String  @map("image_url") @db.VarChar(500)
+  imagePublicId String? @map("image_public_id") @db.VarChar(255)
+  targetLink    String? @map("target_link") @db.VarChar(500)
+
+  // Xác định trang hiển thị: 'home', 'project_list', 'news_detail', 'all'...
+  page String @default("home") @db.VarChar(50)
+
+  position  String   @db.VarChar(50)
+  sortOrder Int      @default(1) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  @@index([page, position, isActive, sortOrder])
+  @@map("banners")
+}
+
+/**
+ * CATEGORY
+ */
+
+model Category {
+  id       Int          @id @default(autoincrement())
+  type     CategoryType // loại category: property, rent request, project, news
+  name     String       @db.VarChar(255) // tên danh mục
+  slug     String       @db.VarChar(255) // slug SEO
+  priority Int          @default(1) // thứ tự hiển thị
+  isActive Boolean      @default(true) @map("is_active") // bật/tắt danh mục
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  properties   Property[]
+  rentRequests RentRequest[]
+  projects     Project[]
+  news         News[]
+
+  @@unique([type, slug])
+  @@index([type, isActive, priority])
+  @@map("categories")
+}
+
+/**
+ * LOCATION
+ */
+
+model Province {
+  id   Int    @id // mã tỉnh/thành, có thể dùng mã hành chính Việt Nam
+  name String @db.VarChar(100) // tên tỉnh/thành
+  slug String @unique @db.VarChar(100) // slug tỉnh/thành
+
+  wards   Ward[]
+  streets Street[]
+
+  properties   Property[]
+  rentRequests RentRequest[]
+  projects     Project[]
+
+  @@map("locations_provinces")
+}
+
+model Ward {
+  id         Int    @id // mã phường/xã
+  provinceId Int    @map("province_id")
+  name       String @db.VarChar(100)
+  slug       String @db.VarChar(100)
+
+  province Province @relation(fields: [provinceId], references: [id])
+
+  streets Street[]
+
+  properties   Property[]
+  rentRequests RentRequest[]
+  projects     Project[]
+
+  @@unique([provinceId, slug])
+  @@index([provinceId])
+  @@map("locations_wards")
+}
+
+model Street {
+  id         Int    @id @default(autoincrement())
+  provinceId Int    @map("province_id")
+  wardId     Int?   @map("ward_id")
+  name       String @db.VarChar(150) // tên đường
+  slug       String @db.VarChar(150)
+
+  province Province @relation(fields: [provinceId], references: [id])
+  ward     Ward?    @relation(fields: [wardId], references: [id])
+
+  properties   Property[]
+  rentRequests RentRequest[]
+
+  @@unique([provinceId, slug])
+  @@index([provinceId, wardId])
+  @@map("locations_streets")
+}
+
+/**
+ * LEAD = KHÁCH LIÊN HỆ TIN CHO THUÊ
+ */
+
+model Lead {
+  id         Int        @id @default(autoincrement())
+  userId     Int?       @map("user_id") // user tạo lead nếu có đăng nhập
+  propertyId Int?       @map("property_id") // tin BĐS liên quan
+  fullName   String     @map("full_name") @db.VarChar(255) // tên người liên hệ
+  phone      String     @db.VarChar(20)
+  email      String?    @db.VarChar(255)
+  source     String     @db.VarChar(50) // nguồn lead: website, zalo, phone...
+  message    String?    @db.Text
+  status     LeadStatus @default(NEW)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  property Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([propertyId])
+  @@index([userId])
+  @@map("leads")
+}
+
+/**
+ * PROPERTY = BẤT ĐỘNG SẢN CHO THUÊ
+ */
+
+model Property {
+  id     Int  @id @default(autoincrement())
+  userId Int? @map("user_id") // người đăng tin, null nếu bị xóa user
+
+  title      String @db.VarChar(255) // tiêu đề tin cho thuê
+  slug       String @unique @db.VarChar(255) // slug SEO duy nhất cho tin
+  categoryId Int    @map("category_id") // loại BĐS: mặt bằng, văn phòng, nhà phố...
+
+  price        BigInt? // giá thuê, đơn vị VND
+  isNegotiable Boolean @default(false) @map("is_negotiable") // giá có thương lượng không
+  area         Float? // diện tích m²
+
+  direction PropertyDirection? // hướng nhà/mặt bằng
+  bedrooms  Int? // số phòng ngủ, phù hợp nhà/căn hộ
+  bathrooms Int? // số toilet/phòng tắm
+  floors    Int? // số tầng
+  frontage  Float? // chiều ngang mặt tiền, mét
+  roadWidth Float?             @map("road_width") // lộ giới/độ rộng đường trước nhà
+
+  priorityStatus PropertyPriority @default(NORMAL) @map("priority_status") // cấp ưu tiên tin
+  publishSource  PublishSource    @default(FREE_QUOTA) @map("publish_source") // nguồn đăng: miễn phí/gói trả phí
+
+  isBoosted    Boolean   @default(false) @map("is_boosted") // tin có đang được đẩy không
+  boostedAt    DateTime? @map("boosted_at") @db.Timestamp(0) // mốc dùng để sort ưu tiên
+  boostStartAt DateTime? @map("boost_start_at") @db.Timestamp(0) // thời điểm bắt đầu boost
+  boostEndAt   DateTime? @map("boost_end_at") @db.Timestamp(0) // thời điểm kết thúc boost
+  boostCount   Int       @default(0) @map("boost_count") // tổng số lần đã boost
+  lastBoostAt  DateTime? @map("last_boost_at") @db.Timestamp(0) // lần boost gần nhất
+
+  provinceId    Int?    @map("province_id")
+  wardId        Int?    @map("ward_id")
+  streetId      Int?    @map("street_id")
+  addressDetail String? @map("address_detail") @db.VarChar(255) // số nhà, tên tòa nhà...
+  longitude     Float? // kinh độ
+  latitude      Float? // vĩ độ
+
+  contactName  String? @map("contact_name") @db.VarChar(255) // tên liên hệ hiển thị
+  contactPhone String? @map("contact_phone") @db.VarChar(20) // SĐT liên hệ hiển thị
+
+  content    String?       @db.LongText // mô tả chi tiết HTML/text
+  viewCount  Int           @default(0) @map("view_count") // lượt xem
+  status     PublishStatus @default(PUBLISHED) // trạng thái xuất bản
+  isFeatured Boolean       @default(false) @map("is_featured") // tin nổi bật do admin set
+
+  publishedAt DateTime? @map("published_at") @db.Timestamp(0) // thời điểm public
+  expiredAt   DateTime? @map("expired_at") @db.Timestamp(0) // thời điểm hết hạn
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  category Category @relation(fields: [categoryId], references: [id])
+
+  province Province? @relation(fields: [provinceId], references: [id])
+  ward     Ward?     @relation(fields: [wardId], references: [id])
+  street   Street?   @relation(fields: [streetId], references: [id])
+
+  leads                  Lead[]
+  images                 PropertyImage[]
+  boostOrders            PropertyBoostOrder[]
+  propertyPackageOrder   PropertyPackageOrder? @relation(fields: [propertyPackageOrderId], references: [id])
+  propertyPackageOrderId Int?
+
+  @@index([status, categoryId, provinceId, wardId, streetId])
+  @@index([status, categoryId, price])
+  @@index([status, categoryId, area])
+  @@index([status, bedrooms, bathrooms])
+  @@index([status, direction])
+  @@index([status, priorityStatus, isBoosted, boostedAt, createdAt])
+  @@index([isBoosted, boostEndAt])
+  @@index([isFeatured, createdAt])
+  @@index([viewCount])
+  @@index([createdAt])
+  @@map("properties")
+}
+
+model PropertyImage {
+  id            Int      @id @default(autoincrement())
+  propertyId    Int      @map("property_id")
+  imageUrl      String   @map("image_url") @db.VarChar(500)
+  imagePublicId String?  @map("image_public_id") @db.VarChar(255)
+  sortOrder     Int      @default(1) @map("sort_order") // ảnh số 1 là thumbnail
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, sortOrder])
+  @@index([propertyId])
+  @@map("property_images")
+}
+
+/**
+ * RENT REQUEST = NHU CẦU CẦN THUÊ
+ * Đăng miễn phí, không dùng package, không dùng boost, không đi qua payment.
+ */
+
+model RentRequest {
+  id     Int  @id @default(autoincrement())
+  userId Int? @map("user_id") // người đăng nhu cầu, null nếu bị xóa user
+
+  title      String @db.VarChar(255) // tiêu đề nhu cầu cần thuê
+  slug       String @unique @db.VarChar(255) // slug SEO cho bài cần thuê
+  categoryId Int?   @map("category_id") // loại BĐS muốn thuê
+
+  imageUrl      String  @map("image_url") @db.VarChar(500)
+  imagePublicId String? @map("image_public_id") @db.VarChar(255)
+
+  desiredProvinceId Int? @map("desired_province_id") // tỉnh/thành mong muốn
+  desiredWardId     Int? @map("desired_ward_id") // phường/xã mong muốn
+  desiredStreetId   Int? @map("desired_street_id") // đường mong muốn
+
+  minBudget BigInt? @map("min_budget") // ngân sách tối thiểu
+  maxBudget BigInt? @map("max_budget") // ngân sách tối đa
+  minArea   Float?  @map("min_area") // diện tích tối thiểu
+  maxArea   Float?  @map("max_area") // diện tích tối đa
+
+  preferredDirection PropertyDirection? @map("preferred_direction") // hướng mong muốn nếu có
+
+  requirementText String? @map("requirement_text") @db.LongText // mô tả nhu cầu chi tiết
+
+  contactName  String? @map("contact_name") @db.VarChar(255) // tên người cần thuê
+  contactPhone String? @map("contact_phone") @db.VarChar(20) // SĐT liên hệ
+
+  status     RentRequestStatus @default(ACTIVE) // trạng thái nhu cầu
+  isFeatured Boolean           @default(false) @map("is_featured") // admin ghim/nổi bật nếu cần
+  viewCount  Int               @default(0) @map("view_count") // lượt xem bài cần thuê
+
+  publishedAt DateTime? @map("published_at") @db.Timestamp(0)
+  expiredAt   DateTime? @map("expired_at") @db.Timestamp(0)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  desiredProvince Province? @relation(fields: [desiredProvinceId], references: [id])
+  desiredWard     Ward?     @relation(fields: [desiredWardId], references: [id])
+  desiredStreet   Street?   @relation(fields: [desiredStreetId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([status, categoryId, desiredProvinceId, desiredWardId, desiredStreetId])
+  @@index([status, minBudget, maxBudget])
+  @@index([status, minArea, maxArea])
+  @@index([isFeatured, createdAt])
+  @@index([viewCount])
+  @@map("rent_requests")
+}
+
+/**
+ * PROJECT
+ */
+
+model Project {
+  id            Int     @id @default(autoincrement())
+  name          String  @db.VarChar(255) // tên dự án
+  slug          String  @unique @db.VarChar(255)
+  categoryId    Int?    @map("category_id")
+  developer     String? @db.VarChar(255) // chủ đầu tư
+  provinceId    Int?    @map("province_id")
+  wardId        Int?    @map("ward_id")
+  addressDetail String? @map("address_detail") @db.VarChar(255)
+  longitude     Float?
+  latitude      Float?
+  area          Float? // quy mô diện tích
+  price         BigInt? // giá tham khảo
+  content       String? @db.LongText
+  viewCount     Int     @default(0) @map("view_count")
+
+  status PublishStatus @default(PUBLISHED)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  category Category? @relation(fields: [categoryId], references: [id])
+  province Province? @relation(fields: [provinceId], references: [id])
+  ward     Ward?     @relation(fields: [wardId], references: [id])
+
+  images ProjectImage[]
+
+  @@index([status, createdAt])
+  @@index([categoryId, provinceId, wardId])
+  @@index([price])
+  @@index([area])
+  @@index([viewCount])
+  @@map("projects")
+}
+
+model ProjectImage {
+  id            Int      @id @default(autoincrement())
+  projectId     Int      @map("project_id")
+  imageUrl      String   @map("image_url") @db.VarChar(500)
+  imagePublicId String?  @map("image_public_id") @db.VarChar(255)
+  sortOrder     Int      @default(1) @map("sort_order") // ảnh số 1 là thumbnail
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, sortOrder])
+  @@index([projectId])
+  @@map("project_images")
+}
+
+/**
+ * NEWS
+ */
+
+model News {
+  id            Int     @id @default(autoincrement())
+  categoryId    Int     @map("category_id")
+  title         String  @db.VarChar(255)
+  slug          String  @db.VarChar(255)
+  imageUrl      String? @map("image_url") @db.VarChar(500) // URL ảnh đại diện bài viết
+  imagePublicId String? @map("image_public_id") @db.VarChar(255) // ID file trên cloud storage (Cloudinary/S3/R2...) dùng để xóa/cập nhật ảnh
+  summary       String? @db.Text
+  content       String? @db.LongText
+  viewCount     Int     @default(0) @map("view_count")
+  isFeatured    Boolean @default(false) @map("is_featured")
+
+  status PublishStatus @default(PUBLISHED)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@unique([categoryId, slug])
+  @@index([status, createdAt])
+  @@index([categoryId])
+  @@index([isFeatured, createdAt])
+  @@map("news")
+}
+
+/**
+ * QUOTA
+ * Chỉ áp dụng cho Property vì RentRequest được đăng miễn phí.
+ */
+
+model UserPostingQuota {
+  id     Int @id @default(autoincrement())
+  userId Int @unique @map("user_id")
+
+  freePropertyPostsTotal     Int @default(2) @map("free_property_posts_total") // tổng lượt đăng tin cho thuê miễn phí
+  freePropertyPostsRemaining Int @default(2) @map("free_property_posts_remaining") // lượt miễn phí còn lại
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_posting_quotas")
+}
+
+/**
+ * PROPERTY PACKAGE = GÓI ĐĂNG TIN CHO THUÊ
+ */
+
+model PropertyPackageOrder {
+  id             Int              @id @default(autoincrement())
+  userId         Int              @map("user_id")
+  priorityStatus PropertyPriority @map("priority_status") // loại tin nhận được từ gói
+  totalPosts     Int              @map("total_posts") // tổng số lượt đăng mua
+  remainingPosts Int              @map("remaining_posts") // lượt đăng còn lại
+  amount         BigInt // số tiền
+  currency       String           @default("VND") @db.VarChar(10)
+  status         OrderStatus      @default(PENDING)
+  note           String?          @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  properties Property[]
+  payments   PaymentTransaction[]
+
+  @@index([userId])
+  @@index([priorityStatus, status])
+  @@map("property_package_orders")
+}
+
+/**
+ * PROPERTY BOOST = GÓI / LƯỢT ĐẨY TIN CHO THUÊ
+ */
+
+model PropertyBoostOrder {
+  id             Int              @id @default(autoincrement())
+  userId         Int              @map("user_id")
+  propertyId     Int?             @map("property_id")
+  priorityStatus PropertyPriority @map("priority_status") // cấp boost áp dụng
+  totalBoost     Int              @map("total_boost") // tổng lượt boost mua
+  remainingBoost Int              @map("remaining_boost") // lượt boost còn lại
+  amount         BigInt
+  currency       String           @default("VND") @db.VarChar(10)
+  startAt        DateTime?        @map("start_at") @db.Timestamp(0)
+  endAt          DateTime?        @map("end_at") @db.Timestamp(0)
+  status         OrderStatus      @default(PENDING)
+  note           String?          @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  user     User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property?            @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  payments PaymentTransaction[]
+
+  @@index([userId, status, createdAt])
+  @@index([propertyId])
+  @@map("property_boost_orders")
+}
+
+/**
+ * PAYMENT
+ * Chỉ thanh toán cho PropertyPackageOrder và PropertyBoostOrder.
+ */
+
+model PaymentTransaction {
+  id            Int           @id @default(autoincrement())
+  userId        Int           @map("user_id")
+  purchaseType  PurchaseType  @map("purchase_type") // loại giao dịch
+  provider      String        @db.VarChar(50) // vnpay, momo, stripe...
+  providerTxnId String?       @map("provider_txn_id") @db.VarChar(255) // mã giao dịch từ cổng thanh toán
+  amount        BigInt
+  currency      String        @default("VND") @db.VarChar(10)
+  status        PaymentStatus @default(PENDING)
+  paidAt        DateTime?     @map("paid_at") @db.Timestamp(0)
+  metadata      Json? // payload callback hoặc dữ liệu mở rộng từ payment gateway
+
+  propertyPackageOrderId Int? @map("property_package_order_id")
+  propertyBoostOrderId   Int? @map("property_boost_order_id")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  propertyPackageOrder PropertyPackageOrder? @relation(fields: [propertyPackageOrderId], references: [id], onDelete: SetNull)
+  propertyBoostOrder   PropertyBoostOrder?   @relation(fields: [propertyBoostOrderId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status, createdAt])
+  @@index([provider, providerTxnId])
+  @@index([purchaseType, status])
+  @@index([propertyPackageOrderId])
+  @@index([propertyBoostOrderId])
+  @@map("payment_transactions")
+}
