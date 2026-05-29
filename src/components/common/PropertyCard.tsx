@@ -85,11 +85,11 @@ function CardFooter({ property }: { property: Property }) {
   return (
     <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
-        <Calendar size={12} />
+        <Calendar size={14} />
         {formatDate(property.createdAt)}
       </span>
       <span className="inline-flex items-center justify-end gap-1">
-        <Eye size={12} />
+        <Eye size={14} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
     </div>
@@ -99,17 +99,15 @@ function CardFooter({ property }: { property: Property }) {
 function TierBadge({ tone }: { tone: CardTone }) {
   const toneClasses =
     tone === "gold"
-      ? "bg-primary text-heading"
+      ? "bg-primary text-white"
       : tone === "silver"
         ? "bg-white/90 text-body"
         : "bg-white/80 text-secondary";
-  const sizeClasses =
-    tone === "gold" ? "px-2 py-0.5 text-xs " : "px-2 py-0.5 text-xs";
-  const iconSize = tone === "gold" ? 11 : 11;
+  const iconSize = tone === "gold" ? 14 : 14;
 
   return (
     <span
-      className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 rounded-full font-semibold tracking-[0.16em] uppercase ${toneClasses} ${sizeClasses}`}
+      className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${toneClasses}`}
     >
       {tone === "gold" ? <Crown size={iconSize} /> : null}
       {tone === "silver" ? <Star size={iconSize} /> : null}
@@ -120,8 +118,8 @@ function TierBadge({ tone }: { tone: CardTone }) {
 
 function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
   const badgeSizeClass =
-    tone === "gold" ? "px-2 py-0.5 text-xs" : "px-2 py-0.5 text-xs";
-  const iconSize = tone === "gold" ? 11 : 11;
+    tone === "gold" ? "px-2 py-0.5 text-sm" : "px-2 py-0.5 text-xs";
+  const iconSize = tone === "gold" ? 14 : 14;
 
   return (
     <div
@@ -143,25 +141,12 @@ function OverlayTitle({
   tone: CardTone;
 }) {
   const titleClass =
-    tone === "gold" ? "text-xl " : tone === "silver" ? "text-lg " : "text-base";
-  const categoryBadgeSizeClass =
-    tone === "gold"
-      ? "px-2 py-0.5 text-xs"
-      : tone === "silver"
-        ? "px-2.5 py-1 text-xs"
-        : "px-2 py-0.5 text-xs";
+    tone === "gold" ? "text-2xl" : tone === "silver" ? "text-xl " : "text-lg";
 
   return (
     <div className="absolute right-3 bottom-3 left-3 z-20">
-      {property.category?.name ? (
-        <span
-          className={`border-primary/30 bg-primary/14 text-primary inline-flex items-center rounded-full border font-semibold tracking-[0.18em] uppercase ${categoryBadgeSizeClass}`}
-        >
-          {property.category.name}
-        </span>
-      ) : null}
       <h3
-        className={`mt-2 line-clamp-2 leading-snug font-medium tracking-[-0.015em] text-white ${titleClass}`}
+        className={`line-clamp-2 leading-snug font-medium text-white ${titleClass}`}
       >
         {property.title}
       </h3>
@@ -404,11 +389,14 @@ function CardBody({
     bathroomsText ? { icon: Bath, text: bathroomsText } : null,
   ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
 
+  const categoryBadgeSizeClass =
+    tone === "gold" ? "text-base" : tone === "silver" ? "text-sm" : "text-xs";
+
   const priceClass =
-    tone === "gold" ? "text-2xl " : tone === "silver" ? "text-xl " : "text-lg";
+    tone === "gold" ? "text-xl " : tone === "silver" ? "text-lg " : "text-base";
 
   const metaTextClass =
-    tone === "gold" ? "text-sm" : tone === "silver" ? "text-xs" : "text-xs";
+    tone === "gold" ? "text-sm" : tone === "silver" ? "text-sm" : "text-xs";
 
   const previewTextClass = tone === "gold" ? "text-sm" : "text-xs";
   const metaGridClass =
@@ -420,6 +408,13 @@ function CardBody({
 
   return (
     <div className="flex h-full flex-1 flex-col p-5">
+      {property.category?.name && (
+        <span
+          className={`text-primary mb-2 inline-flex w-fit items-center self-start font-semibold uppercase ${categoryBadgeSizeClass}`}
+        >
+          {property.category.name}
+        </span>
+      )}
       <p
         className={`group-hover:text-primary text-heading transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
       >
@@ -434,10 +429,8 @@ function CardBody({
             key={`${property.id}-meta-${index}`}
             className="flex items-start gap-1.5"
           >
-            <Icon size={12} className="text-primary mt-0.5 shrink-0" />
-            <span className={`line-clamp-1 ${metaTextClass}`}>
-              {text}
-            </span>
+            <Icon size={14} className="text-primary mt-0.5 shrink-0" />
+            <span className={`line-clamp-1 ${metaTextClass}`}>{text}</span>
           </p>
         ))}
       </div>

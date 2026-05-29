@@ -40,6 +40,13 @@ type DetailTabSharedProps = {
   onDone?: () => void;
 };
 
+const normalizeText = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
 export function PropertyTypeDetailTab({
   current,
   updateCurrent,
@@ -73,7 +80,10 @@ export function PropertyTypeDetailTab({
           <input
             type="checkbox"
             name="property-type-single"
-            checked={current.propertyTypes[0] === type}
+            checked={
+              normalizeText(current.propertyTypes[0] || "") ===
+              normalizeText(type)
+            }
             onChange={() => {
               updateCurrent((prev) => ({
                 ...prev,
