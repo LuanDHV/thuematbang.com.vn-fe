@@ -15,9 +15,9 @@ export default function AccountManagementShell({
 
   if (isLoading) {
     return (
-      <section className="py-8">
-        <div className="layout-container">
-          <div className="text-secondary rounded-2xl bg-white p-6 text-sm shadow-sm">
+      <section className="layout-container py-8">
+        <div className="min-h-[80vh]">
+          <div className="text-secondary rounded-2xl border border-gray-200 bg-white p-6 text-sm">
             Đang tải thông tin tài khoản...
           </div>
         </div>
@@ -28,14 +28,12 @@ export default function AccountManagementShell({
   if (!authUser) return null;
 
   return (
-    <section className="min-h-screen py-8">
-      <div className="layout-container">
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(260px,28%)_1fr]">
-          <AccountSidebar user={authUser} />
-          <main className="min-h-screen min-w-0 rounded-2xl bg-white p-4 shadow-sm md:p-6">
-            {children}
-          </main>
-        </div>
+    <section className="layout-container py-8">
+      <div className="grid min-h-[80vh] grid-cols-1 gap-4 lg:grid-cols-[minmax(260px,20%)_1fr] lg:gap-6">
+        <AccountSidebar user={authUser} />
+        <main className="min-w-0 rounded-2xl border border-gray-200 bg-white p-4 md:p-6">
+          {children}
+        </main>
       </div>
     </section>
   );

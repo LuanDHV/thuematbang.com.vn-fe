@@ -1,4 +1,4 @@
-﻿import {
+import {
   CalendarDays,
   Eye,
   Layers,
@@ -59,7 +59,7 @@ export default function RentRequestDetailContent({
   const categoryName = rentRequest.category?.name ?? "";
 
   return (
-    <div className="flex w-full flex-col gap-6 lg:w-3/4 lg:gap-8">
+    <div className="surface-card flex w-full flex-col gap-6 p-5 lg:gap-8">
       <div className="flex flex-col gap-6 lg:gap-8">
         <section>
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
@@ -83,18 +83,18 @@ export default function RentRequestDetailContent({
           <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
             {categoryName ? (
               <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                <Layers size={12} className="text-primary" />
+                <Layers size={14} className="text-primary" />
                 Danh mục: {categoryName}
               </span>
             ) : null}
 
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium">
-              <CalendarDays size={12} className="text-primary" />
+            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <CalendarDays size={14} className="text-primary" />
               Ngày đăng: {formatDate(rentRequest.createdAt)}
             </span>
 
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium">
-              <Eye size={12} className="text-primary" />
+            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Eye size={14} className="text-primary" />
               Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
             </span>
           </div>
@@ -152,7 +152,7 @@ export default function RentRequestDetailContent({
                   <p className="text-secondary text-xs tracking-wide uppercase">
                     Diện tích cần thuê
                   </p>
-                  <p className="text-heading font-mono text-sm font-semibold">
+                  <p className="text-heading text-sm font-semibold">
                     {formatAreaRange(rentRequest)}
                   </p>
                 </div>

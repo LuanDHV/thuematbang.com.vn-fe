@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { LogOut, Menu, Settings, SquarePlus, User } from "lucide-react";
@@ -165,7 +165,7 @@ export default function Header() {
                   srTitle="Menu điều hướng"
                 >
                   <div className="mt-6 flex flex-col gap-5 px-5">
-                    <div className="text-muted text-xs font-semibold tracking-[0.18em] uppercase">
+                    <div className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
                       Danh mục
                     </div>
                     <div className="flex flex-col gap-2">

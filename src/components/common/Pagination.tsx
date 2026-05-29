@@ -1,4 +1,22 @@
-import { cn } from "@/lib/utils";
+﻿import { cn } from "@/lib/utils";
+
+function getPageNumbers(page: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const showLeft = page > 4;
+  const showRight = page < total - 3;
+
+  if (!showLeft && showRight) {
+    return [1, 2, 3, 4, 5, "...", total];
+  }
+  if (showLeft && !showRight) {
+    return [1, "...", total - 4, total - 3, total - 2, total - 1, total];
+  }
+  if (showLeft && showRight) {
+    return [1, "...", page - 1, page, page + 1, "...", total];
+  }
+  return Array.from({ length: total }, (_, i) => i + 1);
+}
 
 export function Pagination({
   page,
@@ -11,29 +29,67 @@ export function Pagination({
 }) {
   if (totalPages <= 1) return null;
 
-  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+  const pages = getPageNumbers(page, totalPages);
 
   return (
-    <div className="flex items-center justify-center gap-2 pt-2">
-      {pages.map((nextPage) => {
-        const active = nextPage === page;
+    <div className="flex items-center justify-center gap-2 pt-8">
+      <button
+        type="button"
+        onClick={() => onChange(page - 1)}
+        disabled={page === 1}
+        className={cn(
+          "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
+          "text-secondary border-black/8 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)]",
+          "hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
+          "disabled:hover:text-secondary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-black/8 disabled:hover:bg-white",
+        )}
+      >
+        ‹
+      </button>
 
+      {pages.map((p, i) => {
+        if (p === "...") {
+          return (
+            <span
+              key={`ellipsis-${i}`}
+              className="text-secondary/40 flex h-10 min-w-10 items-center justify-center text-sm font-semibold tracking-widest"
+            >
+              ···
+            </span>
+          );
+        }
+
+        const active = p === page;
         return (
           <button
-            key={nextPage}
+            key={p}
             type="button"
-            onClick={() => onChange(nextPage)}
+            onClick={() => onChange(p)}
             className={cn(
               "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
               active
                 ? "border-primary bg-primary text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)]"
-                : "border-black/8 bg-white text-muted shadow-[0_10px_24px_rgba(15,23,42,0.06)] hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
+                : "text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary border-black/8 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)]",
             )}
           >
-            {nextPage}
+            {p}
           </button>
         );
       })}
+
+      <button
+        type="button"
+        onClick={() => onChange(page + 1)}
+        disabled={page === totalPages}
+        className={cn(
+          "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
+          "text-secondary border-black/8 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)]",
+          "hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
+          "disabled:hover:text-secondary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-black/8 disabled:hover:bg-white",
+        )}
+      >
+        ›
+      </button>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function HeroSection() {
@@ -21,28 +21,26 @@ export default function HeroSection() {
         </p>
 
         {/* 2 Navigate Buttons */}
-        <div className="mt-12 flex flex-col gap-5 sm:flex-row sm:gap-8">
-          {/* Nút 1: Solid với Gradient & Icon */}
-          <Link href="cho-thue" className="w-full sm:w-auto">
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+          {/* Nút 1: Primary */}
+          <Link href="/cho-thue">
             <Button
-              variant="outline"
               size="lg"
-              className="border-primary/30 bg-primary hover:bg-primary hover:border-primary group min-h-16 w-full min-w-55 cursor-pointer rounded-full border-2 px-10 text-lg font-bold tracking-widest text-white uppercase backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:text-white hover:shadow-[0_25px_50px_-12px_rgba(251,170,25,0.5)] lg:min-h-21 lg:min-w-75 lg:text-xl"
+              className="bg-primary flex min-w-56 items-center justify-center gap-2.5 rounded-full px-12 py-6 text-lg font-bold text-white shadow-[0_0_0_4px_rgba(251,170,25,0.25),0_12px_40px_rgba(251,170,25,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_0_6px_rgba(251,170,25,0.3),0_16px_48px_rgba(251,170,25,0.6)]"
             >
-              <Search className="mr-2 h-5 w-5 text-white transition-colors" />
-              <span>Cho thuê</span>
+              <Search size={20} strokeWidth={2.5} />
+              Tôi muốn cho thuê
             </Button>
           </Link>
 
-          {/* Nút 2: Outline phối hợp Subtle Glassmorphism */}
-          <Link href="can-thue" className="w-full sm:w-auto">
+          {/* Nút 2: White solid */}
+          <Link href="/can-thue">
             <Button
-              variant="outline"
               size="lg"
-              className="border-primary/30 hover:bg-primary hover:border-primary group text-primary min-h-16 w-full min-w-55 cursor-pointer rounded-full border-2 bg-white px-10 text-lg font-bold tracking-widest uppercase backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:text-white hover:shadow-[0_25px_50px_-12px_rgba(251,170,25,0.5)] lg:min-h-21 lg:min-w-75 lg:text-xl"
+              className="text-body flex min-w-56 items-center justify-center gap-2.5 rounded-full border-0 bg-white px-12 py-6 text-lg font-bold shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(0,0,0,0.35)]"
             >
-              <Search className="text-primary mr-2 h-5 w-5 transition-colors group-hover:text-white" />
-              <span>Cần thuê</span>
+              <Home size={20} strokeWidth={2.5} />
+              Tôi cần thuê
             </Button>
           </Link>
         </div>

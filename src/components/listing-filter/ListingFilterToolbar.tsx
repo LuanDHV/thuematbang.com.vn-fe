@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -112,6 +112,7 @@ export default function ListingFilterToolbar({
   const [keyword, setKeyword] = useState("");
   const [advancedFilters, setAdvancedFilters] =
     useState<AdvancedFilterValue>(initialFilters);
+  const lastSyncedInitialFiltersRef = useRef<AdvancedFilterValue | null>(null);
 
   const { data: provincesData = [] } = useQuery({
     queryKey: ["locations", "provinces"],
@@ -401,6 +402,11 @@ export default function ListingFilterToolbar({
       initialFilters,
       provinceWardMap,
     );
+    const lastSynced = lastSyncedInitialFiltersRef.current;
+    if (lastSynced && isSameFilterValue(lastSynced, nextFilters)) {
+      return;
+    }
+    lastSyncedInitialFiltersRef.current = nextFilters;
 
     queueMicrotask(() => {
       setAdvancedFilters((prev) =>
@@ -430,7 +436,7 @@ export default function ListingFilterToolbar({
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="Bạn muốn thuê ở đâu?"
-              className="text-body placeholder:text-muted h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium outline-none focus:ring-0"
+              className="text-body placeholder:text-secondary h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium outline-none focus:ring-0"
             />
           </div>
 
@@ -565,3 +571,4 @@ export default function ListingFilterToolbar({
     </div>
   );
 }
+

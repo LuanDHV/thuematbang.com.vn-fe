@@ -31,10 +31,10 @@ export function CategoryChips({
               key={item.id}
               type="button"
               onClick={() => onChange(item.value)}
-              className={`focus-visible:ring-primary/35 relative inline-flex cursor-pointer snap-start items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 ease-out focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none ${
+              className={`focus-visible:ring-primary/35 relative inline-flex cursor-pointer snap-start items-center gap-1.5 rounded-xl border px-4 py-2 text-sm font-medium transition-all duration-200 ease-out focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none ${
                 isActive
-                  ? "border-primary/50 text-heading bg-white"
-                  : "hover:border-primary/35 text-body hover:text-heading border-[rgba(61,32,10,0.14)] bg-[#fbfaf7] hover:-translate-y-px hover:bg-white"
+                  ? "bg-primary text-white"
+                  : "text-body hover:border-primary hover:text-heading border-[rgba(61,32,10,0.14)] bg-white"
               } `}
             >
               {item.label}

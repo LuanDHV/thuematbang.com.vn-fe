@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
@@ -37,7 +37,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-black/8 bg-white px-4 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none transition-all hover:border-primary/20 hover:bg-primary/4 hover:shadow-[0_14px_28px_rgba(15,23,42,0.06)] focus:border-primary/25 focus:ring-4 focus:ring-primary/12 disabled:cursor-not-allowed disabled:bg-black/3 disabled:text-muted disabled:opacity-100",
+        "flex h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-black/8 bg-white px-4 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none transition-all hover:border-primary/20 hover:bg-primary/4 hover:shadow-[0_14px_28px_rgba(15,23,42,0.06)] focus:border-primary/25 focus:ring-4 focus:ring-primary/12 disabled:cursor-not-allowed disabled:bg-black/3 disabled:text-secondary disabled:opacity-100",
         size === "sm" && "h-10",
         className,
       )}
@@ -68,7 +68,7 @@ function SelectContent({
         )}
         {...props}
       >
-        <SelectPrimitive.ScrollUpButton className="flex cursor-pointer items-center justify-center py-1 text-muted">
+        <SelectPrimitive.ScrollUpButton className="flex cursor-pointer items-center justify-center py-1 text-secondary">
           <ChevronDownIcon className="size-5 rotate-180" />
         </SelectPrimitive.ScrollUpButton>
 
@@ -76,7 +76,7 @@ function SelectContent({
           {children}
         </SelectPrimitive.Viewport>
 
-        <SelectPrimitive.ScrollDownButton className="flex cursor-pointer items-center justify-center py-1 text-muted">
+        <SelectPrimitive.ScrollDownButton className="flex cursor-pointer items-center justify-center py-1 text-secondary">
           <ChevronDownIcon className="size-5" />
         </SelectPrimitive.ScrollDownButton>
       </SelectPrimitive.Content>
@@ -144,3 +144,4 @@ export {
   SelectItem,
   SelectSeparator,
 };
+

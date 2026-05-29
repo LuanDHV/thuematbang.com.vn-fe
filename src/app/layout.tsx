@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, JetBrains_Mono } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/metadata";
 import AppProviders from "@/components/providers/AppProviders";
@@ -9,13 +9,6 @@ const geistSans = Be_Vietnam_Pro({
   subsets: ["latin", "latin-ext"],
   display: "swap",
   variable: "--font-geist-sans",
-});
-
-const geistMono = JetBrains_Mono({
-  weight: ["400", "500", "600"],
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -64,9 +57,9 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} h-full antialiased`}
     >
-      <body className="bg-app text-body min-h-screen font-sans">
+      <body className="bg-app text-body min-h-screen">
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { formatDate } from "@/lib/utils";
@@ -39,12 +39,12 @@ function CardFooter({
 }) {
   return (
     <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
-      <span className="inline-flex items-center gap-1 font-mono">
-        <Calendar size={12} />
+      <span className="inline-flex items-center gap-1">
+        <Calendar size={14} />
         {formatDate(createdAt)}
       </span>
-      <span className="inline-flex items-center justify-end gap-1 font-mono">
-        <Eye size={12} />
+      <span className="inline-flex items-center justify-end gap-1">
+        <Eye size={14} />
         {viewCount.toLocaleString("vi-VN")}
       </span>
     </div>
@@ -76,36 +76,36 @@ export function ProjectCard({ project }: { project: Project }) {
           <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
           <div className="absolute right-3 bottom-3 left-3 z-20">
-            {project.category?.name ? (
-              <span className="border-primary/30 bg-primary/14 text-primary inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold tracking-[0.18em] uppercase">
-                {project.category.name}
-              </span>
-            ) : null}
-            <h3 className="mt-2 line-clamp-2 font-serif text-xl leading-snug font-medium tracking-[-0.015em] text-white">
+            <h3 className="mt-2 line-clamp-2 text-2xl leading-snug font-medium text-white">
               {project.name}
             </h3>
           </div>
         </div>
 
         <div className="flex h-full flex-1 flex-col p-5">
-          <p className="group-hover:text-primary text-heading font-serif text-2xl font-semibold tracking-[-0.01em] transition-colors duration-200">
+          {project.category?.name ? (
+            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-base font-semibold uppercase">
+              {project.category.name}
+            </span>
+          ) : null}
+          <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
             {formatProjectPrice(project.price)}
           </p>
 
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">
             <p className="flex items-start gap-1.5">
               <MapPin size={14} className="text-primary mt-0.5 shrink-0" />
-              <span className="line-clamp-1 font-mono text-sm">{location}</span>
+              <span className="line-clamp-1 text-sm">{location}</span>
             </p>
             <p className="flex items-start gap-1.5">
               <Building2 size={14} className="text-primary mt-0.5 shrink-0" />
-              <span className="line-clamp-1 font-mono text-sm">
+              <span className="line-clamp-1 text-sm">
                 {project.developer || "Đang cập nhật chủ đầu tư"}
               </span>
             </p>
             <p className="flex items-start gap-1.5">
               <Maximize size={14} className="text-primary mt-0.5 shrink-0" />
-              <span className="line-clamp-1 font-mono text-sm">
+              <span className="line-clamp-1 text-sm">
                 {project.area
                   ? `${project.area.toLocaleString("vi-VN")} m²`
                   : "Đang cập nhật diện tích"}

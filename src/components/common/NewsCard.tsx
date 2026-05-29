@@ -41,13 +41,13 @@ export default function NewsCard({ news, category }: NewsCardProps) {
           ) : null}
 
           {/* Title */}
-          <h3 className="text-heading group-hover:text-primary line-clamp-2 font-serif text-base leading-snug font-semibold tracking-[-0.01em] transition-colors duration-200 md:text-base">
+          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.01em] transition-colors duration-200 md:text-base">
             {news.title}
           </h3>
 
           {/* Summary */}
           {news.summary ? (
-            <p className="text-secondary mt-2 line-clamp-2 text-sm leading-relaxed">
+            <p className="text-secondary my-2 line-clamp-2 text-sm leading-relaxed">
               {news.summary}
             </p>
           ) : null}
@@ -55,13 +55,13 @@ export default function NewsCard({ news, category }: NewsCardProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-dashed border-[rgba(61,32,10,0.12)] pt-2">
-          <span className="text-secondary flex items-center gap-1.5 font-mono text-xs">
-            <Calendar size={12} strokeWidth={2} className="text-primary" />
+          <span className="text-secondary flex items-center gap-1.5 text-xs">
+            <Calendar size={14} strokeWidth={2} className="text-primary" />
             {formatDate(news.createdAt)}
           </span>
-          <span className="text-primary flex items-center gap-1 text-xs font-medium tracking-wide">
+          <span className="group-hover:text-primary text-secondary flex items-center gap-1 text-xs font-medium tracking-wide">
             Đọc tiếp
-            <ArrowRight size={12} strokeWidth={2} />
+            <ArrowRight size={14} strokeWidth={2} />
           </span>
         </div>
       </div>
