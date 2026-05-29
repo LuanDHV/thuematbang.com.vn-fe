@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -112,6 +112,7 @@ export default function ListingFilterToolbar({
   const [keyword, setKeyword] = useState("");
   const [advancedFilters, setAdvancedFilters] =
     useState<AdvancedFilterValue>(initialFilters);
+  const lastSyncedInitialFiltersRef = useRef<AdvancedFilterValue | null>(null);
 
   const { data: provincesData = [] } = useQuery({
     queryKey: ["locations", "provinces"],
@@ -401,6 +402,11 @@ export default function ListingFilterToolbar({
       initialFilters,
       provinceWardMap,
     );
+    const lastSynced = lastSyncedInitialFiltersRef.current;
+    if (lastSynced && isSameFilterValue(lastSynced, nextFilters)) {
+      return;
+    }
+    lastSyncedInitialFiltersRef.current = nextFilters;
 
     queueMicrotask(() => {
       setAdvancedFilters((prev) =>

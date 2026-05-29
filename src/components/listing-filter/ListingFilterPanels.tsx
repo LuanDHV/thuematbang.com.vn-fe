@@ -48,7 +48,7 @@ export function PropertyTypeDetailTab({
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-primary/5">
+      <label className="hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5">
         <span className="text-sm text-gray-700">Tất cả loại mặt bằng</span>
         <input
           type="checkbox"
@@ -67,7 +67,7 @@ export function PropertyTypeDetailTab({
       {propertyTypeOptions.map((type) => (
         <label
           key={type}
-          className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-primary/5"
+          className="hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5"
         >
           <span className="text-sm text-gray-700">{type}</span>
           <input
@@ -97,7 +97,7 @@ export function PriceDetailTab({
 }: DetailTabSharedProps & { priceRange: [number, number] }) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-4 text-sm font-semibold text-heading">
+      <div className="text-heading grid grid-cols-2 gap-4 text-sm font-semibold">
         <p>
           Từ:{" "}
           <span className="text-primary">
@@ -112,7 +112,7 @@ export function PriceDetailTab({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex flex-col flex-1 gap-1">
+        <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
             value={Math.round(
@@ -126,11 +126,11 @@ export function PriceDetailTab({
               }))
             }
             placeholder="0"
-            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
-        <div className="flex flex-col flex-1 gap-1">
+        <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
             value={Math.round(
@@ -146,7 +146,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="60000"
-            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -176,7 +176,7 @@ export function PriceDetailTab({
           return (
             <label
               key={option.label}
-              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-primary/5 ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -244,7 +244,7 @@ export function AreaDetailTab({
 }: DetailTabSharedProps & { areaRange: [number, number] }) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-4 text-sm font-semibold text-heading">
+      <div className="text-heading grid grid-cols-2 gap-4 text-sm font-semibold">
         <p>
           Từ: <span className="text-primary">{formatArea(areaRange[0])}</span>
         </p>
@@ -253,7 +253,7 @@ export function AreaDetailTab({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex flex-col flex-1 gap-1">
+        <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
             value={current.areaMin}
@@ -264,11 +264,11 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Từ"
-            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-gray-500">→</span>
-        <div className="flex flex-col flex-1 gap-1">
+        <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
             value={current.areaMax}
@@ -279,7 +279,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Đến"
-            className="h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 focus:ring-primary/12 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -306,7 +306,7 @@ export function AreaDetailTab({
           return (
             <label
               key={option.label}
-              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-primary/5 ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -427,7 +427,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("propertyType")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
+          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-gray-600">
             <Building2 className="size-5" />
@@ -442,7 +442,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("location")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
+          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-gray-600">
             <MapPin className="size-5" />
@@ -459,7 +459,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("price")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
+          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-gray-600">
             <CircleDollarSign className="size-5" />
@@ -474,7 +474,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("area")}
-          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:border-primary/20 hover:bg-primary/5"
+          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-gray-600">
             <Maximize className="size-5" />
