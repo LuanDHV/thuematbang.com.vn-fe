@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { cache } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -138,7 +138,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
             </section>
 
             <section>
-              <h1 className="text-heading font-serif text-3xl leading-tight font-semibold tracking-[-0.03em] lg:text-5xl">
+              <h1 className="text-heading text-3xl leading-tight font-semibold tracking-[-0.03em] lg:text-5xl">
                 {news.title}
               </h1>
 
@@ -198,7 +198,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
           <aside className="lg:col-span-4">
             <div className="flex flex-col gap-4 lg:sticky lg:top-24">
               <section className="surface-card rounded-2xl border p-5 md:p-6">
-                <h2 className="text-heading font-serif text-base font-medium">
+                <h2 className="text-heading text-base font-medium">
                   <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
                   Tin tức khác
                 </h2>

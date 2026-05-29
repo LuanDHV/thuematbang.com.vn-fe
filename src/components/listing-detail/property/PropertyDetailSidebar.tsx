@@ -1,4 +1,4 @@
-﻿import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PosterContactCard from "@/components/common/PosterContactCard";
 
@@ -31,7 +31,7 @@ export default function PropertyDetailSidebar({
       </div>
 
       <section className="surface-card hidden rounded-2xl border p-5 lg:block">
-        <h3 className="text-heading font-serif text-base font-medium">
+        <h3 className="text-heading text-base font-medium">
           <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
           Gợi ý theo khu vực
         </h3>

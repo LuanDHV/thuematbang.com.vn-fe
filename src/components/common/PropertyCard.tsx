@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { formatDate, formatPrice } from "@/lib/utils";
@@ -84,11 +84,11 @@ function getLocationText(property: Property) {
 function CardFooter({ property }: { property: Property }) {
   return (
     <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
-      <span className="inline-flex items-center gap-1 font-mono">
+      <span className="inline-flex items-center gap-1">
         <Calendar size={12} />
         {formatDate(property.createdAt)}
       </span>
-      <span className="inline-flex items-center justify-end gap-1 font-mono">
+      <span className="inline-flex items-center justify-end gap-1">
         <Eye size={12} />
         {(property.viewCount || 0).toLocaleString("vi-VN")}
       </span>
@@ -127,7 +127,7 @@ function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
     <div
       className={`absolute top-3 right-3 z-30 rounded-lg bg-black/52 font-semibold text-white ${badgeSizeClass}`}
     >
-      <span className="inline-flex items-center gap-1 font-mono">
+      <span className="inline-flex items-center gap-1">
         <Images size={iconSize} />
         {count}
       </span>
@@ -161,7 +161,7 @@ function OverlayTitle({
         </span>
       ) : null}
       <h3
-        className={`mt-2 line-clamp-2 font-serif leading-snug font-medium tracking-[-0.015em] text-white ${titleClass}`}
+        className={`mt-2 line-clamp-2 leading-snug font-medium tracking-[-0.015em] text-white ${titleClass}`}
       >
         {property.title}
       </h3>
@@ -421,7 +421,7 @@ function CardBody({
   return (
     <div className="flex h-full flex-1 flex-col p-5">
       <p
-        className={`group-hover:text-primary text-heading font-serif transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
+        className={`group-hover:text-primary text-heading transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
       >
         {formatPrice(property.price || 0)}
       </p>
@@ -435,7 +435,7 @@ function CardBody({
             className="flex items-start gap-1.5"
           >
             <Icon size={12} className="text-primary mt-0.5 shrink-0" />
-            <span className={`line-clamp-1 font-mono ${metaTextClass}`}>
+            <span className={`line-clamp-1 ${metaTextClass}`}>
               {text}
             </span>
           </p>

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { cache } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -180,12 +180,12 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   </span>
                 ) : null}
 
-                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium">
+                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
                   <CalendarDays size={12} className="text-primary" />
                   Ngày đăng: {formatDate(project.createdAt)}
                 </span>
 
-                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium">
+                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
                   <Eye size={12} className="text-primary" />
                   Lượt xem: {(project.viewCount || 0).toLocaleString("vi-VN")}
                 </span>
@@ -240,7 +240,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                     <p className="text-secondary text-xs tracking-wide uppercase">
                       Quy mô
                     </p>
-                    <p className="text-heading font-mono text-sm font-semibold">
+                    <p className="text-heading text-sm font-semibold">
                       {formatProjectArea(project.area)}
                     </p>
                   </div>
@@ -287,7 +287,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
           <aside className="lg:col-span-4">
             <div className="flex flex-col gap-4 lg:sticky lg:top-24">
               <section className="surface-card rounded-2xl border p-5 md:p-6">
-                <h2 className="text-heading font-serif text-base font-medium">
+                <h2 className="text-heading text-base font-medium">
                   <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
                   Dự án khác
                 </h2>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ArrowRight, Calendar } from "lucide-react";
 import Image from "next/image";
@@ -41,7 +41,7 @@ export default function NewsCard({ news, category }: NewsCardProps) {
           ) : null}
 
           {/* Title */}
-          <h3 className="text-heading group-hover:text-primary line-clamp-2 font-serif text-base leading-snug font-semibold tracking-[-0.01em] transition-colors duration-200 md:text-base">
+          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.01em] transition-colors duration-200 md:text-base">
             {news.title}
           </h3>
 
@@ -55,7 +55,7 @@ export default function NewsCard({ news, category }: NewsCardProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-dashed border-[rgba(61,32,10,0.12)] pt-2">
-          <span className="text-secondary flex items-center gap-1.5 font-mono text-xs">
+          <span className="text-secondary flex items-center gap-1.5 text-xs">
             <Calendar size={12} strokeWidth={2} className="text-primary" />
             {formatDate(news.createdAt)}
           </span>
