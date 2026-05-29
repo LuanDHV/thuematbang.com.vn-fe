@@ -7,6 +7,7 @@ import {
   useState,
   startTransition,
 } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
@@ -49,7 +50,6 @@ export default function NewsListingClient({
 
   useEffect(() => {
     if (initialCategorySlug !== selectedCategorySlug) {
-      // Defer the state update to avoid synchronous cascading renders
       startTransition(() => {
         setSelectedCategorySlug(initialCategorySlug);
       });
@@ -136,10 +136,9 @@ export default function NewsListingClient({
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="flex w-full flex-col gap-6 lg:w-4/6">
-          {featuredNews ? <FeaturedNewsCard news={featuredNews} /> : null}
-
-          <div className="grid gap-6">
+        <div className="flex w-full flex-col lg:w-4/6">
+          <div className="surface-card grid gap-5 p-5">
+            {featuredNews ? <FeaturedNewsCard news={featuredNews} /> : null}
             {remainingNews.length > 0 ? (
               remainingNews.map((newsItem) => (
                 <NewsCard key={newsItem.id} news={newsItem} />
@@ -150,30 +149,40 @@ export default function NewsListingClient({
               </div>
             ) : null}
           </div>
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={handlePageChange}
+          />
         </div>
 
-        <aside className="lg:w-2/lg flex w-full flex-col gap-6">
-          <h4 className="mb-4 text-lg font-bold">
-            Bài viết được xem nhiều nhất
-          </h4>
+        <aside className="w-full lg:w-2/6">
+          <div className="lg:sticky lg:top-24">
+            <section className="surface-card rounded-2xl border p-5 md:p-6">
+              <h2 className="text-heading text-base font-medium">
+                <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
+                Bài viết được xem nhiều nhất
+              </h2>
 
-          <div className="grid gap-4">
-            {mostViewedNews.length > 0 ? (
-              mostViewedNews.map((newsItem) => (
-                <NewsCard key={newsItem.id} news={newsItem} />
-              ))
-            ) : (
-              <p className="text-gray-500">Không có bài viết</p>
-            )}
+              {mostViewedNews.length > 0 ? (
+                <div className="mt-3 grid divide-y divide-gray-100">
+                  {mostViewedNews.map((newsItem) => (
+                    <Link
+                      key={newsItem.id}
+                      href={`/tin-tuc/${newsItem.slug}`}
+                      className="group text-body hover:text-primary py-2.5 text-sm font-medium transition-all duration-200"
+                    >
+                      <span className="line-clamp-2">{newsItem.title}</span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-gray-500">Không có bài viết</p>
+              )}
+            </section>
           </div>
         </aside>
       </div>
-
-      <Pagination
-        page={currentPage}
-        totalPages={totalPages}
-        onChange={handlePageChange}
-      />
     </div>
   );
 }
