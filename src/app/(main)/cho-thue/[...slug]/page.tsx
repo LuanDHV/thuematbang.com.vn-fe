@@ -5,6 +5,7 @@ import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
+import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
 import PropertyDetailContent from "@/components/listing-detail/property/PropertyDetailContent";
 import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
 import {
@@ -223,23 +224,26 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
             { label: property.title },
           ]}
         />
-        <div className="flex flex-col gap-6 lg:flex-row">
-          <PropertyDetailContent
-            property={property}
-            locationText={locationText}
-            galleryImages={galleryImages}
-            mapSrc={mapSrc}
-            featuredProperties={featuredProperties}
-            viewedProperties={viewedProperties}
-          />
-
-          <PropertyDetailSidebar
-            contactName={property.contactName}
-            contactPhone={property.contactPhone}
-            isLoggedIn={isLoggedIn}
-            relatedCategoryCityLinks={relatedCategoryCityLinks}
-          />
-        </div>
+        <DetailTwoColumnLayout
+          main={
+            <PropertyDetailContent
+              property={property}
+              locationText={locationText}
+              galleryImages={galleryImages}
+              mapSrc={mapSrc}
+              featuredProperties={featuredProperties}
+              viewedProperties={viewedProperties}
+            />
+          }
+          aside={
+            <PropertyDetailSidebar
+              contactName={property.contactName}
+              contactPhone={property.contactPhone}
+              isLoggedIn={isLoggedIn}
+              relatedCategoryCityLinks={relatedCategoryCityLinks}
+            />
+          }
+        />
       </article>
     );
   }

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { cache } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, Eye, Layers } from "lucide-react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import SafeFetch from "@/components/common/SafeFetch";
+import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
+import NewsDetailContent from "@/components/listing-detail/news/NewsDetailContent";
+import NewsDetailSidebar from "@/components/listing-detail/news/NewsDetailSidebar";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import {
   buildNewsCategoryBreadcrumbs,
@@ -13,7 +13,6 @@ import {
   parseNewsCategoryFromSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { formatDate } from "@/lib/utils";
 import { News } from "@/types/news";
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
@@ -119,84 +118,10 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
           ]}
         />
 
-        <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="surface-card flex flex-col gap-6 p-5 lg:col-span-8 lg:gap-8">
-            <section>
-              <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-                <Image
-                  src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
-                  alt={news.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 66vw"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </section>
-
-            <section>
-              <h1 className="text-heading text-3xl leading-tight font-semibold tracking-[-0.03em]">
-                {news.title}
-              </h1>
-
-              <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
-                {news.category?.name ? (
-                  <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                    <Layers size={14} className="text-primary" />
-                    Danh mục: {news.category.name}
-                  </span>
-                ) : null}
-
-                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                  <CalendarDays size={14} className="text-primary" />
-                  Ngày đăng: {formatDate(news.createdAt)}
-                </span>
-
-                <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                  <Eye size={14} className="text-primary" />
-                  Lượt xem: {(news.viewCount || 0).toLocaleString("vi-VN")}
-                </span>
-              </div>
-            </section>
-
-            <section>
-              {news.content ? (
-                <div
-                  className="premium-prose prose prose-sm max-w-none"
-                  suppressHydrationWarning
-                  dangerouslySetInnerHTML={{ __html: news.content }}
-                />
-              ) : (
-                <p className="text-secondary text-sm">
-                  Nội dung bài viết đang được cập nhật.
-                </p>
-              )}
-            </section>
-          </div>
-
-          <aside className="lg:col-span-4">
-            <div className="flex flex-col gap-4 lg:sticky lg:top-24">
-              <section className="surface-card rounded-2xl border p-5 md:p-6">
-                <h2 className="text-heading text-base font-medium">
-                  <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
-                  Tin tức khác
-                </h2>
-
-                <div className="mt-3 grid divide-y divide-gray-100">
-                  {viewedNews.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={`/tin-tuc/${item.slug}`}
-                      className="group text-body hover:text-primary py-2.5 text-sm font-medium transition-all duration-200"
-                    >
-                      <span className="line-clamp-2">{item.title}</span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            </div>
-          </aside>
-        </div>
+        <DetailTwoColumnLayout
+          main={<NewsDetailContent news={news} />}
+          aside={<NewsDetailSidebar viewedNews={viewedNews} />}
+        />
       </article>
     );
   }

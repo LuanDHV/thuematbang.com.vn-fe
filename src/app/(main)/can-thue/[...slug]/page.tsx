@@ -5,6 +5,7 @@ import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
+import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
 import RentRequestDetailContent from "@/components/listing-detail/rent-request/RentRequestDetailContent";
 import RentRequestDetailSidebar from "@/components/listing-detail/rent-request/RentRequestDetailSidebar";
 import {
@@ -185,20 +186,23 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           ]}
         />
 
-        <div className="flex flex-col gap-6 lg:flex-row">
-          <RentRequestDetailContent
-            rentRequest={rentRequest}
-            locationText={locationText}
-            viewedRequests={viewedRequests}
-          />
-
-          <RentRequestDetailSidebar
-            contactName={rentRequest.contactName}
-            contactPhone={rentRequest.contactPhone}
-            isLoggedIn={isLoggedIn}
-            latestWantedProperties={latestWantedRequests}
-          />
-        </div>
+        <DetailTwoColumnLayout
+          main={
+            <RentRequestDetailContent
+              rentRequest={rentRequest}
+              locationText={locationText}
+              viewedRequests={viewedRequests}
+            />
+          }
+          aside={
+            <RentRequestDetailSidebar
+              contactName={rentRequest.contactName}
+              contactPhone={rentRequest.contactPhone}
+              isLoggedIn={isLoggedIn}
+              latestWantedProperties={latestWantedRequests}
+            />
+          }
+        />
       </article>
     );
   }

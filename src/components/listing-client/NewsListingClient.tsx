@@ -150,14 +150,6 @@ export default function NewsListingClient({
               </div>
             ) : null}
           </div>
-
-          {totalPages > 1 ? (
-            <Pagination
-              page={currentPage}
-              totalPages={totalPages}
-              onChange={handlePageChange}
-            />
-          ) : null}
         </div>
 
         <aside className="lg:w-2/lg flex w-full flex-col gap-6">
@@ -176,6 +168,12 @@ export default function NewsListingClient({
           </div>
         </aside>
       </div>
+
+      <Pagination
+        page={currentPage}
+        totalPages={totalPages}
+        onChange={handlePageChange}
+      />
     </div>
   );
 }

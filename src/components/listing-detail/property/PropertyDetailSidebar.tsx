@@ -21,7 +21,7 @@ export default function PropertyDetailSidebar({
   relatedCategoryCityLinks,
 }: PropertyDetailSidebarProps) {
   return (
-    <aside className="flex w-full flex-col gap-6 lg:w-1/4">
+    <aside className="flex w-full flex-col gap-6">
       <div className="surface-card w-full self-start p-5 lg:sticky lg:top-18">
         <PosterContactCard
           fullName={contactName}

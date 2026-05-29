@@ -59,7 +59,7 @@ export default function RentRequestDetailContent({
   const categoryName = rentRequest.category?.name ?? "";
 
   return (
-    <div className="surface-card flex w-full flex-col gap-6 p-5 lg:w-3/4 lg:gap-8">
+    <div className="surface-card flex w-full flex-col gap-6 p-5 lg:gap-8">
       <div className="flex flex-col gap-6 lg:gap-8">
         <section>
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
