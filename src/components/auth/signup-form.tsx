@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -60,7 +60,7 @@ export function SignupForm({
                 <h1 className="text-2xl font-semibold tracking-[-0.03em] text-heading">
                   Tạo tài khoản mới
                 </h1>
-                <p className="text-sm leading-7 text-muted">
+                <p className="text-sm leading-7 text-secondary">
                   Vui lòng nhập thông tin bên dưới để đăng ký
                 </p>
               </div>
@@ -157,7 +157,7 @@ export function SignupForm({
                 </Field>
               </div>
 
-              <FieldDescription className="-mt-2.5 text-xs text-muted">
+              <FieldDescription className="-mt-2.5 text-xs text-secondary">
                 Mật khẩu phải có ít nhất 8 ký tự.
               </FieldDescription>
 
@@ -179,7 +179,7 @@ export function SignupForm({
                 </p>
               ) : null}
 
-              <FieldSeparator className="mb-1 py-2 text-muted *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase *:data-[slot=field-separator-content]:text-muted">
+              <FieldSeparator className="mb-1 py-2 text-secondary *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase *:data-[slot=field-separator-content]:text-secondary">
                 Hoặc
               </FieldSeparator>
 
@@ -206,11 +206,11 @@ export function SignupForm({
                 </Button>
               </Field>
 
-              <div className="mt-4 text-center text-sm text-muted">
+              <div className="mt-4 text-center text-sm text-secondary">
                 Đã có tài khoản?{" "}
                 <Link
                   href="/dang-nhap"
-                  className="text-sm font-medium text-muted underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
+                  className="text-sm font-medium text-secondary underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
                 >
                   Đăng nhập
                 </Link>
@@ -233,3 +233,4 @@ export function SignupForm({
     </div>
   );
 }
+

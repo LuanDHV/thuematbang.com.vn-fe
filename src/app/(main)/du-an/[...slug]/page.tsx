@@ -159,7 +159,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="flex flex-col gap-6 lg:col-span-8 lg:gap-8">
+          <div className="surface-card flex flex-col gap-6 p-5 lg:col-span-8 lg:gap-8">
             <section>
               <PropertyImageGallery
                 title={project.name}
@@ -175,18 +175,18 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
               <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
                 {project.category?.name ? (
                   <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                    <Layers size={12} className="text-primary" />
+                    <Layers size={14} className="text-primary" />
                     Danh mục: {project.category.name}
                   </span>
                 ) : null}
 
                 <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                  <CalendarDays size={12} className="text-primary" />
+                  <CalendarDays size={14} className="text-primary" />
                   Ngày đăng: {formatDate(project.createdAt)}
                 </span>
 
                 <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                  <Eye size={12} className="text-primary" />
+                  <Eye size={14} className="text-primary" />
                   Lượt xem: {(project.viewCount || 0).toLocaleString("vi-VN")}
                 </span>
               </div>

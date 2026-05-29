@@ -280,7 +280,7 @@ function SilverCard({ property }: { property: Property }) {
 
   return (
     <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
-      <div className="bg-elevated relative flex h-56 w-full gap-0.5 overflow-hidden">
+      <div className="relative flex h-56 w-full gap-0.5 overflow-hidden">
         <div className="relative w-2/3 overflow-hidden">
           <CloudinaryImage
             src={imagesList[0]}

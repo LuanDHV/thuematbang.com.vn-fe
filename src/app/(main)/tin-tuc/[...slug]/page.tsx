@@ -4,22 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, Eye, Layers } from "lucide-react";
-
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
-
 import {
   buildNewsCategoryBreadcrumbs,
   parsePagedSlugSegments,
   parseNewsCategoryFromSlug,
 } from "@/lib/flat-url";
-
 import { createPageMetadata } from "@/lib/metadata";
 import { formatDate } from "@/lib/utils";
-
 import { News } from "@/types/news";
-
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
 
@@ -106,7 +101,9 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         limit: 8,
       });
 
-      viewedNews = (data ?? []).filter((item) => item.id !== news.id).slice(0, 8);
+      viewedNews = (data ?? [])
+        .filter((item) => item.id !== news.id)
+        .slice(0, 8);
     } catch {
       viewedNews = [];
     }
@@ -123,9 +120,9 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="flex flex-col gap-6 lg:col-span-8 lg:gap-8">
+          <div className="surface-card flex flex-col gap-6 p-5 lg:col-span-8 lg:gap-8">
             <section>
-              <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-elevated">
+              <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
                 <Image
                   src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
                   alt={news.title}
@@ -138,57 +135,39 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
             </section>
 
             <section>
-              <h1 className="text-heading text-3xl leading-tight font-semibold tracking-[-0.03em] lg:text-5xl">
+              <h1 className="text-heading text-3xl leading-tight font-semibold tracking-[-0.03em]">
                 {news.title}
               </h1>
 
               <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
                 {news.category?.name ? (
                   <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                    <Layers size={12} className="text-primary" />
+                    <Layers size={14} className="text-primary" />
                     Danh mục: {news.category.name}
                   </span>
                 ) : null}
 
                 <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                  <CalendarDays size={12} className="text-primary" />
+                  <CalendarDays size={14} className="text-primary" />
                   Ngày đăng: {formatDate(news.createdAt)}
                 </span>
 
                 <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                  <Eye size={12} className="text-primary" />
+                  <Eye size={14} className="text-primary" />
                   Lượt xem: {(news.viewCount || 0).toLocaleString("vi-VN")}
                 </span>
               </div>
             </section>
 
             <section>
-              <div className="mb-3 flex items-center gap-3">
-                <span className="bg-primary h-6 w-1 rounded-full" />
-                <h2 className="text-xl font-semibold text-gray-800">Thông tin mô tả</h2>
-              </div>
-
-              <p className="surface-card text-body rounded-2xl p-5 text-base leading-relaxed">
-                {news.summary || "Đang cập nhật thông tin mô tả."}
-              </p>
-            </section>
-
-            <section>
-              <div className="mb-3 flex items-center gap-3">
-                <span className="bg-primary h-6 w-1 rounded-full" />
-                <h2 className="text-xl font-semibold text-gray-800">Thông tin chi tiết</h2>
-              </div>
-
               {news.content ? (
-                <div className="surface-card rounded-2xl p-5">
-                  <div
-                    className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
-                    suppressHydrationWarning
-                    dangerouslySetInnerHTML={{ __html: news.content }}
-                  />
-                </div>
+                <div
+                  className="premium-prose prose prose-sm max-w-none"
+                  suppressHydrationWarning
+                  dangerouslySetInnerHTML={{ __html: news.content }}
+                />
               ) : (
-                <p className="surface-card text-secondary rounded-2xl p-5 text-sm">
+                <p className="text-secondary text-sm">
                   Nội dung bài viết đang được cập nhật.
                 </p>
               )}

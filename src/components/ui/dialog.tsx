@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
@@ -142,7 +142,7 @@ function DialogDescription({
     <DialogPrimitive.Description
       data-slot="dialog-description"
       className={cn(
-        "text-muted *:[a]:hover:text-heading text-sm *:[a]:underline *:[a]:underline-offset-3",
+        "text-secondary *:[a]:hover:text-heading text-sm *:[a]:underline *:[a]:underline-offset-3",
         className,
       )}
       {...props}
@@ -162,3 +162,4 @@ export {
   DialogTitle,
   DialogTrigger,
 };
+

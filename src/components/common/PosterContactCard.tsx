@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { PhoneCall } from "lucide-react";
@@ -70,7 +70,7 @@ export default function PosterContactCard({
           </div>
         )}
         <div>
-          <p className="text-sm text-muted">Người đăng</p>
+          <p className="text-sm text-secondary">Người đăng</p>
           <p className="text-base font-semibold text-heading">
             {fullName || "Đang cập nhật"}
           </p>
@@ -97,3 +97,4 @@ export default function PosterContactCard({
     </section>
   );
 }
+

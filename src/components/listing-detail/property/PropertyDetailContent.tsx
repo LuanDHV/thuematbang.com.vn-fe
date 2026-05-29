@@ -50,7 +50,7 @@ export default function PropertyDetailContent({
   const hasDirection = Boolean(property.direction);
 
   return (
-    <div className="flex flex-col gap-6 lg:gap-8">
+    <div className="surface-card flex flex-col gap-6 p-5 lg:gap-8">
       <section>
         <PropertyImageGallery title={property.title} images={galleryImages} />
       </section>
@@ -63,23 +63,23 @@ export default function PropertyDetailContent({
         <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
           {property.category?.name ? (
             <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <Layers size={12} className="text-primary" />
+              <Layers size={14} className="text-primary" />
               Danh mục: {property.category.name}
             </span>
           ) : null}
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Tag size={12} className="text-primary" />
+            <Tag size={14} className="text-primary" />
             Loại tin đăng: {property.priorityStatus}
           </span>
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <CalendarDays size={12} className="text-primary" />
+            <CalendarDays size={14} className="text-primary" />
             Ngày đăng: {formatDate(property.createdAt)}
           </span>
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Eye size={12} className="text-primary" />
+            <Eye size={14} className="text-primary" />
             Lượt xem: {(property.viewCount || 0).toLocaleString("vi-VN")}
           </span>
         </div>
@@ -218,6 +218,7 @@ export default function PropertyDetailContent({
           </div>
         )}
       </section>
+
       <section className="flex flex-col gap-6">
         {/* Phần 1: Bất động sản dành cho bạn */}
         <div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ArrowRight, Calendar } from "lucide-react";
 import Image from "next/image";
@@ -56,12 +56,12 @@ export default function NewsCard({ news, category }: NewsCardProps) {
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-dashed border-[rgba(61,32,10,0.12)] pt-2">
           <span className="text-secondary flex items-center gap-1.5 text-xs">
-            <Calendar size={12} strokeWidth={2} className="text-primary" />
+            <Calendar size={14} strokeWidth={2} className="text-primary" />
             {formatDate(news.createdAt)}
           </span>
           <span className="text-primary flex items-center gap-1 text-xs font-medium tracking-wide">
             Đọc tiếp
-            <ArrowRight size={12} strokeWidth={2} />
+            <ArrowRight size={14} strokeWidth={2} />
           </span>
         </div>
       </div>

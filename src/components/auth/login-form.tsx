@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -63,16 +63,19 @@ export function LoginForm({
           >
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-semibold tracking-[-0.03em] text-heading">
+                <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
                   Chào mừng trở lại
                 </h1>
-                <p className="text-sm leading-7 text-muted">
+                <p className="text-secondary text-sm leading-7">
                   Vui lòng nhập thông tin để đăng nhập vào tài khoản
                 </p>
               </div>
 
               <Field className="flex flex-col gap-2">
-                <FieldLabel htmlFor="identifier" className="font-semibold text-heading">
+                <FieldLabel
+                  htmlFor="identifier"
+                  className="text-heading font-semibold"
+                >
                   SĐT hoặc email
                 </FieldLabel>
                 <Input
@@ -83,18 +86,23 @@ export function LoginForm({
                   {...register("identifier")}
                 />
                 {errors.identifier?.message ? (
-                  <p className="text-sm text-red-500">{errors.identifier.message}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.identifier.message}
+                  </p>
                 ) : null}
               </Field>
 
               <Field className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <FieldLabel htmlFor="password" className="font-semibold text-heading">
+                  <FieldLabel
+                    htmlFor="password"
+                    className="text-heading font-semibold"
+                  >
                     Mật khẩu
                   </FieldLabel>
                   <Link
                     href="#"
-                    className="text-sm font-medium text-muted underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
+                    className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
                   >
                     Quên mật khẩu?
                   </Link>
@@ -106,7 +114,9 @@ export function LoginForm({
                   {...register("password")}
                 />
                 {errors.password?.message ? (
-                  <p className="text-sm text-red-500">{errors.password.message}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
                 ) : null}
               </Field>
 
@@ -128,7 +138,7 @@ export function LoginForm({
                 </p>
               ) : null}
 
-              <FieldSeparator className="mb-1 py-2 text-muted *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase *:data-[slot=field-separator-content]:text-muted">
+              <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary mb-1 py-2 *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
                 Hoặc
               </FieldSeparator>
 
@@ -155,11 +165,11 @@ export function LoginForm({
                 </Button>
               </Field>
 
-              <div className="mt-4 text-center text-sm text-muted">
+              <div className="text-secondary mt-4 text-center text-sm">
                 Chưa có tài khoản?{" "}
                 <Link
                   href="/dang-ky"
-                  className="text-sm font-medium text-muted underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
+                  className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
                 >
                   Đăng ký
                 </Link>

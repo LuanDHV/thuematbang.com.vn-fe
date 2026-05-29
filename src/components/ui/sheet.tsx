@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import { Dialog as SheetPrimitive } from "radix-ui";
@@ -128,7 +128,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("text-muted text-sm", className)}
+      className={cn("text-secondary text-sm", className)}
       {...props}
     />
   );
@@ -144,3 +144,4 @@ export {
   SheetTitle,
   SheetDescription,
 };
+

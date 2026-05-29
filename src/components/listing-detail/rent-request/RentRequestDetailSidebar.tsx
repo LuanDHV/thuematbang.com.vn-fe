@@ -42,8 +42,8 @@ export default function RentRequestDetailSidebar({
               >
                 <span className="line-clamp-2">{item.title}</span>
                 <ArrowRight
-                  size={12}
-                  className="text-secondary transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary"
+                  size={14}
+                  className="text-secondary group-hover:text-primary transition-all duration-200 group-hover:translate-x-0.5"
                 />
               </Link>
             ))}

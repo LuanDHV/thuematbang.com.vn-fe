@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import {
@@ -143,7 +143,7 @@ export function ListingFilterDrawer({
           } ${
             activeCount > 0
               ? "border-primary text-primary bg-primary/5"
-              : "border-black/8 bg-white text-muted hover:border-primary/20 hover:bg-primary/5 hover:text-primary"
+              : "border-black/8 bg-white text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary"
           }`}
         >
           <Filter size={14} />
@@ -263,3 +263,4 @@ export function ListingFilterDrawer({
     </Dialog>
   );
 }
+

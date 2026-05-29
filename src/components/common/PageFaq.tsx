@@ -1,4 +1,4 @@
-import {
+﻿import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -24,7 +24,7 @@ export default function PageFaq({ title, description, items }: PageFaqProps) {
         <h2 className="text-heading text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
           {title}
         </h2>
-        <p className="text-muted mt-4 text-base leading-8 md:text-lg">
+        <p className="text-secondary mt-4 text-base leading-8 md:text-lg">
           {description}
         </p>
       </div>
@@ -52,3 +52,4 @@ export default function PageFaq({ title, description, items }: PageFaqProps) {
     </section>
   );
 }
+

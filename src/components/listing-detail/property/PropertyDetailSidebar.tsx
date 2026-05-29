@@ -47,7 +47,7 @@ export default function PropertyDetailSidebar({
                 >
                   <span className="line-clamp-1">{item.label}</span>
                   <ArrowRight
-                    size={12}
+                    size={14}
                     className="text-secondary group-hover:text-primary transition-all duration-200 group-hover:translate-x-0.5"
                   />
                 </Link>
