@@ -47,7 +47,7 @@ export default function NewsCard({ news, category }: NewsCardProps) {
 
           {/* Summary */}
           {news.summary ? (
-            <p className="text-secondary mt-2 line-clamp-2 text-sm leading-relaxed">
+            <p className="text-secondary my-2 line-clamp-2 text-sm leading-relaxed">
               {news.summary}
             </p>
           ) : null}
@@ -59,7 +59,7 @@ export default function NewsCard({ news, category }: NewsCardProps) {
             <Calendar size={14} strokeWidth={2} className="text-primary" />
             {formatDate(news.createdAt)}
           </span>
-          <span className="text-primary flex items-center gap-1 text-xs font-medium tracking-wide">
+          <span className="group-hover:text-primary text-secondary flex items-center gap-1 text-xs font-medium tracking-wide">
             Đọc tiếp
             <ArrowRight size={14} strokeWidth={2} />
           </span>

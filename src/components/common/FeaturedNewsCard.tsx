@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Calendar } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { News } from "@/types/news";
@@ -28,23 +28,25 @@ export default function FeaturedNewsCard({ news }: FeaturedNewsCardProps) {
 
       <div className="flex grow flex-col justify-between p-4 md:p-5">
         <div>
-          <h3 className="line-clamp-2 text-lg font-semibold leading-snug tracking-[-0.02em] text-heading transition-colors group-hover:text-primary md:text-xl">
+          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-lg leading-snug font-semibold tracking-[-0.02em] transition-colors md:text-xl">
             {news.title}
           </h3>
-          <p className="mt-2 line-clamp-3 text-sm leading-7 text-secondary">
+          <p className="text-secondary my-2 line-clamp-3 text-sm leading-7">
             {news.summary}
           </p>
         </div>
 
-        <div className="mt-4 flex items-center gap-4 text-xs font-medium text-secondary">
-          <div className="flex items-center gap-1.5">
-            <Calendar size={14} strokeWidth={2.5} className="text-primary/70" />
-            <span>{formatDate(news.createdAt)}</span>
-          </div>
+        <div className="flex items-center justify-between border-t border-dashed border-[rgba(61,32,10,0.12)] pt-2">
+          <span className="text-secondary flex items-center gap-1.5 text-xs">
+            <Calendar size={14} strokeWidth={2} className="text-primary" />
+            {formatDate(news.createdAt)}
+          </span>
+          <span className="group-hover:text-primary text-secondary flex items-center gap-1 text-xs font-medium tracking-wide">
+            Đọc tiếp
+            <ArrowRight size={14} strokeWidth={2} />
+          </span>
         </div>
       </div>
     </Link>
   );
 }
-
-
