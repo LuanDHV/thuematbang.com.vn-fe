@@ -12,19 +12,19 @@ type DataErrorCardProps = {
 };
 
 export default function DataErrorCard({
-  title,
-  message,
-  retryLabel,
+  title = "Không thể tải dữ liệu",
+  message = "Đã có lỗi xảy ra. Vui lòng thử lại.",
+  retryLabel = "Thử lại",
 }: DataErrorCardProps) {
   const router = useRouter();
 
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center">
-      <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+    <div className="surface-card rounded-2xl p-6 text-center">
+      <div className="surface-subtle text-primary mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full">
         <AlertTriangle size={20} />
       </div>
-      <h3 className="text-lg font-semibold text-amber-900">{title}</h3>
-      <p className="mt-1 text-sm text-amber-800">{message}</p>
+      <h3 className="text-heading text-lg font-semibold">{title}</h3>
+      <p className="text-secondary mt-1 text-sm">{message}</p>
       <div className="mt-4">
         <Button
           type="button"

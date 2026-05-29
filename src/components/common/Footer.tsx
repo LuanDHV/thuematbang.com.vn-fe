@@ -12,7 +12,7 @@ export default function Footer() {
   const policyLinks = [
     { label: "Quy chế hoạt động", href: "#" },
     { label: "Chính sách bảo mật thông tin", href: "#" },
-    { label: "Cơ chế giải quyết tranh chấp, khiếu nại", href: "#" },
+    { label: "Giải quyết tranh chấp, khiếu nại", href: "#" },
     { label: "Điều khoản thỏa thuận", href: "#" },
     { label: "Quy định đăng tin", href: "#" },
   ];
