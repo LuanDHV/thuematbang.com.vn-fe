@@ -15,7 +15,7 @@ import {
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { pageSeoFaqService } from "@/services/page-seo-faq.service";
 import { Property } from "@/types/property";
 import { propertyService } from "@/services/property.service";
 import { locationService } from "@/services/location.service";
@@ -150,7 +150,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   const { rawSlug, page } = parsePagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
-  const pageContent = pageSeoFaq["cho-thue"];
+  const pageContent = await pageSeoFaqService.getPageSeoFaq("cho-thue");
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
   if (property) {
@@ -298,13 +298,17 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         }}
       </SafeFetch>
 
-      <PageSeoContent content={pageContent.seoContent} />
+      {pageContent.seoContent ? (
+        <PageSeoContent content={pageContent.seoContent} />
+      ) : null}
 
-      <PageFaq
-        title={pageContent.faqTitle}
-        description={pageContent.faqDescription}
-        items={pageContent.faqs}
-      />
+      {pageContent.faqs.length > 0 ? (
+        <PageFaq
+          title={pageContent.faqTitle}
+          description={pageContent.faqDescription}
+          items={pageContent.faqs}
+        />
+      ) : null}
     </>
   );
 }

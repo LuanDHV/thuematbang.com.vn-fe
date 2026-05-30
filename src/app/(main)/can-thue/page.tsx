@@ -1,11 +1,11 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { pageSeoFaqService } from "@/services/page-seo-faq.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import SafeFetch from "@/components/common/SafeFetch";
 
@@ -19,7 +19,7 @@ export default async function CanThuePage() {
   await connection();
 
   // Load static SEO/FAQ content for rent request page.
-  const pageContent = pageSeoFaq["can-thue"];
+  const pageContent = await pageSeoFaqService.getPageSeoFaq("can-thue");
 
   return (
     <>
@@ -42,12 +42,16 @@ export default async function CanThuePage() {
         )}
       </SafeFetch>
 
-      <PageSeoContent content={pageContent.seoContent} />
-      <PageFaq
-        title={pageContent.faqTitle}
-        description={pageContent.faqDescription}
-        items={pageContent.faqs}
-      />
+      {pageContent.seoContent ? (
+        <PageSeoContent content={pageContent.seoContent} />
+      ) : null}
+      {pageContent.faqs.length > 0 ? (
+        <PageFaq
+          title={pageContent.faqTitle}
+          description={pageContent.faqDescription}
+          items={pageContent.faqs}
+        />
+      ) : null}
     </>
   );
 }

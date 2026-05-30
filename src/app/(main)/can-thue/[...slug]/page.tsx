@@ -15,7 +15,7 @@ import {
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { pageSeoFaqService } from "@/services/page-seo-faq.service";
 import { RentRequest } from "@/types/rent-request";
 import { rentRequestService } from "@/services/rent-request.service";
 import { locationService } from "@/services/location.service";
@@ -135,7 +135,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
   const { rawSlug, page } = parsePagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
-  const pageContent = pageSeoFaq["can-thue"];
+  const pageContent = await pageSeoFaqService.getPageSeoFaq("can-thue");
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
   if (rentRequest) {
@@ -260,13 +260,17 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
         }}
       </SafeFetch>
 
-      <PageSeoContent content={pageContent.seoContent} />
+      {pageContent.seoContent ? (
+        <PageSeoContent content={pageContent.seoContent} />
+      ) : null}
 
-      <PageFaq
-        title={pageContent.faqTitle}
-        description={pageContent.faqDescription}
-        items={pageContent.faqs}
-      />
+      {pageContent.faqs.length > 0 ? (
+        <PageFaq
+          title={pageContent.faqTitle}
+          description={pageContent.faqDescription}
+          items={pageContent.faqs}
+        />
+      ) : null}
     </>
   );
 }

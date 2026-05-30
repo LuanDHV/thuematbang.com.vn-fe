@@ -6,7 +6,7 @@ import PageSeoContent from "@/components/common/PageSeoContent";
 import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import { buildProjectCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { pageSeoFaqService } from "@/services/page-seo-faq.service";
 import { categoryService } from "@/services/category.service";
 import { projectService } from "@/services/project.service";
 
@@ -22,7 +22,7 @@ export default async function DuAnPage() {
   // Fetch project categories for tabs/chips.
   const projectCategories = await categoryService.getProjectCategories();
   // Load static SEO/FAQ content for project page.
-  const pageContent = pageSeoFaq["du-an"];
+  const pageContent = await pageSeoFaqService.getPageSeoFaq("du-an");
 
   return (
     <>
@@ -41,12 +41,17 @@ export default async function DuAnPage() {
           />
         )}
       </SafeFetch>
-      <PageSeoContent content={pageContent.seoContent} />
-      <PageFaq
-        title={pageContent.faqTitle}
-        description={pageContent.faqDescription}
-        items={pageContent.faqs}
-      />
+      {pageContent.seoContent ? <PageSeoContent content={pageContent.seoContent} /> : null}
+      {pageContent.faqs.length > 0 ? (
+        <PageFaq
+          title={pageContent.faqTitle}
+          description={pageContent.faqDescription}
+          items={pageContent.faqs}
+        />
+      ) : null}
     </>
   );
 }
+
+
+
