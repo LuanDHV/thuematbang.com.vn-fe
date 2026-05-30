@@ -5,10 +5,12 @@ type NewsDetailSidebarProps = {
   viewedNews: News[];
 };
 
-export default function NewsDetailSidebar({ viewedNews }: NewsDetailSidebarProps) {
+export default function NewsDetailSidebar({
+  viewedNews,
+}: NewsDetailSidebarProps) {
   return (
     <div className="flex flex-col gap-4 lg:sticky lg:top-24">
-      <section className="surface-card rounded-2xl border p-5 md:p-6">
+      <section className="surface-card rounded-2xl border p-5">
         <h2 className="text-heading text-base font-medium">
           <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
           Tin tức khác

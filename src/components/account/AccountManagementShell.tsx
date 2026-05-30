@@ -17,7 +17,7 @@ export default function AccountManagementShell({
     return (
       <section className="layout-container py-8">
         <div className="min-h-[80vh]">
-          <div className="text-secondary rounded-2xl border border-gray-200 bg-white p-6 text-sm">
+          <div className="text-secondary rounded-lg border border-gray-200 bg-white p-6 text-sm">
             Đang tải thông tin tài khoản...
           </div>
         </div>
@@ -29,9 +29,9 @@ export default function AccountManagementShell({
 
   return (
     <section className="layout-container py-8">
-      <div className="grid min-h-[80vh] grid-cols-1 gap-4 lg:grid-cols-[minmax(260px,20%)_1fr] lg:gap-6">
+      <div className="grid min-h-[80vh] grid-cols-1 gap-4 lg:grid-cols-[minmax(260px,25%)_1fr] lg:gap-10">
         <AccountSidebar user={authUser} />
-        <main className="min-w-0 rounded-2xl border border-gray-200 bg-white p-4 md:p-6">
+        <main className="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-5">
           {children}
         </main>
       </div>

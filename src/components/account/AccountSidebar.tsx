@@ -42,8 +42,8 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
   const passwordItemHref = "/quan-li-tai-khoan/doi-mat-khau";
 
   return (
-    <aside className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white">
-      <div className="px-4 py-5 md:px-5">
+    <aside className="flex h-full flex-col rounded-lg border border-gray-200 bg-white">
+      <div className="p-5">
         <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/60 p-3">
           {user.avatarUrl ? (
             <CloudinaryImage
@@ -56,15 +56,19 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
             />
           ) : (
             <div className="flex size-14 items-center justify-center rounded-full border border-gray-200 bg-gray-100">
-              <span className="text-sm font-semibold text-heading">{userInitials}</span>
+              <span className="text-heading text-sm font-semibold">
+                {userInitials}
+              </span>
             </div>
           )}
 
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-heading">
+            <p className="text-heading truncate text-sm font-semibold">
               {user.fullName || "Người dùng"}
             </p>
-            {user.email ? <p className="truncate text-xs text-secondary">{user.email}</p> : null}
+            {user.email ? (
+              <p className="text-secondary truncate text-xs">{user.email}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -79,7 +83,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "group flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+                "group focus-visible:ring-primary/20 flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 transition-colors focus-visible:ring-2 focus-visible:outline-none",
                 isActive
                   ? "border-l-primary bg-primary/5"
                   : "border-l-transparent hover:bg-gray-50",
@@ -88,13 +92,15 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
               <Icon
                 className={cn(
                   "size-4",
-                  isActive ? "text-primary" : "text-secondary group-hover:text-heading",
+                  isActive
+                    ? "text-primary"
+                    : "text-secondary group-hover:text-heading",
                 )}
               />
               <span
                 className={cn(
                   "text-sm",
-                  isActive ? "font-semibold text-heading" : "text-body",
+                  isActive ? "text-heading font-semibold" : "text-body",
                 )}
               >
                 {item.label}
@@ -106,7 +112,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
         <Link
           href={passwordItemHref}
           className={cn(
-            "group flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+            "group focus-visible:ring-primary/20 flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 transition-colors focus-visible:ring-2 focus-visible:outline-none",
             pathname === passwordItemHref
               ? "border-l-primary bg-primary/5"
               : "border-l-transparent hover:bg-gray-50",
@@ -123,7 +129,9 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
           <span
             className={cn(
               "text-sm",
-              pathname === passwordItemHref ? "font-semibold text-heading" : "text-body",
+              pathname === passwordItemHref
+                ? "text-heading font-semibold"
+                : "text-body",
             )}
           >
             {passwordItemLabel}
@@ -136,7 +144,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
           type="button"
           variant="outline"
           size="lg"
-          className="w-full justify-start rounded-xl border-gray-200 px-4 text-body hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+          className="text-body w-full justify-start rounded-xl border-gray-200 px-4 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
           onClick={() => logoutMutation.mutate()}
           disabled={logoutMutation.isPending}
         >

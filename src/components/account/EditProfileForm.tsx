@@ -145,17 +145,17 @@ export default function EditProfileForm() {
   const avatarDisplay = previewUrl || authUser.avatarUrl || null;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-5">
+    <div className="mx-auto flex flex-col gap-5">
       <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-        <section className="border-hairline bg-surface rounded-2xl border p-4 md:p-5">
+        <section className="border-hairline rounded-2xl border bg-white p-5">
           <div className="flex flex-col items-center gap-5">
             <div className="flex flex-col items-center gap-3 text-center">
               {avatarDisplay ? (
                 <CloudinaryImage
                   src={avatarDisplay}
                   alt={`Ảnh đại diện của ${authUser.fullName || "người dùng"}`}
-                  width={124}
-                  height={124}
+                  width={128}
+                  height={128}
                   cldQuality="auto:best"
                   className="border-hairline-strong ring-subtle size-32 rounded-full border-2 object-cover ring-4"
                 />
@@ -176,10 +176,10 @@ export default function EditProfileForm() {
             />
             <Label
               htmlFor="avatar-upload"
-              className="group hover:border-primary/50 border-hairline-strong hover:bg-subring-subtle relative flex min-h-40 w-1/2 cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed bg-white/70 px-5 py-6 text-center transition-colors"
+              className="group bg-surface hover:border-primary/50 border-hairline-strong hover:bg-subring-subtle relative flex min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors"
             >
               <Upload className="text-secondary group-hover:text-primary size-6" />
-              <p className="text-body text-base font-semibold">
+              <p className="text-body text-base font-medium">
                 Chọn ảnh hoặc kéo thả vào đây
               </p>
               <p className="text-secondary text-sm">
@@ -195,7 +195,7 @@ export default function EditProfileForm() {
           ) : null}
         </section>
 
-        <section className="border-hairline rounded-2xl border bg-white p-4 md:p-5">
+        <section className="border-hairline rounded-2xl border bg-white p-5">
           <div className="grid gap-4 md:grid-cols-2">
             {PROFILE_FIELDS.map((field) => {
               const Icon = field.icon;
