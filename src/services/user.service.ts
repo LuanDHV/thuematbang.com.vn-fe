@@ -11,6 +11,63 @@ export type UpdateMePayload = {
   avatarPublicId?: string;
 };
 
+export type ChangeMyPasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export type SetMyPasswordPayload = {
+  newPassword: string;
+  confirmPassword: string;
+};
+
+type PasswordActionResponse = {
+  message?: string;
+};
+
+function extractApiMessage(payload: unknown): string | undefined {
+  if (!payload || typeof payload !== "object") return undefined;
+  const record = payload as Record<string, unknown>;
+
+  if (typeof record.message === "string" && record.message.trim().length > 0) {
+    return record.message;
+  }
+
+  const nestedError = record.error;
+  if (nestedError && typeof nestedError === "object") {
+    const nestedRecord = nestedError as Record<string, unknown>;
+    if (
+      typeof nestedRecord.message === "string" &&
+      nestedRecord.message.trim().length > 0
+    ) {
+      return nestedRecord.message;
+    }
+  }
+
+  return undefined;
+}
+
+async function submitPasswordAction(
+  url: string,
+  method: "PATCH" | "POST",
+  payload: ChangeMyPasswordPayload | SetMyPasswordPayload,
+) {
+  const response = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(extractApiMessage(data) || "Không thể cập nhật mật khẩu");
+  }
+
+  return (data?.data ?? data) as PasswordActionResponse;
+}
+
 // Service object containing user-related API calls
 export const userService = {
   // Fetch the current authenticated user details
@@ -58,4 +115,10 @@ export const userService = {
 
     return (data?.data ?? data) as User;
   },
+
+  changeMyPassword: (payload: ChangeMyPasswordPayload) =>
+    submitPasswordAction("/api/v1/users/me/password", "PATCH", payload),
+
+  setMyPassword: (payload: SetMyPasswordPayload) =>
+    submitPasswordAction("/api/v1/users/me/password/set", "POST", payload),
 };

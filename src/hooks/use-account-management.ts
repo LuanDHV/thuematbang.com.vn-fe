@@ -34,3 +34,20 @@ export function useDeleteImageMutation() {
     mutationFn: mediaService.deleteImage,
   });
 }
+
+export function useChangeMyPasswordMutation() {
+  return useMutation({
+    mutationFn: userService.changeMyPassword,
+  });
+}
+
+export function useSetMyPasswordMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: userService.setMyPassword,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: AUTH_ME_QUERY_KEY });
+    },
+  });
+}

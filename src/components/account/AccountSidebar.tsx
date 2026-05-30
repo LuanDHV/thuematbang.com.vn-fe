@@ -15,11 +15,6 @@ const ACCOUNT_NAV_ITEMS = [
     label: "Hồ sơ cá nhân",
     icon: User,
   },
-  {
-    href: "/quan-li-tai-khoan/doi-mat-khau",
-    label: "Đổi mật khẩu",
-    icon: KeyRound,
-  },
 ] as const;
 
 type AccountSidebarProps = {
@@ -42,6 +37,9 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
   const pathname = usePathname();
   const logoutMutation = useLogoutMutation();
   const userInitials = getInitials(user.fullName);
+  const hasPassword = user.hasPassword ?? true;
+  const passwordItemLabel = hasPassword ? "Đổi mật khẩu" : "Tạo mật khẩu";
+  const passwordItemHref = "/quan-li-tai-khoan/doi-mat-khau";
 
   return (
     <aside className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white">
@@ -66,9 +64,7 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
             <p className="truncate text-sm font-semibold text-heading">
               {user.fullName || "Người dùng"}
             </p>
-            {user.email ? (
-              <p className="truncate text-xs text-secondary">{user.email}</p>
-            ) : null}
+            {user.email ? <p className="truncate text-xs text-secondary">{user.email}</p> : null}
           </div>
         </div>
       </div>
@@ -106,6 +102,33 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
             </Link>
           );
         })}
+
+        <Link
+          href={passwordItemHref}
+          className={cn(
+            "group flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+            pathname === passwordItemHref
+              ? "border-l-primary bg-primary/5"
+              : "border-l-transparent hover:bg-gray-50",
+          )}
+        >
+          <KeyRound
+            className={cn(
+              "size-4",
+              pathname === passwordItemHref
+                ? "text-primary"
+                : "text-secondary group-hover:text-heading",
+            )}
+          />
+          <span
+            className={cn(
+              "text-sm",
+              pathname === passwordItemHref ? "font-semibold text-heading" : "text-body",
+            )}
+          >
+            {passwordItemLabel}
+          </span>
+        </Link>
       </nav>
 
       <div className="border-t border-gray-200 px-4 py-4">

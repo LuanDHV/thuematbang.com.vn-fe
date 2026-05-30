@@ -2,15 +2,7 @@
 
 import { type ComponentProps, useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Camera,
-  Loader2,
-  Mail,
-  Phone,
-  Upload,
-  UploadIcon,
-  UserRound,
-} from "lucide-react";
+import { Loader2, Mail, Phone, Upload, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { Button } from "@/components/ui/button";
@@ -155,7 +147,7 @@ export default function EditProfileForm() {
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-5">
       <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-        <section className="rounded-2xl border border-[color:var(--hairline)] bg-[color:var(--surface)] p-4 md:p-5">
+        <section className="border-hairline bg-surface rounded-2xl border p-4 md:p-5">
           <div className="flex flex-col items-center gap-5">
             <div className="flex flex-col items-center gap-3 text-center">
               {avatarDisplay ? (
@@ -165,10 +157,10 @@ export default function EditProfileForm() {
                   width={124}
                   height={124}
                   cldQuality="auto:best"
-                  className="size-[160px] rounded-full border-2 border-[color:var(--hairline-strong)] object-cover ring-4 ring-[color:var(--subtle)]"
+                  className="border-hairline-strong ring-subtle size-32 rounded-full border-2 object-cover ring-4"
                 />
               ) : (
-                <div className="text-secondary flex size-[160px] items-center justify-center rounded-full border-2 border-dashed border-[color:var(--hairline-strong)] bg-[color:var(--subtle)] ring-4 ring-white">
+                <div className="text-secondary border-hairline-strong bg-subring-subtle flex size-32 items-center justify-center rounded-full border-2 border-dashed ring-4 ring-white">
                   <Upload className="size-8" />
                 </div>
               )}
@@ -184,7 +176,7 @@ export default function EditProfileForm() {
             />
             <Label
               htmlFor="avatar-upload"
-              className="group hover:border-primary/50 relative flex min-h-40 w-1/2 cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed border-[color:var(--hairline-strong)] bg-white/70 px-5 py-6 text-center transition-colors hover:bg-[color:var(--subtle)]"
+              className="group hover:border-primary/50 border-hairline-strong hover:bg-subring-subtle relative flex min-h-40 w-1/2 cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed bg-white/70 px-5 py-6 text-center transition-colors"
             >
               <Upload className="text-secondary group-hover:text-primary size-6" />
               <p className="text-body text-base font-semibold">
@@ -203,7 +195,7 @@ export default function EditProfileForm() {
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-[color:var(--hairline)] bg-white p-4 md:p-5">
+        <section className="border-hairline rounded-2xl border bg-white p-4 md:p-5">
           <div className="grid gap-4 md:grid-cols-2">
             {PROFILE_FIELDS.map((field) => {
               const Icon = field.icon;
@@ -230,9 +222,8 @@ export default function EditProfileForm() {
                     placeholder={field.placeholder}
                     readOnly={field.readOnly}
                     className={cn(
-                      "text-body focus-visible:ring-primary/20 h-11 rounded-xl border-[color:var(--hairline-strong)] bg-white px-3 text-sm shadow-none focus-visible:ring-2",
-                      field.readOnly &&
-                        "text-secondary bg-[color:var(--subtle)]",
+                      "text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2",
+                      field.readOnly && "text-secondary bg-subring-subtle",
                     )}
                     {...form.register(field.name)}
                   />

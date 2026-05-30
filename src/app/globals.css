@@ -14,7 +14,9 @@
   --color-body: var(--body);
   --color-secondary: var(--secondary);
   --color-muted: var(--muted);
-
+  --color-surface: var(--surface);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
 }
 
