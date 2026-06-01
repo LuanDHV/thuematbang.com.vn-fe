@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <div className="relative flex min-h-[44rem] lg:min-h-screen w-full items-center justify-center bg-[url('/imgs/wallpaper-3.jpg')] bg-cover bg-center">
+    <div className="relative flex min-h-175 w-full items-center justify-center bg-[url('/imgs/wallpaper-3.jpg')] bg-cover bg-center">
       <div className="absolute inset-0 bg-black/40"></div>
 
       <div className="relative z-10 flex w-full flex-col items-center px-4 text-center">

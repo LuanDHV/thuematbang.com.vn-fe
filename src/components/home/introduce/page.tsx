@@ -39,7 +39,10 @@ export default function IntroduceSection() {
 
         <HomeCarousel className="mt-8" options={{ align: "center" }}>
           {features.map((feature, index) => (
-            <div key={index} className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]">
+            <div
+              key={index}
+              className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
+            >
               <div className="group hover:shadow-primary/20 relative flex min-h-64 cursor-pointer flex-col items-center rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
                 <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
                   {feature.icon}
