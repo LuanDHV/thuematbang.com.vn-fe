@@ -15,10 +15,10 @@ export default function NewsCard({ news, category }: NewsCardProps) {
   return (
     <Link
       href={`/tin-tuc/${news.slug}`}
-      className="group flex flex-row items-stretch overflow-hidden rounded-2xl border border-[rgba(61,32,10,0.12)] bg-[#fbfaf7] shadow-[0_2px_10px_rgba(61,32,10,0.06)] transition-[transform,box-shadow] duration-260 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(61,32,10,0.11)]"
+      className="group flex flex-row items-stretch overflow-hidden rounded-2xl border border-[rgba(61,32,10,0.12)] bg-white shadow-[0_2px_10px_rgba(61,32,10,0.06)] transition-[transform,box-shadow] duration-260 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(61,32,10,0.11)]"
     >
       {/* Thumbnail */}
-      <div className="bg-elevated relative w-[38%] shrink-0 overflow-hidden">
+      <div className="relative w-[38%] shrink-0 overflow-hidden bg-white">
         <Image
           src={"/imgs/wallpaper-1.jpg"}
           alt={news.title}
@@ -26,8 +26,6 @@ export default function NewsCard({ news, category }: NewsCardProps) {
           sizes="(max-width: 768px) 40vw, 20vw"
           className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
         />
-        {/* fade edge sang body */}
-        <div className="absolute inset-y-0 right-0 w-6 bg-linear-to-r from-transparent to-[#fbfaf7]/50" />
       </div>
 
       {/* Body */}
