@@ -4,6 +4,8 @@ import "./globals.css";
 import { siteConfig } from "@/lib/metadata";
 import AppProviders from "@/components/providers/AppProviders";
 
+const isProduction = process.env.NEXT_PUBLIC_APP_ENV === "production";
+
 const geistSans = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin", "latin-ext"],
@@ -47,6 +49,16 @@ export const metadata: Metadata = {
     icon: "/imgs/brand-logo.png",
     apple: "/imgs/brand-logo.png",
   },
+  robots: isProduction
+    ? {
+        index: true,
+        follow: true,
+      }
+    : {
+        index: false,
+        follow: false,
+        nocache: true,
+      },
 };
 
 export default function RootLayout({
@@ -55,10 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="vi"
-      className={`${geistSans.variable} h-full antialiased`}
-    >
+    <html lang="vi" className={`${geistSans.variable} h-full antialiased`}>
       <body className="bg-app text-body min-h-screen">
         <AppProviders>{children}</AppProviders>
       </body>
