@@ -1,21 +1,17 @@
 ﻿import { cn } from "@/lib/utils";
 
 function getPageNumbers(page: number, total: number): (number | "...")[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
 
-  const showLeft = page > 4;
-  const showRight = page < total - 3;
+  if (page <= 3) {
+    return [1, 2, 3, "...", total];
+  }
 
-  if (!showLeft && showRight) {
-    return [1, 2, 3, 4, 5, "...", total];
+  if (page >= total - 2) {
+    return [1, "...", total - 2, total - 1, total];
   }
-  if (showLeft && !showRight) {
-    return [1, "...", total - 4, total - 3, total - 2, total - 1, total];
-  }
-  if (showLeft && showRight) {
-    return [1, "...", page - 1, page, page + 1, "...", total];
-  }
-  return Array.from({ length: total }, (_, i) => i + 1);
+
+  return [1, "...", page, "...", total];
 }
 
 export function Pagination({

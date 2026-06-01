@@ -3,12 +3,11 @@ import NewsCard from "@/components/common/NewsCard";
 import SafeFetch from "@/components/common/SafeFetch";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import Title from "@/components/common/Title";
-import HomeCarousel from "@/components/home/HomeCarousel";
 import { newsService } from "@/services/news.service";
 import { News } from "@/types/news";
 
 export default async function NewsSection() {
-  const newsFetch = newsService.getAll();
+  const newsFetch = newsService.getAll({ limit: 4 });
 
   return (
     <section className="layout-section w-full lg:flex lg:min-h-screen lg:items-center">
@@ -30,30 +29,24 @@ export default async function NewsSection() {
             return (
               <>
                 <div className="space-y-5 lg:hidden">
-                  <div className="min-h-96">
-                    {featuredNews ? (
-                      <FeaturedNewsCard news={featuredNews} />
-                    ) : null}
-                  </div>
+                  {featuredNews ? (
+                    <FeaturedNewsCard news={featuredNews} />
+                  ) : null}
 
-                  <HomeCarousel>
+                  <div className="grid grid-cols-1 gap-5">
                     {sideNews.map((newsItem) => (
-                      <div
-                        key={newsItem.id}
-                        className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
-                      >
-                        <NewsCard news={newsItem} />
-                      </div>
+                      <NewsCard key={newsItem.id} news={newsItem} />
                     ))}
-                  </HomeCarousel>
+                  </div>
                 </div>
 
-                <div className="hidden grid-cols-1 gap-5 lg:grid lg:grid-cols-2 lg:gap-8">
-                  <div className="min-h-105">
-                    {featuredNews ? (
-                      <FeaturedNewsCard news={featuredNews} />
-                    ) : null}
-                  </div>
+                <div className="hidden grid-cols-1 items-stretch gap-5 lg:grid lg:grid-cols-2 lg:gap-8">
+                  {featuredNews ? (
+                    <FeaturedNewsCard
+                      news={featuredNews}
+                      className="aspect-auto h-full min-h-136"
+                    />
+                  ) : null}
 
                   <div className="grid grid-cols-1 gap-5">
                     {sideNews.map((newsItem) => (

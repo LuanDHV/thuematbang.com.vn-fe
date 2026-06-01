@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useCallback,
@@ -137,18 +137,27 @@ export default function NewsListingClient({
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <div className="flex w-full flex-col lg:w-4/6">
-          <div className="surface-card grid gap-5 p-5">
-            {featuredNews ? <FeaturedNewsCard news={featuredNews} /> : null}
+          <div className="surface-card space-y-5 p-5">
+            {featuredNews ? (
+              <FeaturedNewsCard
+                news={featuredNews}
+                className="aspect-16/10 lg:aspect-16/8"
+              />
+            ) : null}
+
             {remainingNews.length > 0 ? (
-              remainingNews.map((newsItem) => (
-                <NewsCard key={newsItem.id} news={newsItem} />
-              ))
+              <div className="grid grid-cols-1 gap-5">
+                {remainingNews.map((newsItem) => (
+                  <NewsCard key={newsItem.id} news={newsItem} />
+                ))}
+              </div>
             ) : sourceNews.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-gray-500">Không có bài viết nào</p>
               </div>
             ) : null}
           </div>
+
           <Pagination
             page={currentPage}
             totalPages={totalPages}
