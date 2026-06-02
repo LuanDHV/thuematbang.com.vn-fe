@@ -160,7 +160,7 @@ export default function EditProfileForm() {
                   className="border-hairline-strong ring-subtle size-32 rounded-full border-2 object-cover ring-4"
                 />
               ) : (
-                <div className="text-secondary border-hairline-strong bg-subtle flex size-32 items-center justify-center rounded-full border-2 border-dashed ring-4 ring-surface">
+                <div className="text-secondary border-hairline-strong bg-subtle ring-surface flex size-32 items-center justify-center rounded-full border-2 border-dashed ring-4">
                   <Upload className="size-8" />
                 </div>
               )}
@@ -176,7 +176,7 @@ export default function EditProfileForm() {
             />
             <Label
               htmlFor="avatar-upload"
-            className="group bg-surface hover:border-primary/50 border-hairline-strong hover:bg-subtle relative flex min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors"
+              className="group bg-surface hover:border-primary/50 border-hairline-strong hover:bg-subtle relative flex min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors"
             >
               <Upload className="text-secondary group-hover:text-primary size-6" />
               <p className="text-body text-base font-medium">

@@ -6,8 +6,15 @@ import type { User as UserType } from "@/types";
 
 type UserSidebarProps = {
   user: UserType;
+  onNavigate?: () => void;
 };
 
-export default function UserSidebar({ user }: UserSidebarProps) {
-  return <CmsSidebar user={user} items={buildUserCmsNavItems(user.hasPassword ?? true)} />;
+export default function UserSidebar({ user, onNavigate }: UserSidebarProps) {
+  return (
+    <CmsSidebar
+      user={user}
+      items={buildUserCmsNavItems(user.hasPassword ?? true)}
+      onNavigate={onNavigate}
+    />
+  );
 }

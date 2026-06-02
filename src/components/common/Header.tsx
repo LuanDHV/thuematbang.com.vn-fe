@@ -152,7 +152,7 @@ export default function Header() {
               </Button>
             )}
 
-            <div className="absolute right-0 lg:static lg:hidden">
+            <div className="absolute left-0 lg:static lg:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon-lg" aria-label="Mở menu">
@@ -160,7 +160,7 @@ export default function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent
-                  side="right"
+                  side="left"
                   className="w-72"
                   srTitle="Menu điều hướng"
                 >

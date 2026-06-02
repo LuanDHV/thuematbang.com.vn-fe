@@ -16,6 +16,7 @@ type CmsSidebarProps = {
   items: CmsNavItem[];
   className?: string;
   footer?: ReactNode;
+  onNavigate?: () => void;
 };
 
 function getInitials(name?: string | null) {
@@ -35,6 +36,7 @@ export default function CmsSidebar({
   items,
   className,
   footer,
+  onNavigate,
 }: CmsSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -47,13 +49,19 @@ export default function CmsSidebar({
     try {
       await logoutMutation.mutateAsync();
     } finally {
+      onNavigate?.();
       router.refresh();
       router.push("/");
     }
   };
 
   return (
-    <aside className={cn("bg-surface flex h-full flex-col overflow-hidden", className)}>
+    <aside
+      className={cn(
+        "bg-surface flex h-full flex-col overflow-hidden",
+        className,
+      )}
+    >
       <div className="border-hairline flex items-center gap-2 border-b p-3">
         {user.avatarUrl ? (
           <CloudinaryImage
@@ -97,6 +105,7 @@ export default function CmsSidebar({
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
                 "group focus-visible:ring-primary/20 flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 transition-colors focus-visible:ring-2 focus-visible:outline-none",
                 isActive
