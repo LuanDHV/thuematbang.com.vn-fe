@@ -9,13 +9,5 @@ type UserSidebarProps = {
 };
 
 export default function UserSidebar({ user }: UserSidebarProps) {
-  return (
-    <CmsSidebar
-      user={user}
-      items={buildUserCmsNavItems(user.hasPassword ?? true)}
-      title="Khu vực tài khoản"
-      description="Quản lý hồ sơ và bảo mật trong cùng một layout CMS."
-      eyebrow="CMS User"
-    />
-  );
+  return <CmsSidebar user={user} items={buildUserCmsNavItems(user.hasPassword ?? true)} />;
 }

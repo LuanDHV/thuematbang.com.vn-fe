@@ -2,8 +2,8 @@
 
 import { ReactNode } from "react";
 import CmsLayout from "@/components/cms/shared/CmsLayout";
-import { useAuthMe } from "@/hooks/use-auth";
 import UserSidebar from "@/components/cms/user/UserSidebar";
+import { useAuthMe } from "@/hooks/use-auth";
 
 type UserManagementShellProps = {
   children: ReactNode;
@@ -28,14 +28,5 @@ export default function UserManagementShell({
 
   if (!authUser) return null;
 
-  return (
-    <CmsLayout
-      title="Quản lý tài khoản"
-      description="Cập nhật hồ sơ cá nhân và bảo mật tài khoản trong cùng một khung CMS."
-      eyebrow="CMS User"
-      sidebar={<UserSidebar user={authUser} />}
-    >
-      {children}
-    </CmsLayout>
-  );
+  return <CmsLayout sidebar={<UserSidebar user={authUser} />}>{children}</CmsLayout>;
 }

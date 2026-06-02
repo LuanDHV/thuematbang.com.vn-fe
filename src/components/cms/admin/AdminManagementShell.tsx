@@ -36,14 +36,5 @@ export default function AdminManagementShell({
     );
   }
 
-  return (
-    <CmsLayout
-      title="Quản trị CMS"
-      description="Một layout chung cho dashboard, quản lý nội dung và tác vụ vận hành."
-      eyebrow="CMS Admin"
-      sidebar={<AdminSidebar user={authUser} />}
-    >
-      {children}
-    </CmsLayout>
-  );
+  return <CmsLayout sidebar={<AdminSidebar user={authUser} />}>{children}</CmsLayout>;
 }

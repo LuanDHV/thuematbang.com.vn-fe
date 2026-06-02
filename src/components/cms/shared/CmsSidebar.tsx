@@ -14,9 +14,6 @@ import type { CmsNavItem } from "./cms-navigation";
 type CmsSidebarProps = {
   user: User;
   items: CmsNavItem[];
-  title: string;
-  description?: string;
-  eyebrow?: string;
   className?: string;
   footer?: ReactNode;
 };
@@ -36,9 +33,6 @@ function getInitials(name?: string | null) {
 export default function CmsSidebar({
   user,
   items,
-  title,
-  description,
-  eyebrow = "CMS",
   className,
   footer,
 }: CmsSidebarProps) {
@@ -59,50 +53,40 @@ export default function CmsSidebar({
   };
 
   return (
-    <aside className={cn("surface-panel flex h-full flex-col overflow-hidden", className)}>
-      <div className="border-b border-hairline px-4 py-4 md:px-5 md:py-5">
-        <p className="text-primary text-xs font-semibold tracking-[0.24em] uppercase">
-          {eyebrow}
-        </p>
-        <h2 className="text-heading mt-2 text-lg font-semibold tracking-[-0.02em]">
-          {title}
-        </h2>
-        {description ? (
-          <p className="text-secondary mt-1 text-sm leading-6">{description}</p>
-        ) : null}
-      </div>
-
-      <div className="border-b border-hairline p-4 md:p-5">
-        <div className="bg-subtle flex items-center gap-3 rounded-2xl border border-hairline px-3 py-3">
-          {user.avatarUrl ? (
-            <CloudinaryImage
-              src={user.avatarUrl}
-              alt={`Ảnh đại diện của ${user.fullName || "người dùng"}`}
-              width={56}
-              height={56}
-              cldQuality="auto:best"
-              className="size-14 rounded-full border border-hairline object-cover"
-            />
-          ) : (
-            <div className="bg-surface flex size-14 items-center justify-center rounded-full border border-hairline">
-              <span className="text-heading text-sm font-semibold">
-                {initials}
-              </span>
-            </div>
-          )}
-
-          <div className="min-w-0">
-            <p className="text-heading truncate text-sm font-semibold">
-              {user.fullName || "Người dùng"}
-            </p>
-            {user.email ? (
-              <p className="text-secondary truncate text-xs">{user.email}</p>
-            ) : null}
+    <aside className={cn("bg-surface flex h-full flex-col overflow-hidden", className)}>
+      <div className="border-hairline flex items-center gap-2 border-b p-3">
+        {user.avatarUrl ? (
+          <CloudinaryImage
+            src={user.avatarUrl}
+            alt={`Ảnh đại diện của ${user.fullName || "người dùng"}`}
+            width={56}
+            height={56}
+            cldQuality="auto:best"
+            className="border-hairline size-14 rounded-full border object-cover"
+          />
+        ) : (
+          <div className="bg-surface border-hairline flex size-14 items-center justify-center rounded-full border">
+            <span className="text-heading text-sm font-semibold">
+              {initials}
+            </span>
           </div>
+        )}
+
+        <div className="min-w-0">
+          <p className="text-primary text-sm font-semibold tracking-widest">
+            {user.role}
+          </p>
+          <p className="text-heading truncate text-sm font-semibold">
+            {user.fullName || "Người dùng"}
+          </p>
+
+          {user.email ? (
+            <p className="text-secondary truncate text-xs">{user.email}</p>
+          ) : null}
         </div>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1 p-3">
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-2">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = item.exact
@@ -117,7 +101,7 @@ export default function CmsSidebar({
                 "group focus-visible:ring-primary/20 flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 transition-colors focus-visible:ring-2 focus-visible:outline-none",
                 isActive
                   ? "border-l-primary bg-primary/5"
-                  : "border-l-transparent hover:bg-subtle",
+                  : "hover:bg-subtle border-l-transparent",
               )}
             >
               <Icon
@@ -141,7 +125,7 @@ export default function CmsSidebar({
         })}
       </nav>
 
-      <div className="border-t border-hairline p-4">
+      <div className="p-5">
         {footer ?? (
           <Button
             type="button"

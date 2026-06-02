@@ -1,12 +1,18 @@
 import {
+  BadgeQuestionMark,
   Building2,
+  CreditCard,
   FileText,
+  FolderCog,
+  Inbox,
   Image,
-  KeyRound,
   LayoutDashboard,
-  ListChecks,
+  MapPinned,
+  Megaphone,
   Newspaper,
+  Search,
   Settings,
+  Tags,
   User,
   Users,
   type LucideIcon,
@@ -29,9 +35,19 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
       exact: true,
     },
     {
+      href: "/quan-li-tai-khoan/cho-thue",
+      label: "Tin cho thuê",
+      icon: Building2,
+    },
+    {
+      href: "/quan-li-tai-khoan/can-thue",
+      label: "Tin cần thuê",
+      icon: Inbox,
+    },
+    {
       href: "/quan-li-tai-khoan/doi-mat-khau",
       label: hasPassword ? "Đổi mật khẩu" : "Tạo mật khẩu",
-      icon: KeyRound,
+      icon: FolderCog,
       exact: true,
     },
   ];
@@ -40,50 +56,88 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
 export function buildAdminCmsNavItems(): CmsNavItem[] {
   return [
     {
-      href: "/cms/admin",
-      label: "Bảng điều khiển",
+      href: "/admin",
+      label: "Tổng quan",
       icon: LayoutDashboard,
       exact: true,
     },
     {
-      href: "/cms/admin/tin-dang",
-      label: "Quản lý tin đăng",
+      href: "/admin/cho-thue",
+      label: "Tin cho thuê",
       icon: Building2,
     },
     {
-      href: "/cms/admin/du-an",
-      label: "Quản lý dự án",
+      href: "/admin/can-thue",
+      label: "Tin cần thuê",
+      icon: Inbox,
+    },
+    {
+      href: "/admin/du-an",
+      label: "Dự án",
       icon: FileText,
     },
     {
-      href: "/cms/admin/tin-tuc",
-      label: "Quản lý tin tức",
+      href: "/admin/tin-tuc",
+      label: "Tin tức",
       icon: Newspaper,
     },
     {
-      href: "/cms/admin/tin-nhan",
-      label: "Quản lý yêu cầu",
-      icon: ListChecks,
-    },
-    {
-      href: "/cms/admin/nguoi-dung",
-      label: "Quản lý người dùng",
+      href: "/admin/nguoi-dung",
+      label: "Người dùng",
       icon: Users,
     },
     {
-      href: "/cms/admin/media",
+      href: "/admin/banners",
+      label: "Banner",
+      icon: Megaphone,
+    },
+    {
+      href: "/admin/categories",
+      label: "Danh mục",
+      icon: Tags,
+    },
+    {
+      href: "/admin/faqs",
+      label: "Câu hỏi thường gặp",
+      icon: BadgeQuestionMark,
+    },
+    {
+      href: "/admin/leads",
+      label: "Lead",
+      icon: Search,
+    },
+    {
+      href: "/admin/media",
       label: "Media",
       icon: Image,
     },
     {
-      href: "/cms/admin/cai-dat",
+      href: "/admin/payments",
+      label: "Thanh toán",
+      icon: CreditCard,
+    },
+    {
+      href: "/admin/seo-contents",
+      label: "Nội dung SEO",
+      icon: FolderCog,
+    },
+    {
+      href: "/admin/locations",
+      label: "Địa điểm",
+      icon: MapPinned,
+    },
+    {
+      href: "/admin/cai-dat",
       label: "Cài đặt",
       icon: Settings,
     },
   ];
 }
 
-export function getCmsRoleLabel(role: AppUser["role"], scope: "user" | "admin") {
+export function getCmsRoleLabel(
+  role: AppUser["role"],
+  scope: "user" | "admin",
+) {
   if (scope === "admin" || role === "ADMIN") return "CMS Admin";
   return "CMS User";
 }

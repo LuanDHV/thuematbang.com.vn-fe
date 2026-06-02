@@ -1,4 +1,5 @@
 ﻿import { cn } from "@/lib/utils";
+import { TableCell, TableFooter, TableRow } from "@/components/ui/table";
 
 function getPageNumbers(page: number, total: number): (number | "...")[] {
   if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
@@ -14,7 +15,7 @@ function getPageNumbers(page: number, total: number): (number | "...")[] {
   return [1, "...", page, "...", total];
 }
 
-export function Pagination({
+function PaginationControls({
   page,
   totalPages,
   onChange,
@@ -23,12 +24,10 @@ export function Pagination({
   totalPages: number;
   onChange: (page: number) => void;
 }) {
-  if (totalPages <= 1) return null;
-
   const pages = getPageNumbers(page, totalPages);
 
   return (
-    <div className="flex items-center justify-center gap-2 pt-8">
+    <div className="flex items-center justify-center gap-2">
       <button
         type="button"
         onClick={() => onChange(page - 1)}
@@ -87,5 +86,47 @@ export function Pagination({
         ›
       </button>
     </div>
+  );
+}
+
+export function Pagination({
+  page,
+  totalPages,
+  onChange,
+}: {
+  page: number;
+  totalPages: number;
+  onChange: (page: number) => void;
+}) {
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-center gap-2 pt-8">
+      <PaginationControls page={page} totalPages={totalPages} onChange={onChange} />
+    </div>
+  );
+}
+
+export function TablePaginationFooter({
+  page,
+  totalPages,
+  onChange,
+  colSpan = 1,
+}: {
+  page: number;
+  totalPages: number;
+  onChange: (page: number) => void;
+  colSpan?: number;
+}) {
+  if (totalPages <= 1) return null;
+
+  return (
+    <TableFooter>
+      <TableRow>
+        <TableCell colSpan={colSpan} className="bg-surface px-4 py-4 md:px-5">
+          <PaginationControls page={page} totalPages={totalPages} onChange={onChange} />
+        </TableCell>
+      </TableRow>
+    </TableFooter>
   );
 }

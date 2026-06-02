@@ -9,13 +9,5 @@ type AdminSidebarProps = {
 };
 
 export default function AdminSidebar({ user }: AdminSidebarProps) {
-  return (
-    <CmsSidebar
-      user={user}
-      items={buildAdminCmsNavItems()}
-      title="Khu vực quản trị"
-      description="Điều phối nội dung, người dùng và các module vận hành."
-      eyebrow="CMS Admin"
-    />
-  );
+  return <CmsSidebar user={user} items={buildAdminCmsNavItems()} />;
 }
