@@ -1,9 +1,9 @@
+import "server-only";
+
 import { User } from "@/types";
 import { buildListPath, buildListTags } from "./shared/list-service";
-import { getApiResponse } from "./shared/api-client";
-import { getPrivateApiResponse } from "./shared/private-api-client";
+import { requestServerApi } from "./shared/server-api-client";
 
-// Define TypeScript types for updating user profile payload
 export type UpdateMePayload = {
   fullName: string;
   phone: string;
@@ -29,74 +29,44 @@ export type AdminUserListParams = {
   filters?: Record<string, string | number | boolean | null | undefined>;
 };
 
-export type AdminUserListRequestOptions = {
-  accessToken: string;
-};
-
 type PasswordActionResponse = {
   message?: string;
 };
 
-function extractApiMessage(payload: unknown): string | undefined {
-  if (!payload || typeof payload !== "object") return undefined;
-  const record = payload as Record<string, unknown>;
+function buildProfileFormData(payload: UpdateMePayload) {
+  const formData = new FormData();
+  formData.append("fullName", payload.fullName);
+  formData.append("phone", payload.phone);
 
-  if (typeof record.message === "string" && record.message.trim().length > 0) {
-    return record.message;
+  if (payload.email) {
+    formData.append("email", payload.email);
+  }
+  if (payload.avatar) {
+    formData.append("avatar", payload.avatar);
+  }
+  if (payload.avatarUrl) {
+    formData.append("avatarUrl", payload.avatarUrl);
+  }
+  if (payload.avatarPublicId) {
+    formData.append("avatarPublicId", payload.avatarPublicId);
   }
 
-  const nestedError = record.error;
-  if (nestedError && typeof nestedError === "object") {
-    const nestedRecord = nestedError as Record<string, unknown>;
-    if (
-      typeof nestedRecord.message === "string" &&
-      nestedRecord.message.trim().length > 0
-    ) {
-      return nestedRecord.message;
-    }
-  }
-
-  return undefined;
+  return formData;
 }
 
-async function submitPasswordAction(
-  url: string,
-  method: "PATCH" | "POST",
-  payload: ChangeMyPasswordPayload | SetMyPasswordPayload,
-) {
-  const response = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  const data = await response.json().catch(() => null);
-  if (!response.ok) {
-    throw new Error(extractApiMessage(data) || "Không thể cập nhật mật khẩu");
-  }
-
-  return (data?.data ?? data) as PasswordActionResponse;
-}
-
-// Service object containing user-related API calls
 export const userService = {
-  // Fetch the current authenticated user details
   me: async () =>
     (
-      await getApiResponse<User | null>("/users/me", {
+      await requestServerApi<User | null>("/users/me", {
+        auth: "required",
         cache: "no-store",
         tags: ["auth-me"],
       })
     ).data,
 
-  getAdminUsers: async (
-    params: AdminUserListParams = {},
-    requestOptions?: AdminUserListRequestOptions,
-  ) =>
-    getPrivateApiResponse<User[]>(buildListPath("/admin/users", params), {
-      accessToken: requestOptions?.accessToken ?? "",
+  getAdminUsers: async (params: AdminUserListParams = {}) =>
+    requestServerApi<User[]>(buildListPath("/admin/users", params), {
+      auth: "required",
       cache: "no-store",
       tags: buildListTags("admin-users", {
         page: params.page,
@@ -104,46 +74,42 @@ export const userService = {
       }),
     }),
 
-  // Method to update user profile using multipart FormData via PATCH request
   updateMe: async (payload: UpdateMePayload) => {
-    const formData = new FormData();
-    formData.append("fullName", payload.fullName);
-    formData.append("phone", payload.phone);
-
-    // Append optional fields to FormData if they exist
-    if (payload.email) {
-      formData.append("email", payload.email);
-    }
-    if (payload.avatar) {
-      formData.append("avatar", payload.avatar);
-    }
-    if (payload.avatarUrl) {
-      formData.append("avatarUrl", payload.avatarUrl);
-    }
-    if (payload.avatarPublicId) {
-      formData.append("avatarPublicId", payload.avatarPublicId);
-    }
-
-    // Call Next.js PATCH API route
-    const response = await fetch("/api/v1/users/me", {
+    const response = await requestServerApi<User>("/users/me", {
       method: "PATCH",
-      body: formData,
+      auth: "required",
+      body: buildProfileFormData(payload),
     });
-
-    // Parse response body, return null if parsing fails
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-      throw new Error(
-        data?.message || "Không thể cập nhật thông tin tài khoản",
-      );
-    }
-
-    return (data?.data ?? data) as User;
+    return response.data;
   },
 
-  changeMyPassword: (payload: ChangeMyPasswordPayload) =>
-    submitPasswordAction("/api/v1/users/me/password", "PATCH", payload),
+  changeMyPassword: async (payload: ChangeMyPasswordPayload) => {
+    const response = await requestServerApi<PasswordActionResponse>(
+      "/users/me/password",
+      {
+        method: "PATCH",
+        auth: "required",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    return response.data;
+  },
 
-  setMyPassword: (payload: SetMyPasswordPayload) =>
-    submitPasswordAction("/api/v1/users/me/password/set", "POST", payload),
+  setMyPassword: async (payload: SetMyPasswordPayload) => {
+    const response = await requestServerApi<PasswordActionResponse>(
+      "/users/me/password/set",
+      {
+        method: "POST",
+        auth: "required",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    return response.data;
+  },
 };

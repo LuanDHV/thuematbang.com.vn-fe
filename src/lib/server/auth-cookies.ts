@@ -1,29 +1,24 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-// Authentication cookie names
 export const ACCESS_TOKEN_COOKIE = "accessToken";
 export const REFRESH_TOKEN_COOKIE = "refreshToken";
 
-// Optional token pair structure
 type TokenPair = {
   accessToken?: string;
   refreshToken?: string;
 };
 
-// Strict token pair structure
 type AuthTokenShape = {
   accessToken: string;
   refreshToken: string;
 };
 
-// Helper to validate and return a record object
 function getRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== "object") return null;
   return value as Record<string, unknown>;
 }
 
-// Validate if payload matches strict token pair structure
 function parseAuthTokenShape(value: unknown): AuthTokenShape | null {
   const record = getRecord(value);
   if (!record) return null;
@@ -32,13 +27,13 @@ function parseAuthTokenShape(value: unknown): AuthTokenShape | null {
   const refreshToken = record.refreshToken;
 
   if (typeof accessToken !== "string" || accessToken.length === 0) return null;
-  if (typeof refreshToken !== "string" || refreshToken.length === 0)
+  if (typeof refreshToken !== "string" || refreshToken.length === 0) {
     return null;
+  }
 
   return { accessToken, refreshToken };
 }
 
-// Extract token pair from raw or nested backend response
 export function extractTokenPair(payload: unknown): TokenPair {
   const direct = parseAuthTokenShape(payload);
   if (direct) return direct;
@@ -47,12 +42,10 @@ export function extractTokenPair(payload: unknown): TokenPair {
   return parseAuthTokenShape(wrapped) ?? {};
 }
 
-// Enable secure cookie flag only in production
 function getCookieSecureFlag() {
   return process.env.NODE_ENV === "production";
 }
 
-// Save token pair to browser cookies
 export function applyAuthCookies(response: NextResponse, tokenPair: TokenPair) {
   const secure = getCookieSecureFlag();
 
@@ -62,7 +55,7 @@ export function applyAuthCookies(response: NextResponse, tokenPair: TokenPair) {
       sameSite: "lax",
       secure,
       path: "/",
-      maxAge: 60 * 60 * 24, // Expires in 1 day
+      maxAge: 60 * 60 * 24,
     });
   }
 
@@ -72,12 +65,11 @@ export function applyAuthCookies(response: NextResponse, tokenPair: TokenPair) {
       sameSite: "lax",
       secure,
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, // Expires in 30 days
+      maxAge: 60 * 60 * 24 * 30,
     });
   }
 }
 
-// Clear all authentication cookies on logout
 export function clearAuthCookies(response: NextResponse) {
   const secure = getCookieSecureFlag();
 
@@ -86,7 +78,7 @@ export function clearAuthCookies(response: NextResponse) {
     sameSite: "lax",
     secure,
     path: "/",
-    maxAge: 0, // Immediately deletes cookie
+    maxAge: 0,
   });
   response.cookies.set(REFRESH_TOKEN_COOKIE, "", {
     httpOnly: true,
@@ -97,7 +89,6 @@ export function clearAuthCookies(response: NextResponse) {
   });
 }
 
-// Read current authentication cookies on server side
 export async function readAuthCookies() {
   const store = await cookies();
   return {

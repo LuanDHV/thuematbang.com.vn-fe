@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { getCurrentUserAction } from "@/actions/user.actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -18,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { AUTH_ME_QUERY_KEY, useLoginMutation } from "@/hooks/use-auth";
 import { loginSchema, type LoginFormValues } from "@/schemas/auth.schema";
-import { userService } from "@/services/user.service";
 
 type LoginFormProps = React.ComponentProps<"div"> & {
   variant?: "user" | "admin";
@@ -49,11 +49,11 @@ export function LoginForm({
   const onSubmit = handleSubmit(async (values) => {
     await loginMutation.mutateAsync(values);
 
-    let currentUser: Awaited<ReturnType<typeof userService.me>> = null;
+    let currentUser: Awaited<ReturnType<typeof getCurrentUserAction>> = null;
     try {
       currentUser = await queryClient.fetchQuery({
         queryKey: AUTH_ME_QUERY_KEY,
-        queryFn: userService.me,
+        queryFn: getCurrentUserAction,
       });
     } catch {
       currentUser = null;

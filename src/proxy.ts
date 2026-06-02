@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getPrivateApiBaseUrl } from "@/lib/env";
 
 const LOGIN_ROUTE = "/dang-nhap";
 const ADMIN_LOGIN_ROUTE = "/dang-nhap-admin";
@@ -12,13 +13,14 @@ function isSafeInternalPath(value: string | null): value is string {
 }
 
 async function fetchCurrentUser(request: NextRequest) {
-  const cookie = request.headers.get("cookie") ?? "";
-  if (!cookie) return null;
+  const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
+  if (!accessToken) return null;
 
-  const response = await fetch(new URL("/api/v1/users/me", request.url), {
+  const backendUrl = getPrivateApiBaseUrl().replace(/\/$/, "");
+  const response = await fetch(`${backendUrl}/users/me`, {
     headers: {
-      cookie,
       accept: "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     cache: "no-store",
   });

@@ -1,6 +1,8 @@
-﻿import { getApiResponse } from "./shared/api-client";
+import "server-only";
+
 import { FaqByPageResponse } from "@/types/faq";
 import { SeoContentEntry } from "@/types/seo-content";
+import { requestServerApi } from "./shared/server-api-client";
 
 export type PageSeoFaqItem = {
   id: string;
@@ -25,14 +27,20 @@ const DEFAULT_PAGE_SEO_FAQ: PageSeoFaqData = {
 export const pageSeoFaqService = {
   getPageSeoFaq: async (page: string): Promise<PageSeoFaqData> => {
     const [seoRes, faqRes] = await Promise.all([
-      getApiResponse<SeoContentEntry>(`/seo-contents/page/${encodeURIComponent(page)}`, {
-        cache: "no-store",
-        tags: ["seo-contents", `seo-contents-${page}`],
-      }),
-      getApiResponse<FaqByPageResponse>(`/faqs/page/${encodeURIComponent(page)}`, {
-        cache: "no-store",
-        tags: ["faqs", `faqs-${page}`],
-      }),
+      requestServerApi<SeoContentEntry>(
+        `/seo-contents/page/${encodeURIComponent(page)}`,
+        {
+          cache: "no-store",
+          tags: ["seo-contents", `seo-contents-${page}`],
+        },
+      ),
+      requestServerApi<FaqByPageResponse>(
+        `/faqs/page/${encodeURIComponent(page)}`,
+        {
+          cache: "no-store",
+          tags: ["faqs", `faqs-${page}`],
+        },
+      ),
     ]);
 
     const seoData = seoRes.data;

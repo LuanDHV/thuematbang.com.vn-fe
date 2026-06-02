@@ -1,6 +1,5 @@
 import AdminUsersTable from "@/components/cms/admin/AdminUsersTable";
 import { resolveAdminPage } from "@/lib/admin-page";
-import { readAuthCookies } from "@/app/api/v1/_utils/auth";
 import { userService } from "@/services/user.service";
 
 type PageProps = {
@@ -11,14 +10,11 @@ export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolveAdminPage(resolvedSearchParams);
   const limit = 10;
-  const { accessToken } = await readAuthCookies();
 
   const result = await userService
     .getAdminUsers({
       page: currentPage,
       limit,
-    }, {
-      accessToken: accessToken ?? "",
     })
     .catch(() => ({ data: [], meta: undefined }));
 

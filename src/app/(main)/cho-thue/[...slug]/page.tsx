@@ -15,11 +15,11 @@ import {
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { pageSeoFaqService } from "@/services/page-seo-faq.service";
 import { Property } from "@/types/property";
 import { propertyService } from "@/services/property.service";
 import { locationService } from "@/services/location.service";
-import { readAuthCookies } from "@/app/api/v1/_utils/auth";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;

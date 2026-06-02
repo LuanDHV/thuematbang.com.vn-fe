@@ -4,6 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import {
+  getProvinceWardsAction,
+  getProvincesAction,
+} from "@/actions/location.actions";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
@@ -31,7 +35,6 @@ import {
   type AdvancedFilterValue,
 } from "@/types/filter";
 import { buildPagedPath, buildPropertyFilterPath } from "@/lib/flat-url";
-import { locationService } from "@/services/location.service";
 import { Province, Ward } from "@/types/location";
 
 type Props = {
@@ -116,7 +119,7 @@ export default function ListingFilterToolbar({
 
   const { data: provincesData = [] } = useQuery({
     queryKey: ["locations", "provinces"],
-    queryFn: () => locationService.getProvinces(),
+    queryFn: getProvincesAction,
     staleTime: 5 * 60 * 1000,
   });
   const selectedProvinceId = useMemo(() => {
@@ -129,7 +132,7 @@ export default function ListingFilterToolbar({
 
   const { data: selectedProvinceWards = [] } = useQuery({
     queryKey: ["locations", "wards", selectedProvinceId],
-    queryFn: () => locationService.getWards(selectedProvinceId ?? undefined),
+    queryFn: () => getProvinceWardsAction(selectedProvinceId ?? undefined),
     enabled: typeof selectedProvinceId === "number",
     staleTime: 30 * 60 * 1000,
     gcTime: 60 * 60 * 1000,

@@ -10,7 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -98,13 +97,6 @@ function NewsActions({
         <DropdownMenuItem onSelect={() => onCopy(item)}>
           <Copy className="size-4" />
           {copied ? "Đã sao chép" : "Sao chép link"}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href={`/api/v1/news/slug/${encodeURIComponent(item.slug)}`} target="_blank" rel="noreferrer">
-            <ExternalLink className="size-4" />
-            Xem API
-          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

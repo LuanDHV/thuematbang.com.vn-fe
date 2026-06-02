@@ -1,15 +1,17 @@
+import "server-only";
+
 import { Category } from "@/types/category";
-import { getApiResponse } from "./shared/api-client";
+import { requestServerApi } from "./shared/server-api-client";
 
 export const categoryService = {
   getAll: async () =>
-    getApiResponse<Category[]>("/categories", {
+    requestServerApi<Category[]>("/categories", {
       revalidate: 300,
       tags: ["categories"],
     }),
 
   getNewsCategories: async () => {
-    const response = await getApiResponse<Category[]>("/categories", {
+    const response = await requestServerApi<Category[]>("/categories", {
       revalidate: 300,
       tags: ["categories"],
     });
@@ -18,7 +20,7 @@ export const categoryService = {
   },
 
   getProjectCategories: async () => {
-    const response = await getApiResponse<Category[]>("/categories", {
+    const response = await requestServerApi<Category[]>("/categories", {
       revalidate: 300,
       tags: ["categories"],
     });

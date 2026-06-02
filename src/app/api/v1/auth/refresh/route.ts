@@ -4,7 +4,7 @@ import {
   applyAuthCookies,
   extractTokenPair,
   readAuthCookies,
-} from "@/app/api/v1/_utils/auth";
+} from "@/lib/server/auth-cookies";
 
 // Handle token refresh when access token expires
 export async function POST(request: Request) {

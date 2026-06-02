@@ -1,14 +1,14 @@
-import { readAuthCookies } from "@/app/api/v1/_utils/auth";
+import { readAuthCookies } from "@/lib/server/auth-cookies";
 import type { User } from "@/types";
-import { getPrivateApiResponse } from "@/services/shared/private-api-client";
+import { requestServerApi } from "@/services/shared/server-api-client";
 
 export async function getServerAuthUser(): Promise<User | null> {
   try {
     const { accessToken } = await readAuthCookies();
     if (!accessToken) return null;
 
-    const response = await getPrivateApiResponse<User | null>("/users/me", {
-      accessToken,
+    const response = await requestServerApi<User | null>("/users/me", {
+      auth: "required",
       cache: "no-store",
       tags: ["auth-me"],
     });

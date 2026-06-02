@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-// Standard API error code strings
 export type ApiErrorCode =
   | "BAD_REQUEST"
   | "UNAUTHORIZED"
@@ -13,7 +12,6 @@ export type ApiErrorCode =
   | "CONNECTION_FAILED"
   | "INTERNAL_ERROR";
 
-// Standard error response envelope sent to client
 type ApiErrorEnvelope = {
   success: false;
   error: {
@@ -25,7 +23,6 @@ type ApiErrorEnvelope = {
   };
 };
 
-// Input parameters for creating an API error response
 type CreateApiErrorResponseInput = {
   statusCode: number;
   message: string;
@@ -33,7 +30,6 @@ type CreateApiErrorResponseInput = {
   details?: unknown;
 };
 
-// Map HTTP status codes to corresponding string error codes
 function mapStatusToCode(statusCode: number): ApiErrorCode {
   switch (statusCode) {
     case 400:
@@ -55,12 +51,10 @@ function mapStatusToCode(statusCode: number): ApiErrorCode {
   }
 }
 
-// Determine if the request can be retried (rate limits or server errors)
 function isRetryable(statusCode: number) {
   return statusCode === 429 || statusCode >= 500;
 }
 
-// Extract human-readable error messages from arbitrary backend payloads
 export function extractErrorMessage(payload: unknown) {
   if (!payload) return undefined;
   if (typeof payload === "string") return payload;
@@ -79,14 +73,14 @@ export function extractErrorMessage(payload: unknown) {
 
   if (error && typeof error === "object") {
     const nestedMessage = (error as { message?: unknown }).message;
-    if (typeof nestedMessage === "string" && nestedMessage.trim().length > 0)
+    if (typeof nestedMessage === "string" && nestedMessage.trim().length > 0) {
       return nestedMessage;
+    }
   }
 
   return undefined;
 }
 
-// Main helper to build and return a Next.js JSON error response
 export function createApiErrorResponse({
   statusCode,
   message,
@@ -107,7 +101,6 @@ export function createApiErrorResponse({
   return NextResponse.json(payload, { status: statusCode });
 }
 
-// Handle error responses originating from backend services
 export function createBackendErrorResponse(
   statusCode: number,
   backendPayload: unknown,
@@ -121,7 +114,6 @@ export function createBackendErrorResponse(
   });
 }
 
-// Handle errors where the backend connection completely failed
 export function createConnectionErrorResponse(details?: unknown) {
   return createApiErrorResponse({
     statusCode: 500,

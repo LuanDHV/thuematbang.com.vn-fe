@@ -1,5 +1,4 @@
 import UserRentRequestsTable from "@/components/cms/user/UserRentRequestsTable";
-import { readAuthCookies } from "@/app/api/v1/_utils/auth";
 import { resolveAdminPage } from "@/lib/admin-page";
 import { rentRequestService } from "@/services/rent-request.service";
 
@@ -13,14 +12,11 @@ export default async function UserMyRentRequestsPage({
   const resolvedSearchParams = await searchParams;
   const currentPage = resolveAdminPage(resolvedSearchParams);
   const limit = 10;
-  const { accessToken } = await readAuthCookies();
 
   const result = await rentRequestService
     .getMine({
       page: currentPage,
       limit,
-    }, {
-      accessToken: accessToken ?? "",
     })
     .catch(() => ({ data: [], meta: undefined }));
 

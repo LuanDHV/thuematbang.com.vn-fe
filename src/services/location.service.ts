@@ -1,10 +1,12 @@
-﻿import { Province, Ward } from "@/types/location";
-import { getApiResponse } from "./shared/api-client";
+import "server-only";
+
+import { Province, Ward } from "@/types/location";
+import { requestServerApi } from "./shared/server-api-client";
 import { ensureArray } from "./shared/validation";
 
 export const locationService = {
   getProvinces: async () => {
-    const response = await getApiResponse<unknown>("/locations/provinces", {
+    const response = await requestServerApi<unknown>("/locations/provinces", {
       cache: "no-store",
       tags: ["provinces"],
     });
@@ -13,7 +15,7 @@ export const locationService = {
 
   getWards: async (provinceId?: number) => {
     if (typeof provinceId !== "number") return [];
-    const response = await getApiResponse<unknown>(
+    const response = await requestServerApi<unknown>(
       `/locations/provinces/${provinceId}/wards`,
       {
         cache: "no-store",
@@ -23,5 +25,3 @@ export const locationService = {
     return ensureArray<Ward>(response.data, "wards");
   },
 };
-
-
