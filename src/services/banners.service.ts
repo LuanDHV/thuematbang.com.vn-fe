@@ -1,11 +1,11 @@
 import "server-only";
 
-import { Category } from "@/types/category";
+import { Banner } from "@/types/banner";
 import { requestServerApi } from "./shared/server-api-client";
 
-export const categoryService = {
+export const bannersService = {
   getAll: async () =>
-    requestServerApi<Category[]>("/banners", {
+    requestServerApi<Banner[]>("/banners", {
       revalidate: 300,
       tags: ["banners"],
     }),

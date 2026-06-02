@@ -5,13 +5,11 @@ import {
   FileText,
   FolderCog,
   Inbox,
-  Image,
   LayoutDashboard,
   MapPinned,
   Megaphone,
   Newspaper,
   Search,
-  Settings,
   Tags,
   User,
   Users,
@@ -35,13 +33,13 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
       exact: true,
     },
     {
-      href: "/quan-li-tai-khoan/cho-thue",
-      label: "Tin cho thuê",
+      href: "/quan-li-tai-khoan/tin-cho-thue-cua-toi",
+      label: "Tin cho thuê của tôi",
       icon: Building2,
     },
     {
-      href: "/quan-li-tai-khoan/can-thue",
-      label: "Tin cần thuê",
+      href: "/quan-li-tai-khoan/nhu-cau-thue-cua-toi",
+      label: "Nhu cầu thuê của tôi",
       icon: Inbox,
     },
     {
@@ -107,11 +105,6 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       icon: Search,
     },
     {
-      href: "/admin/media",
-      label: "Media",
-      icon: Image,
-    },
-    {
       href: "/admin/payments",
       label: "Thanh toán",
       icon: CreditCard,
@@ -125,11 +118,6 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       href: "/admin/locations",
       label: "Địa điểm",
       icon: MapPinned,
-    },
-    {
-      href: "/admin/cai-dat",
-      label: "Cài đặt",
-      icon: Settings,
     },
   ];
 }

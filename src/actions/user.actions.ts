@@ -2,6 +2,8 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { userService } from "@/services/user.service";
+import { changePasswordPayloadSchema, setPasswordPayloadSchema } from "@/schemas/password.schema";
+import { editProfileSchema } from "@/schemas/user.schema";
 import type {
   ChangeMyPasswordPayload,
   SetMyPasswordPayload,
@@ -21,10 +23,15 @@ export async function getCurrentUserAction() {
 }
 
 export async function updateMyProfileAction(formData: FormData) {
-  const payload: UpdateMePayload = {
+  const profileInput = {
     fullName: String(formData.get("fullName") ?? ""),
     phone: String(formData.get("phone") ?? ""),
     email: toOptionalString(formData.get("email")),
+  };
+  const parsedProfile = editProfileSchema.parse(profileInput);
+
+  const payload: UpdateMePayload = {
+    ...parsedProfile,
     avatar: toOptionalFile(formData.get("avatar")),
   };
 
@@ -37,13 +44,15 @@ export async function updateMyProfileAction(formData: FormData) {
 export async function changeMyPasswordAction(
   payload: ChangeMyPasswordPayload,
 ) {
-  const result = await userService.changeMyPassword(payload);
+  const parsedPayload = changePasswordPayloadSchema.parse(payload);
+  const result = await userService.changeMyPassword(parsedPayload);
   revalidateTag("auth-me", "max");
   return result;
 }
 
 export async function setMyPasswordAction(payload: SetMyPasswordPayload) {
-  const result = await userService.setMyPassword(payload);
+  const parsedPayload = setPasswordPayloadSchema.parse(payload);
+  const result = await userService.setMyPassword(parsedPayload);
   revalidateTag("auth-me", "max");
   return result;
 }

@@ -25,7 +25,7 @@ export default function AdminComingSoonPanel({
         </p>
       </div>
 
-      <article className="surface-panel p-6">
+      <article className="surface-panel p-5">
         <div className="flex items-start gap-3">
           <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-2xl">
             <FileText className="size-5" />
