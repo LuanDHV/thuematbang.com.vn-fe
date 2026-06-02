@@ -8,12 +8,12 @@ import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useUpdateMyProfileMutation } from "@/hooks/use-account-management";
+import { useUpdateMyProfileMutation } from "@/hooks/use-user-management";
 import { useAuthMe } from "@/hooks/use-auth";
 import {
   editProfileSchema,
   type EditProfileFormValues,
-} from "@/schemas/account.schema";
+} from "@/schemas/user.schema";
 import { cn } from "@/lib/utils";
 
 const ALLOWED_AVATAR_TYPES = new Set([
@@ -147,7 +147,7 @@ export default function EditProfileForm() {
   return (
     <div className="mx-auto flex flex-col gap-5">
       <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-        <section className="border-hairline rounded-2xl border bg-white p-5">
+        <section className="surface-panel p-5">
           <div className="flex flex-col items-center gap-5">
             <div className="flex flex-col items-center gap-3 text-center">
               {avatarDisplay ? (
@@ -160,7 +160,7 @@ export default function EditProfileForm() {
                   className="border-hairline-strong ring-subtle size-32 rounded-full border-2 object-cover ring-4"
                 />
               ) : (
-                <div className="text-secondary border-hairline-strong bg-subring-subtle flex size-32 items-center justify-center rounded-full border-2 border-dashed ring-4 ring-white">
+                <div className="text-secondary border-hairline-strong bg-subtle flex size-32 items-center justify-center rounded-full border-2 border-dashed ring-4 ring-surface">
                   <Upload className="size-8" />
                 </div>
               )}
@@ -176,7 +176,7 @@ export default function EditProfileForm() {
             />
             <Label
               htmlFor="avatar-upload"
-              className="group bg-surface hover:border-primary/50 border-hairline-strong hover:bg-subring-subtle relative flex min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors"
+            className="group bg-surface hover:border-primary/50 border-hairline-strong hover:bg-subtle relative flex min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors"
             >
               <Upload className="text-secondary group-hover:text-primary size-6" />
               <p className="text-body text-base font-medium">
@@ -195,7 +195,7 @@ export default function EditProfileForm() {
           ) : null}
         </section>
 
-        <section className="border-hairline rounded-2xl border bg-white p-5">
+        <section className="surface-panel p-5">
           <div className="grid gap-4 md:grid-cols-2">
             {PROFILE_FIELDS.map((field) => {
               const Icon = field.icon;
@@ -223,7 +223,7 @@ export default function EditProfileForm() {
                     readOnly={field.readOnly}
                     className={cn(
                       "text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2",
-                      field.readOnly && "text-secondary bg-subring-subtle",
+                      field.readOnly && "text-secondary bg-subtle",
                     )}
                     {...form.register(field.name)}
                   />

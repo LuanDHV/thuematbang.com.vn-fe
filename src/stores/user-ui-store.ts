@@ -1,14 +1,14 @@
 import { create } from "zustand";
 
 // Define the state and actions interface for the store
-type AccountUIState = {
+type UserUIState = {
   isSidebarCollapsed: boolean;
   toggleSidebar: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
 };
 
-// Create a global custom hook store using Zustand to manage Account UI states
-export const useAccountUIStore = create<AccountUIState>((set) => ({
+// Create a global custom hook store using Zustand to manage user UI states
+export const useUserUIStore = create<UserUIState>((set) => ({
   // Initial state: sidebar is expanded by default
   isSidebarCollapsed: false,
 

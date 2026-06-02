@@ -1,103 +1,126 @@
 # Style System
 
-## 1. Visual Direction
-- Tinh thần thương hiệu: sáng ấm, cao cấp, tối giản, đáng tin cậy, sắc nét kiểu Western product design.
-- Tránh Dark Mode cho các trang nhiều văn bản, thông số, filter và detail content.
-- Giao diện phải tạo cảm giác rộng, yên tĩnh, có nhịp thở; không dùng quá nhiều border, không dùng mảng màu cam lớn.
+## 1. Mục tiêu thị giác
+- Giao diện của repo này đi theo hướng sáng, ấm, cao cấp và dễ tin cậy.
+- Accent cam là điểm nhấn chính, không phải nền chủ đạo cho toàn bộ màn hình.
+- Không mặc định dark mode cho các màn hình nhiều text, filter, listing và detail.
+- Ưu tiên cảm giác thoáng, sạch, có nhịp, ít border thô và ít khối màu nặng.
 
-## 2. Color System
-- Brand Accent: `#fbaa19`
-- Main Background: `#f7f7f4`
-- Section / Filter Background: `#f2f1ed`
-- Deep Separation / Footer Background: `#ebeae5`
-- Card Surface: `#ffffff`
-- Heading Text: ưu tiên `text-slate-900`, khi cần nhấn mạnh nhất dùng `text-black`
-- Body Text: `text-slate-700`
-- Muted Text: `text-slate-500`
-- Hairline Border: chỉ dùng khi thật cần, ưu tiên `border-black/6` hoặc `border-slate-200/70`
-- Success: `text-emerald-600`
-- Warning: `text-amber-600`
-- Error: `text-rose-600`
-- Accent usage: chỉ cho CTA chính, active state, link hover, badge nhỏ, focus ring, highlight line
+## 2. Nguồn token thật trong code
+- Nguồn gốc của hệ token nằm ở `src/app/globals.css`.
+- `@theme` đang map các CSS variable sang utility Tailwind theo tên semantic như `bg-app`, `text-heading`, `border-hairline`.
+- Root layout nạp font ở `src/app/layout.tsx`; font thực tế đang dùng là `Be_Vietnam_Pro`, dù biến CSS vẫn giữ tên `--font-geist-sans` vì lịch sử triển khai.
+- `body` dùng `bg-app text-body min-h-screen`, nên toàn site mặc định bám vào nền sáng ấm và text tối trung tính.
 
-## 3. Semantic Tokens
-- `bg-app`: nền toàn trang `#f7f7f4`
-- `bg-subtle`: nền section phụ / filter `#f2f1ed`
-- `bg-elevated`: nền phân tách sâu / footer `#ebeae5`
-- `surface-card`: `bg-white` + `rounded-xl` + shadow mềm
-- `surface-panel`: nền sáng ấm + shadow nhẹ, không nặng border
-- `surface-float`: popover / dropdown / sticky toolbar có blur nhẹ và shadow nổi
-- `text-heading`: heading chính
-- `text-body`: nội dung chính
-- `text-muted`: mô tả, metadata phụ
-- `shadow-ambient`: shadow nền rất mềm cho container và section
-- `shadow-soft`: shadow card chuẩn
-- `shadow-float`: shadow dùng cho popover, dropdown, sticky toolbar
+## 3. Color tokens
+| Token | Giá trị thực tế | Vai trò |
+| --- | --- | --- |
+| `--primary` / `bg-primary` / `text-primary` | `#f7aa1b` | Accent chính, CTA, active state, focus ring nhẹ, highlight line |
+| `--app` / `bg-app` | `#f8f6f2` | Nền toàn trang |
+| `--subtle` / `bg-subtle` | `#f0ede7` | Nền section phụ, filter, bề mặt giảm tương phản |
+| `--elevated` / `bg-elevated` | `#ffffff` | Nền nổi, panel sáng |
+| `--surface` / `bg-surface` | `#ffffff` | Card và surface chính |
+| `--footer` / `bg-footer` | `#26231f` | Footer nền tối riêng biệt |
+| `--footer-heading` / `text-footer-heading` | `#f5f0e8` | Heading trong footer |
+| `--footer-body` / `text-footer-body` | `#c8bfb2` | Body text trong footer |
+| `--heading` / `text-heading` | `#18160f` | Heading, title, nội dung cần nhấn mạnh |
+| `--body` / `text-body` | `#302d26` | Text chính toàn site |
+| `--secondary` / `text-secondary` | `#6e6a62` | Metadata, helper text, label phụ |
+| `--muted` / `text-muted` | `#a8a49e` | Text rất nhẹ, placeholder, divider hint |
+| `--hairline` / `border-hairline` | `#3d200a18` | Hairline border rất nhẹ |
+| `--hairline-strong` / `border-hairline-strong` | `#3d200a28` | Border cần tách lớp rõ hơn một chút |
 
-## 4. Spacing System
-- Container ngang: mobile `px-4`, tablet `px-6`, desktop `px-8`
-- Max width chuẩn: `max-w-7xl`
-- `layout-section-sm`: `py-10 md:py-14`
-- `layout-section`: `py-14 md:py-20`
-- `layout-section-lg`: `py-18 md:py-24`
-- Gap chuẩn: `gap-4`, `gap-6`, `gap-8`
-- Card padding: `p-5 md:p-6`
-- Premium panel padding: `p-6 md:p-8`
-- Không tiếp tục dùng raw spacing rải rác làm chuẩn mới nếu có thể thay bằng primitive
+### Cách dùng màu
+- Primary chỉ nên xuất hiện ở CTA, link hover, active chip, badge nhỏ, ring và line accent.
+- Background lớn nên giữ ở họ hàng `app`, `subtle`, `surface`, `elevated`.
+- Text hierarchy phải đi từ `heading` đến `body` rồi mới đến `secondary` và `muted`.
+- Footer là khu vực duy nhất trong hệ hiện tại dùng nền tối rõ ràng.
+
+## 4. Semantic surface tokens
+| Token | Định nghĩa trong code | Nhận xét |
+| --- | --- | --- |
+| `surface-card` | `bg-surface` + `border-hairline` + `rounded-xl` + `shadow-md` | Card tiêu chuẩn, dùng nhiều nhất |
+| `surface-panel` | `bg-surface` + `border-hairline` + `rounded-[1.25rem]` + `shadow-sm` | Panel mềm hơn card, hợp block nội dung |
+| `surface-float` | `bg-surface` + `border-hairline` + `shadow-lg` + `backdrop-blur-[18px]` | Popover, dropdown, toolbar sticky |
+
+- Hệ surface hiện tại thiên về sáng, có border rất nhẹ và shadow mềm.
+- Phần lớn component thực tế còn dùng shadow arbitrary theo ngữ cảnh, nên chưa có token shadow riêng ở cấp global.
 
 ## 5. Typography
-- Root font phải quản trị bằng `next/font`
-- Sans family: `Geist Sans`, fallback `system-ui`, `sans-serif`
-- Mono family: `Geist Mono`, fallback `ui-monospace`, `monospace`
-- Heading dùng chính `Geist Sans` với weight cao và tracking âm nhẹ để giữ sự sắc nét kiểu Cursor
-- H1: `text-4xl md:text-6xl`, `font-semibold`, `tracking-[-0.03em]`, `leading-[1.02]`, `text-slate-900`
-- H2: `text-3xl md:text-5xl`, `font-semibold`, `tracking-[-0.025em]`, `leading-[1.06]`
-- H3: `text-xl md:text-2xl`, `font-semibold`, `tracking-[-0.02em]`
-- Body large: `text-base md:text-lg`, `leading-8`, `font-normal`, `text-slate-700`
-- Body default: `text-sm md:text-base`, `leading-7`, `font-normal`, `text-slate-700`
-- Meta / label: `text-xs md:text-sm`, `font-medium`, `text-slate-500`
-- Numeric data: dùng `Geist Mono`, `font-medium` hoặc `font-semibold`, tracking trung tính
-- Chỉ dùng uppercase khi là category chip, overline hoặc tiny label thực sự cần nhịp thị giác
+- Font hệ thống là `Be Vietnam Pro` qua `next/font/google`.
+- `html` có `h-full antialiased`; `body` kế thừa font và màu text của app.
+- Không thấy token mono riêng trong `globals.css`; số liệu và nhãn kỹ thuật hiện chủ yếu dùng weight, tracking và hierarchy chứ không tách mono font thành chuẩn global.
 
-## 6. Radius and Shadows
-- Input / button / chip: `rounded-lg`
-- Card / dropdown / popover: `rounded-xl`
-- Hero / large panel / modal lớn: `rounded-2xl`
-- Shadow chuẩn card: mềm, rộng, alpha thấp; tránh `shadow-sm` như default thị giác
-- Shadow gợi ý:
-  - Ambient: `0 10px 30px rgba(15, 23, 42, 0.05)`
-  - Soft: `0 18px 40px rgba(15, 23, 42, 0.08)`
-  - Float: `0 24px 60px rgba(15, 23, 42, 0.12)`
+### Quy ước chữ đang được dùng nhiều
+- Heading lớn: `font-semibold`, tracking âm nhẹ, line-height chặt.
+- Body: `text-sm` tới `text-lg`, line-height thoáng.
+- Meta / label: `text-xs` hoặc `text-sm`, màu `secondary` hoặc `muted`.
+- Overline / tiny label: uppercase, tracking rộng, chỉ dùng khi thật sự cần nhịp thị giác.
 
-## 7. Buttons and Interactive Elements
-- Primary button: nền cam tinh gọn, chữ trắng, shadow tiết chế
-- Secondary button: sáng, tinh gọn, border cực nhẹ hoặc subtle surface
-- Ghost button: text action, hover rất nhẹ
-- Hover chuẩn: tăng shadow nhẹ hoặc nâng `-translate-y-0.5`, không scale mạnh
-- Focus-visible: ring rõ bằng accent alpha thấp, không gắt
-- Disabled: giảm contrast, bỏ hover-lift, vẫn đọc được label
+## 6. Layout và spacing
+- `layout-container` là primitive trung tâm cho canh lề ngang.
+- Max width chuẩn hiện tại là `80rem`.
+- Padding ngang của container:
+  - mobile: `1rem`
+  - tablet: `1.5rem`
+  - desktop: `2rem`
+- Spacing dọc:
+  - `layout-section-sm`: `2.5rem` rồi lên `3.5rem` từ `md`
+  - `layout-section`: `3.5rem` rồi lên `5rem` từ `md`
+  - `layout-section-lg`: `4.5rem` rồi lên `6rem` từ `md`
+- `src/app/(main)/layout.tsx` bù `pt-16` cho main vì header fixed cao `64px`.
+- Tránh lạm dụng `px-4 py-*` rải rác khi đã có primitive phù hợp.
 
-## 8. Forms
-- Input / select / textarea phải sáng, sạch, thoáng, dễ đọc
-- Default: nền trắng, text đậm vừa, border cực nhẹ hoặc shadow nội/ngoại rất tinh tế
-- Hover: border hoặc shadow tăng rất nhẹ
-- Focus: ring đồng bộ bằng accent mờ, không dùng viền đậm cứng
-- Read-only: vẫn là surface sáng, giảm tương tác nhưng không làm mờ quá mức
-- Disabled: giảm contrast, bỏ hover, icon và label vẫn rõ
-- Error: ưu tiên text và ring đỏ dịu, tránh làm field quá nặng
+## 7. Radius và shadow
+- `rounded-lg`: input, button, chip nhỏ, control compact.
+- `rounded-xl`: card, popover, panel phổ thông.
+- `rounded-2xl`: hero block, modal, surface lớn, card premium.
+- Shadow thực tế trong component:
+  - card/controls thường dùng shadow mềm, thấp alpha.
+  - popover/dialog/sheet dùng shadow lớn hơn, nhưng vẫn giữ cảm giác sạch.
+  - CTA primary thường thêm shadow màu cam rất nhẹ để tăng độ nổi.
 
-## 9. Image and Media Behavior
-- Hover ảnh: zoom nhẹ `1.02` đến `1.04`, easing mượt, không giật
-- Overlay chỉ dùng khi cần giữ text legibility
-- Card media phải cho cảm giác tĩnh, cao cấp, không animation thừa
+### Nguyên tắc shadow
+- Shadow phải tạo chiều sâu, không tạo cảm giác nặng.
+- Không dùng `shadow-sm` như mặc định thị giác cho toàn bộ UI.
+- Nếu một pattern lặp lại ở nhiều nơi, ưu tiên chuẩn hóa qua token hoặc variant thay vì copy arbitrary shadow.
 
-## 10. Loading and States
-- Skeleton phải theo layout thật, tone sáng ấm, shimmer rất nhẹ
-- Empty state phải yên tĩnh, có CTA rõ
-- Error state phải bình tĩnh, dễ đọc, không dùng khối đỏ lớn
-- Sticky filters, sheets, drawers phải dùng nền sáng có blur nhẹ và shadow mềm
+## 8. Control states và interaction
+- Transition global trên link/button/input/select/textarea đang là khoảng `0.24s` cho color, background, border, shadow và transform.
+- Hover chuẩn:
+  - tăng shadow nhẹ hoặc nâng `-translate-y-0.5`
+  - không scale mạnh
+  - không bounce
+- Focus-visible:
+  - ring mềm, dùng accent alpha thấp
+  - phải đọc được trên nền sáng
+- Disabled:
+  - giảm contrast có kiểm soát
+  - không làm mất readability
+  - không giữ hiệu ứng hover như trạng thái thường
+- Selection text dùng primary và chữ trắng.
 
-## 11. Mobile
-- Giữ chất premium trên mobile bằng spacing thoáng, touch target >= `44px`
-- Ưu tiên giảm số cột trước khi giảm cỡ chữ hoặc nén tap area
-- Drawer / filter mobile có header rõ, footer action sticky khi cần
+## 9. Component language hiện tại
+- Header: fixed top, backdrop blur, nền `bg-app/92`, border bottom rất nhẹ.
+- Footer: nền tối, text footer riêng, chia 2 tầng rõ ràng.
+- Card/listing surface: thiên về card trắng, border hairline, hover lift rất nhẹ.
+- Filter toolbar: sticky, dùng surface nổi, shadow mềm và blur nhẹ.
+- Dialog, sheet, popover, select: đều đang đi theo ngôn ngữ “white surface + thin border + soft shadow + blur”.
+- Buttons:
+  - primary: nền cam, text trắng, shadow mềm
+  - outline: nền trắng, border nhẹ, hover nhấn cam
+  - ghost/link: text action
+- Form controls:
+  - nền trắng, border nhẹ, focus ring mềm
+  - ưu tiên đọc rõ trước, đẹp sau
+
+## 10. Motion và media
+- Hover ảnh chỉ nên zoom nhẹ, không giật.
+- Overlay chỉ dùng khi cần đảm bảo legibility.
+- Skeleton nên phản ánh layout thật, không nên dùng spinner-only cho list và card.
+- Loading, empty và error state đều phải giữ tone tĩnh, sáng và dễ đọc.
+
+## 11. Kết luận áp dụng
+- Hệ hiện tại là một light theme có token rõ cho màu, spacing và surface, nhưng shadow vẫn còn nhiều arbitrary value theo component.
+- Khi chỉnh UI mới, ưu tiên dùng `bg-app`, `bg-subtle`, `surface-*`, `text-heading`, `text-body`, `layout-container` trước khi thêm class riêng.
+- Nếu một pattern lặp lại trên 2 nơi trở lên, nên nâng lên token / primitive / variant thay vì patch local tiếp.

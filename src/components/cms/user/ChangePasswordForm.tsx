@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import {
   useChangeMyPasswordMutation,
   useSetMyPasswordMutation,
-} from "@/hooks/use-account-management";
+} from "@/hooks/use-user-management";
 import { useAuthMe } from "@/hooks/use-auth";
 import {
   PasswordFormValues,
@@ -115,8 +115,8 @@ export default function ChangePasswordForm() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-5">
-        <p className="text-sm text-gray-500">Đang tải thông tin bảo mật...</p>
+      <div className="surface-panel p-5">
+        <p className="text-secondary text-sm">Đang tải thông tin bảo mật...</p>
       </div>
     );
   }
@@ -124,13 +124,13 @@ export default function ChangePasswordForm() {
   if (!authUser) return null;
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+    <div className="surface-panel p-5">
       <div className="flex items-center gap-2">
         <KeyRound className="text-primary h-5 w-5" />
-        <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+        <h1 className="text-heading text-xl font-semibold">{title}</h1>
       </div>
 
-      <p className="mt-2 text-sm text-gray-500">{description}</p>
+      <p className="text-secondary mt-2 text-sm">{description}</p>
 
       <form className="mt-5 space-y-4" onSubmit={onSubmit}>
         {hasPassword ? (
