@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,6 @@ type AdminProjectsTableProps = {
   items: Project[];
   currentPage: number;
   totalPages: number;
-  totalItems: number;
 };
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN");
@@ -113,20 +112,14 @@ export default function AdminProjectsTable({
   items,
   currentPage,
   totalPages,
-  totalItems,
 }: AdminProjectsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
-  const stats = useMemo(
-    () => ({
-      published: items.filter((item) => item.status === "PUBLISHED").length,
-      featured: items.filter((item) => (item.images?.length ?? 0) > 0).length,
-    }),
-    [items],
-  );
+  const publishedCount = items.filter((item) => item.status === "PUBLISHED").length;
+  const imageCount = items.filter((item) => (item.images?.length ?? 0) > 0).length;
 
   const handleCopy = async (item: Project) => {
     const publicUrl = `${window.location.origin}${getPublicPath(item)}`;
@@ -148,50 +141,21 @@ export default function AdminProjectsTable({
 
   return (
     <section className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Tổng dự án
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {totalItems}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Đã đăng
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.published}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Có ảnh
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.featured}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Trang hiện tại
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {currentPage}/{Math.max(totalPages, 1)}
-          </p>
-        </article>
-      </div>
-
       <div className="surface-panel overflow-hidden">
         <div className="border-b border-hairline px-4 py-4 md:px-5">
-          <div className="space-y-2">
-            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
-              Dự án từ API
-            </h2>
-            <p className="text-secondary text-sm">
-              Màn hình quản trị dự án theo layout và table chuẩn CMS.
-            </p>
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
+                Dự án từ API
+              </h2>
+              <p className="text-secondary mt-1 text-sm">
+                Màn hình quản trị dự án theo layout và table chuẩn CMS.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline">{publishedCount} đã đăng</Badge>
+              <Badge variant="outline">{imageCount} có ảnh</Badge>
+            </div>
           </div>
         </div>
 

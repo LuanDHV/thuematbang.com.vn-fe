@@ -34,7 +34,8 @@ export default async function UserMyRentRequestsPage({
           Nhu cầu thuê của tôi
         </h1>
         <p className="text-secondary text-sm leading-7 md:text-base">
-          Danh sách nhu cầu thuê của bạn sẽ được nối từ endpoint `/me/rent-requests`.
+          Danh sách nhu cầu thuê của bạn sẽ được nối từ endpoint
+          `/me/rent-requests`.
         </p>
       </div>
 

@@ -1,6 +1,7 @@
+import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminPropertiesTable from "@/components/cms/admin/AdminPropertiesTable";
+import { resolveAdminPage, resolveSearchParamValue } from "@/lib/admin-page";
 import { propertyService } from "@/services/property.service";
-import { resolveAdminPage } from "@/lib/admin-page";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -9,6 +10,7 @@ type PageProps = {
 export default async function AdminChoThuePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolveAdminPage(resolvedSearchParams);
+  const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
   const limit = 10;
 
   const result = await propertyService
@@ -23,29 +25,23 @@ export default async function AdminChoThuePage({ searchParams }: PageProps) {
     .catch(() => ({ data: [], meta: undefined }));
 
   const properties = result.data ?? [];
-  const totalItems = result.meta?.total ?? properties.length;
   const totalPages = result.meta?.totalPage ?? 1;
 
   return (
     <section className="space-y-5">
-      <div className="space-y-2">
-        <p className="text-primary text-xs font-semibold tracking-[0.24em] uppercase">
-          CMS Admin
-        </p>
-        <h1 className="text-heading text-xl font-semibold tracking-[-0.03em] md:text-2xl">
-          Quản lý cho thuê
-        </h1>
-        <p className="text-secondary text-sm leading-7 md:text-base">
-          Danh sách tin cho thuê lấy trực tiếp từ API public, dùng làm module
-          mẫu cho admin.
-        </p>
-      </div>
+      <AdminListToolbar
+        eyebrow="CMS Admin"
+        title="Quản lý cho thuê"
+        description="Danh sách tin cho thuê lấy trực tiếp từ API public, dùng làm module mẫu cho admin."
+        searchPlaceholder="Tìm kiếm tin cho thuê"
+        createLabel="Tạo tin"
+        searchValue={searchValue}
+      />
 
       <AdminPropertiesTable
         properties={properties}
         currentPage={currentPage}
         totalPages={totalPages}
-        totalItems={totalItems}
       />
     </section>
   );

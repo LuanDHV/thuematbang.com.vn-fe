@@ -95,7 +95,6 @@ export default async function AdminDashboardPage({
         properties={properties}
         currentPage={currentPage}
         totalPages={totalPages}
-        totalItems={totalItems}
       />
     </section>
   );

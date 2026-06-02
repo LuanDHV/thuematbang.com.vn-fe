@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,6 @@ type AdminPropertiesTableProps = {
   properties: Property[];
   currentPage: number;
   totalPages: number;
-  totalItems: number;
 };
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN");
@@ -92,7 +91,11 @@ function PropertyActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label={`Tác vụ cho ${property.title}`}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Tác vụ cho ${property.title}`}
+        >
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -120,23 +123,16 @@ export default function AdminPropertiesTable({
   properties,
   currentPage,
   totalPages,
-  totalItems,
 }: AdminPropertiesTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
-  const visibleCount = properties.length;
-
-  const stats = useMemo(
-    () => ({
-      published: properties.filter((item) => item.status === "PUBLISHED").length,
-      negotiable: properties.filter((item) => item.isNegotiable).length,
-      featured: properties.filter((item) => item.isFeatured).length,
-    }),
-    [properties],
-  );
+  const publishedCount = properties.filter(
+    (item) => item.status === "PUBLISHED",
+  ).length;
+  const negotiableCount = properties.filter((item) => item.isNegotiable).length;
 
   const handleCopyLink = async (property: Property) => {
     const publicUrl = `${window.location.origin}${getPublicPropertyPath(property)}`;
@@ -161,43 +157,8 @@ export default function AdminPropertiesTable({
 
   return (
     <section className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-4">
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Tổng tin
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {totalItems}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Trang hiện tại
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {currentPage}/{Math.max(totalPages, 1)}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Đang hiển thị
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {visibleCount}
-          </p>
-        </article>
-        <article className="surface-card p-4 sm:col-span-3 xl:col-span-1">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Nổi bật trên trang
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.featured}
-          </p>
-        </article>
-      </div>
-
       <div className="surface-panel overflow-hidden">
-        <div className="border-b border-hairline px-4 py-4 md:px-5">
+        <div className="border-hairline border-b px-4 py-4 md:px-5">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
@@ -208,8 +169,8 @@ export default function AdminPropertiesTable({
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline">{stats.published} đã đăng</Badge>
-              <Badge variant="outline">{stats.negotiable} thỏa thuận</Badge>
+              <Badge variant="outline">{publishedCount} đã đăng</Badge>
+              <Badge variant="outline">{negotiableCount} thỏa thuận</Badge>
             </div>
           </div>
         </div>
@@ -247,9 +208,7 @@ export default function AdminPropertiesTable({
                         >
                           {property.title}
                         </Link>
-                        <p className="text-secondary text-xs">
-                          {property.slug}
-                        </p>
+                        <p className="text-secondary text-xs">{property.slug}</p>
                       </div>
                     </TableCell>
                     <TableCell className="align-top">
@@ -286,7 +245,7 @@ export default function AdminPropertiesTable({
                         {formatDate(property.createdAt)}
                       </span>
                     </TableCell>
-                    <TableCell className="align-top text-right">
+                    <TableCell className="text-right align-top">
                       <div className="flex justify-end">
                         <PropertyActions
                           property={property}

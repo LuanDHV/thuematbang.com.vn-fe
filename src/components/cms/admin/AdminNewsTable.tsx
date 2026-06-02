@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,6 @@ type AdminNewsTableProps = {
   items: News[];
   currentPage: number;
   totalPages: number;
-  totalItems: number;
 };
 
 const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
@@ -107,21 +106,15 @@ export default function AdminNewsTable({
   items,
   currentPage,
   totalPages,
-  totalItems,
 }: AdminNewsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
-  const stats = useMemo(
-    () => ({
-      published: items.filter((item) => item.status === "PUBLISHED").length,
-      featured: items.filter((item) => item.isFeatured).length,
-      totalViews: items.reduce((sum, item) => sum + item.viewCount, 0),
-    }),
-    [items],
-  );
+  const publishedCount = items.filter((item) => item.status === "PUBLISHED").length;
+  const featuredCount = items.filter((item) => item.isFeatured).length;
+  const totalViews = items.reduce((sum, item) => sum + item.viewCount, 0);
 
   const handleCopy = async (item: News) => {
     const publicUrl = `${window.location.origin}${getPublicPath(item)}`;
@@ -143,50 +136,22 @@ export default function AdminNewsTable({
 
   return (
     <section className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Tổng bài viết
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {totalItems}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Đã đăng
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.published}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Nổi bật
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.featured}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Lượt xem
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.totalViews}
-          </p>
-        </article>
-      </div>
-
       <div className="surface-panel overflow-hidden">
         <div className="border-b border-hairline px-4 py-4 md:px-5">
-          <div className="space-y-2">
-            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
-              Tin tức từ API
-            </h2>
-            <p className="text-secondary text-sm">
-              Dùng cho module tin tức nội dung và marketing.
-            </p>
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
+                Tin tức từ API
+              </h2>
+              <p className="text-secondary text-sm">
+                Dùng cho module tin tức nội dung và marketing.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline">{publishedCount} đã đăng</Badge>
+              <Badge variant="outline">{featuredCount} nổi bật</Badge>
+              <Badge variant="outline">{totalViews} lượt xem</Badge>
+            </div>
           </div>
         </div>
 
@@ -261,7 +226,9 @@ export default function AdminNewsTable({
               <TableRow>
                 <TableCell colSpan={7} className="py-14 text-center">
                   <div className="space-y-2">
-                    <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
+                    <p className="text-heading text-base font-semibold">
+                      Không có dữ liệu
+                    </p>
                     <p className="text-secondary text-sm">
                       Endpoint hiện tại chưa trả về bài viết nào.
                     </p>

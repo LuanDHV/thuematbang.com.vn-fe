@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,6 @@ type AdminRentRequestsTableProps = {
   items: RentRequest[];
   currentPage: number;
   totalPages: number;
-  totalItems: number;
 };
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN");
@@ -119,20 +118,14 @@ export default function AdminRentRequestsTable({
   items,
   currentPage,
   totalPages,
-  totalItems,
 }: AdminRentRequestsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
-  const stats = useMemo(
-    () => ({
-      active: items.filter((item) => item.status === "ACTIVE").length,
-      featured: items.filter((item) => item.isFeatured).length,
-    }),
-    [items],
-  );
+  const activeCount = items.filter((item) => item.status === "ACTIVE").length;
+  const featuredCount = items.filter((item) => item.isFeatured).length;
 
   const handleCopy = async (item: RentRequest) => {
     const publicUrl = `${window.location.origin}${getPublicPath(item)}`;
@@ -154,50 +147,21 @@ export default function AdminRentRequestsTable({
 
   return (
     <section className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Tổng nhu cầu
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {totalItems}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Đang mở
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.active}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Nổi bật
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.featured}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Trang hiện tại
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {currentPage}/{Math.max(totalPages, 1)}
-          </p>
-        </article>
-      </div>
-
       <div className="surface-panel overflow-hidden">
         <div className="border-b border-hairline px-4 py-4 md:px-5">
-          <div className="space-y-2">
-            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
-              Nhu cầu cần thuê từ API
-            </h2>
-            <p className="text-secondary text-sm">
-              Dùng chung pattern table/action với các module admin khác.
-            </p>
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
+                Nhu cầu cần thuê từ API
+              </h2>
+              <p className="text-secondary text-sm">
+                Dùng chung pattern table/action với các module admin khác.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline">{activeCount} đang mở</Badge>
+              <Badge variant="outline">{featuredCount} nổi bật</Badge>
+            </div>
           </div>
         </div>
 
@@ -251,7 +215,9 @@ export default function AdminRentRequestsTable({
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm">
-                        {locationParts.length > 0 ? locationParts.join(", ") : "Chưa cập nhật"}
+                        {locationParts.length > 0
+                          ? locationParts.join(", ")
+                          : "Chưa cập nhật"}
                       </span>
                     </TableCell>
                     <TableCell className="align-top">

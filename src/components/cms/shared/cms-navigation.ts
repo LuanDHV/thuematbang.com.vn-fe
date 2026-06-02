@@ -33,12 +33,12 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
       exact: true,
     },
     {
-      href: "/quan-li-tai-khoan/tin-cho-thue-cua-toi",
+      href: "/quan-li-tai-khoan/cho-thue",
       label: "Tin cho thuê của tôi",
       icon: Building2,
     },
     {
-      href: "/quan-li-tai-khoan/nhu-cau-thue-cua-toi",
+      href: "/quan-li-tai-khoan/cau-thue",
       label: "Nhu cầu thuê của tôi",
       icon: Inbox,
     },
@@ -58,6 +58,11 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       label: "Tổng quan",
       icon: LayoutDashboard,
       exact: true,
+    },
+    {
+      href: "/admin/categories",
+      label: "Danh mục",
+      icon: Tags,
     },
     {
       href: "/admin/cho-thue",
@@ -85,19 +90,24 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       icon: Users,
     },
     {
-      href: "/admin/banners",
-      label: "Banner",
-      icon: Megaphone,
-    },
-    {
-      href: "/admin/categories",
-      label: "Danh mục",
-      icon: Tags,
+      href: "/admin/locations",
+      label: "Địa điểm",
+      icon: MapPinned,
     },
     {
       href: "/admin/faqs",
       label: "Câu hỏi thường gặp",
       icon: BadgeQuestionMark,
+    },
+    {
+      href: "/admin/seo-contents",
+      label: "Nội dung SEO",
+      icon: FolderCog,
+    },
+    {
+      href: "/admin/banners",
+      label: "Banner",
+      icon: Megaphone,
     },
     {
       href: "/admin/leads",
@@ -108,16 +118,6 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       href: "/admin/payments",
       label: "Thanh toán",
       icon: CreditCard,
-    },
-    {
-      href: "/admin/seo-contents",
-      label: "Nội dung SEO",
-      icon: FolderCog,
-    },
-    {
-      href: "/admin/locations",
-      label: "Địa điểm",
-      icon: MapPinned,
     },
   ];
 }
