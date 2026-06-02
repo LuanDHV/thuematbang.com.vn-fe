@@ -35,6 +35,7 @@ function normalizeApiResponse<T>(payload: unknown): ApiResponse<T> {
   if (payload && typeof payload === "object") {
     const record = payload as Record<string, unknown>;
 
+    // Support the backend envelope used by most CRUD endpoints.
     if (record.data !== undefined || record.meta !== undefined) {
       return {
         data: record.data as T,
@@ -46,6 +47,7 @@ function normalizeApiResponse<T>(payload: unknown): ApiResponse<T> {
       };
     }
 
+    // Support legacy list endpoints that still return items/pagination.
     if (record.items !== undefined || record.pagination !== undefined) {
       return {
         data: (record.items as T) ?? ([] as unknown as T),
@@ -71,6 +73,7 @@ async function buildRequestHeaders(
   resolvedHeaders.set("Accept", "application/json");
 
   if (auth === "required") {
+    // Services opt into auth explicitly so public and protected reads share one fetch layer.
     const { accessToken } = await readAuthCookies();
     if (!accessToken) {
       throw new HttpError("Unauthorized", 401);

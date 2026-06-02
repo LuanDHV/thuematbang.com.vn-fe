@@ -23,6 +23,7 @@ export async function getCurrentUserAction() {
 }
 
 export async function updateMyProfileAction(formData: FormData) {
+  // Normalize raw FormData first so the same Zod schema can validate browser and server input consistently.
   const profileInput = {
     fullName: String(formData.get("fullName") ?? ""),
     phone: String(formData.get("phone") ?? ""),
@@ -36,6 +37,7 @@ export async function updateMyProfileAction(formData: FormData) {
   };
 
   const updatedUser = await userService.updateMe(payload);
+  // Keep both the auth snapshot and the account pages fresh after a profile mutation.
   revalidateTag("auth-me", "max");
   revalidatePath("/quan-li-tai-khoan");
   return updatedUser;
@@ -46,6 +48,7 @@ export async function changeMyPasswordAction(
 ) {
   const parsedPayload = changePasswordPayloadSchema.parse(payload);
   const result = await userService.changeMyPassword(parsedPayload);
+  // Password updates can affect auth-derived UI, so the auth cache stays in sync.
   revalidateTag("auth-me", "max");
   return result;
 }
@@ -53,6 +56,7 @@ export async function changeMyPasswordAction(
 export async function setMyPasswordAction(payload: SetMyPasswordPayload) {
   const parsedPayload = setPasswordPayloadSchema.parse(payload);
   const result = await userService.setMyPassword(parsedPayload);
+  // Setting a first password changes account capabilities exposed in the auth snapshot.
   revalidateTag("auth-me", "max");
   return result;
 }

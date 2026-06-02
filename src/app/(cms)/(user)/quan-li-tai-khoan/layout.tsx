@@ -9,6 +9,7 @@ export default async function UserManagementLayout({
 }: {
   children: ReactNode;
 }) {
+  // Resolve auth at the layout boundary so every account subpage shares the same guard.
   const authUser = await getServerAuthUser();
 
   if (!authUser) {

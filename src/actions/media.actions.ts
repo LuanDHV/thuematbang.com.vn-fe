@@ -5,6 +5,7 @@ import { mediaService } from "@/services/media.service";
 
 export async function uploadMediaAction(formData: FormData) {
   const file = formData.get("file");
+  // Parse metadata separately so file validation can stay explicit and type-safe.
   const parsedMeta = uploadMediaMetaSchema.parse({
     resourceType: formData.get("resourceType"),
     resourceId: formData.get("resourceId") || undefined,
