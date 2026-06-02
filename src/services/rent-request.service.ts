@@ -1,6 +1,7 @@
-﻿import { RentRequest } from "@/types/rent-request";
+import { RentRequest } from "@/types/rent-request";
 import { PropertyDirection, RentRequestStatus } from "@/types/enums";
 import { getApiResponse } from "./shared/api-client";
+import { getPrivateApiResponse } from "./shared/private-api-client";
 import {
   buildListPath,
   buildListTags,
@@ -49,6 +50,15 @@ export type RentRequestGetByFlatSlugParams = {
   limit?: number;
 };
 
+export type RentRequestMineParams = {
+  page?: number;
+  limit?: number;
+};
+
+export type RentRequestMineRequestOptions = {
+  accessToken: string;
+};
+
 export const rentRequestService = {
   getAll: async (params: RentRequestGetAllParams = {}) =>
     getApiResponse<RentRequest[]>(buildListPath("/rent-requests", params), {
@@ -61,14 +71,10 @@ export const rentRequestService = {
 
   getAllByFlatSlug: async (params: RentRequestGetByFlatSlugParams) =>
     getApiResponse<RentRequest[]>(
-      buildScopedListPath(
-        "/rent-requests/search/by-slug",
-        params.flatSlug,
-        {
-          page: params.page,
-          limit: params.limit,
-        },
-      ),
+      buildScopedListPath("/rent-requests/search/by-slug", params.flatSlug, {
+        page: params.page,
+        limit: params.limit,
+      }),
       {
         cache: "no-store",
         tags: buildListTags("rent-requests", {
@@ -80,12 +86,15 @@ export const rentRequestService = {
     ),
 
   getByCategorySlug: async (slug: string) =>
-    getApiResponse<RentRequest[]>(`/rent-requests/category/${encodeURIComponent(slug)}`, {
-      cache: "no-store",
-      tags: buildListTags("rent-requests", {
-        scope: { key: "category", value: slug },
-      }),
-    }),
+    getApiResponse<RentRequest[]>(
+      `/rent-requests/category/${encodeURIComponent(slug)}`,
+      {
+        cache: "no-store",
+        tags: buildListTags("rent-requests", {
+          scope: { key: "category", value: slug },
+        }),
+      },
+    ),
 
   getBySlug: async (slug: string) => {
     const response = await getApiResponse<RentRequest>(
@@ -97,6 +106,20 @@ export const rentRequestService = {
     );
     return response.data;
   },
+
+  getMine: async (
+    params: RentRequestMineParams = {},
+    requestOptions?: RentRequestMineRequestOptions,
+  ) =>
+    getPrivateApiResponse<RentRequest[]>(
+      buildListPath("/me/rent-requests", params),
+      {
+        accessToken: requestOptions?.accessToken ?? "",
+        cache: "no-store",
+        tags: buildListTags("my-rent-requests", {
+          page: params.page,
+          limit: params.limit,
+        }),
+      },
+    ),
 };
-
-

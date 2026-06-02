@@ -7,6 +7,7 @@ type ApiClientOptions = {
   cache?: RequestCache;
   revalidate?: number;
   tags?: string[];
+  headers?: HeadersInit;
 };
 
 // Format and construct full API URL
@@ -23,6 +24,7 @@ async function requestApi<T>(
 ): Promise<ApiResponse<T>> {
   const payload = await getJson<unknown>(createApiUrl(path), {
     cache: options?.cache,
+    headers: options?.headers,
     next:
       options?.revalidate || options?.tags
         ? {

@@ -6,6 +6,7 @@ import {
   PublishStatus,
 } from "@/types/enums";
 import { getApiResponse } from "./shared/api-client";
+import { getPrivateApiResponse } from "./shared/private-api-client";
 import {
   buildListPath,
   buildListTags,
@@ -64,6 +65,15 @@ export type PropertyGetByFlatSlugParams = {
   limit?: number;
 };
 
+export type PropertyMineParams = {
+  page?: number;
+  limit?: number;
+};
+
+export type PropertyMineRequestOptions = {
+  accessToken: string;
+};
+
 export const propertyService = {
   getAll: async (params: PropertyGetAllParams = {}) =>
     getApiResponse<Property[]>(buildListPath("/properties", params), {
@@ -101,6 +111,19 @@ export const propertyService = {
     );
     return response.data;
   },
+
+  getMine: async (
+    params: PropertyMineParams = {},
+    requestOptions?: PropertyMineRequestOptions,
+  ) =>
+    getPrivateApiResponse<Property[]>(buildListPath("/me/properties", params), {
+      accessToken: requestOptions?.accessToken ?? "",
+      cache: "no-store",
+      tags: buildListTags("my-properties", {
+        page: params.page,
+        limit: params.limit,
+      }),
+    }),
 };
 
 

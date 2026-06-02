@@ -1,5 +1,7 @@
 import { User } from "@/types";
+import { buildListPath, buildListTags } from "./shared/list-service";
 import { getApiResponse } from "./shared/api-client";
+import { getPrivateApiResponse } from "./shared/private-api-client";
 
 // Define TypeScript types for updating user profile payload
 export type UpdateMePayload = {
@@ -19,6 +21,16 @@ export type ChangeMyPasswordPayload = {
 export type SetMyPasswordPayload = {
   newPassword: string;
   confirmPassword: string;
+};
+
+export type AdminUserListParams = {
+  page?: number;
+  limit?: number;
+  filters?: Record<string, string | number | boolean | null | undefined>;
+};
+
+export type AdminUserListRequestOptions = {
+  accessToken: string;
 };
 
 type PasswordActionResponse = {
@@ -78,6 +90,19 @@ export const userService = {
         tags: ["auth-me"],
       })
     ).data,
+
+  getAdminUsers: async (
+    params: AdminUserListParams = {},
+    requestOptions?: AdminUserListRequestOptions,
+  ) =>
+    getPrivateApiResponse<User[]>(buildListPath("/admin/users", params), {
+      accessToken: requestOptions?.accessToken ?? "",
+      cache: "no-store",
+      tags: buildListTags("admin-users", {
+        page: params.page,
+        limit: params.limit,
+      }),
+    }),
 
   // Method to update user profile using multipart FormData via PATCH request
   updateMe: async (payload: UpdateMePayload) => {

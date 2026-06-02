@@ -1,6 +1,35 @@
-export default function UserMyRentRequestsPage() {
+import UserRentRequestsTable from "@/components/cms/user/UserRentRequestsTable";
+import { readAuthCookies } from "@/app/api/v1/_utils/auth";
+import { resolveAdminPage } from "@/lib/admin-page";
+import { rentRequestService } from "@/services/rent-request.service";
+
+type PageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function UserMyRentRequestsPage({
+  searchParams,
+}: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const limit = 10;
+  const { accessToken } = await readAuthCookies();
+
+  const result = await rentRequestService
+    .getMine({
+      page: currentPage,
+      limit,
+    }, {
+      accessToken: accessToken ?? "",
+    })
+    .catch(() => ({ data: [], meta: undefined }));
+
+  const items = result.data ?? [];
+  const totalItems = result.meta?.total ?? items.length;
+  const totalPages = result.meta?.totalPage ?? 1;
+
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       <div className="space-y-1">
         <p className="text-primary text-xs font-semibold tracking-[0.24em] uppercase">
           CMS User
@@ -13,12 +42,12 @@ export default function UserMyRentRequestsPage() {
         </p>
       </div>
 
-      <article className="surface-panel p-6">
-        <p className="text-secondary text-sm leading-6">
-          Trang này đã có route và nav item. Khi cần hiển thị dữ liệu thật, nối
-          vào API `/me/rent-requests` và render table theo cùng pattern CMS.
-        </p>
-      </article>
+      <UserRentRequestsTable
+        items={items}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+      />
     </section>
   );
 }
