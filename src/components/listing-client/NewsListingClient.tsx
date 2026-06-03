@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { resolvePaginationClientMeta } from "@/lib/client-side";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import { CategoryChips } from "@/components/common/CategoryChips";
@@ -95,8 +96,9 @@ export default function NewsListingClient({
     return mostViewedNewsResponse?.data ?? sourceNews.slice(0, 4);
   }, [mostViewedNewsResponse?.data, sourceNews]);
 
-  const totalPages = Math.max(1, paginationMeta?.totalPage ?? 1);
-  const currentPage = Math.max(1, paginationMeta?.currentPage ?? 1);
+  const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
+  const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
+  const currentPage = Math.max(1, resolvedPaginationMeta.currentPage ?? 1);
 
   const handleSelectCategory = useCallback(
     (categorySlug: string) => {

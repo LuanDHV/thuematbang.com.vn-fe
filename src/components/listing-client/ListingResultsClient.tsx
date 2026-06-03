@@ -1,17 +1,17 @@
-﻿"use client";
+"use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Pagination } from "@/components/common/Pagination";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { resolvePaginationClientMeta } from "@/lib/client-side";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
 import { PaginationMeta } from "@/types/api";
 
-const PAGE_SIZE = 12;
 const TIER_ORDER = ["GOLD", "SILVER", "NORMAL"] as const;
 
 type TierKey = (typeof TIER_ORDER)[number];
@@ -20,17 +20,14 @@ function getTierRank(value?: string | null) {
   return TIER_ORDER.indexOf((value as TierKey) ?? "NORMAL");
 }
 
-const TIER_CONFIG: Record<TierKey, { title: string; gridClass: string }> = {
+const TIER_CONFIG: Record<TierKey, { gridClass: string }> = {
   GOLD: {
-    title: "Gold",
     gridClass: "grid grid-cols-1 gap-5 lg:grid-cols-2",
   },
   SILVER: {
-    title: "Silver",
-    gridClass: "grid grid-cols-1 gap-4  md:grid-cols-2 lg:grid-cols-3",
+    gridClass: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3",
   },
   NORMAL: {
-    title: "Normal",
     gridClass: "grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4",
   },
 };
@@ -44,13 +41,12 @@ export default function ListingResultsClient({
 }: {
   properties: Property[] | RentRequest[];
   listingMode?: "property" | "rentRequest";
-  title?: string;
   breadcrumbItems?: BreadcrumbItem[];
-  paginationMeta?: PaginationMeta;
+  paginationMeta: PaginationMeta;
   paginationBasePath?: string;
 }) {
   const router = useRouter();
-  const isServerPagination = Boolean(paginationMeta);
+  const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
   const orderedProperties = useMemo(() => {
     if (listingMode === "rentRequest") {
@@ -86,19 +82,12 @@ export default function ListingResultsClient({
     }) as Property[];
   }, [listingMode, properties]);
 
-  const [page, setPage] = useState(1);
-  const totalPages = isServerPagination
-    ? Math.max(1, paginationMeta?.totalPage ?? 1)
-    : Math.max(1, Math.ceil(orderedProperties.length / PAGE_SIZE));
-  const currentPage = isServerPagination
-    ? Math.min(totalPages, Math.max(1, paginationMeta?.currentPage ?? 1))
-    : Math.min(page, totalPages);
-  const pageItems = isServerPagination
-    ? orderedProperties
-    : orderedProperties.slice(
-        (currentPage - 1) * PAGE_SIZE,
-        currentPage * PAGE_SIZE,
-      );
+  const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
+  const currentPage = Math.min(
+    totalPages,
+    Math.max(1, resolvedPaginationMeta.currentPage ?? 1),
+  );
+  const pageItems = orderedProperties;
   const hasItems = pageItems.length > 0;
 
   const groupedPageItems =
@@ -115,11 +104,6 @@ export default function ListingResultsClient({
       : null;
 
   const handlePageChange = (nextPage: number) => {
-    if (!isServerPagination) {
-      setPage(nextPage);
-      return;
-    }
-
     const targetPath = buildPagedPath(paginationBasePath ?? "", nextPage);
     router.replace(targetPath, { scroll: false });
   };

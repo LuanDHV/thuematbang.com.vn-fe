@@ -6,6 +6,7 @@ import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Project } from "@/types/project";
 import { Category } from "@/types/category";
 import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { resolvePaginationClientMeta } from "@/lib/client-side";
 import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";
 import { CategoryChips } from "@/components/common/CategoryChips";
@@ -54,8 +55,9 @@ export default function ProjectListingClient({
     );
   }, [projects]);
 
-  const totalPages = Math.max(1, paginationMeta?.totalPage ?? 1);
-  const currentPage = Math.max(1, paginationMeta?.currentPage ?? 1);
+  const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
+  const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
+  const currentPage = Math.max(1, resolvedPaginationMeta.currentPage ?? 1);
 
   const targetPathFromCategory = (categorySlug: string) =>
     categorySlug === "du-an" ? "/du-an" : `/du-an/${categorySlug}`;

@@ -1,8 +1,8 @@
-export type AdminSearchParams =
+export type ServerSearchParams =
   | Record<string, string | string[] | undefined>
   | undefined;
 
-export function resolveAdminPage(searchParams: AdminSearchParams) {
+export function resolvePaginationServer(searchParams: ServerSearchParams) {
   const pageValue = searchParams?.page;
   const rawPage = Array.isArray(pageValue) ? pageValue[0] : pageValue;
   const nextPage = Number.parseInt(rawPage ?? "1", 10);
@@ -11,7 +11,7 @@ export function resolveAdminPage(searchParams: AdminSearchParams) {
 }
 
 export function resolveSearchParamValue(
-  searchParams: AdminSearchParams,
+  searchParams: ServerSearchParams,
   key: string,
 ) {
   const value = searchParams?.[key];
