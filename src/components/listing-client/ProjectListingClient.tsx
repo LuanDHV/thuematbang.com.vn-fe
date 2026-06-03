@@ -62,15 +62,6 @@ export default function ProjectListingClient({
   const targetPathFromCategory = (categorySlug: string) =>
     categorySlug === "du-an" ? "/du-an" : `/du-an/${categorySlug}`;
 
-  const handlePageChange = (nextPage: number) => {
-    router.replace(
-      buildPagedPath(targetPathFromCategory(selectedCategorySlug), nextPage),
-      {
-        scroll: false,
-      },
-    );
-  };
-
   return (
     <section className="layout-container layout-section-sm">
       {breadcrumbItems?.length ? (
@@ -95,7 +86,17 @@ export default function ProjectListingClient({
         <Pagination
           page={currentPage}
           totalPages={totalPages}
-          onChange={handlePageChange}
+          onChange={(nextPage) =>
+            router.replace(
+              buildPagedPath(
+                targetPathFromCategory(selectedCategorySlug),
+                nextPage,
+              ),
+              {
+                scroll: false,
+              },
+            )
+          }
         />
       </div>
     </section>

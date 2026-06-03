@@ -2,6 +2,8 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+
+import { TablePaginationFooter } from "@/components/common/Pagination";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -11,9 +13,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TablePaginationFooter } from "@/components/common/Pagination";
+import {
+  cn,
+  createPaginationChangeHandler,
+  formatDateDisplay,
+} from "@/lib/utils";
 import type { User } from "@/types/user";
-import { cn } from "@/lib/utils";
 
 type AdminUsersTableProps = {
   users: User[];
@@ -21,10 +26,6 @@ type AdminUsersTableProps = {
   totalPages: number;
   totalItems: number;
 };
-
-function formatDate(value: string | Date) {
-  return new Intl.DateTimeFormat("vi-VN").format(new Date(value));
-}
 
 export default function AdminUsersTable({
   users,
@@ -41,22 +42,18 @@ export default function AdminUsersTable({
     () => new URLSearchParams(searchParams.toString()),
     [searchParams],
   );
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    currentSearch,
+    totalPages,
+  );
 
   const handleCopyEmail = async (email?: string | null) => {
     if (!email) return;
     await navigator.clipboard.writeText(email);
     setCopied(email);
     window.setTimeout(() => setCopied(null), 1200);
-  };
-
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    const nextParams = new URLSearchParams(currentSearch);
-    nextParams.set("page", String(page));
-    const nextUrl = nextParams.toString()
-      ? `${pathname}?${nextParams}`
-      : pathname;
-    router.push(nextUrl);
   };
 
   return (
@@ -107,7 +104,7 @@ export default function AdminUsersTable({
                     <Badge variant="secondary">{user.role}</Badge>
                   </TableCell>
                   <TableCell className="text-body align-top text-sm">
-                    {formatDate(user.createdAt)}
+                    {formatDateDisplay(user.createdAt)}
                   </TableCell>
                   <TableCell className="text-right align-top">
                     <button

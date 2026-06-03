@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
+
+import { TablePaginationFooter } from "@/components/common/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,65 +22,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TablePaginationFooter } from "@/components/common/Pagination";
+import {
+  createPaginationChangeHandler,
+  formatBudgetRange,
+  formatDateDisplay,
+  formatLocationParts,
+} from "@/lib/utils";
 import type { RentRequest } from "@/types/rent-request";
-import type { RentRequestStatus } from "@/types/enums";
 
 type AdminRentRequestsTableProps = {
   items: RentRequest[];
   currentPage: number;
   totalPages: number;
 };
-
-const currencyFormatter = new Intl.NumberFormat("vi-VN");
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatBudget(min?: number | null, max?: number | null) {
-  if (typeof min !== "number" && typeof max !== "number")
-    return "Chưa cập nhật";
-  if (min && max)
-    return `${currencyFormatter.format(min)} - ${currencyFormatter.format(max)} đ`;
-  if (min) return `Từ ${currencyFormatter.format(min)} đ`;
-  return `Đến ${currencyFormatter.format(max as number)} đ`;
-}
-
-function formatDate(value: string | Date) {
-  return dateFormatter.format(new Date(value));
-}
-
-function getStatusLabel(status: RentRequestStatus) {
-  switch (status) {
-    case "ACTIVE":
-      return "Đang mở";
-    case "MATCHED":
-      return "Đã khớp";
-    case "CLOSED":
-      return "Đã đóng";
-    case "EXPIRED":
-      return "Hết hạn";
-    default:
-      return status;
-  }
-}
-
-function getStatusVariant(status: RentRequestStatus) {
-  switch (status) {
-    case "ACTIVE":
-      return "success";
-    case "MATCHED":
-      return "default";
-    case "CLOSED":
-      return "muted";
-    case "EXPIRED":
-      return "warning";
-    default:
-      return "outline";
-  }
-}
 
 function getPublicPath(item: RentRequest) {
   return `/can-thue/${item.slug}`;
@@ -96,11 +52,7 @@ function RentRequestActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label={`Tác vụ cho ${item.title}`}
-        >
+        <Button variant="ghost" size="icon-sm" aria-label={`Tác vụ cho ${item.title}`}>
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -129,6 +81,12 @@ export default function AdminRentRequestsTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    searchParams,
+    totalPages,
+  );
 
   const activeCount = items.filter((item) => item.status === "ACTIVE").length;
   const featuredCount = items.filter((item) => item.isFeatured).length;
@@ -140,15 +98,6 @@ export default function AdminRentRequestsTable({
     window.setTimeout(() => {
       setCopiedSlug((current) => (current === item.slug ? null : current));
     }, 1800);
-  };
-
-  const handlePageChange = (page: number) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (page <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(page));
-
-    const query = nextParams.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
   };
 
   return (
@@ -188,11 +137,6 @@ export default function AdminRentRequestsTable({
             {items.length > 0 ? (
               items.map((item) => {
                 const isCopied = copiedSlug === item.slug;
-                const locationParts = [
-                  item.desiredWard?.name,
-                  item.desiredProvince?.name,
-                ].filter(Boolean);
-
                 return (
                   <TableRow key={item.id}>
                     <TableCell className="align-top">
@@ -225,24 +169,23 @@ export default function AdminRentRequestsTable({
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm">
-                        {locationParts.length > 0
-                          ? locationParts.join(", ")
-                          : "Chưa cập nhật"}
+                        {formatLocationParts([
+                          item.desiredWard?.name,
+                          item.desiredProvince?.name,
+                        ])}
                       </span>
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm font-medium">
-                        {formatBudget(item.minBudget, item.maxBudget)}
+                        {formatBudgetRange(item.minBudget, item.maxBudget)}
                       </span>
                     </TableCell>
                     <TableCell className="align-top">
-                      <Badge variant={getStatusVariant(item.status)}>
-                        {getStatusLabel(item.status)}
-                      </Badge>
+                      <Badge variant="outline">{item.status}</Badge>
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm">
-                        {formatDate(item.createdAt)}
+                        {formatDateDisplay(item.createdAt)}
                       </span>
                     </TableCell>
                     <TableCell className="text-right align-top">

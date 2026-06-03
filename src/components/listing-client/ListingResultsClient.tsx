@@ -103,11 +103,6 @@ export default function ListingResultsClient({
         )
       : null;
 
-  const handlePageChange = (nextPage: number) => {
-    const targetPath = buildPagedPath(paginationBasePath ?? "", nextPage);
-    router.replace(targetPath, { scroll: false });
-  };
-
   return (
     <section className="layout-container layout-section-sm">
       {breadcrumbItems?.length ? (
@@ -161,7 +156,12 @@ export default function ListingResultsClient({
         <Pagination
           page={currentPage}
           totalPages={totalPages}
-          onChange={handlePageChange}
+          onChange={(nextPage) =>
+            router.replace(
+              buildPagedPath(paginationBasePath ?? "", nextPage),
+              { scroll: false },
+            )
+          }
         />
       </div>
     </section>

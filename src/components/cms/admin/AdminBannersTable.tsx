@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/common/Pagination";
+import { createPaginationChangeHandler, formatDateDisplay } from "@/lib/utils";
 import type { Banner } from "@/types/banner";
 
 type AdminBannersTableProps = {
@@ -19,16 +20,6 @@ type AdminBannersTableProps = {
   currentPage: number;
   totalPages: number;
 };
-
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatDate(value: string | Date) {
-  return dateFormatter.format(new Date(value));
-}
 
 function isExternalUrl(value?: string | null) {
   return typeof value === "string" && /^https?:\/\//i.test(value);
@@ -44,26 +35,12 @@ export default function AdminBannersTable({
   const searchParams = useSearchParams();
   const activeCount = items.filter((item) => item.isActive).length;
   const pages = new Set(items.map((item) => item.page)).size;
-
-  const sortedItems = [...items].sort((left, right) => {
-    if (left.page !== right.page)
-      return left.page.localeCompare(right.page, "vi");
-    if (left.position !== right.position) {
-      return left.position.localeCompare(right.position, "vi");
-    }
-    if (left.sortOrder !== right.sortOrder)
-      return left.sortOrder - right.sortOrder;
-    return left.title.localeCompare(right.title, "vi");
-  });
-
-  const handlePageChange = (page: number) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (page <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(page));
-
-    const query = nextParams.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
-  };
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    searchParams,
+    totalPages,
+  );
 
   return (
     <section className="space-y-5">
@@ -100,8 +77,8 @@ export default function AdminBannersTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedItems.length > 0 ? (
-              sortedItems.map((item) => (
+            {items.length > 0 ? (
+              items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="align-top">
                     <div className="flex gap-3">
@@ -158,7 +135,7 @@ export default function AdminBannersTable({
                   </TableCell>
                   <TableCell className="align-top">
                     <span className="text-body text-sm">
-                      {formatDate(item.createdAt)}
+                      {formatDateDisplay(item.createdAt)}
                     </span>
                   </TableCell>
                 </TableRow>

@@ -1,10 +1,11 @@
 "use client";
 
-import CloudinaryImage from "@/components/common/CloudinaryImage";
-import { formatDate } from "@/lib/utils";
-import { Project } from "@/types/project";
-import { Building2, Calendar, Eye, MapPin, Maximize } from "lucide-react";
 import Link from "next/link";
+import { Building2, Calendar, Eye, MapPin, Maximize } from "lucide-react";
+
+import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { formatDate, formatPrice } from "@/lib/utils";
+import { Project } from "@/types/project";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
 const CARD_HOVER_CLASSES =
@@ -19,15 +20,6 @@ function getProjectThumbnailUrl(project: Project) {
       .filter(Boolean) ?? [];
 
   return sortedImages[0] || DEFAULT_PROJECT_IMAGE;
-}
-
-function formatProjectPrice(value?: number | null) {
-  if (!value) return "Liên hệ";
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-    maximumFractionDigits: 0,
-  }).format(value);
 }
 
 function CardFooter({
@@ -89,7 +81,7 @@ export function ProjectCard({ project }: { project: Project }) {
             </span>
           ) : null}
           <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
-            {formatProjectPrice(project.price)}
+            {project.price ? formatPrice(project.price) : "Liên hệ"}
           </p>
 
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">

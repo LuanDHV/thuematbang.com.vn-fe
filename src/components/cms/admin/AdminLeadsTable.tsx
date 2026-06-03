@@ -1,6 +1,8 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+import { TablePaginationFooter } from "@/components/common/Pagination";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -10,9 +12,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  createPaginationChangeHandler,
+  formatDateDisplay,
+  formatTextSource,
+} from "@/lib/utils";
 import type { Lead } from "@/types/lead";
-import type { LeadStatus } from "@/types/enums";
-import { TablePaginationFooter } from "@/components/common/Pagination";
 
 type AdminLeadsTableProps = {
   items: Lead[];
@@ -20,53 +25,9 @@ type AdminLeadsTableProps = {
   totalPages: number;
 };
 
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatDate(value: string | Date) {
-  return dateFormatter.format(new Date(value));
-}
-
 function truncate(value: string, maxLength = 90) {
   if (value.length <= maxLength) return value;
   return `${value.slice(0, maxLength).trimEnd()}…`;
-}
-
-function getStatusLabel(status: LeadStatus) {
-  switch (status) {
-    case "NEW":
-      return "Mới";
-    case "CONTACTED":
-      return "Đã liên hệ";
-    case "QUALIFIED":
-      return "Đủ điều kiện";
-    case "CLOSED":
-      return "Đã đóng";
-    case "REJECTED":
-      return "Từ chối";
-    default:
-      return status;
-  }
-}
-
-function getStatusVariant(status: LeadStatus) {
-  switch (status) {
-    case "NEW":
-      return "warning";
-    case "CONTACTED":
-      return "default";
-    case "QUALIFIED":
-      return "success";
-    case "CLOSED":
-      return "muted";
-    case "REJECTED":
-      return "destructive";
-    default:
-      return "outline";
-  }
 }
 
 function formatRelatedEntity(value?: number | null) {
@@ -81,10 +42,6 @@ function getTel(phone: string) {
   return `tel:${phone.replace(/\s+/g, "")}`;
 }
 
-function formatSource(source: string) {
-  return source.replace(/_/g, " ");
-}
-
 function LeadPagination({
   currentPage,
   totalPages,
@@ -92,15 +49,12 @@ function LeadPagination({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const handlePageChange = (page: number) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (page <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(page));
-
-    const query = nextParams.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
-  };
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    searchParams,
+    totalPages,
+  );
 
   return (
     <TablePaginationFooter
@@ -121,10 +75,6 @@ export default function AdminLeadsTable({
   const contactedCount = items.filter((item) => item.status === "CONTACTED").length;
   const sourceCount = new Set(items.map((item) => item.source)).size;
 
-  const sortedItems = [...items].sort((left, right) =>
-    new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
-  );
-
   return (
     <section className="space-y-5">
       <div className="surface-panel overflow-hidden">
@@ -135,8 +85,7 @@ export default function AdminLeadsTable({
                 Lead liên hệ
               </h2>
               <p className="text-secondary mt-1 text-sm">
-                Dữ liệu liên hệ từ form và tương tác người dùng, có phân trang
-                theo backend.
+                Dữ liệu liên hệ từ form và tương tác người dùng, có phân trang theo backend.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -162,69 +111,69 @@ export default function AdminLeadsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedItems.length > 0 ? (
-              sortedItems.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="align-top">
-                    <div className="space-y-1">
-                      <p className="text-heading text-sm font-semibold">
-                        {item.fullName}
-                      </p>
-                      <p className="text-secondary text-xs">ID: {item.id}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    <div className="space-y-1">
-                      <a
-                        href={getTel(item.phone)}
-                        className="text-body text-sm font-medium hover:underline"
-                      >
-                        {item.phone}
-                      </a>
-                      {item.email ? (
+            {items.length > 0 ? (
+              items.map((item) => {
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell className="align-top">
+                      <div className="space-y-1">
+                        <p className="text-heading text-sm font-semibold">
+                          {item.fullName}
+                        </p>
+                        <p className="text-secondary text-xs">ID: {item.id}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <div className="space-y-1">
                         <a
-                          href={getMailto(item.email) ?? "#"}
-                          className="text-secondary text-xs hover:underline"
+                          href={getTel(item.phone)}
+                          className="text-body text-sm font-medium hover:underline"
                         >
-                          {item.email}
+                          {item.phone}
                         </a>
-                      ) : (
-                        <p className="text-secondary text-xs">Không có email</p>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    <span className="text-body text-sm">
-                      {formatSource(item.source)}
-                    </span>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    <Badge variant={getStatusVariant(item.status)}>
-                      {getStatusLabel(item.status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    <span className="text-body text-sm">
-                      {formatRelatedEntity(item.propertyId)}
-                    </span>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    <span className="text-body text-sm">
-                      {formatRelatedEntity(item.userId)}
-                    </span>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    <p className="text-body text-sm leading-6">
-                      {item.message ? truncate(item.message) : "Không có ghi chú"}
-                    </p>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    <span className="text-body text-sm">
-                      {formatDate(item.createdAt)}
-                    </span>
-                  </TableCell>
-                </TableRow>
-              ))
+                        {item.email ? (
+                          <a
+                            href={getMailto(item.email) ?? "#"}
+                            className="text-secondary text-xs hover:underline"
+                          >
+                            {item.email}
+                          </a>
+                        ) : (
+                          <p className="text-secondary text-xs">Không có email</p>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <span className="text-body text-sm">
+                        {formatTextSource(item.source)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <Badge variant="outline">{item.status}</Badge>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <span className="text-body text-sm">
+                        {formatRelatedEntity(item.propertyId)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <span className="text-body text-sm">
+                        {formatRelatedEntity(item.userId)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <p className="text-body text-sm leading-6">
+                        {item.message ? truncate(item.message) : "Không có ghi chú"}
+                      </p>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <span className="text-body text-sm">
+                        {formatDateDisplay(item.createdAt)}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={8} className="py-14 text-center">

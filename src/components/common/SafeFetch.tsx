@@ -52,12 +52,12 @@ export default async function SafeFetch<T>({
     console.log("[SafeFetch] start", { debugLabel });
     data = await fetcher;
     if (data && typeof data === "object") {
-      const record = data as Record<string, unknown>;
-      //Comment on production
-      console.log("[SafeFetch] success", {
-        debugLabel,
-        data: Array.isArray(record.data) ? record.data : (record.data ?? data),
-      });
+      // const record = data as Record<string, unknown>;
+      // //Comment on production
+      // console.log("[SafeFetch] success", {
+      //   debugLabel,
+      //   data: Array.isArray(record.data) ? record.data : (record.data ?? data),
+      // });
     } else {
       console.log("[SafeFetch] success", { debugLabel, data });
     }

@@ -7,11 +7,16 @@ import {
   Navigation,
   Wallet,
 } from "lucide-react";
-import { RentRequestCard } from "@/components/common/RentRequestCard";
-import { formatDate, formatPrice } from "@/lib/utils";
-import { DIRECTION_OPTIONS } from "@/constants/filter";
-import { RentRequest } from "@/types/rent-request";
+
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { RentRequestCard } from "@/components/common/RentRequestCard";
+import { DIRECTION_OPTIONS } from "@/constants/filter";
+import {
+  formatAreaRange,
+  formatBudgetRange,
+  formatDate,
+} from "@/lib/utils";
+import { RentRequest } from "@/types/rent-request";
 
 type RentRequestDetailContentProps = {
   rentRequest: RentRequest;
@@ -26,26 +31,6 @@ function getDirectionLabel(direction?: string | null) {
     DIRECTION_OPTIONS.find((option) => option.id === normalized)?.label ??
     direction
   );
-}
-
-function formatBudgetRange(request: RentRequest) {
-  const min = request.minBudget ?? 0;
-  const max = request.maxBudget ?? 0;
-
-  if (min > 0 && max > 0) return `${formatPrice(min)} - ${formatPrice(max)}`;
-  if (min > 0) return `Từ ${formatPrice(min)}`;
-  if (max > 0) return `Dưới ${formatPrice(max)}`;
-  return "Thỏa thuận";
-}
-
-function formatAreaRange(request: RentRequest) {
-  const min = request.minArea ?? 0;
-  const max = request.maxArea ?? 0;
-
-  if (min > 0 && max > 0) return `${min} - ${max} m²`;
-  if (min > 0) return `Từ ${min} m²`;
-  if (max > 0) return `Dưới ${max} m²`;
-  return "Đang cập nhật";
 }
 
 export default function RentRequestDetailContent({
@@ -140,7 +125,14 @@ export default function RentRequestDetailContent({
                   Ngân sách
                 </p>
                 <p className="text-heading text-sm font-semibold">
-                  {formatBudgetRange(rentRequest)}
+                  {formatBudgetRange(
+                    rentRequest.minBudget,
+                    rentRequest.maxBudget,
+                    {
+                      fallback: "Thỏa thuận",
+                      upperBoundPrefix: "Dưới",
+                    },
+                  )}
                 </p>
               </div>
             </div>
@@ -153,7 +145,7 @@ export default function RentRequestDetailContent({
                     Diện tích cần thuê
                   </p>
                   <p className="text-heading text-sm font-semibold">
-                    {formatAreaRange(rentRequest)}
+                    {formatAreaRange(rentRequest.minArea, rentRequest.maxArea)}
                   </p>
                 </div>
               </div>

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
+
+import { TablePaginationFooter } from "@/components/common/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,51 +22,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TablePaginationFooter } from "@/components/common/Pagination";
+import { createPaginationChangeHandler, formatDateDisplay } from "@/lib/utils";
 import type { News } from "@/types/news";
-import type { PublishStatus } from "@/types/enums";
 
 type AdminNewsTableProps = {
   items: News[];
   currentPage: number;
   totalPages: number;
 };
-
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatDate(value: string | Date) {
-  return dateFormatter.format(new Date(value));
-}
-
-function getStatusLabel(status: PublishStatus) {
-  switch (status) {
-    case "PUBLISHED":
-      return "Đã đăng";
-    case "DRAFT":
-      return "Bản nháp";
-    case "ARCHIVED":
-      return "Đã lưu trữ";
-    default:
-      return status;
-  }
-}
-
-function getStatusVariant(status: PublishStatus) {
-  switch (status) {
-    case "PUBLISHED":
-      return "success";
-    case "DRAFT":
-      return "warning";
-    case "ARCHIVED":
-      return "muted";
-    default:
-      return "outline";
-  }
-}
 
 function getPublicPath(item: News) {
   return `/tin-tuc/${item.slug}`;
@@ -82,7 +47,11 @@ function NewsActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label={`Tác vụ cho ${item.title}`}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Tác vụ cho ${item.title}`}
+        >
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -111,8 +80,16 @@ export default function AdminNewsTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    searchParams,
+    totalPages,
+  );
 
-  const publishedCount = items.filter((item) => item.status === "PUBLISHED").length;
+  const publishedCount = items.filter(
+    (item) => item.status === "PUBLISHED",
+  ).length;
   const featuredCount = items.filter((item) => item.isFeatured).length;
   const totalViews = items.reduce((sum, item) => sum + item.viewCount, 0);
 
@@ -125,19 +102,10 @@ export default function AdminNewsTable({
     }, 1800);
   };
 
-  const handlePageChange = (page: number) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (page <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(page));
-
-    const query = nextParams.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
-  };
-
   return (
     <section className="space-y-5">
       <div className="surface-panel overflow-hidden">
-        <div className="border-b border-hairline px-4 py-4 md:px-5">
+        <div className="border-hairline border-b px-4 py-4 md:px-5">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
@@ -193,16 +161,10 @@ export default function AdminNewsTable({
                       </span>
                     </TableCell>
                     <TableCell className="align-top">
-                      {item.isFeatured ? (
-                        <Badge variant="success">Nổi bật</Badge>
-                      ) : (
-                        <Badge variant="muted">Thường</Badge>
-                      )}
+                      <Badge variant="outline">{String(item.isFeatured)}</Badge>
                     </TableCell>
                     <TableCell className="align-top">
-                      <Badge variant={getStatusVariant(item.status)}>
-                        {getStatusLabel(item.status)}
-                      </Badge>
+                      <Badge variant="outline">{item.status}</Badge>
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm font-medium">
@@ -211,12 +173,16 @@ export default function AdminNewsTable({
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm">
-                        {formatDate(item.createdAt)}
+                        {formatDateDisplay(item.createdAt)}
                       </span>
                     </TableCell>
-                    <TableCell className="align-top text-right">
+                    <TableCell className="text-right align-top">
                       <div className="flex justify-end">
-                        <NewsActions item={item} copied={isCopied} onCopy={handleCopy} />
+                        <NewsActions
+                          item={item}
+                          copied={isCopied}
+                          onCopy={handleCopy}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>

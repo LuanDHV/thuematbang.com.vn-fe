@@ -7,88 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDateDisplay } from "@/lib/utils";
 import type { Category } from "@/types/category";
-import type { CategoryType } from "@/types/enums";
 
 type AdminCategoriesTableProps = {
   items: Category[];
 };
 
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatDate(value: string | Date) {
-  return dateFormatter.format(new Date(value));
-}
-
-function getTypeLabel(type: CategoryType) {
-  switch (type) {
-    case "PROPERTY":
-      return "Cho thuê";
-    case "RENT_REQUEST":
-      return "Cần thuê";
-    case "PROJECT":
-      return "Dự án";
-    case "NEWS":
-      return "Tin tức";
-    default:
-      return type;
-  }
-}
-
-function getTypeVariant(type: CategoryType) {
-  switch (type) {
-    case "PROPERTY":
-      return "success";
-    case "RENT_REQUEST":
-      return "warning";
-    case "PROJECT":
-      return "default";
-    case "NEWS":
-      return "secondary";
-    default:
-      return "outline";
-  }
-}
-
-function getTypeOrder(type: CategoryType) {
-  switch (type) {
-    case "PROPERTY":
-      return 0;
-    case "RENT_REQUEST":
-      return 1;
-    case "PROJECT":
-      return 2;
-    case "NEWS":
-      return 3;
-    default:
-      return 99;
-  }
-}
-
 export default function AdminCategoriesTable({
   items,
 }: AdminCategoriesTableProps) {
-  const sortedItems = [...items].sort((left, right) => {
-    const typeDiff = getTypeOrder(left.type) - getTypeOrder(right.type);
-    if (typeDiff !== 0) return typeDiff;
-    if (left.priority !== right.priority) return left.priority - right.priority;
-    return left.name.localeCompare(right.name, "vi");
-  });
-
-  const summary = [
-    { type: "PROPERTY" as const, count: items.filter((item) => item.type === "PROPERTY").length },
-    {
-      type: "RENT_REQUEST" as const,
-      count: items.filter((item) => item.type === "RENT_REQUEST").length,
-    },
-    { type: "PROJECT" as const, count: items.filter((item) => item.type === "PROJECT").length },
-    { type: "NEWS" as const, count: items.filter((item) => item.type === "NEWS").length },
-  ];
-
   return (
     <section className="space-y-5">
       <div className="surface-panel overflow-hidden">
@@ -102,13 +30,6 @@ export default function AdminCategoriesTable({
                 Hiển thị đầy đủ tên, slug, độ ưu tiên và trạng thái để admin dễ
                 kiểm tra taxonomy.
               </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {summary.map((item) => (
-                <Badge key={item.type} variant={getTypeVariant(item.type)}>
-                  {getTypeLabel(item.type)}: {item.count}
-                </Badge>
-              ))}
             </div>
           </div>
         </div>
@@ -126,8 +47,8 @@ export default function AdminCategoriesTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedItems.length > 0 ? (
-              sortedItems.map((item) => (
+            {items.length > 0 ? (
+              items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="align-top">
                     <div className="space-y-1">
@@ -138,9 +59,7 @@ export default function AdminCategoriesTable({
                     </div>
                   </TableCell>
                   <TableCell className="align-top">
-                    <Badge variant={getTypeVariant(item.type)}>
-                      {getTypeLabel(item.type)}
-                    </Badge>
+                    <Badge variant="outline">{item.type}</Badge>
                   </TableCell>
                   <TableCell className="align-top">
                     <span className="text-body text-sm">{item.slug}</span>
@@ -151,15 +70,13 @@ export default function AdminCategoriesTable({
                     </span>
                   </TableCell>
                   <TableCell className="align-top">
-                    <Badge variant={item.isActive ? "success" : "muted"}>
-                      {item.isActive ? "Đang bật" : "Đã tắt"}
-                    </Badge>
+                    <Badge variant="outline">{String(item.isActive)}</Badge>
                   </TableCell>
                   <TableCell className="text-body align-top text-sm">
-                    {formatDate(item.createdAt)}
+                    {formatDateDisplay(item.createdAt)}
                   </TableCell>
                   <TableCell className="text-body align-top text-sm">
-                    {formatDate(item.updatedAt)}
+                    {formatDateDisplay(item.updatedAt)}
                   </TableCell>
                 </TableRow>
               ))

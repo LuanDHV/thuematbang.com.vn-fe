@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
+
+import { TablePaginationFooter } from "@/components/common/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,57 +22,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TablePaginationFooter } from "@/components/common/Pagination";
+import {
+  createPaginationChangeHandler,
+  formatDateDisplay,
+  formatLocationParts,
+  formatVndAmount,
+} from "@/lib/utils";
 import type { Project } from "@/types/project";
-import type { PublishStatus } from "@/types/enums";
 
 type AdminProjectsTableProps = {
   items: Project[];
   currentPage: number;
   totalPages: number;
 };
-
-const currencyFormatter = new Intl.NumberFormat("vi-VN");
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatPrice(value?: number | null) {
-  if (typeof value !== "number") return "Chưa cập nhật";
-  return `${currencyFormatter.format(value)} đ`;
-}
-
-function formatDate(value: string | Date) {
-  return dateFormatter.format(new Date(value));
-}
-
-function getStatusLabel(status: PublishStatus) {
-  switch (status) {
-    case "PUBLISHED":
-      return "Đã đăng";
-    case "DRAFT":
-      return "Bản nháp";
-    case "ARCHIVED":
-      return "Đã lưu trữ";
-    default:
-      return status;
-  }
-}
-
-function getStatusVariant(status: PublishStatus) {
-  switch (status) {
-    case "PUBLISHED":
-      return "success";
-    case "DRAFT":
-      return "warning";
-    case "ARCHIVED":
-      return "muted";
-    default:
-      return "outline";
-  }
-}
 
 function getPublicPath(item: Project) {
   return `/du-an/${item.slug}`;
@@ -117,6 +81,12 @@ export default function AdminProjectsTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    searchParams,
+    totalPages,
+  );
 
   const publishedCount = items.filter((item) => item.status === "PUBLISHED").length;
   const imageCount = items.filter((item) => (item.images?.length ?? 0) > 0).length;
@@ -128,15 +98,6 @@ export default function AdminProjectsTable({
     window.setTimeout(() => {
       setCopiedSlug((current) => (current === item.slug ? null : current));
     }, 1800);
-  };
-
-  const handlePageChange = (page: number) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (page <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(page));
-
-    const query = nextParams.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
   };
 
   return (
@@ -175,8 +136,6 @@ export default function AdminProjectsTable({
             {items.length > 0 ? (
               items.map((item) => {
                 const isCopied = copiedSlug === item.slug;
-                const locationParts = [item.ward?.name, item.province?.name].filter(Boolean);
-
                 return (
                   <TableRow key={item.id}>
                     <TableCell className="align-top">
@@ -202,22 +161,20 @@ export default function AdminProjectsTable({
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm">
-                        {locationParts.length > 0 ? locationParts.join(", ") : "Chưa cập nhật"}
+                        {formatLocationParts([item.ward?.name, item.province?.name])}
                       </span>
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm font-medium">
-                        {formatPrice(item.price)}
+                        {formatVndAmount(item.price)}
                       </span>
                     </TableCell>
                     <TableCell className="align-top">
-                      <Badge variant={getStatusVariant(item.status)}>
-                        {getStatusLabel(item.status)}
-                      </Badge>
+                      <Badge variant="outline">{item.status}</Badge>
                     </TableCell>
                     <TableCell className="align-top">
                       <span className="text-body text-sm">
-                        {formatDate(item.createdAt)}
+                        {formatDateDisplay(item.createdAt)}
                       </span>
                     </TableCell>
                     <TableCell className="align-top text-right">

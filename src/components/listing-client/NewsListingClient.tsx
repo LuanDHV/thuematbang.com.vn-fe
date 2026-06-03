@@ -111,18 +111,6 @@ export default function NewsListingClient({
     [router],
   );
 
-  const handlePageChange = useCallback(
-    (nextPage: number) => {
-      router.replace(
-        buildPagedPath(getCategoryPath(selectedCategorySlug), nextPage),
-        {
-          scroll: false,
-        },
-      );
-    },
-    [router, selectedCategorySlug],
-  );
-
   return (
     <div className="layout-container layout-section-sm h-auto">
       {breadcrumbItems?.length ? (
@@ -163,7 +151,14 @@ export default function NewsListingClient({
           <Pagination
             page={currentPage}
             totalPages={totalPages}
-            onChange={handlePageChange}
+            onChange={(nextPage) =>
+              router.replace(
+                buildPagedPath(getCategoryPath(selectedCategorySlug), nextPage),
+                {
+                  scroll: false,
+                },
+              )
+            }
           />
         </div>
 

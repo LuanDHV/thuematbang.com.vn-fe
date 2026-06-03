@@ -11,6 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/common/Pagination";
+import {
+  createPaginationChangeHandler,
+  formatDateDisplay,
+} from "@/lib/utils";
 import type { SeoContent } from "@/types/seo-content";
 
 type AdminSeoContentsTableProps = {
@@ -18,16 +22,6 @@ type AdminSeoContentsTableProps = {
   currentPage: number;
   totalPages: number;
 };
-
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatDate(value: string | Date) {
-  return dateFormatter.format(new Date(value));
-}
 
 function stripHtml(value?: string | null) {
   if (!value) return "";
@@ -51,24 +45,17 @@ export default function AdminSeoContentsTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    searchParams,
+    totalPages,
+  );
 
   const withSeoCount = items.filter((item) => Boolean(item.seoContent)).length;
   const withFaqCount = items.filter(
     (item) => Boolean(item.faqTitle || item.faqDescription),
   ).length;
-
-  const sortedItems = [...items].sort((left, right) =>
-    left.page.localeCompare(right.page, "vi"),
-  );
-
-  const handlePageChange = (page: number) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (page <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(page));
-
-    const query = nextParams.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
-  };
 
   return (
     <section className="space-y-5">
@@ -102,8 +89,8 @@ export default function AdminSeoContentsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedItems.length > 0 ? (
-              sortedItems.map((item) => (
+            {items.length > 0 ? (
+              items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="align-top">
                     <div className="space-y-1">
@@ -132,7 +119,7 @@ export default function AdminSeoContentsTable({
                   </TableCell>
                   <TableCell className="align-top">
                     <span className="text-body text-sm">
-                      {formatDate(item.updatedAt)}
+                      {formatDateDisplay(item.updatedAt)}
                     </span>
                   </TableCell>
                 </TableRow>
