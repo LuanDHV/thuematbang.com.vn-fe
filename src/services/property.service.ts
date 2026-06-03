@@ -71,6 +71,8 @@ export type PropertyMineParams = {
   limit?: number;
 };
 
+export type UpdatePropertyPayload = FormData;
+
 export const propertyService = {
   getAll: async (params: PropertyGetAllParams = {}) =>
     requestServerApi<Property[]>(buildListPath("/properties", params), {
@@ -108,6 +110,15 @@ export const propertyService = {
     return response.data;
   },
 
+  getById: async (id: number) => {
+    const response = await requestServerApi<Property>(`/properties/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["property-detail", String(id)],
+    });
+    return response.data;
+  },
+
   getMine: async (params: PropertyMineParams = {}) =>
     requestServerApi<Property[]>(buildListPath("/me/properties", params), {
       auth: "required",
@@ -117,4 +128,21 @@ export const propertyService = {
         limit: params.limit,
       }),
     }),
+
+  update: async (id: number, payload: UpdatePropertyPayload) => {
+    const response = await requestServerApi<Property>(`/properties/${id}`, {
+      method: "PATCH",
+      auth: "required",
+      body: payload,
+    });
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    const response = await requestServerApi<Property>(`/properties/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
+    return response.data;
+  },
 };

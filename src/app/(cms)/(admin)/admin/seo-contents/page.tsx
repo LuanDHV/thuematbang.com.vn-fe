@@ -42,7 +42,7 @@ export default async function AdminSeoContentsPage({
       <AdminListToolbar
         eyebrow="CMS Admin"
         title="Quản lý SEO content"
-        description="Nội dung SEO và FAQ metadata theo từng page để kiểm soát hiển thị public."
+        description="Nội dung SEO theo từng page để kiểm soát hiển thị public."
         searchPlaceholder="Tìm kiếm page SEO"
         createLabel="Tạo mới"
         searchValue={searchValue}

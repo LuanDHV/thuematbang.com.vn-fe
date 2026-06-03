@@ -1,12 +1,11 @@
-import { Badge } from "@/components/ui/badge";
+"use client";
+
+import { useMemo } from "react";
+import AdminDataTable from "@/components/cms/admin/data-table";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  createColumnsFromFields,
+  type FieldConfig,
+} from "@/components/cms/admin/column-generator";
 import type { Province, Street, Ward } from "@/types/location";
 
 type AdminLocationsTableProps = {
@@ -14,10 +13,58 @@ type AdminLocationsTableProps = {
   wards: Ward[];
   streets: Street[];
   selectedProvince?: Province | null;
+  selectedProvinceId?: number | null;
+  searchValue?: string;
 };
 
-function formatSelectedProvince(province?: Province | null) {
-  return province ? `${province.name} (#${province.id})` : "Tất cả";
+type LocationTableSectionProps<TData> = {
+  title: string;
+  data: TData[];
+  fields: FieldConfig<TData>[];
+  getRowId: (row: TData) => number;
+  emptyDescription: string;
+  rowHref?: (row: TData) => string;
+  getRowClassName?: (row: TData) => string | undefined;
+};
+
+function LocationTableSection<TData>({
+  title,
+  data,
+  fields,
+  getRowId,
+  emptyDescription,
+  rowHref,
+  getRowClassName,
+}: LocationTableSectionProps<TData>) {
+  const columns = useMemo(
+    () =>
+      createColumnsFromFields<TData>({
+        fields,
+        getRowId,
+      }),
+    [fields, getRowId],
+  );
+
+  return (
+    <section className="space-y-3">
+      <div>
+        <h3 className="text-heading text-base font-semibold">{title}</h3>
+      </div>
+
+      <AdminDataTable
+        data={data}
+        columns={columns}
+        fields={fields}
+        getRowId={getRowId}
+        rowHref={rowHref}
+        getRowClassName={getRowClassName}
+        page={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        emptyDescription={emptyDescription}
+      />
+    </section>
+  );
 }
 
 export default function AdminLocationsTable({
@@ -25,185 +72,167 @@ export default function AdminLocationsTable({
   wards,
   streets,
   selectedProvince,
+  selectedProvinceId,
+  searchValue,
 }: AdminLocationsTableProps) {
+  const provinceFields = useMemo<FieldConfig<Province>[]>(
+    () => [
+      {
+        key: "name",
+        header: "Tên",
+        fieldType: "text",
+        accessor: (province) => province.name,
+        emphasizeOnMobile: true,
+        mobileSection: "header",
+      },
+      {
+        key: "slug",
+        header: "Slug",
+        fieldType: "text",
+        accessor: (province) => province.slug,
+      },
+      {
+        key: "actions",
+        header: "Tác vụ",
+        fieldType: "actions",
+        getEditHref: (province) => {
+          const query = searchValue
+            ? `&q=${encodeURIComponent(searchValue)}`
+            : "";
+          return `?provinceId=${province.id}${query}`;
+        },
+        getEditLabel: (province) =>
+          province.id === selectedProvinceId ? "Đang chọn" : "Chọn",
+        onDelete: (id) => {
+          console.info("Delete province", id);
+        },
+      },
+    ],
+    [searchValue, selectedProvinceId],
+  );
+
+  const wardFields = useMemo<FieldConfig<Ward>[]>(
+    () => [
+      {
+        key: "name",
+        header: "Tên",
+        fieldType: "text",
+        accessor: (ward) => ward.name,
+        emphasizeOnMobile: true,
+        mobileSection: "header",
+      },
+      {
+        key: "provinceId",
+        header: "Tỉnh ID",
+        fieldType: "number",
+        accessor: (ward) => ward.provinceId,
+      },
+      {
+        key: "slug",
+        header: "Slug",
+        fieldType: "text",
+        accessor: (ward) => ward.slug,
+      },
+      {
+        key: "actions",
+        header: "Tác vụ",
+        fieldType: "actions",
+        getEditHref: (ward) => `/admin/locations/${ward.id}`,
+        onDelete: (id) => {
+          console.info("Delete ward", id);
+        },
+      },
+    ],
+    [],
+  );
+
+  const streetFields = useMemo<FieldConfig<Street>[]>(
+    () => [
+      {
+        key: "name",
+        header: "Tên",
+        fieldType: "text",
+        accessor: (street) => street.name,
+        emphasizeOnMobile: true,
+        mobileSection: "header",
+      },
+      {
+        key: "provinceId",
+        header: "Tỉnh ID",
+        fieldType: "number",
+        accessor: (street) => street.provinceId,
+      },
+      {
+        key: "wardId",
+        header: "Phường ID",
+        fieldType: "text",
+        accessor: (street) => street.wardId ?? "Chưa có",
+      },
+      {
+        key: "slug",
+        header: "Slug",
+        fieldType: "text",
+        accessor: (street) => street.slug,
+      },
+      {
+        key: "actions",
+        header: "Tác vụ",
+        fieldType: "actions",
+        getEditHref: (street) => `/admin/locations/${street.id}`,
+        onDelete: (id) => {
+          console.info("Delete street", id);
+        },
+      },
+    ],
+    [],
+  );
+
   return (
-    <section className="space-y-5">
-      <div className="surface-panel overflow-hidden">
-        <div className="border-hairline border-b px-4 py-4 md:px-5">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
-                Địa điểm lookup
-              </h2>
-              <p className="text-secondary mt-1 text-sm">
-                Hiển thị raw data tỉnh/thành, phường/xã và đường phố để kiểm tra
-                seed và dữ liệu selector.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline">{provinces.length} tỉnh/thành</Badge>
-              <Badge variant="outline">{wards.length} phường/xã</Badge>
-              <Badge variant="outline">{streets.length} đường phố</Badge>
-              <Badge variant="secondary">
-                Đang xem: {formatSelectedProvince(selectedProvince)}
-              </Badge>
-            </div>
-          </div>
+    <div className="grid gap-5">
+      <LocationTableSection
+        title="Tỉnh / Thành phố"
+        data={provinces}
+        fields={provinceFields}
+        getRowId={(province) => province.id}
+        emptyDescription="Không có dữ liệu tỉnh/thành."
+        rowHref={(province) => {
+          const query = searchValue
+            ? `&q=${encodeURIComponent(searchValue)}`
+            : "";
+          return `?provinceId=${province.id}${query}`;
+        }}
+        getRowClassName={(province) =>
+          province.id === selectedProvinceId
+            ? "bg-primary/5 ring-1 ring-primary/15"
+            : ""
+        }
+      />
+
+      {selectedProvince ? (
+        <div className="grid gap-6 xl:grid-cols-2">
+          <LocationTableSection
+            title="Phường / Xã"
+            data={wards}
+            fields={wardFields}
+            getRowId={(ward) => ward.id}
+            emptyDescription="Không có dữ liệu phường/xã."
+          />
+
+          <LocationTableSection
+            title="Đường phố"
+            data={streets}
+            fields={streetFields}
+            getRowId={(street) => street.id}
+            emptyDescription="Không có dữ liệu đường phố."
+          />
         </div>
-
-        <div className="grid gap-5 p-4 md:p-5">
-          <div className="surface-card overflow-hidden">
-            <div className="border-hairline border-b px-4 py-3">
-              <h3 className="text-heading text-base font-semibold">
-                Tỉnh / Thành phố
-              </h3>
-            </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[12%]">ID</TableHead>
-                  <TableHead className="w-[44%]">Tên</TableHead>
-                  <TableHead className="w-[44%]">Slug</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {provinces.length > 0 ? (
-                  provinces.map((province) => (
-                    <TableRow key={province.id}>
-                      <TableCell className="align-top">
-                        <span className="text-body text-sm font-medium">
-                          {province.id}
-                        </span>
-                      </TableCell>
-                      <TableCell className="align-top">
-                        <span className="text-heading text-sm font-semibold">
-                          {province.name}
-                        </span>
-                      </TableCell>
-                      <TableCell className="align-top">
-                        <span className="text-body text-sm">{province.slug}</span>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={3} className="py-10 text-center">
-                      <p className="text-secondary text-sm">
-                        Không có dữ liệu tỉnh/thành.
-                      </p>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-
-          <div className="grid gap-5 xl:grid-cols-2">
-            <div className="surface-card overflow-hidden">
-              <div className="border-hairline border-b px-4 py-3">
-                <h3 className="text-heading text-base font-semibold">
-                  Phường / Xã
-                </h3>
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[16%]">ID</TableHead>
-                    <TableHead className="w-[42%]">Tên</TableHead>
-                    <TableHead className="w-[42%]">Slug</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {wards.length > 0 ? (
-                    wards.map((ward) => (
-                      <TableRow key={ward.id}>
-                        <TableCell className="align-top">
-                          <span className="text-body text-sm font-medium">
-                            {ward.id}
-                          </span>
-                        </TableCell>
-                        <TableCell className="align-top">
-                          <div className="space-y-1">
-                            <p className="text-heading text-sm font-semibold">
-                              {ward.name}
-                            </p>
-                            <p className="text-secondary text-xs">
-                              Tỉnh ID: {ward.provinceId}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="align-top">
-                          <span className="text-body text-sm">{ward.slug}</span>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={3} className="py-10 text-center">
-                        <p className="text-secondary text-sm">
-                          Không có dữ liệu phường/xã.
-                        </p>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-
-            <div className="surface-card overflow-hidden">
-              <div className="border-hairline border-b px-4 py-3">
-                <h3 className="text-heading text-base font-semibold">
-                  Đường phố
-                </h3>
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[16%]">ID</TableHead>
-                    <TableHead className="w-[42%]">Tên</TableHead>
-                    <TableHead className="w-[42%]">Slug</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {streets.length > 0 ? (
-                    streets.map((street) => (
-                      <TableRow key={street.id}>
-                        <TableCell className="align-top">
-                          <span className="text-body text-sm font-medium">
-                            {street.id}
-                          </span>
-                        </TableCell>
-                        <TableCell className="align-top">
-                          <div className="space-y-1">
-                            <p className="text-heading text-sm font-semibold">
-                              {street.name}
-                            </p>
-                            <p className="text-secondary text-xs">
-                              Tỉnh ID: {street.provinceId}
-                              {street.wardId ? ` · Phường ID: ${street.wardId}` : ""}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="align-top">
-                          <span className="text-body text-sm">{street.slug}</span>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={3} className="py-10 text-center">
-                        <p className="text-secondary text-sm">
-                          Không có dữ liệu đường phố.
-                        </p>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+      ) : (
+        <div className="surface-card border-hairline border p-4">
+          <p className="text-secondary text-sm">
+            Chọn một tỉnh/thành ở bảng trên để hiển thị phường/xã và đường phố.
+          </p>
         </div>
-      </div>
-    </section>
+      )}
+    </div>
   );
 }

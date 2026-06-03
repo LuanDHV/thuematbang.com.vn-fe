@@ -2,7 +2,6 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-
 import AdminDataTable from "@/components/cms/admin/data-table";
 import {
   createColumnsFromFields,
@@ -21,10 +20,6 @@ type AdminPropertiesTableProps = {
   totalPages: number;
 };
 
-async function handleDeleteProperty(id: string | number) {
-  console.info("Delete property requested", { id });
-}
-
 export default function AdminPropertiesTable({
   properties,
   currentPage,
@@ -34,11 +29,22 @@ export default function AdminPropertiesTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const handlePageChange = createPaginationChangeHandler(
+    (href) => router.push(href),
+    pathname,
+    searchParams,
+    totalPages,
+  );
+
+  async function handleDeleteProperty(id: string | number) {
+    console.info("Delete property requested", { id });
+  }
+
   const fields = useMemo<FieldConfig<Property>[]>(
     () => [
       {
         key: "title",
-        header: "Tin đăng",
+        header: "Tin cho thuê",
         fieldType: "text",
         accessor: (property) => property.title,
       },
@@ -53,7 +59,11 @@ export default function AdminPropertiesTable({
         header: "Khu vực",
         fieldType: "text",
         accessor: (property) =>
-          formatLocationParts([property.ward?.name, property.province?.name]),
+          formatLocationParts([
+            property.street?.name,
+            property.ward?.name,
+            property.province?.name,
+          ]),
       },
       {
         key: "price",
@@ -63,9 +73,15 @@ export default function AdminPropertiesTable({
           formatNegotiablePrice(property.price, property.isNegotiable),
       },
       {
+        key: "priorityStatus",
+        header: "Loại Tin",
+        fieldType: "text",
+        accessor: (property) => property.priorityStatus,
+      },
+      {
         key: "status",
         header: "Trạng thái",
-        fieldType: "badge",
+        fieldType: "text",
         accessor: (property) => property.status,
       },
       {
@@ -78,7 +94,7 @@ export default function AdminPropertiesTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (property) => `/admin/cho-thue/${property.id}/edit`,
+        getEditHref: (property) => `/admin/cho-thue/${property.id}`,
         onDelete: handleDeleteProperty,
       },
     ],
@@ -92,12 +108,6 @@ export default function AdminPropertiesTable({
         getRowId: (property) => property.id,
       }),
     [fields],
-  );
-  const handlePageChange = createPaginationChangeHandler(
-    (href) => router.push(href),
-    pathname,
-    searchParams,
-    totalPages,
   );
 
   return (

@@ -1,6 +1,9 @@
 import AdminFaqsTable from "@/components/cms/admin/AdminFaqsTable";
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
-import { resolvePaginationServer, resolveSearchParamValue } from "@/lib/server-side";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { faqService } from "@/services/faq.service";
 
 type PageProps = {

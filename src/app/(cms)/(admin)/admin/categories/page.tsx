@@ -39,7 +39,11 @@ export default async function AdminCategoriesPage({ searchParams }: PageProps) {
         searchValue={searchValue}
       />
 
-      <AdminCategoriesTable items={filteredItems} />
+      <AdminCategoriesTable
+        items={filteredItems}
+        currentPage={1}
+        totalPages={1}
+      />
     </section>
   );
 }

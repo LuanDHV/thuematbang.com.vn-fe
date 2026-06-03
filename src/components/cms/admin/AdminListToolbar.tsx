@@ -21,7 +21,7 @@ export default function AdminListToolbar({
 }: AdminListToolbarProps) {
   return (
     <section className="surface-panel overflow-hidden">
-      <div className="border-hairline border-b px-4 py-4 md:px-5">
+      <div className="border-hairline border-b p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
             <p className="text-primary text-xs font-semibold tracking-[0.24em] uppercase">

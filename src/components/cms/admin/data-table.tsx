@@ -6,6 +6,7 @@ import {
   useReactTable,
   type ColumnDef,
 } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 
 import {
   Pagination,
@@ -24,7 +25,6 @@ import { cn } from "@/lib/utils";
 import {
   FieldConfig,
   getFieldMobileSection,
-  getMobileFieldValue,
   renderFieldContent,
   useOrderedMobileFields,
 } from "./column-generator";
@@ -36,6 +36,8 @@ export type AdminDataTableProps<TData> = {
   columns: ColumnDef<TData, unknown>[];
   fields: FieldConfig<TData>[];
   getRowId: (row: TData) => RowId;
+  rowHref?: (row: TData) => string;
+  getRowClassName?: (row: TData) => string | undefined;
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -108,6 +110,8 @@ export default function AdminDataTable<TData>({
   columns,
   fields,
   getRowId,
+  rowHref,
+  getRowClassName,
   page,
   totalPages,
   onPageChange,
@@ -117,12 +121,28 @@ export default function AdminDataTable<TData>({
   loadingRowCount = 5,
   className,
 }: AdminDataTableProps<TData>) {
+  const router = useRouter();
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
   const mobileFields = useOrderedMobileFields(fields);
+  const headerFields = mobileFields.filter(
+    (field) => getFieldMobileSection(field) === "header",
+  );
+  const bodyFields = mobileFields.filter(
+    (field) => getFieldMobileSection(field) === "body",
+  );
+  const footerFields = mobileFields.filter(
+    (field) => getFieldMobileSection(field) === "footer",
+  );
+  const actionFields = footerFields.filter(
+    (field) => field.fieldType === "actions",
+  );
+  const footerContentFields = footerFields.filter(
+    (field) => field.fieldType !== "actions",
+  );
 
   return (
     <div className={cn("surface-panel overflow-hidden", className)}>
@@ -132,10 +152,7 @@ export default function AdminDataTable<TData>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={header.column.columnDef.meta?.headerClassName}
-                  >
+                  <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -155,12 +172,24 @@ export default function AdminDataTable<TData>({
               />
             ) : table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  className={[
+                    rowHref ? "cursor-pointer hover:bg-subtle/30" : "",
+                    getRowClassName?.(row.original) ?? "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={
+                    rowHref
+                      ? () => {
+                          router.push(rowHref(row.original));
+                        }
+                      : undefined
+                  }
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
+                    <TableCell key={cell.id} className="align-top">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -180,12 +209,14 @@ export default function AdminDataTable<TData>({
               </TableRow>
             )}
           </TableBody>
-          <TablePaginationFooter
-            page={page}
-            totalPages={totalPages}
-            onChange={onPageChange}
-            colSpan={columns.length}
-          />
+          {totalPages > 1 ? (
+            <TablePaginationFooter
+              page={page}
+              totalPages={totalPages}
+              onChange={onPageChange}
+              colSpan={columns.length}
+            />
+          ) : null}
         </Table>
       </div>
 
@@ -195,26 +226,24 @@ export default function AdminDataTable<TData>({
         ) : data.length > 0 ? (
           data.map((row) => {
             const rowId = getRowId(row);
-            const headerFields = mobileFields.filter(
-              (field) => getFieldMobileSection(field) === "header",
-            );
-            const bodyFields = mobileFields.filter(
-              (field) => getFieldMobileSection(field) === "body",
-            );
-            const footerFields = mobileFields.filter(
-              (field) => getFieldMobileSection(field) === "footer",
-            );
-            const actionFields = footerFields.filter(
-              (field) => field.fieldType === "actions",
-            );
-            const footerContentFields = footerFields.filter(
-              (field) => field.fieldType !== "actions",
-            );
 
             return (
               <article
                 key={String(rowId)}
-                className="surface-card space-y-4 p-4"
+                className={[
+                  "surface-card space-y-4 p-4",
+                  getRowClassName?.(row) ?? "",
+                  rowHref ? "cursor-pointer" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={
+                  rowHref
+                    ? () => {
+                        router.push(rowHref(row));
+                      }
+                    : undefined
+                }
               >
                 <div className="border-hairline space-y-3 border-b pb-4">
                   <div className="flex items-start justify-between gap-3">
@@ -225,7 +254,9 @@ export default function AdminDataTable<TData>({
                       {headerFields.length > 0 ? (
                         <div className="space-y-2">
                           {headerFields.map((field) => {
-                            const value = getMobileFieldValue(row, field);
+                            const value = field.accessor
+                              ? field.accessor(row)
+                              : (row as Record<string, unknown>)[field.key];
 
                             return (
                               <div key={`${String(rowId)}-${field.key}`}>
@@ -271,7 +302,9 @@ export default function AdminDataTable<TData>({
                 {bodyFields.length > 0 ? (
                   <div className="grid gap-3 sm:grid-cols-2">
                     {bodyFields.map((field) => {
-                      const value = getMobileFieldValue(row, field);
+                      const value = field.accessor
+                        ? field.accessor(row)
+                        : (row as Record<string, unknown>)[field.key];
 
                       return (
                         <div
@@ -299,7 +332,9 @@ export default function AdminDataTable<TData>({
                   <div className="border-hairline border-t pt-4">
                     <div className="grid gap-3">
                       {footerContentFields.map((field) => {
-                        const value = getMobileFieldValue(row, field);
+                        const value = field.accessor
+                          ? field.accessor(row)
+                          : (row as Record<string, unknown>)[field.key];
 
                         return (
                           <div

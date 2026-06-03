@@ -14,6 +14,11 @@ function matchesText(value: string, query: string) {
 export default async function AdminLocationsPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const provinceIdValue = resolveSearchParamValue(
+    resolvedSearchParams,
+    "provinceId",
+  );
+  const selectedProvinceId = provinceIdValue ? Number(provinceIdValue) : null;
   const provinces = await locationService.getProvinces().catch(() => []);
 
   const filteredProvinces = searchValue
@@ -25,13 +30,18 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
     : provinces;
 
   const selectedProvince =
-    filteredProvinces[0] ?? (searchValue ? null : (provinces[0] ?? null));
-  const wards = await locationService
-    .getWards(selectedProvince?.id)
-    .catch(() => []);
-  const streets = await locationService
-    .getStreetsByProvince(selectedProvince?.id)
-    .catch(() => []);
+    selectedProvinceId !== null && Number.isFinite(selectedProvinceId)
+      ? provinces.find((province) => province.id === selectedProvinceId) ?? null
+      : null;
+
+  const wards = selectedProvince
+    ? await locationService.getWards(selectedProvince.id).catch(() => [])
+    : [];
+  const streets = selectedProvince
+    ? await locationService
+        .getStreetsByProvince(selectedProvince.id)
+        .catch(() => [])
+    : [];
 
   const filteredWards = searchValue
     ? wards.filter(
@@ -65,6 +75,8 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
         wards={filteredWards}
         streets={filteredStreets}
         selectedProvince={selectedProvince}
+        selectedProvinceId={selectedProvinceId}
+        searchValue={searchValue}
       />
     </section>
   );

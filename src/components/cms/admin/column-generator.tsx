@@ -29,10 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends unknown, TValue> {
-    headerClassName?: string;
-    cellClassName?: string;
-  }
+  interface ColumnMeta<TData extends unknown, TValue> {}
 }
 
 type RowId = string | number;
@@ -46,9 +43,6 @@ type BaseFieldConfig<TData> = {
   accessor?: (row: TData) => unknown;
   format?: (value: unknown, row: TData) => ReactNode;
   fallback?: ReactNode;
-  className?: string;
-  headerClassName?: string;
-  cellClassName?: string;
   mobileLabel?: string;
   mobileOrder?: number;
   hideOnMobile?: boolean;
@@ -92,6 +86,7 @@ type ActionsFieldConfig<TData> = BaseFieldConfig<TData> & {
   getEditHref: (row: TData) => string;
   onDelete?: (id: RowId, row: TData) => Promise<void> | void;
   editLabel?: string;
+  getEditLabel?: (row: TData) => string;
   deleteLabel?: string;
   deleteTitle?: string;
   deleteDescription?: string;
@@ -175,7 +170,8 @@ function resolveBadgeContent<TData>(
 ) {
   const badgeKey = String(value ?? "").toLowerCase();
   const mapped = field.badgeMap?.[badgeKey];
-  const variant = field.resolveBadgeVariant?.(value, row) ?? mapped?.variant ?? "outline";
+  const variant =
+    field.resolveBadgeVariant?.(value, row) ?? mapped?.variant ?? "outline";
   const label =
     field.resolveBadgeLabel?.(value, row) ??
     mapped?.label ??
@@ -211,55 +207,57 @@ function RowActionsMenu<TData>({
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Tác vụ cho bản ghi ${rowId}`}
-          >
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <Link href={field.getEditHref(row)}>
-              <Pencil className="size-4" />
-              {field.editLabel ?? "Chỉnh sửa"}
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-red-700 focus:text-red-700"
-            onSelect={(event) => {
-              event.preventDefault();
-              setOpen(true);
-            }}
-          >
-            <Trash2 className="size-4" />
-            {field.deleteLabel ?? "Xóa"}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div onClick={(event) => event.stopPropagation()}>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label={`Tác vụ cho bản ghi ${rowId}`}
+            >
+              <MoreHorizontal className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={field.getEditHref(row)}>
+                <Pencil className="size-4" />
+                {field.getEditLabel?.(row) ?? field.editLabel ?? "Chỉnh sửa"}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-700 focus:text-red-700"
+              onSelect={(event) => {
+                event.preventDefault();
+                setOpen(true);
+              }}
+            >
+              <Trash2 className="size-4" />
+              {field.deleteLabel ?? "Xóa"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {field.deleteTitle ?? "Bạn có chắc chắn muốn xóa không?"}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {field.deleteDescription ??
-              `Bản ghi ID ${rowId} sẽ bị xóa khỏi danh sách này.`}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Hủy</AlertDialogCancel>
-          <AlertDialogAction disabled={isDeleting} onClick={handleDelete}>
-            {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {field.deleteTitle ?? "Bạn có chắc chắn muốn xóa không?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {field.deleteDescription ??
+                `Bản ghi ID ${rowId} sẽ bị xóa khỏi danh sách này.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Hủy</AlertDialogCancel>
+            <AlertDialogAction disabled={isDeleting} onClick={handleDelete}>
+              {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 }
 
@@ -319,7 +317,11 @@ export function renderFieldContent<TData>({
     }
     case "text":
     default:
-      return value as ReactNode;
+      return typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+        ? String(value)
+        : getFallbackContent(field);
   }
 }
 
@@ -335,10 +337,6 @@ export function createColumnsFromFields<TData>({
         {String(getRowId(row.original))}
       </span>
     ),
-    meta: {
-      headerClassName: "w-[90px]",
-      cellClassName: "align-top",
-    },
   };
 
   const generatedColumns = fields.map<ColumnDef<TData, unknown>>((field) => ({
@@ -348,20 +346,12 @@ export function createColumnsFromFields<TData>({
       const rowId = getRowId(row.original);
       const value = getFieldValue(row.original, field);
 
-      return (
-        <div className={cn(field.className)}>
-          {renderFieldContent({
-            field,
-            row: row.original,
-            value,
-            rowId,
-          })}
-        </div>
-      );
-    },
-    meta: {
-      headerClassName: field.headerClassName,
-      cellClassName: cn("align-top", field.cellClassName),
+      return renderFieldContent({
+        field,
+        row: row.original,
+        value,
+        rowId,
+      });
     },
   }));
 
@@ -392,11 +382,4 @@ export function getFieldMobileSection<TData>(field: FieldConfig<TData>) {
   }
 
   return field.emphasizeOnMobile ? "header" : "body";
-}
-
-export function getMobileFieldValue<TData>(
-  row: TData,
-  field: FieldConfig<TData>,
-) {
-  return getFieldValue(row, field);
 }
