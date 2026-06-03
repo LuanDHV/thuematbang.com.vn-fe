@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { CalendarDays, Eye, Layers } from "lucide-react";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { formatDate } from "@/lib/utils";
 import { News } from "@/types/news";
 
@@ -12,7 +12,7 @@ export default function NewsDetailContent({ news }: NewsDetailContentProps) {
     <div className="surface-card flex flex-col gap-6 p-5 lg:gap-8">
       <section>
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-          <Image
+          <CloudinaryImage
             src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
             alt={news.title}
             fill

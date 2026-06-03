@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
+import { isProductionAppEnv } from "@/lib/app-env";
 import { siteConfig } from "@/lib/metadata";
 import AppProviders from "@/components/providers/AppProviders";
 
-const isProduction = process.env.NEXT_PUBLIC_APP_ENV === "production";
+const isProduction = isProductionAppEnv();
 
 const geistSans = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700"],

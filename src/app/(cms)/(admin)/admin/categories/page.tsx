@@ -1,22 +1,45 @@
-import AdminComingSoonPanel from "@/components/cms/admin/AdminComingSoonPanel";
+import AdminCategoriesTable from "@/components/cms/admin/AdminCategoriesTable";
+import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
+import { resolveSearchParamValue } from "@/lib/server-side";
 import { categoryService } from "@/services/category.service";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
+function matchesText(value: string, query: string) {
+  return value.toLowerCase().includes(query.toLowerCase());
+}
+
 export default async function AdminCategoriesPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  await categoryService.getAll();
+  const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const result = await categoryService
+    .getAll()
+    .catch(() => ({ data: [], meta: undefined }));
+
+  const items = result.data ?? [];
+  const filteredItems = searchValue
+    ? items.filter(
+        (item) =>
+          matchesText(item.name, searchValue) ||
+          matchesText(item.slug, searchValue) ||
+          matchesText(item.type, searchValue),
+      )
+    : items;
 
   return (
-    <AdminComingSoonPanel
-      title="CMS Admin"
-      description="Quản lý danh mục nội dung theo các endpoint categories từ BE."
-      notes={[
-        "Phù hợp để map category cho properties, projects, news, và rent requests.",
-        "Có thể mở rộng thành bảng CRUD khi FE có contract đủ rõ.",
-      ]}
-    />
+    <section className="space-y-5">
+      <AdminListToolbar
+        eyebrow="CMS Admin"
+        title="Quản lý danh mục"
+        description="Danh sách taxonomy theo type để kiểm tra nội dung hiển thị và cấu trúc slug."
+        searchPlaceholder="Tìm kiếm danh mục"
+        createLabel="Tạo mới"
+        searchValue={searchValue}
+      />
+
+      <AdminCategoriesTable items={filteredItems} />
+    </section>
   );
 }

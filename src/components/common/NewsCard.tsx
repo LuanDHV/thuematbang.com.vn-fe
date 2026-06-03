@@ -1,8 +1,8 @@
 ﻿"use client";
 
 import { ArrowRight, Calendar } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { News } from "@/types/news";
 import { formatDate } from "@/lib/utils";
 
@@ -19,8 +19,8 @@ export default function NewsCard({ news, category }: NewsCardProps) {
     >
       {/* Thumbnail */}
       <div className="relative w-[38%] shrink-0 overflow-hidden bg-white">
-        <Image
-          src={"/imgs/wallpaper-1.jpg"}
+        <CloudinaryImage
+          src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
           alt={news.title}
           fill
           sizes="(max-width: 768px) 40vw, 20vw"

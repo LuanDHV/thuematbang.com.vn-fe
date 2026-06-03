@@ -1,14 +1,73 @@
-import AdminComingSoonPanel from "@/components/cms/admin/AdminComingSoonPanel";
+import AdminLeadsTable from "@/components/cms/admin/AdminLeadsTable";
+import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
+import { resolvePaginationServer, resolveSearchParamValue } from "@/lib/server-side";
+import { leadService } from "@/services/lead.service";
+import type { LeadStatus } from "@/types/enums";
 
-export default function AdminLeadsPage() {
+type PageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+function matchesText(value: string, query: string) {
+  return value.toLowerCase().includes(query.toLowerCase());
+}
+
+export default async function AdminLeadsPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
+  const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const statusValue = resolveSearchParamValue(resolvedSearchParams, "status");
+  const limit = 10;
+  const status =
+    statusValue &&
+    (["NEW", "CONTACTED", "QUALIFIED", "CLOSED", "REJECTED"] as LeadStatus[]).includes(
+      statusValue as LeadStatus,
+    )
+      ? (statusValue as LeadStatus)
+      : undefined;
+
+  const result = await leadService
+    .getAll({
+      page: currentPage,
+      limit,
+      filters: {
+        status,
+      },
+    })
+    .catch(() => ({ data: [], meta: undefined }));
+
+  const items = result.data ?? [];
+  const totalPages = result.meta?.totalPage ?? 1;
+  const filteredItems = searchValue
+    ? items.filter(
+        (item) =>
+          matchesText(item.fullName, searchValue) ||
+          matchesText(item.phone, searchValue) ||
+          matchesText(item.email ?? "", searchValue) ||
+          matchesText(item.source, searchValue) ||
+          matchesText(item.status, searchValue) ||
+          matchesText(item.message ?? "", searchValue) ||
+          matchesText(String(item.propertyId ?? ""), searchValue) ||
+          matchesText(String(item.userId ?? ""), searchValue),
+      )
+    : items;
+
   return (
-    <AdminComingSoonPanel
-      title="CMS Admin"
-      description="Quản lý lead và lịch sử liên hệ từ endpoint leads của BE."
-      notes={[
-        "Trang này là nơi theo dõi yêu cầu phát sinh từ form và tương tác người dùng.",
-        "Có thể gắn action xem chi tiết, gắn trạng thái xử lý và lọc theo nguồn.",
-      ]}
-    />
+    <section className="space-y-5">
+      <AdminListToolbar
+        eyebrow="CMS Admin"
+        title="Quản lý lead"
+        description="Danh sách liên hệ và lịch sử xử lý theo trạng thái, phân trang từ backend."
+        searchPlaceholder="Tìm kiếm lead"
+        createLabel="Tạo mới"
+        searchValue={searchValue}
+      />
+
+      <AdminLeadsTable
+        items={filteredItems}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+    </section>
   );
 }

@@ -1,14 +1,57 @@
-import AdminComingSoonPanel from "@/components/cms/admin/AdminComingSoonPanel";
+import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
+import AdminSeoContentsTable from "@/components/cms/admin/AdminSeoContentsTable";
+import { resolvePaginationServer, resolveSearchParamValue } from "@/lib/server-side";
+import { seoContentService } from "@/services/seo-content.service";
 
-export default function AdminSeoContentsPage() {
+type PageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+function matchesText(value: string, query: string) {
+  return value.toLowerCase().includes(query.toLowerCase());
+}
+
+export default async function AdminSeoContentsPage({
+  searchParams,
+}: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
+  const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const result = await seoContentService
+    .getAll({
+      page: currentPage,
+      limit: 10,
+    })
+    .catch(() => ({ data: [], meta: undefined }));
+
+  const items = result.data ?? [];
+  const totalPages = result.meta?.totalPage ?? 1;
+  const filteredItems = searchValue
+    ? items.filter(
+        (item) =>
+          matchesText(item.page, searchValue) ||
+          matchesText(item.seoContent ?? "", searchValue) ||
+          matchesText(item.faqTitle ?? "", searchValue) ||
+          matchesText(item.faqDescription ?? "", searchValue),
+      )
+    : items;
+
   return (
-    <AdminComingSoonPanel
-      title="CMS Admin"
-      description="Quản lý nội dung SEO theo endpoint seo-contents của BE."
-      notes={[
-        "Đây là khu vực phù hợp cho nội dung page SEO theo page/category.",
-        "Sau này có thể cắm editor và danh sách theo page/:page.",
-      ]}
-    />
+    <section className="space-y-5">
+      <AdminListToolbar
+        eyebrow="CMS Admin"
+        title="Quản lý SEO content"
+        description="Nội dung SEO và FAQ metadata theo từng page để kiểm soát hiển thị public."
+        searchPlaceholder="Tìm kiếm page SEO"
+        createLabel="Tạo mới"
+        searchValue={searchValue}
+      />
+
+      <AdminSeoContentsTable
+        items={filteredItems}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+    </section>
   );
 }
