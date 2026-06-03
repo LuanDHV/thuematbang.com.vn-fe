@@ -19,11 +19,6 @@ export const authService = {
       cache: "no-store",
     }).then(unwrapApiData<AuthResponse>),
 
-  refresh: () =>
-    postJson<unknown>(createAuthUrl("/auth/refresh"), undefined, {
-      cache: "no-store",
-    }).then(unwrapApiData<AuthResponse>),
-
   logout: () =>
     postJson<unknown>(createAuthUrl("/auth/logout"), undefined, {
       cache: "no-store",
