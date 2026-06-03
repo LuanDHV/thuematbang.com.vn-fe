@@ -1,10 +1,9 @@
-﻿export interface FaqItem {
+export interface FaqItem {
   id: number;
   page: string;
   question: string;
   answer: string;
   sortOrder: number;
-  isActive: boolean;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
