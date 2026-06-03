@@ -21,7 +21,33 @@ type RangeOptions = {
   upperBoundPrefix?: string;
 };
 
-function isDefinedNumber(value?: number | null): value is number {
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+type NumericLike = bigint | number | string;
+
+function toNumber(value?: NumericLike | null) {
+  if (typeof value === "bigint") {
+    return Number(value);
+  }
+
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : undefined;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim();
+    if (!normalized) return undefined;
+
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  return undefined;
+}
+
+function hasNumber(value?: number | null) {
   return typeof value === "number";
 }
 
@@ -47,13 +73,13 @@ function formatRange(
   const lowerBoundPrefix = options.lowerBoundPrefix ?? "Từ";
   const upperBoundPrefix = options.upperBoundPrefix ?? "Đến";
 
-  if (!isDefinedNumber(min) && !isDefinedNumber(max)) {
+  if (!hasNumber(min) && !hasNumber(max)) {
     return fallback;
   }
-  if (isDefinedNumber(min) && isDefinedNumber(max)) {
+  if (hasNumber(min) && hasNumber(max)) {
     return `${unitFormatter(min)} - ${unitFormatter(max)}`;
   }
-  if (isDefinedNumber(min)) {
+  if (hasNumber(min)) {
     return `${lowerBoundPrefix} ${unitFormatter(min)}`;
   }
 
@@ -64,18 +90,11 @@ function serializeSearch(search: string | { toString(): string }) {
   return typeof search === "string" ? search : search.toString();
 }
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+export function formatPrice(price: NumericLike) {
+  return VI_VND_CURRENCY_FORMATTER.format(toNumber(price) ?? 0);
 }
 
-export function formatPrice(price: bigint | number) {
-  return VI_VND_CURRENCY_FORMATTER.format(Number(price));
-}
-
-export function formatDate(
-  date?: Date | string | null,
-  fallback = "Vừa đăng",
-) {
+export function formatDate(date?: Date | string | null, fallback = "Vừa đăng") {
   return formatDateWith(VI_DATE_FORMATTER, date, fallback);
 }
 
@@ -87,14 +106,17 @@ export function formatDateDisplay(
 }
 
 export function formatVndAmount(
-  value?: number | null,
+  value?: NumericLike | null,
   fallback = "Chưa cập nhật",
 ) {
-  return isDefinedNumber(value) ? formatVndNumber(value) : fallback;
+  const normalizedValue = toNumber(value);
+  return typeof normalizedValue === "number"
+    ? formatVndNumber(normalizedValue)
+    : fallback;
 }
 
 export function formatNegotiablePrice(
-  value?: number | null,
+  value?: NumericLike | null,
   isNegotiable = false,
   options?: {
     fallback?: string;
@@ -109,11 +131,11 @@ export function formatNegotiablePrice(
 }
 
 export function formatBudgetRange(
-  min?: number | null,
-  max?: number | null,
+  min?: NumericLike | null,
+  max?: NumericLike | null,
   options: RangeOptions = {},
 ) {
-  return formatRange(min, max, formatVndNumber, {
+  return formatRange(toNumber(min), toNumber(max), formatVndNumber, {
     fallback: options.fallback ?? "Chưa cập nhật",
     lowerBoundPrefix: options.lowerBoundPrefix ?? "Từ",
     upperBoundPrefix: options.upperBoundPrefix ?? "Đến",
@@ -121,11 +143,11 @@ export function formatBudgetRange(
 }
 
 export function formatAreaRange(
-  min?: number | null,
-  max?: number | null,
+  min?: NumericLike | null,
+  max?: NumericLike | null,
   options: RangeOptions = {},
 ) {
-  return formatRange(min, max, (value) => `${value} m²`, {
+  return formatRange(toNumber(min), toNumber(max), (value) => `${value} m²`, {
     fallback: options.fallback ?? "Đang cập nhật",
     lowerBoundPrefix: options.lowerBoundPrefix ?? "Từ",
     upperBoundPrefix: options.upperBoundPrefix ?? "Dưới",
