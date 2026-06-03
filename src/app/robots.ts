@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
+import { isProductionAppEnv } from "@/lib/app-env";
 
-const isProduction = process.env.NEXT_PUBLIC_APP_ENV === "production";
+const isProduction = isProductionAppEnv();
 
 export default function robots(): MetadataRoute.Robots {
   if (!isProduction) {

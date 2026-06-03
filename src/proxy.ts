@@ -1,38 +1,27 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getPrivateApiBaseUrl } from "@/lib/env";
+import { isProductionAppEnv } from "@/lib/app-env";
+import { resolveAdminAuthState } from "@/lib/auth/admin-auth";
 
 const LOGIN_ROUTE = "/dang-nhap";
 const ADMIN_LOGIN_ROUTE = "/dang-nhap-admin";
 const ADMIN_ROOT = "/admin";
 const LEGACY_ADMIN_ROOT = "/cms/admin";
 const ACCESS_TOKEN_COOKIE = "accessToken";
+const REFRESH_TOKEN_COOKIE = "refreshToken";
+
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  sameSite: "lax" as const,
+  secure: isProductionAppEnv(),
+  path: "/",
+};
 
 function isSafeInternalPath(value: string | null): value is string {
   return Boolean(value && value.startsWith("/") && !value.startsWith("//"));
 }
 
-async function fetchCurrentUser(request: NextRequest) {
-  const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
-  if (!accessToken) return null;
-
-  const backendUrl = getPrivateApiBaseUrl().replace(/\/$/, "");
-  const response = await fetch(`${backendUrl}/users/me`, {
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    cache: "no-store",
-  });
-
-  if (!response.ok) return null;
-
-  const payload = await response.json().catch(() => null);
-  return (payload?.data ?? payload ?? null) as { role?: string } | null;
-}
-
 export async function proxy(request: NextRequest) {
-  const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   const { pathname, search } = request.nextUrl;
 
   if (pathname.startsWith(LEGACY_ADMIN_ROOT)) {
@@ -42,32 +31,72 @@ export async function proxy(request: NextRequest) {
   }
 
   if (pathname === ADMIN_LOGIN_ROUTE || pathname.startsWith(`${ADMIN_LOGIN_ROUTE}/`)) {
-    const user = await fetchCurrentUser(request);
-    if (!user) return NextResponse.next();
+    const authState = await resolveAdminAuthState(
+      request.cookies.get(ACCESS_TOKEN_COOKIE)?.value,
+      request.cookies.get(REFRESH_TOKEN_COOKIE)?.value,
+    );
+    if (!authState) return NextResponse.next();
 
-    if (user.role !== "ADMIN") {
+    if (authState.user.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", request.url));
     }
 
     const nextPath = request.nextUrl.searchParams.get("next");
     const target = isSafeInternalPath(nextPath) ? nextPath : ADMIN_ROOT;
-    return NextResponse.redirect(new URL(target, request.url));
+    const response = NextResponse.redirect(new URL(target, request.url));
+    if (authState.tokenPair) {
+      response.cookies.set(ACCESS_TOKEN_COOKIE, authState.tokenPair.accessToken!, {
+        ...COOKIE_OPTIONS,
+        maxAge: 60 * 60 * 24,
+      });
+      response.cookies.set(REFRESH_TOKEN_COOKIE, authState.tokenPair.refreshToken!, {
+        ...COOKIE_OPTIONS,
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+    return response;
   }
 
   if (pathname === ADMIN_ROOT || pathname.startsWith(`${ADMIN_ROOT}/`)) {
-    const user = await fetchCurrentUser(request);
-    if (!user) {
+    const authState = await resolveAdminAuthState(
+      request.cookies.get(ACCESS_TOKEN_COOKIE)?.value,
+      request.cookies.get(REFRESH_TOKEN_COOKIE)?.value,
+    );
+    if (!authState) {
       const loginUrl = new URL(ADMIN_LOGIN_ROUTE, request.url);
       loginUrl.searchParams.set("next", `${pathname}${search}`);
-      return NextResponse.redirect(loginUrl);
+      const response = NextResponse.redirect(loginUrl);
+      response.cookies.set(ACCESS_TOKEN_COOKIE, "", {
+        ...COOKIE_OPTIONS,
+        maxAge: 0,
+      });
+      response.cookies.set(REFRESH_TOKEN_COOKIE, "", {
+        ...COOKIE_OPTIONS,
+        maxAge: 0,
+      });
+      return response;
     }
 
-    if (user.role !== "ADMIN") {
+    if (authState.user.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", request.url));
     }
+
+    const response = NextResponse.next();
+    if (authState.tokenPair) {
+      response.cookies.set(ACCESS_TOKEN_COOKIE, authState.tokenPair.accessToken!, {
+        ...COOKIE_OPTIONS,
+        maxAge: 60 * 60 * 24,
+      });
+      response.cookies.set(REFRESH_TOKEN_COOKIE, authState.tokenPair.refreshToken!, {
+        ...COOKIE_OPTIONS,
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+    return response;
   }
 
   if (pathname.startsWith("/quan-li-tai-khoan")) {
+    const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
     if (accessToken) {
       return NextResponse.next();
     }
