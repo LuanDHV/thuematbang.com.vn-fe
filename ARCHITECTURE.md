@@ -229,7 +229,8 @@ Current service modules include:
 - `news.service.ts`
 - `category.service.ts`
 - `banners.service.ts`
-- `page-seo-faq.service.ts`
+- `seo-content.service.ts`
+- `faq.service.ts`
 - `location.service.ts`
 - `media.service.ts`
 

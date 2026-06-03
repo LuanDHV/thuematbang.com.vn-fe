@@ -1,6 +1,9 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminSeoContentsTable from "@/components/cms/admin/AdminSeoContentsTable";
-import { resolvePaginationServer, resolveSearchParamValue } from "@/lib/server-side";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { seoContentService } from "@/services/seo-content.service";
 
 type PageProps = {
@@ -30,9 +33,7 @@ export default async function AdminSeoContentsPage({
     ? items.filter(
         (item) =>
           matchesText(item.page, searchValue) ||
-          matchesText(item.seoContent ?? "", searchValue) ||
-          matchesText(item.faqTitle ?? "", searchValue) ||
-          matchesText(item.faqDescription ?? "", searchValue),
+          matchesText(item.seoContent ?? "", searchValue),
       )
     : items;
 

@@ -267,11 +267,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       </SafeFetch>
 
       <PageSeoContent seoData={seoRes.data} />
-      <PageFaq
-        title={seoRes.data?.faqTitle}
-        description={seoRes.data?.faqDescription}
-        faqData={faqRes.data}
-      />
+      <PageFaq faqData={faqRes.data} />
     </>
   );
 }

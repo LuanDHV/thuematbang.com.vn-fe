@@ -32,7 +32,7 @@ export default function PageFaq({
 
   if (items.length === 0) return null;
 
-  const normalizedTitle = title?.trim() ?? "";
+  const normalizedTitle = title?.trim() ?? "Câu hỏi thường gặp";
   const normalizedDescription = description?.trim() ?? "";
 
   return (
