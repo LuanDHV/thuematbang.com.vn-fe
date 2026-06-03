@@ -31,7 +31,6 @@ export default async function ChoThuePage() {
       >
         {(response) => (
           <ListingFilterSection
-            title="Cho thuê bất động sản"
             properties={response.data ?? []}
             listingMode="property"
             serverDriven

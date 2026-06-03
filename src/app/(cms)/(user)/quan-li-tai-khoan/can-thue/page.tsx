@@ -1,5 +1,5 @@
 import UserRentRequestsTable from "@/components/cms/user/UserRentRequestsTable";
-import { resolveAdminPage } from "@/lib/admin-page";
+import { resolvePaginationServer } from "@/lib/server-side";
 import { rentRequestService } from "@/services/rent-request.service";
 
 type PageProps = {
@@ -10,7 +10,7 @@ export default async function UserMyRentRequestsPage({
   searchParams,
 }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
   const limit = 10;
 
   const result = await rentRequestService

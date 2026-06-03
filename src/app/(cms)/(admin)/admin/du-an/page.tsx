@@ -1,6 +1,9 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminProjectsTable from "@/components/cms/admin/AdminProjectsTable";
-import { resolveAdminPage, resolveSearchParamValue } from "@/lib/admin-page";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { projectService } from "@/services/project.service";
 
 type PageProps = {
@@ -9,7 +12,7 @@ type PageProps = {
 
 export default async function AdminDuAnPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
   const limit = 10;
 
@@ -34,7 +37,7 @@ export default async function AdminDuAnPage({ searchParams }: PageProps) {
         title="Quản lý dự án"
         description="Bảng dự án lấy từ API thật, cùng hệ action menu với module tin đăng."
         searchPlaceholder="Tìm kiếm dự án"
-        createLabel="Tạo dự án"
+        createLabel="Tạo mới"
         searchValue={searchValue}
       />
 

@@ -38,8 +38,10 @@ const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
 });
 
 function formatBudget(min?: number | null, max?: number | null) {
-  if (typeof min !== "number" && typeof max !== "number") return "Chưa cập nhật";
-  if (min && max) return `${currencyFormatter.format(min)} - ${currencyFormatter.format(max)} đ`;
+  if (typeof min !== "number" && typeof max !== "number")
+    return "Chưa cập nhật";
+  if (min && max)
+    return `${currencyFormatter.format(min)} - ${currencyFormatter.format(max)} đ`;
   if (min) return `Từ ${currencyFormatter.format(min)} đ`;
   return `Đến ${currencyFormatter.format(max as number)} đ`;
 }
@@ -94,7 +96,11 @@ function RentRequestActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label={`Tác vụ cho ${item.title}`}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Tác vụ cho ${item.title}`}
+        >
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -148,7 +154,7 @@ export default function AdminRentRequestsTable({
   return (
     <section className="space-y-5">
       <div className="surface-panel overflow-hidden">
-        <div className="border-b border-hairline px-4 py-4 md:px-5">
+        <div className="border-hairline border-b px-4 py-4 md:px-5">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
@@ -168,6 +174,7 @@ export default function AdminRentRequestsTable({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[28%]">ID</TableHead>
               <TableHead className="w-[28%]">Nhu cầu</TableHead>
               <TableHead className="w-[16%]">Danh mục</TableHead>
               <TableHead className="w-[18%]">Khu vực mong muốn</TableHead>
@@ -188,6 +195,9 @@ export default function AdminRentRequestsTable({
 
                 return (
                   <TableRow key={item.id}>
+                    <TableCell className="align-top">
+                      <div className="space-y-1">{item.id}</div>
+                    </TableCell>
                     <TableCell className="align-top">
                       <div className="space-y-1">
                         <Link
@@ -235,7 +245,7 @@ export default function AdminRentRequestsTable({
                         {formatDate(item.createdAt)}
                       </span>
                     </TableCell>
-                    <TableCell className="align-top text-right">
+                    <TableCell className="text-right align-top">
                       <div className="flex justify-end">
                         <RentRequestActions
                           item={item}

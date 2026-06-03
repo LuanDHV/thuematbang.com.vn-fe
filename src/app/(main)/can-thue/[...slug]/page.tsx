@@ -242,7 +242,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
           return (
             <ListingFilterSection
-              title="Cần thuê bất động sản"
               properties={rentRequests}
               listingMode="rentRequest"
               serverDriven

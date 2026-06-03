@@ -280,7 +280,6 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
           return (
             <ListingFilterSection
-              title="Cho thuê bất động sản"
               properties={properties}
               listingMode="property"
               serverDriven

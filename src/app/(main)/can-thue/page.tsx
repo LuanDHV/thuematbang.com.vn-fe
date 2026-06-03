@@ -31,7 +31,6 @@ export default async function CanThuePage() {
       >
         {(response) => (
           <ListingFilterSection
-            title="Cần thuê bất động sản"
             properties={response.data ?? []}
             listingMode="rentRequest"
             serverDriven

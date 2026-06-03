@@ -1,6 +1,9 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminRentRequestsTable from "@/components/cms/admin/AdminRentRequestsTable";
-import { resolveAdminPage, resolveSearchParamValue } from "@/lib/admin-page";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { rentRequestService } from "@/services/rent-request.service";
 
 type PageProps = {
@@ -9,7 +12,7 @@ type PageProps = {
 
 export default async function AdminCanThuePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
   const limit = 10;
 
@@ -34,7 +37,7 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
         title="Quản lý cần thuê"
         description="Danh sách nhu cầu cần thuê thật từ API để kiểm tra luồng admin."
         searchPlaceholder="Tìm kiếm nhu cầu"
-        createLabel="Tạo nhu cầu"
+        createLabel="Tạo mới"
         searchValue={searchValue}
       />
 

@@ -1,6 +1,9 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminPropertiesTable from "@/components/cms/admin/AdminPropertiesTable";
-import { resolveAdminPage, resolveSearchParamValue } from "@/lib/admin-page";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { propertyService } from "@/services/property.service";
 
 type PageProps = {
@@ -9,7 +12,7 @@ type PageProps = {
 
 export default async function AdminChoThuePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
   const limit = 10;
 
@@ -34,7 +37,7 @@ export default async function AdminChoThuePage({ searchParams }: PageProps) {
         title="Quản lý cho thuê"
         description="Danh sách tin cho thuê lấy trực tiếp từ API public, dùng làm module mẫu cho admin."
         searchPlaceholder="Tìm kiếm tin cho thuê"
-        createLabel="Tạo tin"
+        createLabel="Tạo mới"
         searchValue={searchValue}
       />
 

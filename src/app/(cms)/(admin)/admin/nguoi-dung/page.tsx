@@ -1,5 +1,5 @@
 import AdminUsersTable from "@/components/cms/admin/AdminUsersTable";
-import { resolveAdminPage } from "@/lib/admin-page";
+import { resolvePaginationServer } from "@/lib/server-side";
 import { userService } from "@/services/user.service";
 
 type PageProps = {
@@ -8,7 +8,7 @@ type PageProps = {
 
 export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
   const limit = 10;
 
   const result = await userService

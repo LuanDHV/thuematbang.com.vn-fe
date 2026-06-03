@@ -1,5 +1,5 @@
 import UserPropertiesTable from "@/components/cms/user/UserPropertiesTable";
-import { resolveAdminPage } from "@/lib/admin-page";
+import { resolvePaginationServer } from "@/lib/server-side";
 import { propertyService } from "@/services/property.service";
 
 type PageProps = {
@@ -8,7 +8,7 @@ type PageProps = {
 
 export default async function UserMyPropertiesPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
   const limit = 10;
 
   const result = await propertyService

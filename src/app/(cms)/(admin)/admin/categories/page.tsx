@@ -1,6 +1,14 @@
 import AdminComingSoonPanel from "@/components/cms/admin/AdminComingSoonPanel";
+import { categoryService } from "@/services/category.service";
 
-export default function AdminCategoriesPage() {
+type PageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function AdminCategoriesPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  await categoryService.getAll();
+
   return (
     <AdminComingSoonPanel
       title="CMS Admin"

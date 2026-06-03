@@ -1,6 +1,9 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminNewsTable from "@/components/cms/admin/AdminNewsTable";
-import { resolveAdminPage, resolveSearchParamValue } from "@/lib/admin-page";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { newsService } from "@/services/news.service";
 
 type PageProps = {
@@ -9,7 +12,7 @@ type PageProps = {
 
 export default async function AdminTinTucPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
-  const currentPage = resolveAdminPage(resolvedSearchParams);
+  const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
   const limit = 10;
 
@@ -34,7 +37,7 @@ export default async function AdminTinTucPage({ searchParams }: PageProps) {
         title="Quản lý tin tức"
         description="Bảng tin tức từ API thật để hoàn thiện content module admin."
         searchPlaceholder="Tìm kiếm bài viết"
-        createLabel="Tạo bài viết"
+        createLabel="Tạo mới"
         searchValue={searchValue}
       />
 
