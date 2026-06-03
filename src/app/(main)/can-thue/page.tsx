@@ -5,7 +5,8 @@ import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaqService } from "@/services/page-seo-faq.service";
+import { faqService } from "@/services/faq.service";
+import { seoContentService } from "@/services/seo-content.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import SafeFetch from "@/components/common/SafeFetch";
 
@@ -18,8 +19,10 @@ export const metadata: Metadata = createPageMetadata({
 export default async function CanThuePage() {
   await connection();
 
-  // Load static SEO/FAQ content for rent request page.
-  const pageContent = await pageSeoFaqService.getPageSeoFaq("can-thue");
+  const [seoRes, faqRes] = await Promise.all([
+    seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
+    faqService.getByPage("can-thue").catch(() => ({ data: { page: "can-thue", faqs: [] } })),
+  ]);
 
   return (
     <>
@@ -41,16 +44,12 @@ export default async function CanThuePage() {
         )}
       </SafeFetch>
 
-      {pageContent.seoContent ? (
-        <PageSeoContent content={pageContent.seoContent} />
-      ) : null}
-      {pageContent.faqs.length > 0 ? (
-        <PageFaq
-          title={pageContent.faqTitle}
-          description={pageContent.faqDescription}
-          items={pageContent.faqs}
-        />
-      ) : null}
+      <PageSeoContent seoData={seoRes.data} />
+      <PageFaq
+        title={seoRes.data?.faqTitle}
+        description={seoRes.data?.faqDescription}
+        faqData={faqRes.data}
+      />
     </>
   );
 }

@@ -16,10 +16,11 @@ import {
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
-import { pageSeoFaqService } from "@/services/page-seo-faq.service";
+import { faqService } from "@/services/faq.service";
 import { RentRequest } from "@/types/rent-request";
 import { rentRequestService } from "@/services/rent-request.service";
 import { locationService } from "@/services/location.service";
+import { seoContentService } from "@/services/seo-content.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -135,7 +136,13 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
   const { rawSlug, page } = parsePagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
-  const pageContent = await pageSeoFaqService.getPageSeoFaq("can-thue");
+  const [seoRes, faqRes] = await Promise.all([
+    seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
+    faqService
+      .getByPage("can-thue")
+      .catch(() => ({ data: { page: "can-thue", faqs: [] } })),
+  ]);
+
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
   if (rentRequest) {
@@ -259,17 +266,12 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
         }}
       </SafeFetch>
 
-      {pageContent.seoContent ? (
-        <PageSeoContent content={pageContent.seoContent} />
-      ) : null}
-
-      {pageContent.faqs.length > 0 ? (
-        <PageFaq
-          title={pageContent.faqTitle}
-          description={pageContent.faqDescription}
-          items={pageContent.faqs}
-        />
-      ) : null}
+      <PageSeoContent seoData={seoRes.data} />
+      <PageFaq
+        title={seoRes.data?.faqTitle}
+        description={seoRes.data?.faqDescription}
+        faqData={faqRes.data}
+      />
     </>
   );
 }

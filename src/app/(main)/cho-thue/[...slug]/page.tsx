@@ -16,10 +16,11 @@ import {
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
-import { pageSeoFaqService } from "@/services/page-seo-faq.service";
+import { faqService } from "@/services/faq.service";
 import { Property } from "@/types/property";
 import { propertyService } from "@/services/property.service";
 import { locationService } from "@/services/location.service";
+import { seoContentService } from "@/services/seo-content.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -150,7 +151,10 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   const { rawSlug, page } = parsePagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
-  const pageContent = await pageSeoFaqService.getPageSeoFaq("cho-thue");
+  const [seoRes, faqRes] = await Promise.all([
+    seoContentService.getByPage("cho-thue").catch(() => ({ data: null })),
+    faqService.getByPage("cho-thue").catch(() => ({ data: { page: "cho-thue", faqs: [] } })),
+  ]);
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
   if (property) {
@@ -297,17 +301,12 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         }}
       </SafeFetch>
 
-      {pageContent.seoContent ? (
-        <PageSeoContent content={pageContent.seoContent} />
-      ) : null}
-
-      {pageContent.faqs.length > 0 ? (
-        <PageFaq
-          title={pageContent.faqTitle}
-          description={pageContent.faqDescription}
-          items={pageContent.faqs}
-        />
-      ) : null}
+      <PageSeoContent seoData={seoRes.data} />
+      <PageFaq
+        title={seoRes.data?.faqTitle}
+        description={seoRes.data?.faqDescription}
+        faqData={faqRes.data}
+      />
     </>
   );
 }

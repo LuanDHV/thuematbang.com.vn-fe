@@ -6,8 +6,9 @@ import PageSeoContent from "@/components/common/PageSeoContent";
 import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import { buildProjectCategoryBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaqService } from "@/services/page-seo-faq.service";
 import { categoryService } from "@/services/category.service";
+import { faqService } from "@/services/faq.service";
+import { seoContentService } from "@/services/seo-content.service";
 import { projectService } from "@/services/project.service";
 
 export const metadata: Metadata = createPageMetadata({
@@ -21,8 +22,10 @@ export default async function DuAnPage() {
 
   // Fetch project categories for tabs/chips.
   const projectCategories = await categoryService.getProjectCategories();
-  // Load static SEO/FAQ content for project page.
-  const pageContent = await pageSeoFaqService.getPageSeoFaq("du-an");
+  const [seoRes, faqRes] = await Promise.all([
+    seoContentService.getByPage("du-an").catch(() => ({ data: null })),
+    faqService.getByPage("du-an").catch(() => ({ data: { page: "du-an", faqs: [] } })),
+  ]);
 
   return (
     <>
@@ -41,14 +44,12 @@ export default async function DuAnPage() {
           />
         )}
       </SafeFetch>
-      {pageContent.seoContent ? <PageSeoContent content={pageContent.seoContent} /> : null}
-      {pageContent.faqs.length > 0 ? (
-        <PageFaq
-          title={pageContent.faqTitle}
-          description={pageContent.faqDescription}
-          items={pageContent.faqs}
-        />
-      ) : null}
+      <PageSeoContent seoData={seoRes.data} />
+      <PageFaq
+        title={seoRes.data?.faqTitle}
+        description={seoRes.data?.faqDescription}
+        faqData={faqRes.data}
+      />
     </>
   );
 }
