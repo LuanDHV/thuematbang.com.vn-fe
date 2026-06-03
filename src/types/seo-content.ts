@@ -1,4 +1,4 @@
-﻿export interface SeoContentEntry {
+﻿export interface SeoContent {
   id: number;
   page: string;
   seoContent?: string | null;
