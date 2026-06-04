@@ -1,4 +1,4 @@
-﻿import { Category } from "./category";
+import { Category } from "./category";
 import { PublishStatus } from "./enums";
 
 export interface News {

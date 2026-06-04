@@ -1,4 +1,4 @@
-﻿import {
+import {
   OrderStatus,
   PaymentStatus,
   PropertyPriority,

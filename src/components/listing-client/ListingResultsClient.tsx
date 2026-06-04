@@ -12,22 +12,22 @@ import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
 import { PaginationMeta } from "@/types/api";
 
-const TIER_ORDER = ["GOLD", "SILVER", "NORMAL"] as const;
+const TIER_ORDER = ["FREE", "STANDARD", "PREMIUM"] as const;
 
 type TierKey = (typeof TIER_ORDER)[number];
 
 function getTierRank(value?: string | null) {
-  return TIER_ORDER.indexOf((value as TierKey) ?? "NORMAL");
+  return TIER_ORDER.indexOf((value as TierKey) ?? "FREE");
 }
 
 const TIER_CONFIG: Record<TierKey, { gridClass: string }> = {
-  GOLD: {
+  PREMIUM: {
     gridClass: "grid grid-cols-1 gap-5 lg:grid-cols-2",
   },
-  SILVER: {
+  STANDARD: {
     gridClass: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3",
   },
-  NORMAL: {
+  FREE: {
     gridClass: "grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4",
   },
 };
@@ -95,7 +95,7 @@ export default function ListingResultsClient({
       ? TIER_ORDER.reduce(
           (accumulator, tier) => {
             accumulator[tier] = (pageItems as Property[]).filter(
-              (property) => (property.priorityStatus ?? "NORMAL") === tier,
+              (property) => (property.priorityStatus ?? "FREE") === tier,
             );
             return accumulator;
           },
@@ -157,10 +157,9 @@ export default function ListingResultsClient({
           page={currentPage}
           totalPages={totalPages}
           onChange={(nextPage) =>
-            router.replace(
-              buildPagedPath(paginationBasePath ?? "", nextPage),
-              { scroll: false },
-            )
+            router.replace(buildPagedPath(paginationBasePath ?? "", nextPage), {
+              scroll: false,
+            })
           }
         />
       </div>
