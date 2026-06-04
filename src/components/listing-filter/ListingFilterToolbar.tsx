@@ -462,7 +462,10 @@ export default function ListingFilterToolbar({
                   ? 1
                   : 0) +
                 (advancedFilters.areaMin || advancedFilters.areaMax ? 1 : 0) +
-                (advancedFilters.province || advancedFilters.ward ? 1 : 0)
+                (advancedFilters.province || advancedFilters.ward ? 1 : 0) +
+                advancedFilters.bedrooms.length +
+                advancedFilters.bathrooms.length +
+                advancedFilters.directions.length
               }
               defaultDemandTab={
                 listingMode === "rentRequest" ? "can-thue" : "cho-thue"

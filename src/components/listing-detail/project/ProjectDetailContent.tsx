@@ -7,24 +7,13 @@ import {
   Maximize,
 } from "lucide-react";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
-import { formatDate } from "@/lib/utils";
+import {
+  formatAreaValue,
+  formatDate,
+  formatNumber,
+  formatVndAmount,
+} from "@/lib/utils";
 import { Project } from "@/types/project";
-
-const formatProjectPrice = (value?: number | null) => {
-  if (!value) return "Liên hệ";
-
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-    maximumFractionDigits: 0,
-  }).format(value);
-};
-
-const formatProjectArea = (value?: number | null) => {
-  if (!value) return "Đang cập nhật";
-
-  return `${value.toLocaleString("vi-VN")} m²`;
-};
 
 type ProjectDetailContentProps = {
   project: Project;
@@ -63,7 +52,7 @@ export default function ProjectDetailContent({
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Eye size={14} className="text-primary" />
-            Lượt xem: {(project.viewCount || 0).toLocaleString("vi-VN")}
+            Lượt xem: {formatNumber(project.viewCount, { fallback: "0" })}
           </span>
         </div>
       </section>
@@ -97,7 +86,7 @@ export default function ProjectDetailContent({
             <div>
               <p className="text-secondary text-xs tracking-wide uppercase">Tổng mức đầu tư</p>
               <p className="text-heading text-sm font-semibold">
-                {formatProjectPrice(project.price)}
+                {formatVndAmount(project.price, "Liên hệ")}
               </p>
             </div>
           </div>
@@ -107,7 +96,7 @@ export default function ProjectDetailContent({
             <div>
               <p className="text-secondary text-xs tracking-wide uppercase">Quy mô</p>
               <p className="text-heading text-sm font-semibold">
-                {formatProjectArea(project.area)}
+                {formatAreaValue(project.area)}
               </p>
             </div>
           </div>

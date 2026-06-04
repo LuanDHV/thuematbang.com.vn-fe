@@ -1,3 +1,8 @@
+import {
+  BED_BATH_OPTIONS,
+  DIRECTION_OPTIONS,
+  FILTER_LIMITS,
+} from "@/constants/filter";
 import { Category } from "@/types/category";
 import {
   AdvancedFilterValue,
@@ -19,7 +24,6 @@ export type FlatUrlContext = {
 };
 
 const PAGE_SEGMENT_REGEX = /^p([1-9]\d*)$/i;
-const DEFAULT_PRICE_MAX = 500_000_000_000;
 
 const AREA_TOKEN_PREFIX = "dien-tich-";
 const PRICE_TOKEN_PREFIX = "gia-";
@@ -29,17 +33,6 @@ const LOCATION_WARD_PREFIX = "phuong-";
 const BEDROOM_TOKEN_PREFIX = "phong-ngu-";
 const BATHROOM_TOKEN_PREFIX = "phong-tam-";
 const DIRECTION_TOKEN_PREFIX = "huong-";
-
-const DIRECTION_OPTIONS = [
-  { id: "BAC", label: "Bắc" },
-  { id: "DONG_BAC", label: "Đông Bắc" },
-  { id: "DONG", label: "Đông" },
-  { id: "DONG_NAM", label: "Đông Nam" },
-  { id: "NAM", label: "Nam" },
-  { id: "TAY_NAM", label: "Tây Nam" },
-  { id: "TAY", label: "Tây" },
-  { id: "TAY_BAC", label: "Tây Bắc" },
-] as const;
 
 const CATEGORY_SLUG_TO_TOKEN = new Map<string, string>([
   ["van-phong", "van-phong"],
@@ -410,7 +403,7 @@ export function parsePropertyFilterSlug(
     ]),
   );
   const directionSlugPattern = Array.from(directionSlugToId.keys()).join("|");
-  const bedBathSinglePattern = "(?:1|2|3|4|5-plus)";
+  const bedBathSinglePattern = `(?:${BED_BATH_OPTIONS.map((value) => bedBathValueToSlug(value)).join("|")})`;
 
   const directionParsed = parseSingleListToken(
     pending,
@@ -469,7 +462,7 @@ export function parsePropertyFilterSlug(
         initial.priceMin = "";
       }
       if (price.minPrice && !price.maxPrice) {
-        initial.priceMax = String(DEFAULT_PRICE_MAX);
+        initial.priceMax = String(FILTER_LIMITS.PRICE_MAX);
       }
       pending = removeMatchedSuffix(pending, priceToken);
     }

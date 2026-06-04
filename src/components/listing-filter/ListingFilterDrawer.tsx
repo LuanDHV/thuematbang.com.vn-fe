@@ -84,9 +84,7 @@ export function ListingFilterDrawer({
       const exists = list.includes(item);
       return {
         ...prev,
-        [key]: exists
-          ? list.filter((value) => value !== item)
-          : [...list, item],
+        [key]: exists ? [] : [item],
       };
     });
   };
@@ -97,6 +95,9 @@ export function ListingFilterDrawer({
       current.province || current.ward || current.street ? 1 : 0,
       current.priceMin || current.priceMax || current.negotiable ? 1 : 0,
       current.areaMin || current.areaMax ? 1 : 0,
+      current.bedrooms.length,
+      current.bathrooms.length,
+      current.directions.length,
     ].filter(Boolean).length;
   }, [current]);
 

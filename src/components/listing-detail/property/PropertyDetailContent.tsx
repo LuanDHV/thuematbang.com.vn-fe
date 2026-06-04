@@ -12,7 +12,12 @@ import {
 } from "lucide-react";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
-import { formatDate, formatPrice } from "@/lib/utils";
+import {
+  formatAreaValue,
+  formatDate,
+  formatNegotiablePrice,
+  formatNumber,
+} from "@/lib/utils";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { Property } from "@/types/property";
 
@@ -80,7 +85,7 @@ export default function PropertyDetailContent({
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Eye size={14} className="text-primary" />
-            Lượt xem: {(property.viewCount || 0).toLocaleString("vi-VN")}
+            Lượt xem: {formatNumber(property.viewCount, { fallback: "0" })}
           </span>
         </div>
       </section>
@@ -121,7 +126,9 @@ export default function PropertyDetailContent({
                 Giá thuê
               </p>
               <p className="text-heading text-sm font-semibold">
-                {formatPrice(property.price || 0)}
+                {formatNegotiablePrice(property.price, property.isNegotiable, {
+                  fallback: "Liên hệ",
+                })}
               </p>
             </div>
           </div>
@@ -145,9 +152,7 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Diện tích
                 </p>
-                <p className="text-heading text-sm font-semibold">
-                  {property.area} m²
-                </p>
+                <p className="text-heading text-sm font-semibold">{formatAreaValue(property.area)}</p>
               </div>
             </div>
           ) : null}

@@ -1,19 +1,22 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-const VI_DATE_FORMATTER = new Intl.DateTimeFormat("vi-VN");
-const VI_DAY_DATE_FORMATTER = new Intl.DateTimeFormat("vi-VN", {
+const VI_LOCALE = "vi-VN";
+const DEFAULT_DAY_MONTH_YEAR_FORMAT: Intl.DateTimeFormatOptions = {
   day: "2-digit",
   month: "2-digit",
   year: "numeric",
-});
-const VI_VND_CURRENCY_FORMATTER = new Intl.NumberFormat("vi-VN", {
+};
+const DEFAULT_VND_NUMBER_FORMAT: Intl.NumberFormatOptions = {
+  maximumFractionDigits: 0,
+};
+const DEFAULT_VND_CURRENCY_FORMAT: Intl.NumberFormatOptions = {
   style: "currency",
   currency: "VND",
-});
-const VI_VND_NUMBER_FORMATTER = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 0,
-});
+};
+
+const dateFormatterCache = new Map<string, Intl.DateTimeFormat>();
+const numberFormatterCache = new Map<string, Intl.NumberFormat>();
 
 type RangeOptions = {
   fallback?: string;
@@ -47,20 +50,72 @@ function toNumber(value?: NumericLike | null) {
   return undefined;
 }
 
-function hasNumber(value?: number | null) {
-  return typeof value === "number";
+function hasNumber(value?: number | null): value is number {
+  return typeof value === "number" && Number.isFinite(value);
 }
 
-function formatDateWith(
-  formatter: Intl.DateTimeFormat,
-  date?: Date | string | null,
-  fallback = "",
+function getDateFormatter(options?: Intl.DateTimeFormatOptions) {
+  const cacheKey = JSON.stringify(options ?? {});
+  const cachedFormatter = dateFormatterCache.get(cacheKey);
+
+  if (cachedFormatter) {
+    return cachedFormatter;
+  }
+
+  const formatter = new Intl.DateTimeFormat(VI_LOCALE, options);
+  dateFormatterCache.set(cacheKey, formatter);
+  return formatter;
+}
+
+function getNumberFormatter(options?: Intl.NumberFormatOptions) {
+  const cacheKey = JSON.stringify(options ?? {});
+  const cachedFormatter = numberFormatterCache.get(cacheKey);
+
+  if (cachedFormatter) {
+    return cachedFormatter;
+  }
+
+  const formatter = new Intl.NumberFormat(VI_LOCALE, options);
+  numberFormatterCache.set(cacheKey, formatter);
+  return formatter;
+}
+
+function toValidDate(value?: Date | string | null) {
+  if (!value) {
+    return null;
+  }
+
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatDateValue(
+  value: Date | string | null | undefined,
+  formatterOptions?: Intl.DateTimeFormatOptions,
+  fallback: string | null = "",
 ) {
-  return date ? formatter.format(new Date(date)) : fallback;
+  const date = toValidDate(value);
+  if (!date) {
+    return fallback;
+  }
+
+  return getDateFormatter(formatterOptions).format(date);
+}
+
+function formatNumberValue(
+  value: number | null | undefined,
+  formatterOptions?: Intl.NumberFormatOptions,
+) {
+  if (!hasNumber(value)) {
+    return null;
+  }
+
+  return getNumberFormatter(formatterOptions).format(value);
 }
 
 function formatVndNumber(value: number) {
-  return `${VI_VND_NUMBER_FORMATTER.format(value)} đ`;
+  const formatted = formatNumberValue(value, DEFAULT_VND_NUMBER_FORMAT);
+  return formatted ? `${formatted} đ` : "";
 }
 
 function formatRange(
@@ -91,18 +146,61 @@ function serializeSearch(search: string | { toString(): string }) {
 }
 
 export function formatPrice(price: NumericLike) {
-  return VI_VND_CURRENCY_FORMATTER.format(toNumber(price) ?? 0);
+  return getNumberFormatter(DEFAULT_VND_CURRENCY_FORMAT).format(
+    toNumber(price) ?? 0,
+  );
+}
+
+export function formatNumber(
+  value?: NumericLike | null,
+  options: {
+    fallback?: string;
+    numberFormatOptions?: Intl.NumberFormatOptions;
+  } = {},
+) {
+  const normalizedValue = toNumber(value);
+  const formatted = formatNumberValue(
+    normalizedValue,
+    options.numberFormatOptions,
+  );
+
+  return formatted ?? options.fallback ?? "";
 }
 
 export function formatDate(date?: Date | string | null, fallback = "Vừa đăng") {
-  return formatDateWith(VI_DATE_FORMATTER, date, fallback);
+  return formatDateValue(date, undefined, fallback);
 }
 
 export function formatDateDisplay(
   date?: Date | string | null,
   fallback = "Chưa cập nhật",
 ) {
-  return formatDateWith(VI_DAY_DATE_FORMATTER, date, fallback);
+  return formatDateValue(date, DEFAULT_DAY_MONTH_YEAR_FORMAT, fallback);
+}
+
+export function formatTableDate(
+  value?: Date | string | null,
+  options: {
+    formatOptions?: Intl.DateTimeFormatOptions;
+  } = {},
+) {
+  return formatDateValue(
+    value,
+    {
+      ...DEFAULT_DAY_MONTH_YEAR_FORMAT,
+      ...options.formatOptions,
+    },
+    null,
+  );
+}
+
+export function formatTableNumber(
+  value?: number | null,
+  options: {
+    numberFormatOptions?: Intl.NumberFormatOptions;
+  } = {},
+) {
+  return formatNumberValue(value, options.numberFormatOptions);
 }
 
 export function formatVndAmount(
@@ -154,8 +252,22 @@ export function formatAreaRange(
   });
 }
 
+export function formatAreaValue(
+  value?: NumericLike | null,
+  fallback = "Đang cập nhật",
+) {
+  const normalizedValue = toNumber(value);
+  return typeof normalizedValue === "number"
+    ? `${formatNumber(normalizedValue)} m²`
+    : fallback;
+}
+
 export function formatTextSource(value: string) {
-  return value.replace(/_/g, " ");
+  return value
+    .split("_")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(" ");
 }
 
 export function formatLocationParts(
@@ -163,10 +275,12 @@ export function formatLocationParts(
   fallback = "Chưa cập nhật",
 ) {
   const normalized = parts.filter(
-    (part): part is string => typeof part === "string" && part.length > 0,
+    (part): part is string => typeof part === "string" && part.trim().length > 0,
   );
 
-  return normalized.length > 0 ? normalized.join(", ") : fallback;
+  return normalized.length > 0
+    ? normalized.map((part) => part.trim()).join(", ")
+    : fallback;
 }
 
 export function buildPaginationUrl(

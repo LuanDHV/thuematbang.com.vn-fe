@@ -1,7 +1,13 @@
 "use client";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
-import { formatDate, formatPrice } from "@/lib/utils";
+import {
+  formatAreaValue,
+  formatDate,
+  formatLocationParts,
+  formatNegotiablePrice,
+  formatNumber,
+} from "@/lib/utils";
 import { Property } from "@/types/property";
 import {
   Bath,
@@ -75,12 +81,6 @@ function getTierLabel(tone: CardTone) {
   }
 }
 
-function getLocationText(property: Property) {
-  return [property.ward?.name, property.province?.name]
-    .filter(Boolean)
-    .join(", ");
-}
-
 function CardFooter({ property }: { property: Property }) {
   return (
     <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
@@ -90,7 +90,7 @@ function CardFooter({ property }: { property: Property }) {
       </span>
       <span className="inline-flex items-center justify-end gap-1">
         <Eye size={14} />
-        {(property.viewCount || 0).toLocaleString("vi-VN")}
+        {formatNumber(property.viewCount, { fallback: "0" })}
       </span>
     </div>
   );
@@ -363,7 +363,10 @@ function CardBody({
   tone: CardTone;
   showPreview: boolean;
 }) {
-  const location = getLocationText(property) || "Đang cập nhật vị trí";
+  const location = formatLocationParts(
+    [property.ward?.name, property.province?.name],
+    "Đang cập nhật vị trí",
+  );
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
   const isCompact = density === "compact";
 
@@ -383,7 +386,7 @@ function CardBody({
     { icon: MapPin, text: location },
     {
       icon: Maximize,
-      text: property.area ? `${property.area} m²` : "Đang cập nhật diện tích",
+      text: formatAreaValue(property.area, "Đang cập nhật diện tích"),
     },
     bedroomsText ? { icon: Bed, text: bedroomsText } : null,
     bathroomsText ? { icon: Bath, text: bathroomsText } : null,
@@ -418,7 +421,9 @@ function CardBody({
       <p
         className={`group-hover:text-primary text-heading transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
       >
-        {formatPrice(property.price || 0)}
+        {formatNegotiablePrice(property.price, property.isNegotiable, {
+          fallback: "Liên hệ",
+        })}
       </p>
 
       <div

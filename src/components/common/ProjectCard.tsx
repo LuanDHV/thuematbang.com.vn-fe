@@ -4,7 +4,13 @@ import Link from "next/link";
 import { Building2, Calendar, Eye, MapPin, Maximize } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
-import { formatDate, formatPrice } from "@/lib/utils";
+import {
+  formatAreaValue,
+  formatDate,
+  formatLocationParts,
+  formatNumber,
+  formatVndAmount,
+} from "@/lib/utils";
 import { Project } from "@/types/project";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
@@ -37,7 +43,7 @@ function CardFooter({
       </span>
       <span className="inline-flex items-center justify-end gap-1">
         <Eye size={14} />
-        {viewCount.toLocaleString("vi-VN")}
+        {formatNumber(viewCount, { fallback: "0" })}
       </span>
     </div>
   );
@@ -45,9 +51,10 @@ function CardFooter({
 
 export function ProjectCard({ project }: { project: Project }) {
   const thumbnailImageUrl = getProjectThumbnailUrl(project);
-  const location =
-    [project.ward?.name, project.province?.name].filter(Boolean).join(", ") ||
-    "Đang cập nhật vị trí";
+  const location = formatLocationParts(
+    [project.ward?.name, project.province?.name],
+    "Đang cập nhật vị trí",
+  );
   const contentPreview = project.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
@@ -81,7 +88,7 @@ export function ProjectCard({ project }: { project: Project }) {
             </span>
           ) : null}
           <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
-            {project.price ? formatPrice(project.price) : "Liên hệ"}
+            {formatVndAmount(project.price, "Liên hệ")}
           </p>
 
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">
@@ -98,9 +105,7 @@ export function ProjectCard({ project }: { project: Project }) {
             <p className="flex items-start gap-1.5">
               <Maximize size={14} className="text-primary mt-0.5 shrink-0" />
               <span className="line-clamp-1 text-sm">
-                {project.area
-                  ? `${project.area.toLocaleString("vi-VN")} m²`
-                  : "Đang cập nhật diện tích"}
+                {formatAreaValue(project.area, "Đang cập nhật diện tích")}
               </span>
             </p>
           </div>

@@ -9,6 +9,7 @@ import {
   formatBudgetRange,
   formatDate,
   formatLocationParts,
+  formatNumber,
 } from "@/lib/utils";
 import { RentRequest } from "@/types/rent-request";
 
@@ -24,7 +25,7 @@ function CardFooter({ request }: { request: RentRequest }) {
       </span>
       <span className="inline-flex items-center justify-end gap-1">
         <Eye size={14} />
-        {(request.viewCount || 0).toLocaleString("vi-VN")}
+        {formatNumber(request.viewCount, { fallback: "0" })}
       </span>
     </div>
   );

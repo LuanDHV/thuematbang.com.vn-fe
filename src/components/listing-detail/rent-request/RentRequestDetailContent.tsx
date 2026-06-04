@@ -15,6 +15,7 @@ import {
   formatAreaRange,
   formatBudgetRange,
   formatDate,
+  formatNumber,
 } from "@/lib/utils";
 import { RentRequest } from "@/types/rent-request";
 
@@ -78,12 +79,12 @@ export default function RentRequestDetailContent({
               Ngày đăng: {formatDate(rentRequest.createdAt)}
             </span>
 
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <Eye size={14} className="text-primary" />
-              Lượt xem: {(rentRequest.viewCount || 0).toLocaleString("vi-VN")}
-            </span>
-          </div>
-        </section>
+          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+            <Eye size={14} className="text-primary" />
+            Lượt xem: {formatNumber(rentRequest.viewCount, { fallback: "0" })}
+          </span>
+        </div>
+      </section>
 
         <section>
           <div className="mb-3 flex items-center gap-3">
