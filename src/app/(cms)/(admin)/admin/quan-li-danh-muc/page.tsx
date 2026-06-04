@@ -30,6 +30,7 @@ export default async function AdminCategoriesPage({ searchParams }: PageProps) {
         eyebrow="Quản lí danh mục"
         searchPlaceholder="Tìm kiếm theo tên"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 

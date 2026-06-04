@@ -35,6 +35,7 @@ export default async function AdminFaqsPage({ searchParams }: PageProps) {
         eyebrow="Quản lí FAQS"
         searchPlaceholder="Tìm kiếm theo câu hỏi"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 

@@ -39,6 +39,7 @@ export default async function AdminChoThuePage({ searchParams }: PageProps) {
         eyebrow="Quản lí tin cho thuê"
         searchPlaceholder="Tìm kiếm theo tên hoặc slug"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 

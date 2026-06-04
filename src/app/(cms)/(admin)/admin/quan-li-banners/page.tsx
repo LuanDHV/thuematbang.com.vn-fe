@@ -37,6 +37,7 @@ export default async function AdminBannersPage({ searchParams }: PageProps) {
         eyebrow="Quản lí banner"
         searchPlaceholder="Tìm kiếm theo tiêu đề"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 

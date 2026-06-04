@@ -38,6 +38,7 @@ export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
         eyebrow="Quản lí tài khoản"
         searchPlaceholder="Tìm kiếm tên, email hoặc sđt"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 

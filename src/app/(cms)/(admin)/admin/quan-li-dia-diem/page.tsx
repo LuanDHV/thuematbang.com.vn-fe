@@ -87,6 +87,7 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
         eyebrow="Quản lí địa điểm"
         searchPlaceholder="Tìm kiếm theo tên"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
         hiddenParams={hiddenParams}
       />

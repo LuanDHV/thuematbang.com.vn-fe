@@ -47,6 +47,7 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
         eyebrow="Quản lí leads"
         searchPlaceholder="Tìm kiếm tên, email hoặc sđt"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 

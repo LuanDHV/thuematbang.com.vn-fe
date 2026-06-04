@@ -37,6 +37,7 @@ export default async function AdminSeoContentsPage({
         eyebrow="Quản lí nội dung SEO"
         searchPlaceholder="Tìm kiếm theo nội dung SEO"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 

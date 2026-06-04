@@ -1,3 +1,8 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Filter, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +18,8 @@ type AdminListToolbarProps = {
   }>;
 };
 
+const SEARCH_DEBOUNCE_MS = 350;
+
 export default function AdminListToolbar({
   eyebrow,
   searchPlaceholder,
@@ -20,6 +27,62 @@ export default function AdminListToolbar({
   searchValue,
   hiddenParams,
 }: AdminListToolbarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [draftValue, setDraftValue] = useState(searchValue ?? "");
+
+  const hiddenParamsValue = useMemo(() => hiddenParams ?? [], [hiddenParams]);
+
+  const buildSearchHref = useCallback(
+    (nextValue: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      params.delete("page");
+
+      if (nextValue.trim()) {
+        params.set("q", nextValue.trim());
+      } else {
+        params.delete("q");
+      }
+
+      for (const field of hiddenParamsValue) {
+        params.set(field.name, field.value);
+      }
+
+      const query = params.toString();
+      return query ? `${pathname}?${query}` : pathname;
+    },
+    [hiddenParamsValue, pathname, searchParams],
+  );
+
+  useEffect(() => {
+    const href = buildSearchHref(draftValue);
+    const currentHref = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+
+    if (href === currentHref) {
+      return;
+    }
+
+    const handle = window.setTimeout(() => {
+      router.replace(href);
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(handle);
+  }, [buildSearchHref, draftValue, pathname, router, searchParams]);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const href = buildSearchHref(draftValue);
+
+    if (
+      href !==
+      `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`
+    ) {
+      router.replace(href);
+    }
+  };
+
   return (
     <section className="surface-panel overflow-hidden">
       <div className="border-hairline border-b p-5">
@@ -30,8 +93,8 @@ export default function AdminListToolbar({
             </p>
           </div>
 
-          <form className="flex justify-between gap-3">
-            {hiddenParams?.map((field) => (
+          <form className="flex justify-between gap-3" onSubmit={handleSubmit}>
+            {hiddenParamsValue.map((field) => (
               <input
                 key={`${field.name}-${field.value}`}
                 type="hidden"
@@ -45,7 +108,8 @@ export default function AdminListToolbar({
               <Input
                 name="q"
                 type="search"
-                defaultValue={searchValue}
+                value={draftValue}
+                onChange={(event) => setDraftValue(event.target.value)}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder}
                 className="pl-9"
@@ -61,7 +125,7 @@ export default function AdminListToolbar({
               >
                 <Filter className="size-4" />
               </Button>
-              <Button type="button" size="sm" className="gap-1.5">
+              <Button type="submit" size="sm" className="gap-1.5">
                 <Plus className="size-4" />
                 {createLabel}
               </Button>

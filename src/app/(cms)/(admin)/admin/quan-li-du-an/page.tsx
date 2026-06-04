@@ -39,6 +39,7 @@ export default async function AdminDuAnPage({ searchParams }: PageProps) {
         eyebrow="Quản lí dự án"
         searchPlaceholder="Tìm kiếm theo tên hoặc slug"
         createLabel="Tạo mới"
+        key={searchValue ?? ""}
         searchValue={searchValue}
       />
 
