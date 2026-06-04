@@ -6,6 +6,7 @@ import { requestServerApi } from "./shared/server-api-client";
 import { buildListPath } from "./shared/list-service";
 
 export type LeadListFilters = {
+  q?: string;
   status?: LeadStatus;
   propertyId?: number;
   userId?: number;

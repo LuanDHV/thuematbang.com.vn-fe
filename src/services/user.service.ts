@@ -23,10 +23,14 @@ export type SetMyPasswordPayload = {
   confirmPassword: string;
 };
 
+export type AdminUserListFilters = {
+  q?: string;
+};
+
 export type AdminUserListParams = {
   page?: number;
   limit?: number;
-  filters?: Record<string, string | number | boolean | null | undefined>;
+  filters?: AdminUserListFilters;
 };
 
 type PasswordActionResponse = {

@@ -2,6 +2,7 @@ import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminSeoContentsTable from "@/components/cms/admin/AdminSeoContentsTable";
 import {
   resolvePaginationServer,
+  resolveSearchQueryValue,
   resolveSearchParamValue,
 } from "@/lib/server-side";
 import { seoContentService } from "@/services/seo-content.service";
@@ -10,44 +11,37 @@ type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function matchesText(value: string, query: string) {
-  return value.toLowerCase().includes(query.toLowerCase());
-}
-
 export default async function AdminSeoContentsPage({
   searchParams,
 }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const searchQuery = resolveSearchQueryValue(resolvedSearchParams);
   const result = await seoContentService
     .getAll({
       page: currentPage,
       limit: 10,
+      filters: {
+        q: searchQuery,
+      },
     })
     .catch(() => ({ data: [], meta: undefined }));
 
   const items = result.data ?? [];
   const totalPages = result.meta?.totalPage ?? 1;
-  const filteredItems = searchValue
-    ? items.filter(
-        (item) =>
-          matchesText(item.page, searchValue) ||
-          matchesText(item.seoContent ?? "", searchValue),
-      )
-    : items;
 
   return (
     <section className="space-y-5">
       <AdminListToolbar
         eyebrow="Quản lí nội dung SEO"
-        searchPlaceholder="Tìm kiếm page SEO"
+        searchPlaceholder="Tìm kiếm theo nội dung SEO"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />
 
       <AdminSeoContentsTable
-        items={filteredItems}
+        items={items}
         currentPage={currentPage}
         totalPages={totalPages}
       />

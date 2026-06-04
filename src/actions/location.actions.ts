@@ -7,5 +7,5 @@ export async function getProvincesAction() {
 }
 
 export async function getProvinceWardsAction(provinceId?: number) {
-  return locationService.getWards(provinceId);
+  return locationService.getWards({ provinceId });
 }

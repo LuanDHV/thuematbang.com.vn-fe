@@ -89,7 +89,9 @@ const resolveLocationContext = cache(async (): Promise<LocationContext> => {
     const provinces = await locationService.getProvinces();
 
     const wardsByProvince = await Promise.all(
-      provinces.map((province) => locationService.getWards(province.id)),
+      provinces.map((province) =>
+        locationService.getWards({ provinceId: province.id }),
+      ),
     );
 
     return {

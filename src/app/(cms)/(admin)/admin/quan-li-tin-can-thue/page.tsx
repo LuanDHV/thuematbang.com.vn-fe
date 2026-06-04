@@ -2,6 +2,7 @@ import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminRentRequestsTable from "@/components/cms/admin/AdminRentRequestsTable";
 import {
   resolvePaginationServer,
+  resolveSearchQueryValue,
   resolveSearchParamValue,
 } from "@/lib/server-side";
 import { rentRequestService } from "@/services/rent-request.service";
@@ -14,6 +15,7 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const searchQuery = resolveSearchQueryValue(resolvedSearchParams);
   const limit = 10;
 
   const result = await rentRequestService
@@ -21,6 +23,7 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
       page: currentPage,
       limit,
       filters: {
+        q: searchQuery,
         sortBy: "createdAt",
         sortOrder: "desc",
       },
@@ -34,7 +37,7 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
     <section className="space-y-5">
       <AdminListToolbar
         eyebrow="Quản lí tin cần thuê"
-        searchPlaceholder="Tìm kiếm tin cần thuê"
+        searchPlaceholder="Tìm kiếm theo tên hoặc slug"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />

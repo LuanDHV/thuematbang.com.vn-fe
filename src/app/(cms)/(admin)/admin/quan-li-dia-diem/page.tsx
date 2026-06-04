@@ -1,19 +1,19 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminLocationsTable from "@/components/cms/admin/AdminLocationsTable";
-import { resolveSearchParamValue } from "@/lib/server-side";
+import {
+  resolveSearchQueryValue,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { locationService } from "@/services/location.service";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function matchesText(value: string, query: string) {
-  return value.toLowerCase().includes(query.toLowerCase());
-}
-
 export default async function AdminLocationsPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const searchQuery = resolveSearchQueryValue(resolvedSearchParams);
   const provinceIdValue = resolveSearchParamValue(
     resolvedSearchParams,
     "provinceId",
@@ -23,12 +23,10 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
   const selectedWardId = wardIdValue ? Number(wardIdValue) : null;
   const provinces = await locationService.getProvinces().catch(() => []);
 
-  const filteredProvinces = searchValue
-    ? provinces.filter(
-        (province) =>
-          matchesText(province.name, searchValue) ||
-          matchesText(province.slug, searchValue),
-      )
+  const filteredProvinces = searchQuery
+    ? await locationService
+        .getProvinces({ filters: { q: searchQuery } })
+        .catch(() => [])
     : provinces;
 
   const selectedProvince =
@@ -38,35 +36,43 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
       : null;
 
   const wards = selectedProvince
-    ? await locationService.getWards(selectedProvince.id).catch(() => [])
+    ? await locationService
+        .getWards({ provinceId: selectedProvince.id })
+        .catch(() => [])
     : [];
 
-  const filteredWards = searchValue
-    ? wards.filter(
-        (ward) =>
-          matchesText(ward.name, searchValue) ||
-          matchesText(ward.slug, searchValue),
-      )
-    : wards;
+  const filteredWards = selectedProvince
+    ? searchQuery
+      ? await locationService
+          .getWards({
+            provinceId: selectedProvince.id,
+            filters: { q: searchQuery },
+          })
+          .catch(() => [])
+      : wards
+    : [];
 
   const selectedWard =
     selectedWardId !== null && Number.isFinite(selectedWardId)
-      ? (filteredWards.find((ward) => ward.id === selectedWardId) ??
-        wards.find((ward) => ward.id === selectedWardId) ??
-        null)
+      ? (wards.find((ward) => ward.id === selectedWardId) ?? null)
       : null;
 
   const streets = selectedWard
-    ? await locationService.getStreetsByWard(selectedWard.id).catch(() => [])
+    ? await locationService
+        .getStreetsByWard({ wardId: selectedWard.id })
+        .catch(() => [])
     : [];
 
-  const filteredStreets = searchValue
-    ? streets.filter(
-        (street) =>
-          matchesText(street.name, searchValue) ||
-          matchesText(street.slug, searchValue),
-      )
-    : streets;
+  const filteredStreets = selectedWard
+    ? searchQuery
+      ? await locationService
+          .getStreetsByWard({
+            wardId: selectedWard.id,
+            filters: { q: searchQuery },
+          })
+          .catch(() => [])
+      : streets
+    : [];
 
   const hiddenParams = [
     selectedProvince
@@ -79,7 +85,7 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
     <section className="space-y-5">
       <AdminListToolbar
         eyebrow="Quản lí địa điểm"
-        searchPlaceholder="Tìm kiếm tỉnh, phường hoặc đường"
+        searchPlaceholder="Tìm kiếm theo tên"
         createLabel="Tạo mới"
         searchValue={searchValue}
         hiddenParams={hiddenParams}

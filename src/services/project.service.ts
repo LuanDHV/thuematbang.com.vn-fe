@@ -14,6 +14,7 @@ export type ProjectSortBy = "createdAt" | "price" | "area" | "viewCount";
 export type ProjectListFilters = {
   categoryId?: number;
   categorySlug?: string;
+  q?: string;
   slug?: string;
   name?: string;
   developer?: string;

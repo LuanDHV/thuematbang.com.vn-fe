@@ -14,6 +14,7 @@ export type NewsSortBy = "createdAt" | "viewCount";
 export type NewsListFilters = {
   categoryId?: number;
   categorySlug?: string;
+  q?: string;
   status?: PublishStatus;
   slug?: string;
   title?: string;

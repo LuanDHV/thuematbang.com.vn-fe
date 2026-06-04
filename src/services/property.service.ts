@@ -27,6 +27,7 @@ export type PropertyListFilters = {
   categoryId?: number;
   userId?: number;
   categorySlug?: string;
+  q?: string;
   slug?: string;
   title?: string;
   provinceId?: number;

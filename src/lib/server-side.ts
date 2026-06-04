@@ -17,3 +17,12 @@ export function resolveSearchParamValue(
   const value = searchParams?.[key];
   return Array.isArray(value) ? value[0] : value;
 }
+
+export function resolveSearchQueryValue(
+  searchParams: ServerSearchParams,
+  key = "q",
+) {
+  const value = resolveSearchParamValue(searchParams, key);
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+}

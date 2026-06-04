@@ -240,6 +240,8 @@ Current service modules include:
 - do not create extra "manager" or "aggregate" services unless there is real cross-domain value
 - do not let client components import server-only services
 - do not pass access tokens around manually if the service layer can resolve auth at the server boundary
+- for list/query services, prefer a named `Params` type alias instead of inline object shapes, especially when the service accepts `page`, `limit`, `filters`, or search keys like `q`
+- keep the params type close to the service so page-level code can rely on a stable contract when search or filter fields expand
 
 ## 8. Hooks and Stores
 

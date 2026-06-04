@@ -2,6 +2,7 @@ import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminUsersTable from "@/components/cms/admin/AdminUsersTable";
 import {
   resolvePaginationServer,
+  resolveSearchQueryValue,
   resolveSearchParamValue,
 } from "@/lib/server-side";
 import { userService } from "@/services/user.service";
@@ -13,6 +14,7 @@ type PageProps = {
 export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const searchQuery = resolveSearchQueryValue(resolvedSearchParams);
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const limit = 10;
 
@@ -20,6 +22,9 @@ export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
     .getAdminUsers({
       page: currentPage,
       limit,
+      filters: {
+        q: searchQuery,
+      },
     })
     .catch(() => ({ data: [], meta: undefined }));
 
@@ -31,7 +36,7 @@ export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
     <section className="space-y-5">
       <AdminListToolbar
         eyebrow="Quản lí tài khoản"
-        searchPlaceholder="Tìm kiếm người dùng"
+        searchPlaceholder="Tìm kiếm tên, email hoặc sđt"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />

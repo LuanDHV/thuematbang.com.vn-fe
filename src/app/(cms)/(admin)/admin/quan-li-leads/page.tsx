@@ -2,6 +2,7 @@ import AdminLeadsTable from "@/components/cms/admin/AdminLeadsTable";
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import {
   resolvePaginationServer,
+  resolveSearchQueryValue,
   resolveSearchParamValue,
 } from "@/lib/server-side";
 import { leadService } from "@/services/lead.service";
@@ -11,14 +12,11 @@ type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function matchesText(value: string, query: string) {
-  return value.toLowerCase().includes(query.toLowerCase());
-}
-
 export default async function AdminLeadsPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
+  const searchQuery = resolveSearchQueryValue(resolvedSearchParams);
   const statusValue = resolveSearchParamValue(resolvedSearchParams, "status");
   const limit = 10;
   const status =
@@ -34,6 +32,7 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
       page: currentPage,
       limit,
       filters: {
+        q: searchQuery,
         status,
       },
     })
@@ -41,31 +40,18 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
 
   const items = result.data ?? [];
   const totalPages = result.meta?.totalPage ?? 1;
-  const filteredItems = searchValue
-    ? items.filter(
-        (item) =>
-          matchesText(item.fullName, searchValue) ||
-          matchesText(item.phone, searchValue) ||
-          matchesText(item.email ?? "", searchValue) ||
-          matchesText(item.source, searchValue) ||
-          matchesText(item.status, searchValue) ||
-          matchesText(item.message ?? "", searchValue) ||
-          matchesText(String(item.propertyId ?? ""), searchValue) ||
-          matchesText(String(item.userId ?? ""), searchValue),
-      )
-    : items;
 
   return (
     <section className="space-y-5">
       <AdminListToolbar
         eyebrow="Quản lí leads"
-        searchPlaceholder="Tìm kiếm lead"
+        searchPlaceholder="Tìm kiếm tên, email hoặc sđt"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />
 
       <AdminLeadsTable
-        items={filteredItems}
+        items={items}
         currentPage={currentPage}
         totalPages={totalPages}
       />
