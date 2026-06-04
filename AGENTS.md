@@ -39,6 +39,8 @@ Optimize for a code base that stays coherent when the project scales:
 - Prefer updating existing patterns over introducing new ones.
 - Prefer clear naming over excessive comments.
 - Add short comments only when logic is not obvious, there is an important assumption, or there is a non-trivial workaround.
+- For long helper/parser/filter files, add brief comments around non-trivial logic blocks so the file stays scannable without reverse-engineering every branch.
+- Prefer one simple comment above a meaningful logic block or helper over many line-by-line comments.
 - Use the correct comment syntax for the current language. Do not use shell-style `#` comments in TS/TSX/CSS.
 
 ## Architecture Rules

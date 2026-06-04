@@ -3,10 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import AdminDataTable from "@/components/cms/admin/data-table";
-import {
-  createColumnsFromFields,
-  type FieldConfig,
-} from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
 import type { User } from "@/types/user";
 
@@ -79,19 +76,9 @@ export default function AdminUsersTable({
     [],
   );
 
-  const columns = useMemo(
-    () =>
-      createColumnsFromFields<User>({
-        fields,
-        getRowId: (user) => user.id,
-      }),
-    [fields],
-  );
-
   return (
     <AdminDataTable
       data={users}
-      columns={columns}
       fields={fields}
       getRowId={(user) => user.id}
       page={currentPage}

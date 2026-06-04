@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { ReactNode } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -17,8 +17,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { BadgeProps } from "@/components/ui/badge";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,33 +24,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
-
-declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends unknown, TValue> {}
-}
+import { cn, formatTableDate, formatTableNumber } from "@/lib/utils";
 
 type RowId = string | number;
-type MobileSection = "header" | "body" | "footer";
-type BadgeVariant = NonNullable<BadgeProps["variant"]>;
 
 type BaseFieldConfig<TData> = {
   key: string;
   header: string;
-  fieldType: "text" | "number" | "image" | "badge" | "date" | "actions";
+  fieldType: "text" | "number" | "image" | "date" | "actions";
   accessor?: (row: TData) => unknown;
-  format?: (value: unknown, row: TData) => ReactNode;
   fallback?: ReactNode;
-  mobileLabel?: string;
-  mobileOrder?: number;
-  hideOnMobile?: boolean;
-  emphasizeOnMobile?: boolean;
-  mobileSection?: MobileSection;
 };
 
 type NumberFieldConfig<TData> = BaseFieldConfig<TData> & {
   fieldType: "number";
-  numberFormatOptions?: Intl.NumberFormatOptions;
 };
 
 type ImageFieldConfig<TData> = BaseFieldConfig<TData> & {
@@ -63,23 +48,7 @@ type ImageFieldConfig<TData> = BaseFieldConfig<TData> & {
   roundedClassName?: string;
 };
 
-type BadgeFieldConfig<TData> = BaseFieldConfig<TData> & {
-  fieldType: "badge";
-  badgeMap?: Record<
-    string,
-    {
-      label?: ReactNode;
-      variant?: BadgeVariant;
-    }
-  >;
-  resolveBadgeVariant?: (value: unknown, row: TData) => BadgeVariant;
-  resolveBadgeLabel?: (value: unknown, row: TData) => ReactNode;
-};
-
-type DateFieldConfig<TData> = BaseFieldConfig<TData> & {
-  fieldType: "date";
-  formatOptions?: Intl.DateTimeFormatOptions;
-};
+type DateFieldConfig<TData> = BaseFieldConfig<TData> & { fieldType: "date" };
 
 type ActionsFieldConfig<TData> = BaseFieldConfig<TData> & {
   fieldType: "actions";
@@ -100,7 +69,6 @@ export type FieldConfig<TData> =
   | TextFieldConfig<TData>
   | NumberFieldConfig<TData>
   | ImageFieldConfig<TData>
-  | BadgeFieldConfig<TData>
   | DateFieldConfig<TData>
   | ActionsFieldConfig<TData>;
 
@@ -130,56 +98,6 @@ function getFallbackContent<TData>(field: FieldConfig<TData>) {
 
 function isValueEmpty(value: unknown) {
   return value === null || value === undefined || value === "";
-}
-
-function formatNumberValue<TData>(
-  value: unknown,
-  field: NumberFieldConfig<TData>,
-) {
-  if (typeof value !== "number" || Number.isNaN(value)) {
-    return null;
-  }
-
-  return new Intl.NumberFormat("vi-VN", field.numberFormatOptions).format(
-    value,
-  );
-}
-
-function formatDateValue<TData>(value: unknown, field: DateFieldConfig<TData>) {
-  if (!value) {
-    return null;
-  }
-
-  const date = value instanceof Date ? value : new Date(String(value));
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  return new Intl.DateTimeFormat("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    ...field.formatOptions,
-  }).format(date);
-}
-
-function resolveBadgeContent<TData>(
-  field: BadgeFieldConfig<TData>,
-  value: unknown,
-  row: TData,
-) {
-  const badgeKey = String(value ?? "").toLowerCase();
-  const mapped = field.badgeMap?.[badgeKey];
-  const variant =
-    field.resolveBadgeVariant?.(value, row) ?? mapped?.variant ?? "outline";
-  const label =
-    field.resolveBadgeLabel?.(value, row) ??
-    mapped?.label ??
-    (typeof value === "string" || typeof value === "number"
-      ? String(value)
-      : getFallbackContent(field));
-
-  return { label, variant };
 }
 
 function RowActionsMenu<TData>({
@@ -266,13 +184,9 @@ export function renderFieldContent<TData>({
   row,
   value,
   rowId,
-}: FieldRenderContext<TData>) {
+}: FieldRenderContext<TData>): ReactNode {
   if (field.fieldType === "actions") {
     return <RowActionsMenu field={field} row={row} rowId={rowId} />;
-  }
-
-  if (field.format) {
-    return field.format(value, row);
   }
 
   if (isValueEmpty(value)) {
@@ -281,7 +195,7 @@ export function renderFieldContent<TData>({
 
   switch (field.fieldType) {
     case "number": {
-      const formatted = formatNumberValue(value, field);
+      const formatted = formatTableNumber(value as number | null | undefined);
       return formatted ?? getFallbackContent(field);
     }
     case "image": {
@@ -307,12 +221,10 @@ export function renderFieldContent<TData>({
         </div>
       );
     }
-    case "badge": {
-      const badge = resolveBadgeContent(field, value, row);
-      return <Badge variant={badge.variant}>{badge.label}</Badge>;
-    }
     case "date": {
-      const formatted = formatDateValue(value, field);
+      const formatted = formatTableDate(
+        value as Date | string | null | undefined,
+      );
       return formatted ?? getFallbackContent(field);
     }
     case "text":
@@ -356,30 +268,4 @@ export function createColumnsFromFields<TData>({
   }));
 
   return [idColumn, ...generatedColumns];
-}
-
-export function useOrderedMobileFields<TData>(fields: FieldConfig<TData>[]) {
-  return useMemo(
-    () =>
-      fields
-        .filter((field) => !field.hideOnMobile)
-        .sort((left, right) => {
-          const leftOrder = left.mobileOrder ?? Number.MAX_SAFE_INTEGER;
-          const rightOrder = right.mobileOrder ?? Number.MAX_SAFE_INTEGER;
-          return leftOrder - rightOrder;
-        }),
-    [fields],
-  );
-}
-
-export function getFieldMobileSection<TData>(field: FieldConfig<TData>) {
-  if (field.mobileSection) {
-    return field.mobileSection;
-  }
-
-  if (field.fieldType === "actions") {
-    return "footer";
-  }
-
-  return field.emphasizeOnMobile ? "header" : "body";
 }

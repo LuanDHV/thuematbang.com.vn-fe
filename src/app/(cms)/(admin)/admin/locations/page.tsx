@@ -75,7 +75,6 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
         wards={filteredWards}
         streets={filteredStreets}
         selectedProvince={selectedProvince}
-        selectedProvinceId={selectedProvinceId}
         searchValue={searchValue}
       />
     </section>

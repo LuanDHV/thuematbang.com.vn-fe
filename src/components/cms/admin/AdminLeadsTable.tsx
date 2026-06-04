@@ -3,10 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import AdminDataTable from "@/components/cms/admin/data-table";
-import {
-  createColumnsFromFields,
-  type FieldConfig,
-} from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler, formatTextSource } from "@/lib/utils";
 import type { Lead } from "@/types/lead";
 
@@ -102,19 +99,9 @@ export default function AdminLeadsTable({
     [],
   );
 
-  const columns = useMemo(
-    () =>
-      createColumnsFromFields<Lead>({
-        fields,
-        getRowId: (item) => item.id,
-      }),
-    [fields],
-  );
-
   return (
     <AdminDataTable
       data={items}
-      columns={columns}
       fields={fields}
       getRowId={(item) => item.id}
       page={currentPage}

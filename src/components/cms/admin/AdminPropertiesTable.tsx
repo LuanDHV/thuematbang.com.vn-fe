@@ -3,10 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import AdminDataTable from "@/components/cms/admin/data-table";
-import {
-  createColumnsFromFields,
-  type FieldConfig,
-} from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import {
   createPaginationChangeHandler,
   formatLocationParts,
@@ -101,19 +98,9 @@ export default function AdminPropertiesTable({
     [],
   );
 
-  const columns = useMemo(
-    () =>
-      createColumnsFromFields<Property>({
-        fields,
-        getRowId: (property) => property.id,
-      }),
-    [fields],
-  );
-
   return (
     <AdminDataTable
       data={properties}
-      columns={columns}
       fields={fields}
       getRowId={(property) => property.id}
       page={currentPage}

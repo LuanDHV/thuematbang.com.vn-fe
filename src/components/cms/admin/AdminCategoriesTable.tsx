@@ -2,10 +2,7 @@
 
 import { useMemo } from "react";
 import AdminDataTable from "@/components/cms/admin/data-table";
-import {
-  createColumnsFromFields,
-  type FieldConfig,
-} from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import type { Category } from "@/types/category";
 
 type AdminCategoriesTableProps = {
@@ -78,19 +75,9 @@ export default function AdminCategoriesTable({
     [],
   );
 
-  const columns = useMemo(
-    () =>
-      createColumnsFromFields<Category>({
-        fields,
-        getRowId: (item) => item.id,
-      }),
-    [fields],
-  );
-
   return (
     <AdminDataTable
       data={items}
-      columns={columns}
       fields={fields}
       getRowId={(item) => item.id}
       page={currentPage}

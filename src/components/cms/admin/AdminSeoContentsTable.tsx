@@ -3,10 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import AdminDataTable from "@/components/cms/admin/data-table";
-import {
-  createColumnsFromFields,
-  type FieldConfig,
-} from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
 import type { SeoContent } from "@/types/seo-content";
 
@@ -65,19 +62,9 @@ export default function AdminSeoContentsTable({
     [],
   );
 
-  const columns = useMemo(
-    () =>
-      createColumnsFromFields<SeoContent>({
-        fields,
-        getRowId: (item) => item.id,
-      }),
-    [fields],
-  );
-
   return (
     <AdminDataTable
       data={items}
-      columns={columns}
       fields={fields}
       getRowId={(item) => item.id}
       page={currentPage}

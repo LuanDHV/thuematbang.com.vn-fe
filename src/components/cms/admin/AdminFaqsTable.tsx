@@ -3,10 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import AdminDataTable from "@/components/cms/admin/data-table";
-import {
-  createColumnsFromFields,
-  type FieldConfig,
-} from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
 import type { FaqItem } from "@/types/faq";
 
@@ -78,19 +75,9 @@ export default function AdminFaqsTable({
     [],
   );
 
-  const columns = useMemo(
-    () =>
-      createColumnsFromFields<FaqItem>({
-        fields,
-        getRowId: (item) => item.id,
-      }),
-    [fields],
-  );
-
   return (
     <AdminDataTable
       data={items}
-      columns={columns}
       fields={fields}
       getRowId={(item) => item.id}
       page={currentPage}

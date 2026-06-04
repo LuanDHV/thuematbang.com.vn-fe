@@ -2,10 +2,7 @@
 
 import { useMemo } from "react";
 import AdminDataTable from "@/components/cms/admin/data-table";
-import {
-  createColumnsFromFields,
-  type FieldConfig,
-} from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import type { Province, Street, Ward } from "@/types/location";
 
 type AdminLocationsTableProps = {
@@ -13,7 +10,6 @@ type AdminLocationsTableProps = {
   wards: Ward[];
   streets: Street[];
   selectedProvince?: Province | null;
-  selectedProvinceId?: number | null;
   searchValue?: string;
 };
 
@@ -22,9 +18,6 @@ type LocationTableSectionProps<TData> = {
   data: TData[];
   fields: FieldConfig<TData>[];
   getRowId: (row: TData) => number;
-  emptyDescription: string;
-  rowHref?: (row: TData) => string;
-  getRowClassName?: (row: TData) => string | undefined;
 };
 
 function LocationTableSection<TData>({
@@ -32,19 +25,7 @@ function LocationTableSection<TData>({
   data,
   fields,
   getRowId,
-  emptyDescription,
-  rowHref,
-  getRowClassName,
 }: LocationTableSectionProps<TData>) {
-  const columns = useMemo(
-    () =>
-      createColumnsFromFields<TData>({
-        fields,
-        getRowId,
-      }),
-    [fields, getRowId],
-  );
-
   return (
     <section className="space-y-3">
       <div>
@@ -53,15 +34,11 @@ function LocationTableSection<TData>({
 
       <AdminDataTable
         data={data}
-        columns={columns}
         fields={fields}
         getRowId={getRowId}
-        rowHref={rowHref}
-        getRowClassName={getRowClassName}
         page={1}
         totalPages={1}
         onPageChange={() => {}}
-        emptyDescription={emptyDescription}
       />
     </section>
   );
@@ -72,7 +49,6 @@ export default function AdminLocationsTable({
   wards,
   streets,
   selectedProvince,
-  selectedProvinceId,
   searchValue,
 }: AdminLocationsTableProps) {
   const provinceFields = useMemo<FieldConfig<Province>[]>(
@@ -82,8 +58,6 @@ export default function AdminLocationsTable({
         header: "Tên",
         fieldType: "text",
         accessor: (province) => province.name,
-        emphasizeOnMobile: true,
-        mobileSection: "header",
       },
       {
         key: "slug",
@@ -102,13 +76,13 @@ export default function AdminLocationsTable({
           return `?provinceId=${province.id}${query}`;
         },
         getEditLabel: (province) =>
-          province.id === selectedProvinceId ? "Đang chọn" : "Chọn",
+          province.id === selectedProvince?.id ? "Đang chọn" : "Chọn",
         onDelete: (id) => {
           console.info("Delete province", id);
         },
       },
     ],
-    [searchValue, selectedProvinceId],
+    [searchValue, selectedProvince?.id],
   );
 
   const wardFields = useMemo<FieldConfig<Ward>[]>(
@@ -118,8 +92,6 @@ export default function AdminLocationsTable({
         header: "Tên",
         fieldType: "text",
         accessor: (ward) => ward.name,
-        emphasizeOnMobile: true,
-        mobileSection: "header",
       },
       {
         key: "provinceId",
@@ -153,8 +125,6 @@ export default function AdminLocationsTable({
         header: "Tên",
         fieldType: "text",
         accessor: (street) => street.name,
-        emphasizeOnMobile: true,
-        mobileSection: "header",
       },
       {
         key: "provinceId",
@@ -194,18 +164,6 @@ export default function AdminLocationsTable({
         data={provinces}
         fields={provinceFields}
         getRowId={(province) => province.id}
-        emptyDescription="Không có dữ liệu tỉnh/thành."
-        rowHref={(province) => {
-          const query = searchValue
-            ? `&q=${encodeURIComponent(searchValue)}`
-            : "";
-          return `?provinceId=${province.id}${query}`;
-        }}
-        getRowClassName={(province) =>
-          province.id === selectedProvinceId
-            ? "bg-primary/5 ring-1 ring-primary/15"
-            : ""
-        }
       />
 
       {selectedProvince ? (
@@ -215,7 +173,6 @@ export default function AdminLocationsTable({
             data={wards}
             fields={wardFields}
             getRowId={(ward) => ward.id}
-            emptyDescription="Không có dữ liệu phường/xã."
           />
 
           <LocationTableSection
@@ -223,7 +180,6 @@ export default function AdminLocationsTable({
             data={streets}
             fields={streetFields}
             getRowId={(street) => street.id}
-            emptyDescription="Không có dữ liệu đường phố."
           />
         </div>
       ) : (
