@@ -110,8 +110,6 @@ export default function AdminRentRequestsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint hiện tại chưa trả về nhu cầu nào."
     />
   );
 }

@@ -119,8 +119,6 @@ export default function AdminPropertiesTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint hiện tại chưa trả về bản ghi nào cho trang này."
     />
   );
 }

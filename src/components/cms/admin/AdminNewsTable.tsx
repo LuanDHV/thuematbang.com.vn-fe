@@ -102,8 +102,6 @@ export default function AdminNewsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint hiện tại chưa trả về bài viết nào."
     />
   );
 }

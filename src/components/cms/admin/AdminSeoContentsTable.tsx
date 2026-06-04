@@ -83,8 +83,6 @@ export default function AdminSeoContentsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint seo-contents hiện chưa trả về bản ghi nào."
     />
   );
 }

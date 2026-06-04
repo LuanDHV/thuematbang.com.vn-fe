@@ -107,8 +107,6 @@ export default function AdminProjectsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint hiện tại chưa trả về dự án nào."
     />
   );
 }

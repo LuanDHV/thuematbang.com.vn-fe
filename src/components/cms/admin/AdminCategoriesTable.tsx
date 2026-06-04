@@ -96,8 +96,6 @@ export default function AdminCategoriesTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={() => {}}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint categories hiện chưa trả về bản ghi nào."
     />
   );
 }

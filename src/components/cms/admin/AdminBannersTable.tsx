@@ -114,8 +114,6 @@ export default function AdminBannersTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint banners hiện chưa trả về bản ghi nào."
     />
   );
 }

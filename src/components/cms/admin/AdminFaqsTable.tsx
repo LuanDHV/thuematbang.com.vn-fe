@@ -96,8 +96,6 @@ export default function AdminFaqsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint FAQs hiện chưa trả về bản ghi nào."
     />
   );
 }

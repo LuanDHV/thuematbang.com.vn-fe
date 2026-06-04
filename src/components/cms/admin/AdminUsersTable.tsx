@@ -25,15 +25,10 @@ export default function AdminUsersTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const currentSearch = useMemo(
-    () => new URLSearchParams(searchParams.toString()),
-    [searchParams],
-  );
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
-    currentSearch,
+    searchParams,
     totalPages,
   );
 
@@ -102,8 +97,6 @@ export default function AdminUsersTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Chưa có dữ liệu người dùng."
     />
   );
 }

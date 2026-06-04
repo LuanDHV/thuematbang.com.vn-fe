@@ -120,8 +120,6 @@ export default function AdminLeadsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
-      emptyTitle="Không có dữ liệu"
-      emptyDescription="Endpoint leads hiện chưa trả về bản ghi nào."
     />
   );
 }
