@@ -68,7 +68,7 @@ export default function AdminFaqsTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/faqs/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-faqs/${item.id}`,
         onDelete: handleDeleteFaq,
       },
     ],

@@ -1,55 +1,46 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
-import AdminSeoContentsTable from "@/components/cms/admin/AdminSeoContentsTable";
+import AdminRentRequestsTable from "@/components/cms/admin/AdminRentRequestsTable";
 import {
   resolvePaginationServer,
   resolveSearchParamValue,
 } from "@/lib/server-side";
-import { seoContentService } from "@/services/seo-content.service";
+import { rentRequestService } from "@/services/rent-request.service";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function matchesText(value: string, query: string) {
-  return value.toLowerCase().includes(query.toLowerCase());
-}
-
-export default async function AdminSeoContentsPage({
-  searchParams,
-}: PageProps) {
+export default async function AdminCanThuePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
-  const result = await seoContentService
+  const limit = 10;
+
+  const result = await rentRequestService
     .getAll({
       page: currentPage,
-      limit: 10,
+      limit,
+      filters: {
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      },
     })
     .catch(() => ({ data: [], meta: undefined }));
 
   const items = result.data ?? [];
   const totalPages = result.meta?.totalPage ?? 1;
-  const filteredItems = searchValue
-    ? items.filter(
-        (item) =>
-          matchesText(item.page, searchValue) ||
-          matchesText(item.seoContent ?? "", searchValue),
-      )
-    : items;
 
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý SEO content"
-        description="Nội dung SEO theo từng page để kiểm soát hiển thị public."
-        searchPlaceholder="Tìm kiếm page SEO"
+        eyebrow="Quản lí tin cần thuê"
+        searchPlaceholder="Tìm kiếm tin cần thuê"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />
 
-      <AdminSeoContentsTable
-        items={filteredItems}
+      <AdminRentRequestsTable
+        items={items}
         currentPage={currentPage}
         totalPages={totalPages}
       />

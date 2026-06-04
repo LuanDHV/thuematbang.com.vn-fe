@@ -26,18 +26,6 @@ export const locationService = {
     return ensureArray<Ward>(response.data, "wards");
   },
 
-  getStreetsByProvince: async (provinceId?: number, limit = 50) => {
-    if (typeof provinceId !== "number") return [];
-    const response = await requestServerApi<unknown>(
-      buildListPath(`/locations/provinces/${provinceId}/streets`, { limit }),
-      {
-        cache: "no-store",
-        tags: ["streets"],
-      },
-    );
-    return ensureArray<Street>(response.data, "streets");
-  },
-
   getStreetsByWard: async (wardId?: number, limit = 50) => {
     if (typeof wardId !== "number") return [];
     const response = await requestServerApi<unknown>(

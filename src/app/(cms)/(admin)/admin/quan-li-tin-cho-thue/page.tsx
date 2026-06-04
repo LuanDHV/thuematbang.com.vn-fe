@@ -1,22 +1,22 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
-import AdminRentRequestsTable from "@/components/cms/admin/AdminRentRequestsTable";
+import AdminPropertiesTable from "@/components/cms/admin/AdminPropertiesTable";
 import {
   resolvePaginationServer,
   resolveSearchParamValue,
 } from "@/lib/server-side";
-import { rentRequestService } from "@/services/rent-request.service";
+import { propertyService } from "@/services/property.service";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function AdminCanThuePage({ searchParams }: PageProps) {
+export default async function AdminChoThuePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
-  const limit = 10;
+  const limit = 5;
 
-  const result = await rentRequestService
+  const result = await propertyService
     .getAll({
       page: currentPage,
       limit,
@@ -27,22 +27,20 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
     })
     .catch(() => ({ data: [], meta: undefined }));
 
-  const items = result.data ?? [];
+  const properties = result.data ?? [];
   const totalPages = result.meta?.totalPage ?? 1;
 
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý cần thuê"
-        description="Danh sách nhu cầu cần thuê thật từ API để kiểm tra luồng admin."
-        searchPlaceholder="Tìm kiếm nhu cầu"
+        eyebrow="Quản lí tin cho thuê"
+        searchPlaceholder="Tìm kiếm tin cho thuê"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />
 
-      <AdminRentRequestsTable
-        items={items}
+      <AdminPropertiesTable
+        properties={properties}
         currentPage={currentPage}
         totalPages={totalPages}
       />

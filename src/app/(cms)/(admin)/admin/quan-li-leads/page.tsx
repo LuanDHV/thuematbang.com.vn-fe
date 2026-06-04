@@ -1,6 +1,9 @@
 import AdminLeadsTable from "@/components/cms/admin/AdminLeadsTable";
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
-import { resolvePaginationServer, resolveSearchParamValue } from "@/lib/server-side";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { leadService } from "@/services/lead.service";
 import type { LeadStatus } from "@/types/enums";
 
@@ -20,9 +23,9 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
   const limit = 10;
   const status =
     statusValue &&
-    (["NEW", "CONTACTED", "QUALIFIED", "CLOSED", "REJECTED"] as LeadStatus[]).includes(
-      statusValue as LeadStatus,
-    )
+    (
+      ["NEW", "CONTACTED", "QUALIFIED", "CLOSED", "REJECTED"] as LeadStatus[]
+    ).includes(statusValue as LeadStatus)
       ? (statusValue as LeadStatus)
       : undefined;
 
@@ -55,9 +58,7 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý lead"
-        description="Danh sách liên hệ và lịch sử xử lý theo trạng thái, phân trang từ backend."
+        eyebrow="Quản lí leads"
         searchPlaceholder="Tìm kiếm lead"
         createLabel="Tạo mới"
         searchValue={searchValue}

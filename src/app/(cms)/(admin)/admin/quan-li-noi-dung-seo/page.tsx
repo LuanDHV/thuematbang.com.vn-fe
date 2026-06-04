@@ -1,48 +1,53 @@
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
-import AdminProjectsTable from "@/components/cms/admin/AdminProjectsTable";
+import AdminSeoContentsTable from "@/components/cms/admin/AdminSeoContentsTable";
 import {
   resolvePaginationServer,
   resolveSearchParamValue,
 } from "@/lib/server-side";
-import { projectService } from "@/services/project.service";
+import { seoContentService } from "@/services/seo-content.service";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function AdminDuAnPage({ searchParams }: PageProps) {
+function matchesText(value: string, query: string) {
+  return value.toLowerCase().includes(query.toLowerCase());
+}
+
+export default async function AdminSeoContentsPage({
+  searchParams,
+}: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
-  const limit = 10;
-
-  const result = await projectService
+  const result = await seoContentService
     .getAll({
       page: currentPage,
-      limit,
-      filters: {
-        sortBy: "createdAt",
-        sortOrder: "desc",
-      },
+      limit: 10,
     })
     .catch(() => ({ data: [], meta: undefined }));
 
   const items = result.data ?? [];
   const totalPages = result.meta?.totalPage ?? 1;
+  const filteredItems = searchValue
+    ? items.filter(
+        (item) =>
+          matchesText(item.page, searchValue) ||
+          matchesText(item.seoContent ?? "", searchValue),
+      )
+    : items;
 
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý dự án"
-        description="Bảng dự án lấy từ API thật, cùng hệ action menu với module tin đăng."
-        searchPlaceholder="Tìm kiếm dự án"
+        eyebrow="Quản lí nội dung SEO"
+        searchPlaceholder="Tìm kiếm page SEO"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />
 
-      <AdminProjectsTable
-        items={items}
+      <AdminSeoContentsTable
+        items={filteredItems}
         currentPage={currentPage}
         totalPages={totalPages}
       />

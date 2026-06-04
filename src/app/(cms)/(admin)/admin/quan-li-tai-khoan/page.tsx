@@ -1,5 +1,9 @@
+import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminUsersTable from "@/components/cms/admin/AdminUsersTable";
-import { resolvePaginationServer } from "@/lib/server-side";
+import {
+  resolvePaginationServer,
+  resolveSearchParamValue,
+} from "@/lib/server-side";
 import { userService } from "@/services/user.service";
 
 type PageProps = {
@@ -8,6 +12,7 @@ type PageProps = {
 
 export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
+  const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const limit = 10;
 
@@ -24,18 +29,12 @@ export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <div className="space-y-2">
-        <p className="text-primary text-xs font-semibold tracking-[0.24em] uppercase">
-          CMS Admin
-        </p>
-        <h1 className="text-heading text-xl font-semibold tracking-[-0.03em] md:text-2xl">
-          Quản lý người dùng
-        </h1>
-        <p className="text-secondary text-sm leading-7 md:text-base">
-          Dữ liệu người dùng được lấy từ endpoint admin riêng để làm mẫu cho các
-          module CRUD sau này.
-        </p>
-      </div>
+      <AdminListToolbar
+        eyebrow="Quản lí tài khoản"
+        searchPlaceholder="Tìm kiếm người dùng"
+        createLabel="Tạo mới"
+        searchValue={searchValue}
+      />
 
       <AdminUsersTable
         users={users}

@@ -18,7 +18,9 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
     resolvedSearchParams,
     "provinceId",
   );
+  const wardIdValue = resolveSearchParamValue(resolvedSearchParams, "wardId");
   const selectedProvinceId = provinceIdValue ? Number(provinceIdValue) : null;
+  const selectedWardId = wardIdValue ? Number(wardIdValue) : null;
   const provinces = await locationService.getProvinces().catch(() => []);
 
   const filteredProvinces = searchValue
@@ -31,16 +33,12 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
 
   const selectedProvince =
     selectedProvinceId !== null && Number.isFinite(selectedProvinceId)
-      ? provinces.find((province) => province.id === selectedProvinceId) ?? null
+      ? (provinces.find((province) => province.id === selectedProvinceId) ??
+        null)
       : null;
 
   const wards = selectedProvince
     ? await locationService.getWards(selectedProvince.id).catch(() => [])
-    : [];
-  const streets = selectedProvince
-    ? await locationService
-        .getStreetsByProvince(selectedProvince.id)
-        .catch(() => [])
     : [];
 
   const filteredWards = searchValue
@@ -51,6 +49,17 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
       )
     : wards;
 
+  const selectedWard =
+    selectedWardId !== null && Number.isFinite(selectedWardId)
+      ? (filteredWards.find((ward) => ward.id === selectedWardId) ??
+        wards.find((ward) => ward.id === selectedWardId) ??
+        null)
+      : null;
+
+  const streets = selectedWard
+    ? await locationService.getStreetsByWard(selectedWard.id).catch(() => [])
+    : [];
+
   const filteredStreets = searchValue
     ? streets.filter(
         (street) =>
@@ -59,15 +68,21 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
       )
     : streets;
 
+  const hiddenParams = [
+    selectedProvince
+      ? { name: "provinceId", value: String(selectedProvince.id) }
+      : null,
+    selectedWard ? { name: "wardId", value: String(selectedWard.id) } : null,
+  ].filter((field): field is { name: string; value: string } => Boolean(field));
+
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý địa điểm"
-        description="Dữ liệu lookup raw từ provinces, wards và streets để kiểm tra cấu trúc địa giới."
+        eyebrow="Quản lí địa điểm"
         searchPlaceholder="Tìm kiếm tỉnh, phường hoặc đường"
         createLabel="Tạo mới"
         searchValue={searchValue}
+        hiddenParams={hiddenParams}
       />
 
       <AdminLocationsTable
@@ -75,6 +90,7 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
         wards={filteredWards}
         streets={filteredStreets}
         selectedProvince={selectedProvince}
+        selectedWard={selectedWard}
         searchValue={searchValue}
       />
     </section>

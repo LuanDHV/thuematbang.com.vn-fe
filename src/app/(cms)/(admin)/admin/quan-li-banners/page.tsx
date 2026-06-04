@@ -42,9 +42,7 @@ export default async function AdminBannersPage({ searchParams }: PageProps) {
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý banner"
-        description="Banner hiển thị theo page và position, có phân trang từ backend."
+        eyebrow="Quản lí banner"
         searchPlaceholder="Tìm kiếm banner"
         createLabel="Tạo mới"
         searchValue={searchValue}

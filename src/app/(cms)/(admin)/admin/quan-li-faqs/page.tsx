@@ -1,48 +1,52 @@
+import AdminFaqsTable from "@/components/cms/admin/AdminFaqsTable";
 import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
-import AdminPropertiesTable from "@/components/cms/admin/AdminPropertiesTable";
 import {
   resolvePaginationServer,
   resolveSearchParamValue,
 } from "@/lib/server-side";
-import { propertyService } from "@/services/property.service";
+import { faqService } from "@/services/faq.service";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function AdminChoThuePage({ searchParams }: PageProps) {
+function matchesText(value: string, query: string) {
+  return value.toLowerCase().includes(query.toLowerCase());
+}
+
+export default async function AdminFaqsPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
-  const limit = 5;
-
-  const result = await propertyService
+  const result = await faqService
     .getAll({
       page: currentPage,
-      limit,
-      filters: {
-        sortBy: "createdAt",
-        sortOrder: "desc",
-      },
+      limit: 10,
     })
     .catch(() => ({ data: [], meta: undefined }));
 
-  const properties = result.data ?? [];
+  const items = result.data ?? [];
   const totalPages = result.meta?.totalPage ?? 1;
+  const filteredItems = searchValue
+    ? items.filter(
+        (item) =>
+          matchesText(item.page, searchValue) ||
+          matchesText(item.question, searchValue) ||
+          matchesText(item.answer, searchValue),
+      )
+    : items;
 
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý cho thuê"
-        description="Danh sách tin cho thuê lấy trực tiếp từ API public, dùng làm module mẫu cho admin."
-        searchPlaceholder="Tìm kiếm tin cho thuê"
+        eyebrow="Quản lí FAQS"
+        searchPlaceholder="Tìm kiếm FAQ"
         createLabel="Tạo mới"
         searchValue={searchValue}
       />
 
-      <AdminPropertiesTable
-        properties={properties}
+      <AdminFaqsTable
+        items={filteredItems}
         currentPage={currentPage}
         totalPages={totalPages}
       />

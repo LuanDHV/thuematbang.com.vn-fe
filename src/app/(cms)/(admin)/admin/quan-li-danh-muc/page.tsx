@@ -31,9 +31,7 @@ export default async function AdminCategoriesPage({ searchParams }: PageProps) {
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý danh mục"
-        description="Danh sách taxonomy theo type để kiểm tra nội dung hiển thị và cấu trúc slug."
+        eyebrow="Quản lí danh mục"
         searchPlaceholder="Tìm kiếm danh mục"
         createLabel="Tạo mới"
         searchValue={searchValue}

@@ -82,7 +82,7 @@ export default function AdminRentRequestsTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/can-thue/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-tin-can-thue/${item.id}`,
         onDelete: handleDeleteRentRequest,
       },
     ],

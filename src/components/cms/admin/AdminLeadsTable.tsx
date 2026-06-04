@@ -92,7 +92,7 @@ export default function AdminLeadsTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/leads/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-leads/${item.id}`,
         onDelete: handleDeleteLead,
       },
     ],

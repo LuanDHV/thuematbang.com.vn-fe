@@ -79,7 +79,7 @@ export default function AdminProjectsTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/du-an/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-du-an/${item.id}`,
         onDelete: handleDeleteProject,
       },
     ],

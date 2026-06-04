@@ -69,7 +69,7 @@ export default function AdminUsersTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (user) => `/admin/nguoi-dung/${user.id}`,
+        getEditHref: (user) => `/admin/quan-li-tai-khoan/${user.id}`,
         onDelete: handleDeleteUser,
       },
     ],

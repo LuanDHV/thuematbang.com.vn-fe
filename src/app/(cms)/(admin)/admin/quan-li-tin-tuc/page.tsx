@@ -33,9 +33,7 @@ export default async function AdminTinTucPage({ searchParams }: PageProps) {
   return (
     <section className="space-y-5">
       <AdminListToolbar
-        eyebrow="CMS Admin"
-        title="Quản lý tin tức"
-        description="Bảng tin tức từ API thật để hoàn thiện content module admin."
+        eyebrow="Quản lý tin tức"
         searchPlaceholder="Tìm kiếm bài viết"
         createLabel="Tạo mới"
         searchValue={searchValue}

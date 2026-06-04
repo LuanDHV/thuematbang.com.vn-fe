@@ -74,7 +74,7 @@ export default function AdminNewsTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/tin-tuc/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-tin-tuc/${item.id}`,
         onDelete: handleDeleteNews,
       },
     ],

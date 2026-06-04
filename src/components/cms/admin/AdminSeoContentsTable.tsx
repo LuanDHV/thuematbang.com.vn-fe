@@ -55,7 +55,7 @@ export default function AdminSeoContentsTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/seo-contents/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-noi-dung-seo/${item.id}`,
         onDelete: handleDeleteSeoContent,
       },
     ],

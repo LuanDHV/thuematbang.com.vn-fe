@@ -91,7 +91,7 @@ export default function AdminPropertiesTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (property) => `/admin/cho-thue/${property.id}`,
+        getEditHref: (property) => `/admin/quan-li-tin-cho-thue/${property.id}`,
         onDelete: handleDeleteProperty,
       },
     ],

@@ -68,7 +68,7 @@ export default function AdminCategoriesTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/categories/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-danh-muc/${item.id}`,
         onDelete: handleDeleteCategory,
       },
     ],

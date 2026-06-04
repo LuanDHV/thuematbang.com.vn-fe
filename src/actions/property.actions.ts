@@ -38,7 +38,7 @@ export async function deletePropertyAction(id: string | number) {
   // Keep admin listing fresh after destructive mutations.
   revalidateTag("properties", "max");
   revalidateTag("my-properties", "max");
-  revalidatePath("/admin/cho-thue");
+  revalidatePath("/admin/quan-li-tin-cho-thue");
 }
 
 export async function updatePropertyAction(
@@ -55,6 +55,6 @@ export async function updatePropertyAction(
   revalidateTag("properties", "max");
   revalidateTag("my-properties", "max");
   revalidateTag("property-detail", "max");
-  revalidatePath("/admin/cho-thue");
-  revalidatePath(`/admin/cho-thue/${propertyId}/edit`);
+  revalidatePath("/admin/quan-li-tin-cho-thue");
+  revalidatePath(`/admin/quan-li-tin-cho-thue/${propertyId}/edit`);
 }

@@ -86,7 +86,7 @@ export default function AdminBannersTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/banners/${item.id}`,
+        getEditHref: (item) => `/admin/quan-li-banners/${item.id}`,
         onDelete: handleDeleteBanner,
       },
     ],
