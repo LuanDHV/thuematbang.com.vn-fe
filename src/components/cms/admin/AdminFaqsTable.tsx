@@ -13,6 +13,14 @@ type AdminFaqsTableProps = {
   totalPages: number;
 };
 
+function truncateText(value: string, maxLength: number) {
+  if (value.length <= maxLength) {
+    return value;
+  }
+
+  return `${value.slice(0, Math.max(0, maxLength - 3)).trimEnd()}...`;
+}
+
 export default function AdminFaqsTable({
   items,
   currentPage,
@@ -44,13 +52,13 @@ export default function AdminFaqsTable({
         key: "question",
         header: "Câu hỏi",
         fieldType: "text",
-        accessor: (item) => item.question,
+        accessor: (item) => truncateText(item.question, 70),
       },
       {
         key: "answer",
         header: "Trả lời",
         fieldType: "text",
-        accessor: (item) => item.answer,
+        accessor: (item) => truncateText(item.answer, 90),
       },
       {
         key: "sortOrder",

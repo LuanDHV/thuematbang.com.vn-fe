@@ -21,7 +21,7 @@ export default async function AdminTinTucPage({ searchParams }: PageProps) {
       page: currentPage,
       limit,
       filters: {
-        sortBy: "createdAt",
+        sortBy: "viewCount",
         sortOrder: "desc",
       },
     })

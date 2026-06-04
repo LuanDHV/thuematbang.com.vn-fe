@@ -14,14 +14,14 @@ export default async function AdminChoThuePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
-  const limit = 5;
+  const limit = 10;
 
   const result = await propertyService
     .getAll({
       page: currentPage,
       limit,
       filters: {
-        sortBy: "createdAt",
+        sortBy: "priorityStatus",
         sortOrder: "desc",
       },
     })
