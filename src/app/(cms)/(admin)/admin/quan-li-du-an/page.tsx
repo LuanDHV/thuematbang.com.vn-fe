@@ -38,7 +38,7 @@ export default async function AdminDuAnPage({ searchParams }: PageProps) {
       <AdminListToolbar
         eyebrow="Quản lí dự án"
         searchPlaceholder="Tìm kiếm theo tên hoặc slug"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
       />

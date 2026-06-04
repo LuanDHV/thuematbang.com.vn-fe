@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 type AdminListToolbarProps = {
   eyebrow: string;
   searchPlaceholder: string;
-  createLabel: string;
+  actionLabel?: string;
+  onActionClick?: () => void;
   searchValue?: string;
   hiddenParams?: Array<{
     name: string;
@@ -23,7 +24,8 @@ const SEARCH_DEBOUNCE_MS = 350;
 export default function AdminListToolbar({
   eyebrow,
   searchPlaceholder,
-  createLabel,
+  actionLabel,
+  onActionClick,
   searchValue,
   hiddenParams,
 }: AdminListToolbarProps) {
@@ -125,10 +127,18 @@ export default function AdminListToolbar({
               >
                 <Filter className="size-4" />
               </Button>
-              <Button type="submit" size="sm" className="gap-1.5">
-                <Plus className="size-4" />
-                {createLabel}
-              </Button>
+              {actionLabel ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={onActionClick}
+                  disabled={!onActionClick}
+                >
+                  <Plus className="size-4" />
+                  {actionLabel}
+                </Button>
+              ) : null}
             </div>
           </form>
         </div>

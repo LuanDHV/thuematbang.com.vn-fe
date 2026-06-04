@@ -29,7 +29,7 @@ export default async function AdminCategoriesPage({ searchParams }: PageProps) {
       <AdminListToolbar
         eyebrow="Quản lí danh mục"
         searchPlaceholder="Tìm kiếm theo tên"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
       />

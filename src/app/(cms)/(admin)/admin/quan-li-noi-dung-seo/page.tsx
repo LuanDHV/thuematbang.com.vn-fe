@@ -36,7 +36,7 @@ export default async function AdminSeoContentsPage({
       <AdminListToolbar
         eyebrow="Quản lí nội dung SEO"
         searchPlaceholder="Tìm kiếm theo nội dung SEO"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
       />

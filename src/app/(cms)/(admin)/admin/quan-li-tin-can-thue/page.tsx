@@ -38,7 +38,7 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
       <AdminListToolbar
         eyebrow="Quản lí tin cần thuê"
         searchPlaceholder="Tìm kiếm theo tên hoặc slug"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
       />

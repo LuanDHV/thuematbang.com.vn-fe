@@ -36,7 +36,7 @@ export default async function AdminBannersPage({ searchParams }: PageProps) {
       <AdminListToolbar
         eyebrow="Quản lí banner"
         searchPlaceholder="Tìm kiếm theo tiêu đề"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
       />

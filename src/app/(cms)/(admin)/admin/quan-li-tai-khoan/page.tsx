@@ -37,7 +37,7 @@ export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
       <AdminListToolbar
         eyebrow="Quản lí tài khoản"
         searchPlaceholder="Tìm kiếm tên, email hoặc sđt"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
       />

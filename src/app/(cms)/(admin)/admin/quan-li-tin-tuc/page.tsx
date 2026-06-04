@@ -38,7 +38,7 @@ export default async function AdminTinTucPage({ searchParams }: PageProps) {
       <AdminListToolbar
         eyebrow="Quản lý tin tức"
         searchPlaceholder="Tìm kiếm theo tiêu đề hoặc slug"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
       />

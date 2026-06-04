@@ -86,7 +86,7 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
       <AdminListToolbar
         eyebrow="Quản lí địa điểm"
         searchPlaceholder="Tìm kiếm theo tên"
-        createLabel="Tạo mới"
+        actionLabel="Tạo mới"
         key={searchValue ?? ""}
         searchValue={searchValue}
         hiddenParams={hiddenParams}
