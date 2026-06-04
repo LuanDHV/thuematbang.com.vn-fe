@@ -60,6 +60,12 @@ export default function AdminUsersTable({
         accessor: (user) => user.role,
       },
       {
+        key: "authProvider",
+        header: "Nguồn tạo",
+        fieldType: "text",
+        accessor: (user) => user.authProvider,
+      },
+      {
         key: "createdAt",
         header: "Ngày tạo",
         fieldType: "date",
