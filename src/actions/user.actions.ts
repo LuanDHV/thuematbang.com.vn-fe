@@ -19,7 +19,7 @@ function toOptionalFile(value: FormDataEntryValue | null) {
 }
 
 export async function getCurrentUserAction() {
-  return userService.me();
+  return userService.me({ mutateAuthCookies: true });
 }
 
 export async function updateMyProfileAction(formData: FormData) {
@@ -36,7 +36,9 @@ export async function updateMyProfileAction(formData: FormData) {
     avatar: toOptionalFile(formData.get("avatar")),
   };
 
-  const updatedUser = await userService.updateMe(payload);
+  const updatedUser = await userService.updateMe(payload, {
+    mutateAuthCookies: true,
+  });
   // Keep both the auth snapshot and the account pages fresh after a profile mutation.
   revalidateTag("auth-me", "max");
   revalidatePath("/quan-li-tai-khoan");
@@ -47,7 +49,9 @@ export async function changeMyPasswordAction(
   payload: ChangeMyPasswordPayload,
 ) {
   const parsedPayload = changePasswordPayloadSchema.parse(payload);
-  const result = await userService.changeMyPassword(parsedPayload);
+  const result = await userService.changeMyPassword(parsedPayload, {
+    mutateAuthCookies: true,
+  });
   // Password updates can affect auth-derived UI, so the auth cache stays in sync.
   revalidateTag("auth-me", "max");
   return result;
@@ -55,7 +59,9 @@ export async function changeMyPasswordAction(
 
 export async function setMyPasswordAction(payload: SetMyPasswordPayload) {
   const parsedPayload = setPasswordPayloadSchema.parse(payload);
-  const result = await userService.setMyPassword(parsedPayload);
+  const result = await userService.setMyPassword(parsedPayload, {
+    mutateAuthCookies: true,
+  });
   // Setting a first password changes account capabilities exposed in the auth snapshot.
   revalidateTag("auth-me", "max");
   return result;
