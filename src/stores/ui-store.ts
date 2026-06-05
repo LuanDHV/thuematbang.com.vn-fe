@@ -1,18 +1,26 @@
 ﻿import { create } from "zustand";
 
-// Global UI state definitions
 type UIState = {
   isMobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
   toggleMobileMenu: () => void;
   closeMobileMenu: () => void;
+  isCmsSidebarCollapsed: boolean;
+  setCmsSidebarCollapsed: (collapsed: boolean) => void;
+  toggleCmsSidebarCollapsed: () => void;
 };
 
-// Global store managing UI components visibility
 export const useUIStore = create<UIState>((set) => ({
   isMobileMenuOpen: false,
   setMobileMenuOpen: (open) => set({ isMobileMenuOpen: open }),
   toggleMobileMenu: () =>
     set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
   closeMobileMenu: () => set({ isMobileMenuOpen: false }),
+  isCmsSidebarCollapsed: true,
+  setCmsSidebarCollapsed: (collapsed) =>
+    set({ isCmsSidebarCollapsed: collapsed }),
+  toggleCmsSidebarCollapsed: () =>
+    set((state) => ({
+      isCmsSidebarCollapsed: !state.isCmsSidebarCollapsed,
+    })),
 }));

@@ -247,6 +247,8 @@ From `src/components/cms/shared/CmsLayout.tsx`:
 
 - full-width shell
 - left sidebar
+- mobile fixed rail with icon-first navigation
+- desktop sidebar that can collapse into a rail
 - right main area
 - outer content padding at shell level
 - no `layout-container` at the shell root
@@ -255,6 +257,7 @@ From `src/components/cms/shared/CmsLayout.tsx`:
 
 - keep the shell full-width
 - keep sidebar structurally separate from public layout primitives
+- keep the mobile CMS sidebar as a fixed rail instead of a sheet menu
 - use panel-based content inside the right column
 - avoid squeezing CMS content into public-page width rules
 

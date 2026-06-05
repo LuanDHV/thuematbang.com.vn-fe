@@ -1,14 +1,7 @@
-﻿"use client";
+"use client";
 
-import {
-  cloneElement,
-  isValidElement,
-  type ReactElement,
-  type ReactNode,
-} from "react";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store";
 
 type CmsLayoutProps = {
@@ -17,46 +10,23 @@ type CmsLayoutProps = {
 };
 
 export default function CmsLayout({ sidebar, children }: CmsLayoutProps) {
-  const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
-  const setMobileMenuOpen = useUIStore((state) => state.setMobileMenuOpen);
-
-  const mobileSidebar = isValidElement(sidebar)
-    ? cloneElement(
-        sidebar as ReactElement<{
-          onNavigate?: () => void;
-        }>,
-        {
-          onNavigate: () => setMobileMenuOpen(false),
-        },
-      )
-    : sidebar;
+  const isCmsSidebarCollapsed = useUIStore(
+    (state) => state.isCmsSidebarCollapsed,
+  );
 
   return (
     <section className="bg-app min-h-svh lg:flex">
-      <aside className="hidden shrink-0 lg:sticky lg:top-0 lg:block lg:h-svh lg:w-[18rem]">
+      <aside
+        className={cn(
+          "border-hairline bg-surface fixed inset-y-0 left-0 z-30 w-18 border-r lg:sticky lg:top-0 lg:h-svh lg:shrink-0",
+          isCmsSidebarCollapsed ? "lg:w-22" : "lg:w-[18rem]",
+        )}
+      >
         <div className="h-full">{sidebar}</div>
       </aside>
 
-      <main className="min-w-0 flex-1 p-5">
-        <div className="border-hairline bg-app/92 flex items-center gap-3 border-b px-4 py-3 backdrop-blur-xl lg:hidden">
-          <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon-lg" aria-label="Mở menu CMS">
-                <Menu className="size-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="left"
-              className="w-72 gap-0 p-0"
-              showCloseButton={false}
-              srTitle="Menu CMS"
-            >
-              <div className="h-full">{mobileSidebar}</div>
-            </SheetContent>
-          </Sheet>
-        </div>
-
-        {children}
+      <main className="min-w-0 flex-1 pl-18 lg:pl-0">
+        <div className="p-4 md:p-5">{children}</div>
       </main>
     </section>
   );

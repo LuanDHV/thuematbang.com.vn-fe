@@ -315,6 +315,7 @@ CMS uses a shared shell with role-specific ownership.
 - shell composition
 - navigation config
 - layout container for CMS content structure
+- desktop-collapsible sidebar state and rail behavior
 
 ### Admin CMS
 

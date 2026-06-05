@@ -337,12 +337,12 @@ export default function AdminDataTable<TData>({
                       return (
                         <div
                           key={`${String(rowId)}-${field.key}`}
-                          className="space-y-1"
+                          className="min-w-0 space-y-1"
                         >
                           <p className="text-secondary text-xs font-medium">
                             {field.header}
                           </p>
-                          <div className="text-body text-sm">
+                          <div className="text-body min-w-0 overflow-hidden text-sm">
                             {renderFieldContent({
                               field,
                               row,
