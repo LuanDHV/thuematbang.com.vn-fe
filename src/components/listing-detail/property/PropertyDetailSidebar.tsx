@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PosterContactCard from "@/components/common/PosterContactCard";
 
-type RelatedCategoryCityLink = {
+type RelatedCategoryProvinceLink = {
   label: string;
   href: string;
 };
@@ -11,14 +11,14 @@ type PropertyDetailSidebarProps = {
   contactName?: string | null;
   contactPhone?: string | null;
   isLoggedIn: boolean;
-  relatedCategoryCityLinks: RelatedCategoryCityLink[];
+  relatedCategoryProvinceLinks: RelatedCategoryProvinceLink[];
 };
 
 export default function PropertyDetailSidebar({
   contactName,
   contactPhone,
   isLoggedIn,
-  relatedCategoryCityLinks,
+  relatedCategoryProvinceLinks,
 }: PropertyDetailSidebarProps) {
   return (
     <aside className="flex w-full flex-col gap-6">
@@ -36,10 +36,10 @@ export default function PropertyDetailSidebar({
           Gợi ý theo khu vực
         </h3>
 
-        {relatedCategoryCityLinks.length > 0 ? (
+        {relatedCategoryProvinceLinks.length > 0 ? (
           <div className="mt-3">
             <div className="grid divide-y divide-black/6">
-              {relatedCategoryCityLinks.map((item) => (
+              {relatedCategoryProvinceLinks.map((item) => (
                 <Link
                   href={item.href}
                   key={item.href}

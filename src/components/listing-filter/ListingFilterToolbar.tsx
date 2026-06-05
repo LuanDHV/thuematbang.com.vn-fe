@@ -1,15 +1,17 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
   getProvinceWardsAction,
   getProvincesAction,
 } from "@/actions/location.actions";
+import { getPublicSearchSuggestionsAction } from "@/actions/public-search.actions";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
+import { PublicSearchSuggestion } from "@/types/public-search";
 import { RentRequest } from "@/types/rent-request";
 import { ListingFilterDrawer } from "./ListingFilterDrawer";
 import {
@@ -34,7 +36,11 @@ import {
   INITIAL_ADVANCED_FILTER_VALUE,
   type AdvancedFilterValue,
 } from "@/types/filter";
-import { buildPagedPath, buildPropertyFilterPath } from "@/lib/flat-url";
+import {
+  buildPagedPath,
+  buildPropertyFilterPath,
+  type FlatUrlContext,
+} from "@/lib/flat-url";
 import { Province, Ward } from "@/types/location";
 
 type Props = {
@@ -113,9 +119,13 @@ export default function ListingFilterToolbar({
 }: Props) {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const [advancedFilters, setAdvancedFilters] =
     useState<AdvancedFilterValue>(initialFilters);
   const lastSyncedInitialFiltersRef = useRef<AdvancedFilterValue | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { data: provincesData = [] } = useQuery({
     queryKey: ["locations", "provinces"],
@@ -137,6 +147,26 @@ export default function ListingFilterToolbar({
     staleTime: 30 * 60 * 1000,
     gcTime: 60 * 60 * 1000,
   });
+
+  const trimmedDebouncedKeyword = debouncedKeyword.trim();
+  const suggestionContextResource =
+    listingMode === "rentRequest" ? "rent-request" : "property";
+  const { data: suggestions = [], isFetching: isSuggestionsFetching } =
+    useQuery({
+      queryKey: [
+        "public-search-suggestions",
+        suggestionContextResource,
+        trimmedDebouncedKeyword,
+      ],
+      queryFn: () =>
+        getPublicSearchSuggestionsAction({
+          contextResource: suggestionContextResource,
+          keyword: trimmedDebouncedKeyword,
+          limit: 8,
+        }),
+      enabled: trimmedDebouncedKeyword.length >= 2,
+      staleTime: 30 * 1000,
+    });
 
   const sourceLocationMap = useMemo(() => {
     const provinceMap = new Map<string, Province>();
@@ -212,6 +242,51 @@ export default function ListingFilterToolbar({
     sourceLocationMap.wardMap,
   ]);
 
+  const flatUrlContext = useMemo<FlatUrlContext>(() => {
+    const provinces = (
+      provincesData.length
+        ? provincesData
+        : Array.from(sourceLocationMap.provinceMap.values())
+    ).map((province) => ({
+      id: province.id,
+      name: province.name,
+      slug: province.slug,
+    }));
+
+    const wardMap = new Map<
+      string,
+      Pick<Ward, "name" | "slug" | "provinceId">
+    >();
+
+    sourceLocationMap.wardMap.forEach((wards) => {
+      wards.forEach((ward) => {
+        wardMap.set(`${ward.provinceId}:${ward.slug}`, {
+          name: ward.name,
+          slug: ward.slug,
+          provinceId: ward.provinceId,
+        });
+      });
+    });
+
+    selectedProvinceWards.forEach((ward) => {
+      wardMap.set(`${ward.provinceId}:${ward.slug}`, {
+        name: ward.name,
+        slug: ward.slug,
+        provinceId: ward.provinceId,
+      });
+    });
+
+    return {
+      provinces,
+      wards: Array.from(wardMap.values()),
+    };
+  }, [
+    provincesData,
+    selectedProvinceWards,
+    sourceLocationMap.provinceMap,
+    sourceLocationMap.wardMap,
+  ]);
+
   const displayTypeLabel =
     advancedFilters.propertyTypes.length > 0
       ? advancedFilters.propertyTypes.length === 1
@@ -238,6 +313,22 @@ export default function ListingFilterToolbar({
     setAdvancedFilters((prev) => updater(prev));
   };
 
+  const resolveSuggestionBasePath = (suggestion: PublicSearchSuggestion) =>
+    suggestion.targetResource === "rent-request" ? "/can-thue" : "/cho-thue";
+
+  const resolveSuggestionHref = (suggestion: PublicSearchSuggestion) => {
+    const basePath = resolveSuggestionBasePath(suggestion);
+    return suggestion.flatSlug
+      ? `${basePath}/${suggestion.flatSlug}`
+      : basePath;
+  };
+
+  const navigateToSuggestion = (suggestion: PublicSearchSuggestion) => {
+    setIsSuggestionOpen(false);
+    setActiveSuggestionIndex(0);
+    router.replace(resolveSuggestionHref(suggestion), { scroll: false });
+  };
+
   const getFilteredProperties = (activeFilters: AdvancedFilterValue) => {
     const keywordText = normalize(keyword);
     const minPrice = parseNumericInput(activeFilters.priceMin || "");
@@ -249,11 +340,11 @@ export default function ListingFilterToolbar({
       listingMode === "rentRequest"
         ? (sourceProperties as RentRequest[]).filter((request) => {
             const categoryName = request.category?.name ?? "";
-            const cityName = request.desiredProvince?.name ?? "";
+            const provinceName = request.desiredProvince?.name ?? "";
             const wardName = request.desiredWard?.name ?? "";
             const streetName = request.desiredStreet?.name ?? "";
             const haystack = normalize(
-              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName}`,
+              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
             );
 
             if (keywordText && !haystack.includes(keywordText)) return false;
@@ -304,11 +395,11 @@ export default function ListingFilterToolbar({
           })
         : (sourceProperties as Property[]).filter((property) => {
             const categoryName = property.category?.name ?? "";
-            const cityName = property.province?.name ?? "";
+            const provinceName = property.province?.name ?? "";
             const wardName = property.ward?.name ?? "";
             const streetName = property.street?.name ?? "";
             const haystack = normalize(
-              `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${cityName} ${wardName} ${streetName}`,
+              `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
             );
 
             if (keywordText && !haystack.includes(keywordText)) return false;
@@ -383,7 +474,10 @@ export default function ListingFilterToolbar({
 
     if (options?.syncUrl !== false) {
       router.replace(
-        buildPagedPath(buildPropertyFilterPath(nextBasePath, activeFilters), 1),
+        buildPagedPath(
+          buildPropertyFilterPath(nextBasePath, activeFilters, flatUrlContext),
+          1,
+        ),
         {
           scroll: false,
         },
@@ -422,25 +516,175 @@ export default function ListingFilterToolbar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFilters, provinceWardMap, serverDriven, sourceProperties]);
 
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedKeyword(keyword);
+    }, 180);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [keyword]);
+
+  useEffect(() => {
+    if (trimmedDebouncedKeyword.length < 2) {
+      queueMicrotask(() => {
+        setIsSuggestionOpen(false);
+        setActiveSuggestionIndex(0);
+      });
+      return;
+    }
+
+    queueMicrotask(() => {
+      setIsSuggestionOpen(true);
+      setActiveSuggestionIndex(0);
+    });
+  }, [trimmedDebouncedKeyword]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!searchContainerRef.current) {
+        return;
+      }
+
+      if (!searchContainerRef.current.contains(event.target as Node)) {
+        setIsSuggestionOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, []);
+
+  const showSuggestions =
+    isSuggestionOpen &&
+    trimmedDebouncedKeyword.length >= 2 &&
+    (isSuggestionsFetching || suggestions.length > 0);
+  const showEmptySuggestions =
+    isSuggestionOpen &&
+    trimmedDebouncedKeyword.length >= 2 &&
+    !isSuggestionsFetching &&
+    suggestions.length === 0;
+
   return (
     <div className="surface-float rounded-lg transition-all duration-300">
       <form
         onSubmit={(event) => {
           event.preventDefault();
+          const firstSuggestion =
+            suggestions[activeSuggestionIndex] ?? suggestions[0];
+          if (trimmedDebouncedKeyword.length >= 2 && firstSuggestion) {
+            navigateToSuggestion(firstSuggestion);
+            return;
+          }
           runFilter();
         }}
         className="flex flex-col gap-3 p-2.5 lg:flex-row lg:items-center lg:gap-2"
       >
         <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-1">
-          <div className="relative flex min-w-0 flex-1 items-center rounded-lg bg-white/72 px-2">
-            <Search className="ml-2 size-5 shrink-0 text-gray-400" />
-            <input
-              type="text"
-              value={keyword}
-              onChange={(event) => setKeyword(event.target.value)}
-              placeholder="Bạn muốn thuê ở đâu?"
-              className="text-body placeholder:text-secondary h-10 w-full border-none bg-transparent pr-4 pl-3 text-sm font-medium outline-none focus:ring-0"
-            />
+          <div
+            ref={searchContainerRef}
+            className="relative flex min-w-0 flex-1 items-center"
+          >
+            <div
+              className={`focus-within:border-primary/25 relative flex min-w-0 flex-1 items-center border border-black/8 bg-white px-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all focus-within:shadow-[0_12px_28px_rgba(247,170,27,0.12)] ${
+                isSuggestionOpen && trimmedDebouncedKeyword.length >= 2
+                  ? "rounded-t-lg rounded-b-none border-b-transparent"
+                  : "rounded-lg"
+              }`}
+            >
+              <Search className="text-secondary ml-2 size-5 shrink-0 opacity-80" />
+              <input
+                type="text"
+                value={keyword}
+                onChange={(event) => setKeyword(event.target.value)}
+                onFocus={() => {
+                  if (keyword.trim().length >= 2) {
+                    setIsSuggestionOpen(true);
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (!isSuggestionOpen || trimmedDebouncedKeyword.length < 2) {
+                    return;
+                  }
+
+                  if (event.key === "ArrowDown") {
+                    event.preventDefault();
+                    if (!suggestions.length) {
+                      return;
+                    }
+
+                    setActiveSuggestionIndex((prev) =>
+                      prev >= suggestions.length - 1 ? 0 : prev + 1,
+                    );
+                    return;
+                  }
+
+                  if (event.key === "ArrowUp") {
+                    event.preventDefault();
+                    if (!suggestions.length) {
+                      return;
+                    }
+
+                    setActiveSuggestionIndex((prev) =>
+                      prev <= 0 ? suggestions.length - 1 : prev - 1,
+                    );
+                    return;
+                  }
+
+                  if (event.key === "Escape") {
+                    setIsSuggestionOpen(false);
+                  }
+                }}
+                placeholder="Bạn muốn thuê ở đâu?"
+                className="text-body placeholder:text-secondary h-10 w-full border-none bg-transparent pr-10 pl-3 text-sm font-medium outline-none focus:ring-0"
+              />
+              {isSuggestionsFetching ? (
+                <LoaderCircle className="text-secondary mr-2 size-4 shrink-0 animate-spin opacity-75" />
+              ) : null}
+            </div>
+
+            {showSuggestions ? (
+              <div className="absolute top-full left-0 z-50 w-full overflow-hidden rounded-b-lg border-x border-b border-black/8 bg-white shadow-[0_14px_28px_rgba(15,23,42,0.08)]">
+                <ul className="[&::-webkit-scrollbar-thumb]:bg-primary/30 max-h-80 overflow-y-auto py-1.5 pr-1 [scrollbar-color:rgba(247,170,27,0.3)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
+                  {suggestions.length > 0 ? (
+                    suggestions.map((suggestion, index) => {
+                      const isActive = index === activeSuggestionIndex;
+
+                      return (
+                        <li
+                          key={`${suggestion.targetResource}-${suggestion.flatSlug}`}
+                        >
+                          <button
+                            type="button"
+                            onMouseEnter={() => setActiveSuggestionIndex(index)}
+                            onClick={() => navigateToSuggestion(suggestion)}
+                            className={`flex w-full items-center px-4 py-2.5 text-left transition-colors ${
+                              isActive
+                                ? "bg-primary/6 text-primary"
+                                : "text-body hover:bg-primary/5"
+                            }`}
+                          >
+                            <span className="min-w-0 flex-1 cursor-pointer truncate text-sm font-medium">
+                              {suggestion.label}
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <li className="text-secondary flex items-center gap-2 px-4 py-3 text-sm">
+                      <LoaderCircle className="size-4 animate-spin" />
+                      Đang tải...
+                    </li>
+                  )}
+                </ul>
+              </div>
+            ) : null}
+
+            {showEmptySuggestions ? (
+              <div className="text-secondary absolute top-full left-0 z-50 w-full rounded-b-lg border-x border-b border-black/8 bg-white px-4 py-3 text-sm shadow-[0_14px_28px_rgba(15,23,42,0.08)]">
+                Không tìm thấy gợi ý phù hợp.
+              </div>
+            ) : null}
           </div>
 
           <Button
@@ -577,4 +821,3 @@ export default function ListingFilterToolbar({
     </div>
   );
 }
-

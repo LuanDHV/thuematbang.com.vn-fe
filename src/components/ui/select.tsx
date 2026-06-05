@@ -37,7 +37,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-black/8 bg-white px-4 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none transition-all hover:border-primary/20 hover:bg-primary/4 hover:shadow-[0_14px_28px_rgba(15,23,42,0.06)] focus:border-primary/25 focus:ring-4 focus:ring-primary/12 disabled:cursor-not-allowed disabled:bg-black/3 disabled:text-secondary disabled:opacity-100",
+        "text-body hover:border-primary/20 hover:bg-primary/4 focus:border-primary/25 focus:ring-primary/12 disabled:text-secondary flex h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-black/8 bg-white px-4 text-sm font-medium shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all outline-none hover:shadow-[0_14px_28px_rgba(15,23,42,0.06)] focus:ring-4 disabled:cursor-not-allowed disabled:bg-black/3 disabled:opacity-100",
         size === "sm" && "h-10",
         className,
       )}
@@ -63,22 +63,22 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[--radix-select-content-available-height] w-(--radix-select-trigger-width) min-w-(--radix-select-trigger-width) overflow-hidden rounded-xl border border-black/8 bg-white text-body shadow-[0_24px_60px_rgba(15,23,42,0.12)]",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 text-body relative z-50 max-h-[--radix-select-content-available-height] w-(--radix-select-trigger-width) min-w-(--radix-select-trigger-width) overflow-hidden rounded-xl border border-black/8 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.12)]",
           className,
         )}
         {...props}
       >
-        <SelectPrimitive.ScrollUpButton className="flex cursor-pointer items-center justify-center py-1 text-secondary">
+        <SelectPrimitive.Viewport className="text-secondary flex cursor-pointer items-center justify-center py-3">
           <ChevronDownIcon className="size-5 rotate-180" />
-        </SelectPrimitive.ScrollUpButton>
+        </SelectPrimitive.Viewport>
 
         <SelectPrimitive.Viewport className="max-h-100 p-1">
           {children}
         </SelectPrimitive.Viewport>
 
-        <SelectPrimitive.ScrollDownButton className="flex cursor-pointer items-center justify-center py-1 text-secondary">
+        <SelectPrimitive.Viewport className="text-secondary flex cursor-pointer items-center justify-center py-3">
           <ChevronDownIcon className="size-5" />
-        </SelectPrimitive.ScrollDownButton>
+        </SelectPrimitive.Viewport>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
   );
@@ -144,4 +144,3 @@ export {
   SelectItem,
   SelectSeparator,
 };
-

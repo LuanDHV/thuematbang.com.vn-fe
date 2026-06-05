@@ -27,8 +27,8 @@ type PageProps = {
 };
 
 type LocationContext = {
-  provinces: { name: string; slug: string }[];
-  wards: { name: string; slug: string }[];
+  provinces: { id: number; name: string; slug: string }[];
+  wards: { name: string; slug: string; provinceId: number }[];
 };
 
 function buildLocationContextFromRentRequests(
@@ -41,8 +41,9 @@ function buildLocationContextFromRentRequests(
           (item) => item.desiredProvince?.name && item.desiredProvince?.slug,
         )
         .map((item) => [item.desiredProvince!.slug, item.desiredProvince!]),
-    ).values(),
+  ).values(),
   ).map((province) => ({
+    id: province.id,
     name: province.name,
     slug: province.slug,
   }));
@@ -52,10 +53,11 @@ function buildLocationContextFromRentRequests(
       requests
         .filter((item) => item.desiredWard?.name && item.desiredWard?.slug)
         .map((item) => [item.desiredWard!.slug, item.desiredWard!]),
-    ).values(),
+  ).values(),
   ).map((ward) => ({
     name: ward.name,
     slug: ward.slug,
+    provinceId: ward.provinceId,
   }));
 
   return { provinces, wards };
@@ -96,12 +98,14 @@ const resolveLocationContext = cache(async (): Promise<LocationContext> => {
 
     return {
       provinces: provinces.map((item) => ({
+        id: item.id,
         name: item.name,
         slug: item.slug,
       })),
       wards: wardsByProvince.flat().map((item) => ({
         name: item.name,
         slug: item.slug,
+        provinceId: item.provinceId,
       })),
     };
   } catch {
@@ -216,7 +220,8 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     );
   }
 
-  const initialFilters = parsePropertyFilterSlug(rawSlug);
+  const locationContext = await resolveLocationContext();
+  const initialFilters = parsePropertyFilterSlug(rawSlug, locationContext);
 
   const listFetcher = rawSlug
     ? rentRequestService.getAllByFlatSlug({
@@ -230,8 +235,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       });
 
   const paginationBasePath = rawSlug ? `/can-thue/${rawSlug}` : "/can-thue";
-  const locationContext = await resolveLocationContext();
-
   return (
     <>
       <SafeFetch

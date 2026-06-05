@@ -19,8 +19,14 @@ export type FlatUrlContext = {
   propertyCategories?: Array<Pick<Category, "name" | "slug">>;
   newsCategories?: Array<Pick<Category, "name" | "slug" | "type">>;
   projectCategories?: Array<Pick<Category, "name" | "slug" | "type">>;
-  provinces?: Array<Pick<Province, "name" | "slug">>;
-  wards?: Array<Pick<Ward, "name" | "slug">>;
+  provinces?: Array<Pick<Province, "id" | "name" | "slug">>;
+  wards?: Array<Pick<Ward, "name" | "slug" | "provinceId">>;
+};
+
+export type FlatUrlRouteParts = {
+  categorySlug?: string;
+  provinceSlug?: string;
+  wardSlug?: string;
 };
 
 const PAGE_SEGMENT_REGEX = /^p([1-9]\d*)$/i;
@@ -28,7 +34,7 @@ const PAGE_SEGMENT_REGEX = /^p([1-9]\d*)$/i;
 const AREA_TOKEN_PREFIX = "dien-tich-";
 const PRICE_TOKEN_PREFIX = "gia-";
 const LOCATION_TOKEN_PREFIX = "khu-vuc-";
-const LOCATION_CITY_PREFIX = "tp-";
+const LOCATION_PROVINCE_PREFIX = "tp-";
 const LOCATION_WARD_PREFIX = "phuong-";
 const BEDROOM_TOKEN_PREFIX = "phong-ngu-";
 const BATHROOM_TOKEN_PREFIX = "phong-tam-";
@@ -119,19 +125,43 @@ function buildLocationToken(
   ward: string,
   context?: FlatUrlContext,
 ) {
-  const cityValue = compact(province);
-  const citySlugRaw = province
-    ? (context?.provinces?.find(
-        (cityItem) =>
-          compact(cityItem.name) === cityValue ||
-          compact(cityItem.slug) === cityValue,
-      )?.slug ?? cityValue)
+  const provinceValue = compact(province);
+  const matchedProvince = province
+    ? context?.provinces?.find(
+        (provinceItem) =>
+          compact(provinceItem.name) === provinceValue ||
+          compact(provinceItem.slug).replace(/^tp-/, "") === provinceValue,
+      )
+    : undefined;
+  const provinceSlugRaw = matchedProvince?.slug ?? provinceValue;
+  const provinceSlug = provinceSlugRaw.replace(/^tp-/, "");
+  const provincePart = provinceSlug
+    ? `${LOCATION_PROVINCE_PREFIX}${provinceSlug}`
     : "";
-  const citySlug = citySlugRaw.replace(/^tp-/, "");
-  const cityPart = citySlug ? `${LOCATION_CITY_PREFIX}${citySlug}` : "";
-  const wardPart = ward ? `${LOCATION_WARD_PREFIX}${compact(ward)}` : "";
-  const parts = [cityPart, wardPart].filter(Boolean);
+  const wardValue = compact(ward);
+  const matchedWard = ward
+    ? context?.wards?.find(
+        (wardItem) =>
+          (compact(wardItem.name) === wardValue ||
+            compact(wardItem.slug) === wardValue) &&
+          (!matchedProvince || wardItem.provinceId === matchedProvince.id),
+      )
+    : undefined;
+  const wardSlug = matchedWard?.slug ?? wardValue;
+  const wardPart = wardSlug ? `${LOCATION_WARD_PREFIX}${wardSlug}` : "";
+  const parts = [provincePart, wardPart].filter(Boolean);
   if (parts.length === 0) return "";
+  return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
+}
+
+function buildLocationTokenFromRouteParts(routeParts: FlatUrlRouteParts) {
+  if (!routeParts.provinceSlug) return "";
+
+  const parts = [`${LOCATION_PROVINCE_PREFIX}${routeParts.provinceSlug}`];
+  if (routeParts.wardSlug) {
+    parts.push(`${LOCATION_WARD_PREFIX}${routeParts.wardSlug}`);
+  }
+
   return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
 }
 
@@ -203,35 +233,47 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
 
   const locationRaw = locationMatch[0].replace(LOCATION_TOKEN_PREFIX, "");
   const wardMarker = `-${LOCATION_WARD_PREFIX}`;
-  const cityPrefix = LOCATION_CITY_PREFIX;
+  const provincePrefix = LOCATION_PROVINCE_PREFIX;
 
-  let citySlug = "";
+  let provinceSlug = "";
   let wardSlug = "";
 
-  if (locationRaw.startsWith(cityPrefix)) {
-    const afterCity = locationRaw.slice(cityPrefix.length);
-    const wardIndex = afterCity.indexOf(wardMarker);
+  if (locationRaw.startsWith(provincePrefix)) {
+    const afterProvince = locationRaw.slice(provincePrefix.length);
+    const wardIndex = afterProvince.indexOf(wardMarker);
 
     if (wardIndex >= 0) {
-      citySlug = afterCity.slice(0, wardIndex);
-      wardSlug = afterCity.slice(wardIndex + wardMarker.length);
+      provinceSlug = afterProvince.slice(0, wardIndex);
+      wardSlug = afterProvince.slice(wardIndex + wardMarker.length);
     } else {
-      citySlug = afterCity;
+      provinceSlug = afterProvince;
     }
   }
 
-  const cityName =
+  const provinceName =
     context?.provinces?.find(
-      (item) => compact(item.slug).replace(/^tp-/, "") === citySlug,
-    )?.name ?? humanizeSlug(citySlug);
+      (item) => compact(item.slug).replace(/^tp-/, "") === provinceSlug,
+    )?.name ?? humanizeSlug(provinceSlug);
 
   const wardName =
-    context?.wards?.find((item) => compact(item.slug) === wardSlug)?.name ??
+    context?.wards?.find((item) => {
+      if (compact(item.slug) !== wardSlug) return false;
+
+      if (!provinceSlug) return true;
+
+      const wardProvince = context?.provinces?.find(
+        (province) =>
+          province.id === item.provinceId &&
+          compact(province.slug).replace(/^tp-/, "") === provinceSlug,
+      );
+
+      return Boolean(wardProvince);
+    })?.name ??
     humanizeSlug(wardSlug);
 
   return {
     pending: removeMatchedSuffix(pending, locationMatch[0]),
-    province: citySlug ? cityName : "",
+    province: provinceSlug ? provinceName : "",
     ward: wardSlug ? wardName : "",
     street: "",
   };
@@ -382,6 +424,22 @@ export function buildPropertyFilterPath(
   if (directionToken) tokens.push(directionToken);
 
   if (tokens.length === 0) return basePath;
+  return `${basePath}/${tokens.join("-")}`;
+}
+
+export function buildPropertyFilterPathFromRouteParts(
+  basePath: string,
+  routeParts: FlatUrlRouteParts,
+) {
+  const tokens = [
+    routeParts.categorySlug,
+    buildLocationTokenFromRouteParts(routeParts),
+  ].filter(Boolean);
+
+  if (tokens.length === 0) {
+    return basePath;
+  }
+
   return `${basePath}/${tokens.join("-")}`;
 }
 
