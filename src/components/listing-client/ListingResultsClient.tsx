@@ -12,13 +12,9 @@ import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
 import { PaginationMeta } from "@/types/api";
 
-const TIER_ORDER = ["FREE", "STANDARD", "PREMIUM"] as const;
+const TIER_ORDER = ["PREMIUM", "STANDARD", "FREE"] as const;
 
 type TierKey = (typeof TIER_ORDER)[number];
-
-function getTierRank(value?: string | null) {
-  return TIER_ORDER.indexOf((value as TierKey) ?? "FREE");
-}
 
 const TIER_CONFIG: Record<TierKey, { gridClass: string }> = {
   PREMIUM: {
@@ -48,60 +44,29 @@ export default function ListingResultsClient({
   const router = useRouter();
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
-  const orderedProperties = useMemo(() => {
-    if (listingMode === "rentRequest") {
-      return [...properties].sort((left, right) => {
-        const leftItem = left as RentRequest;
-        const rightItem = right as RentRequest;
-        if (leftItem.isFeatured !== rightItem.isFeatured) {
-          return leftItem.isFeatured ? -1 : 1;
-        }
-        return (
-          new Date(rightItem.createdAt ?? 0).getTime() -
-          new Date(leftItem.createdAt ?? 0).getTime()
-        );
-      }) as RentRequest[];
-    }
-
-    return [...properties].sort((left, right) => {
-      const leftItem = left as Property;
-      const rightItem = right as Property;
-      const tierDiff =
-        getTierRank(leftItem.priorityStatus) -
-        getTierRank(rightItem.priorityStatus);
-
-      if (tierDiff !== 0) return tierDiff;
-      if (leftItem.isFeatured !== rightItem.isFeatured) {
-        return leftItem.isFeatured ? -1 : 1;
-      }
-
-      return (
-        new Date(rightItem.createdAt ?? 0).getTime() -
-        new Date(leftItem.createdAt ?? 0).getTime()
-      );
-    }) as Property[];
-  }, [listingMode, properties]);
-
   const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
   const currentPage = Math.min(
     totalPages,
     Math.max(1, resolvedPaginationMeta.currentPage ?? 1),
   );
-  const pageItems = orderedProperties;
+  const pageItems = properties;
   const hasItems = pageItems.length > 0;
 
-  const groupedPageItems =
-    listingMode === "property"
-      ? TIER_ORDER.reduce(
-          (accumulator, tier) => {
-            accumulator[tier] = (pageItems as Property[]).filter(
-              (property) => (property.priorityStatus ?? "FREE") === tier,
-            );
-            return accumulator;
-          },
-          {} as Record<TierKey, Property[]>,
-        )
-      : null;
+  const groupedPageItems = useMemo(
+    () =>
+      listingMode === "property"
+        ? TIER_ORDER.reduce(
+            (accumulator, tier) => {
+              accumulator[tier] = (pageItems as Property[]).filter(
+                (property) => (property.priorityStatus ?? "FREE") === tier,
+              );
+              return accumulator;
+            },
+            {} as Record<TierKey, Property[]>,
+          )
+        : null,
+    [listingMode, pageItems],
+  );
 
   return (
     <section className="layout-container layout-section-sm">

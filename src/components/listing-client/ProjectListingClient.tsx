@@ -47,14 +47,6 @@ export default function ProjectListingClient({
     router.replace(targetPath, { scroll: false });
   };
 
-  const orderedProjects = useMemo(() => {
-    return [...projects].sort(
-      (left, right) =>
-        new Date(right.createdAt ?? 0).getTime() -
-        new Date(left.createdAt ?? 0).getTime(),
-    );
-  }, [projects]);
-
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
   const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
   const currentPage = Math.max(1, resolvedPaginationMeta.currentPage ?? 1);
@@ -77,7 +69,7 @@ export default function ProjectListingClient({
       </div>
 
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {orderedProjects.map((project) => (
+        {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>
