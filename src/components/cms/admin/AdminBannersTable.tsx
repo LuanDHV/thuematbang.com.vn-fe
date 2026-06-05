@@ -2,21 +2,37 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
+import AdminStatusBadge, {
+  type AdminBadgeTone,
+} from "@/components/cms/admin/AdminStatusBadge";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
 import type { Banner } from "@/types/banner";
+import AdminEntityCell from "./AdminEntityCell";
 
 type AdminBannersTableProps = {
   items: Banner[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
 };
+
+function getActiveTone(isActive: boolean): AdminBadgeTone {
+  return isActive ? "success" : "muted";
+}
+
+function getActiveLabel(isActive: boolean) {
+  return isActive ? "Đang bật" : "Đang tắt";
+}
 
 export default function AdminBannersTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminBannersTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -35,26 +51,22 @@ export default function AdminBannersTable({
   const fields = useMemo<FieldConfig<Banner>[]>(
     () => [
       {
-        key: "imageUrl",
-        header: "Banner",
-        fieldType: "image",
-        accessor: (item) => item.imageUrl,
-      },
-      {
         key: "title",
         header: "Tiêu đề",
         fieldType: "text",
-        accessor: (item) => item.title,
+        render: ({ row }) => (
+          <AdminEntityCell imageUrl={row.imageUrl} title={row.title} />
+        ),
       },
       {
         key: "page",
-        header: "Page",
+        header: "Trang hiển thị",
         fieldType: "text",
         accessor: (item) => item.page,
       },
       {
         key: "position",
-        header: "Position",
+        header: "Vị trí hiển thị",
         fieldType: "text",
         accessor: (item) => item.position,
       },
@@ -69,6 +81,11 @@ export default function AdminBannersTable({
         header: "Trạng thái",
         fieldType: "text",
         accessor: (item) => item.isActive,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={getActiveTone(row.isActive)}>
+            {getActiveLabel(row.isActive)}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "targetLink",
@@ -81,6 +98,7 @@ export default function AdminBannersTable({
         header: "Tạo lúc",
         fieldType: "date",
         accessor: (item) => item.createdAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -101,6 +119,7 @@ export default function AdminBannersTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

@@ -2,7 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
 import type { SeoContent } from "@/types/seo-content";
@@ -11,12 +13,14 @@ type AdminSeoContentsTableProps = {
   items: SeoContent[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
 };
 
 export default function AdminSeoContentsTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminSeoContentsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -50,6 +54,7 @@ export default function AdminSeoContentsTable({
         header: "Cập nhật",
         fieldType: "date",
         accessor: (item) => item.updatedAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -70,6 +75,7 @@ export default function AdminSeoContentsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

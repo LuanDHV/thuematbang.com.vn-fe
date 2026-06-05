@@ -2,25 +2,48 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
+import AdminStatusBadge, {
+  type AdminBadgeTone,
+} from "@/components/cms/admin/AdminStatusBadge";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import {
   createPaginationChangeHandler,
   formatBudgetRange,
   formatLocationParts,
 } from "@/lib/utils";
+import type { RentRequestStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
+import AdminEntityCell from "./AdminEntityCell";
 
 type AdminRentRequestsTableProps = {
   items: RentRequest[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
+};
+
+const statusToneMap: Record<RentRequestStatus, AdminBadgeTone> = {
+  ACTIVE: "success",
+  MATCHED: "info",
+  CLOSED: "muted",
+  EXPIRED: "warning",
+};
+
+const statusLabelMap: Record<RentRequestStatus, string> = {
+  ACTIVE: "Đang tìm",
+  MATCHED: "Đã khớp",
+  CLOSED: "Đã đóng",
+  EXPIRED: "Hết hạn",
 };
 
 export default function AdminRentRequestsTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminRentRequestsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -42,7 +65,13 @@ export default function AdminRentRequestsTable({
         key: "title",
         header: "Nhu cầu",
         fieldType: "text",
-        accessor: (item) => item.title,
+        render: ({ row }) => (
+          <AdminEntityCell
+            imageUrl={row.imageUrl}
+            title={row.title}
+            slug={row.slug}
+          />
+        ),
       },
       {
         key: "category",
@@ -71,12 +100,18 @@ export default function AdminRentRequestsTable({
         header: "Trạng thái",
         fieldType: "text",
         accessor: (item) => item.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={statusToneMap[row.status]}>
+            {statusLabelMap[row.status]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "createdAt",
         header: "Ngày tạo",
         fieldType: "date",
         accessor: (item) => item.createdAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -97,6 +132,7 @@ export default function AdminRentRequestsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

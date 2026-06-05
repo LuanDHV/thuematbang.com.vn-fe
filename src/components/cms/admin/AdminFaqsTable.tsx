@@ -2,7 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
 import type { FaqItem } from "@/types/faq";
@@ -11,6 +13,7 @@ type AdminFaqsTableProps = {
   items: FaqItem[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
 };
 
 function truncateText(value: string, maxLength: number) {
@@ -25,6 +28,7 @@ export default function AdminFaqsTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminFaqsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -71,6 +75,7 @@ export default function AdminFaqsTable({
         header: "Cập nhật",
         fieldType: "date",
         accessor: (item) => item.updatedAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -91,6 +96,7 @@ export default function AdminFaqsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

@@ -34,6 +34,8 @@ type BaseFieldConfig<TData> = {
   fieldType: "text" | "number" | "image" | "date" | "actions";
   accessor?: (row: TData) => unknown;
   fallback?: ReactNode;
+  render?: (context: FieldRenderContext<TData>) => ReactNode;
+  mobileHidden?: boolean;
 };
 
 type NumberFieldConfig<TData> = BaseFieldConfig<TData> & {
@@ -185,6 +187,15 @@ export function renderFieldContent<TData>({
   value,
   rowId,
 }: FieldRenderContext<TData>): ReactNode {
+  if (field.render) {
+    return field.render({
+      field,
+      row,
+      value,
+      rowId,
+    });
+  }
+
   if (field.fieldType === "actions") {
     return <RowActionsMenu field={field} row={row} rowId={rowId} />;
   }

@@ -2,25 +2,40 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
+import AdminStatusBadge, {
+  publishStatusBadgeToneMap,
+} from "@/components/cms/admin/AdminStatusBadge";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import {
   createPaginationChangeHandler,
   formatLocationParts,
   formatVndAmount,
 } from "@/lib/utils";
+import type { PublishStatus } from "@/types/enums";
 import type { Project } from "@/types/project";
+import AdminEntityCell from "./AdminEntityCell";
 
 type AdminProjectsTableProps = {
   items: Project[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
+};
+
+const statusLabelMap: Record<PublishStatus, string> = {
+  DRAFT: "Nháp",
+  PUBLISHED: "Đã đăng",
+  ARCHIVED: "Lưu trữ",
 };
 
 export default function AdminProjectsTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminProjectsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -36,13 +51,27 @@ export default function AdminProjectsTable({
     console.info("Delete project requested", { id });
   }
 
+  function getPrimaryProjectImage(project: Project) {
+    return (
+      project.images?.find((image) => image.sortOrder === 0)?.imageUrl ??
+      project.images?.[0]?.imageUrl ??
+      null
+    );
+  }
+
   const fields = useMemo<FieldConfig<Project>[]>(
     () => [
       {
         key: "name",
         header: "Dự án",
         fieldType: "text",
-        accessor: (item) => item.name,
+        render: ({ row }) => (
+          <AdminEntityCell
+            imageUrl={getPrimaryProjectImage(row)}
+            title={row.name}
+            slug={row.slug}
+          />
+        ),
       },
       {
         key: "category",
@@ -68,12 +97,18 @@ export default function AdminProjectsTable({
         header: "Trạng thái",
         fieldType: "text",
         accessor: (item) => item.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
+            {statusLabelMap[row.status]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "createdAt",
         header: "Ngày tạo",
         fieldType: "date",
         accessor: (item) => item.createdAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -94,6 +129,7 @@ export default function AdminProjectsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

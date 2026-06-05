@@ -2,9 +2,15 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminStatusBadge, {
+  type AdminBadgeTone,
+} from "@/components/cms/admin/AdminStatusBadge";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
+import type { AuthProvider, UserRole } from "@/types/enums";
 import type { User } from "@/types/user";
 
 type AdminUsersTableProps = {
@@ -12,12 +18,36 @@ type AdminUsersTableProps = {
   currentPage: number;
   totalPages: number;
   totalItems: number;
+  toolbar?: AdminTableToolbar;
+};
+
+const roleToneMap: Record<UserRole, AdminBadgeTone> = {
+  ADMIN: "success",
+  AGENT: "info",
+  CUSTOMER: "warning",
+};
+
+const roleLabelMap: Record<UserRole, string> = {
+  ADMIN: "Quản trị",
+  AGENT: "Môi giới",
+  CUSTOMER: "Khách hàng",
+};
+
+const providerToneMap: Record<AuthProvider, AdminBadgeTone> = {
+  GOOGLE: "info",
+  LOCAL: "warning",
+};
+
+const providerLabelMap: Record<AuthProvider, string> = {
+  GOOGLE: "Google",
+  LOCAL: "Local",
 };
 
 export default function AdminUsersTable({
   users,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminUsersTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -58,18 +88,32 @@ export default function AdminUsersTable({
         header: "Vai trò",
         fieldType: "text",
         accessor: (user) => user.role,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={roleToneMap[row.role]}>
+            {roleLabelMap[row.role]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "authProvider",
         header: "Nguồn tạo",
         fieldType: "text",
         accessor: (user) => user.authProvider,
+        render: ({ row }) =>
+          row.authProvider ? (
+            <AdminStatusBadge tone={providerToneMap[row.authProvider]}>
+              {providerLabelMap[row.authProvider]}
+            </AdminStatusBadge>
+          ) : (
+            "—"
+          ),
       },
       {
         key: "createdAt",
         header: "Ngày tạo",
         fieldType: "date",
         accessor: (user) => user.createdAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -90,6 +134,7 @@ export default function AdminUsersTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

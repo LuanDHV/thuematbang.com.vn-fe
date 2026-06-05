@@ -18,16 +18,6 @@
   --color-hairline: var(--hairline);
   --color-hairline-strong: var(--hairline-strong);
 
-  /* Admin enum and badge aliases */
-  --color-admin-success-bg: var(--admin-success-bg);
-  --color-admin-success-text: var(--admin-success-text);
-  --color-admin-warning-bg: var(--admin-warning-bg);
-  --color-admin-warning-text: var(--admin-warning-text);
-  --color-admin-danger-bg: var(--admin-danger-bg);
-  --color-admin-danger-text: var(--admin-danger-text);
-  --color-admin-info-bg: var(--admin-info-bg);
-  --color-admin-info-text: var(--admin-info-text);
-
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
 }
 
@@ -46,60 +36,6 @@
   --muted: #a8a49e;
   --hairline: #3d200a18;
   --hairline-strong: #3d200a28;
-}
-
-.admin-theme {
-  /* Admin shell semantic colors */
-  --primary: #2563eb;
-  --app: #f6f7fb;
-  --subtle: #eef1f5;
-  --surface: #ffffff;
-  --heading: #111827;
-  --body: #2f3747;
-  --secondary: #667085;
-  --muted: #98a2b3;
-  --hairline: #10182814;
-  --hairline-strong: #10182824;
-
-  /* Admin enum and badge colors */
-  --admin-success-bg: #ecfdf3;
-  --admin-success-text: #067647;
-  --admin-warning-bg: #fffaeb;
-  --admin-warning-text: #b54708;
-  --admin-danger-bg: #fef3f2;
-  --admin-danger-text: #b42318;
-  --admin-info-bg: #eff8ff;
-  --admin-info-text: #175cd3;
-}
-
-.admin-status-badge {
-  border-color: var(--hairline);
-  background-color: var(--subtle);
-  color: var(--secondary);
-}
-
-.admin-status-badge[data-tone="success"] {
-  border-color: color-mix(in srgb, var(--admin-success-text) 18%, transparent);
-  background-color: var(--admin-success-bg);
-  color: var(--admin-success-text);
-}
-
-.admin-status-badge[data-tone="warning"] {
-  border-color: color-mix(in srgb, var(--admin-warning-text) 18%, transparent);
-  background-color: var(--admin-warning-bg);
-  color: var(--admin-warning-text);
-}
-
-.admin-status-badge[data-tone="danger"] {
-  border-color: color-mix(in srgb, var(--admin-danger-text) 18%, transparent);
-  background-color: var(--admin-danger-bg);
-  color: var(--admin-danger-text);
-}
-
-.admin-status-badge[data-tone="info"] {
-  border-color: color-mix(in srgb, var(--admin-info-text) 18%, transparent);
-  background-color: var(--admin-info-bg);
-  color: var(--admin-info-text);
 }
 
 ::selection {

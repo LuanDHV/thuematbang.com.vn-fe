@@ -180,7 +180,7 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
                 name="isNegotiable"
                 value="true"
                 defaultChecked={property.isNegotiable}
-                className="border-hairline text-admin-info-text focus:ring-admin-info-text/15 size-4 rounded"
+                className="border-hairline text-primary focus:ring-primary/15 size-4 rounded"
               />
               <span className="text-heading text-sm font-medium">
                 Is negotiable
@@ -194,7 +194,7 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
                 name="isFeatured"
                 value="true"
                 defaultChecked={property.isFeatured}
-                className="border-hairline text-admin-info-text focus:ring-admin-info-text/15 size-4 rounded"
+                className="border-hairline text-primary focus:ring-primary/15 size-4 rounded"
               />
               <span className="text-heading text-sm font-medium">
                 Is featured

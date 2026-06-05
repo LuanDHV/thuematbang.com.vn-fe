@@ -20,10 +20,8 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="admin-theme">
-      <CmsLayout sidebar={<AdminSidebar user={authUser} />}>
-        {children}
-      </CmsLayout>
-    </div>
+    <CmsLayout sidebar={<AdminSidebar user={authUser} />}>
+      {children}
+    </CmsLayout>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
-import type { ReactNode } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
+import { ArrowLeft, ChevronRight, Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -16,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import type { Province, Street, Ward } from "@/types/location";
+import type { AdminTableToolbar } from "./data-table";
 
 type AdminLocationsTableProps = {
   provinces: Province[];
@@ -24,6 +27,7 @@ type AdminLocationsTableProps = {
   selectedProvince?: Province | null;
   selectedWard?: Ward | null;
   searchValue?: string;
+  toolbar?: AdminTableToolbar;
 };
 
 type QueryValue = string | number | null | undefined;
@@ -40,20 +44,30 @@ type LocationDrilldownTableProps<TData extends { id: number }> = {
   columns: DrilldownColumn<TData>[];
   emptyTitle: string;
   emptyDescription: string;
+  header?: ReactNode;
   onSelect?: (row: TData) => void;
   actionLabel?: string;
 };
+
+const SEARCH_DEBOUNCE_MS = 350;
 
 function LocationDrilldownTable<TData extends { id: number }>({
   data,
   columns,
   emptyTitle,
   emptyDescription,
+  header,
   onSelect,
   actionLabel,
 }: LocationDrilldownTableProps<TData>) {
   return (
     <div className="surface-panel overflow-hidden">
+      {header ? (
+        <div className="border-hairline border-b px-3 py-3 md:px-4">
+          {header}
+        </div>
+      ) : null}
+
       <div className="hidden md:block">
         <Table>
           <TableHeader>
@@ -125,9 +139,7 @@ function LocationDrilldownTable<TData extends { id: number }>({
                     <p className="text-heading text-base font-semibold">
                       {emptyTitle}
                     </p>
-                    <p className="text-secondary text-sm">
-                      {emptyDescription}
-                    </p>
+                    <p className="text-secondary text-sm">{emptyDescription}</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -215,17 +227,81 @@ export default function AdminLocationsTable({
   selectedProvince,
   selectedWard,
   searchValue,
+  toolbar,
 }: AdminLocationsTableProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const externalSearchValue = toolbar?.searchValue ?? searchValue ?? "";
+  const [draftState, setDraftState] = useState({
+    source: externalSearchValue,
+    value: externalSearchValue,
+  });
+  const draftValue =
+    draftState.source === externalSearchValue
+      ? draftState.value
+      : externalSearchValue;
+
+  const hasSearch = Boolean(toolbar?.searchPlaceholder);
+  const hasDraftSearchChange = draftValue !== externalSearchValue;
+
+  const buildSearchHref = useCallback(
+    (nextValue: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      params.delete("page");
+
+      if (nextValue.trim()) {
+        params.set("q", nextValue.trim());
+      } else {
+        params.delete("q");
+      }
+
+      const query = params.toString();
+      return query ? `${pathname}?${query}` : pathname;
+    },
+    [pathname, searchParams],
+  );
+
+  useEffect(() => {
+    if (!hasSearch) return;
+    if (!hasDraftSearchChange) return;
+
+    const href = buildSearchHref(draftValue);
+    const currentHref = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+
+    if (href === currentHref) return;
+
+    const handle = window.setTimeout(() => {
+      router.replace(href);
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(handle);
+  }, [
+    buildSearchHref,
+    draftValue,
+    hasDraftSearchChange,
+    hasSearch,
+    pathname,
+    router,
+    searchParams,
+  ]);
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!hasSearch) return;
+
+    const href = buildSearchHref(draftValue);
+    const currentHref = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+
+    if (href !== currentHref) {
+      router.replace(href);
+    }
+  };
 
   // Query params drive the visible level so reload and browser history stay
   // aligned with the server-fetched province -> ward -> street hierarchy.
-  const navigateWithParams = (
-    provinceId?: QueryValue,
-    wardId?: QueryValue,
-  ) => {
+  const navigateWithParams = (provinceId?: QueryValue, wardId?: QueryValue) => {
     const params = new URLSearchParams(searchParams);
 
     if (searchValue) {
@@ -332,83 +408,112 @@ export default function AdminLocationsTable({
           emptyDescription:
             "Chưa có bản ghi phường/xã cho tỉnh/thành này hoặc kết quả tìm kiếm không khớp.",
         }
-        : {
-            eyebrow: "Level 1",
-            title: "Tỉnh / Thành phố",
-            description:
-              "Chọn một tỉnh/thành để drill down sang danh sách phường/xã tương ứng.",
-            emptyTitle: "Không có tỉnh/thành",
-            emptyDescription:
-              "Chưa có bản ghi tỉnh/thành hoặc kết quả tìm kiếm không khớp.",
-          };
+      : {
+          eyebrow: "Level 1",
+          title: "Tỉnh / Thành phố",
+          description:
+            "Chọn một tỉnh/thành để drill down sang danh sách phường/xã tương ứng.",
+          emptyTitle: "Không có tỉnh/thành",
+          emptyDescription:
+            "Chưa có bản ghi tỉnh/thành hoặc kết quả tìm kiếm không khớp.",
+        };
 
-  const pathLabels = [selectedProvince?.name, selectedWard?.name].filter(
-    Boolean,
+  const tableHeader = (
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+      <div className="min-w-0 space-y-2">
+        <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
+          {toolbar?.title}
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end">
+        {hasSearch || toolbar?.actionLabel ? (
+          <form
+            className="flex flex-col gap-2 sm:flex-row sm:items-center"
+            onSubmit={handleSearchSubmit}
+          >
+            {hasSearch ? (
+              <div className="relative min-w-0 sm:w-80">
+                <Search className="text-secondary pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                <Input
+                  name="q"
+                  type="search"
+                  value={draftValue}
+                  onChange={(event) =>
+                    setDraftState({
+                      source: externalSearchValue,
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={toolbar?.searchPlaceholder}
+                  aria-label={toolbar?.searchPlaceholder}
+                  className="pl-9"
+                />
+              </div>
+            ) : null}
+
+            {toolbar?.actionLabel && toolbar.actionHref ? (
+              <Button asChild size="sm" variant="outline">
+                <Link href={toolbar.actionHref} className="gap-1.5">
+                  <Plus className="size-4" />
+                  {toolbar.actionLabel}
+                </Link>
+              </Button>
+            ) : toolbar?.actionLabel ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                onClick={toolbar.onActionClick}
+                disabled={!toolbar.onActionClick}
+              >
+                <Plus className="size-4" />
+                {toolbar.actionLabel}
+              </Button>
+            ) : null}
+          </form>
+        ) : null}
+
+        <div className="flex flex-wrap items-center gap-2">
+          {selectedWard ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => navigateWithParams(selectedProvince?.id)}
+            >
+              <ArrowLeft className="size-4" />
+              Quay lại phường/xã
+            </Button>
+          ) : null}
+          {selectedProvince ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => navigateWithParams()}
+            >
+              <ArrowLeft className="size-4" />
+              Quay lại tỉnh/thành
+            </Button>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 
   return (
     <div className="space-y-5">
-      <section className="surface-panel overflow-hidden">
-        <div className="border-hairline flex flex-col gap-4 border-b p-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="space-y-2">
-            <p className="text-primary text-xs font-semibold tracking-[0.24em] uppercase">
-              {levelMeta.eyebrow}
-            </p>
-            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em] md:text-xl">
-              {levelMeta.title}
-            </h2>
-            <p className="text-secondary text-sm leading-7">
-              {levelMeta.description}
-            </p>
-            {pathLabels.length > 0 ? (
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                {pathLabels.map((label) => (
-                  <span
-                    key={label}
-                    className="bg-subtle text-secondary rounded-full px-3 py-1 text-xs font-medium"
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
-            ) : null}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {selectedWard ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={() => navigateWithParams(selectedProvince?.id)}
-              >
-                <ArrowLeft className="size-4" />
-                Quay lại phường/xã
-              </Button>
-            ) : null}
-            {selectedProvince ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={() => navigateWithParams()}
-              >
-                <ArrowLeft className="size-4" />
-                Quay lại tỉnh/thành
-              </Button>
-            ) : null}
-          </div>
-        </div>
-      </section>
-
       {selectedWard ? (
         <LocationDrilldownTable
           data={streets}
           columns={streetColumns}
           emptyTitle={levelMeta.emptyTitle}
           emptyDescription={levelMeta.emptyDescription}
+          header={tableHeader}
         />
       ) : selectedProvince ? (
         <LocationDrilldownTable
@@ -416,6 +521,7 @@ export default function AdminLocationsTable({
           columns={wardColumns}
           emptyTitle={levelMeta.emptyTitle}
           emptyDescription={levelMeta.emptyDescription}
+          header={tableHeader}
           actionLabel="Xem đường phố"
           onSelect={(ward) => navigateWithParams(selectedProvince.id, ward.id)}
         />
@@ -425,6 +531,7 @@ export default function AdminLocationsTable({
           columns={provinceColumns}
           emptyTitle={levelMeta.emptyTitle}
           emptyDescription={levelMeta.emptyDescription}
+          header={tableHeader}
           actionLabel="Xem phường/xã"
           onSelect={(province) => navigateWithParams(province.id)}
         />

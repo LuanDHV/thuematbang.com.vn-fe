@@ -2,21 +2,37 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
+import AdminStatusBadge, {
+  leadStatusBadgeToneMap,
+} from "@/components/cms/admin/AdminStatusBadge";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler, formatTextSource } from "@/lib/utils";
+import type { LeadStatus } from "@/types/enums";
 import type { Lead } from "@/types/lead";
 
 type AdminLeadsTableProps = {
   items: Lead[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
+};
+
+const statusLabelMap: Record<LeadStatus, string> = {
+  NEW: "Mới",
+  CONTACTED: "Đã liên hệ",
+  QUALIFIED: "Đủ điều kiện",
+  CLOSED: "Đã đóng",
+  REJECTED: "Từ chối",
 };
 
 export default function AdminLeadsTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminLeadsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -63,6 +79,11 @@ export default function AdminLeadsTable({
         header: "Trạng thái",
         fieldType: "text",
         accessor: (item) => item.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={leadStatusBadgeToneMap[row.status]}>
+            {statusLabelMap[row.status]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "propertyId",
@@ -107,6 +128,7 @@ export default function AdminLeadsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

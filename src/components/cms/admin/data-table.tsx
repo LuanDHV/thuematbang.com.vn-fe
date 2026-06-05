@@ -1,17 +1,23 @@
 /* eslint-disable react-hooks/incompatible-library */
 "use client";
 
-import { useMemo } from "react";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Plus, Search } from "lucide-react";
 
 import {
   Pagination,
   TablePaginationFooter,
 } from "@/components/common/Pagination";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -20,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import {
   createColumnsFromFields,
   renderFieldContent,
@@ -28,6 +35,15 @@ import type { FieldConfig } from "./column-generator";
 
 type RowId = string | number;
 
+export type AdminTableToolbar = {
+  title: string;
+  searchPlaceholder?: string;
+  searchValue?: string;
+  actionLabel?: string;
+  actionHref?: string;
+  onActionClick?: () => void;
+};
+
 export type AdminDataTableProps<TData> = {
   data: TData[];
   fields: FieldConfig<TData>[];
@@ -35,7 +51,10 @@ export type AdminDataTableProps<TData> = {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  toolbar?: AdminTableToolbar;
 };
+
+const SEARCH_DEBOUNCE_MS = 350;
 
 function EmptyState() {
   return (
@@ -55,7 +74,20 @@ export default function AdminDataTable<TData>({
   page,
   totalPages,
   onPageChange,
+  toolbar,
 }: AdminDataTableProps<TData>) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const externalSearchValue = toolbar?.searchValue ?? "";
+  const [draftState, setDraftState] = useState({
+    source: externalSearchValue,
+    value: externalSearchValue,
+  });
+  const draftValue =
+    draftState.source === externalSearchValue
+      ? draftState.value
+      : externalSearchValue;
   const columns = useMemo(
     () =>
       createColumnsFromFields<TData>({
@@ -72,44 +104,177 @@ export default function AdminDataTable<TData>({
     () => fields.filter((field) => field.fieldType !== "actions"),
     [fields],
   );
+  const mobileContentFields = useMemo(
+    () => contentFields.filter((field) => !field.mobileHidden),
+    [contentFields],
+  );
+
+  const hasSearch = Boolean(toolbar?.searchPlaceholder);
+  const hasDraftSearchChange = draftValue !== externalSearchValue;
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const buildSearchHref = useCallback(
+    (nextValue: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      params.delete("page");
+
+      if (nextValue.trim()) {
+        params.set("q", nextValue.trim());
+      } else {
+        params.delete("q");
+      }
+
+      const query = params.toString();
+      return query ? `${pathname}?${query}` : pathname;
+    },
+    [pathname, searchParams],
+  );
+
+  useEffect(() => {
+    if (!hasSearch) return;
+    if (!hasDraftSearchChange) return;
+
+    const href = buildSearchHref(draftValue);
+    const currentHref = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+
+    if (href === currentHref) return;
+
+    const handle = window.setTimeout(() => {
+      router.replace(href);
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(handle);
+  }, [
+    buildSearchHref,
+    draftValue,
+    hasDraftSearchChange,
+    hasSearch,
+    pathname,
+    router,
+    searchParams,
+  ]);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!hasSearch) return;
+
+    const href = buildSearchHref(draftValue);
+    const currentHref = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+
+    if (href !== currentHref) {
+      router.replace(href);
+    }
+  };
+
   return (
     <div className="surface-panel overflow-hidden">
+      <div className="border-hairline space-y-3 border-b px-3 py-3 md:px-4">
+        {toolbar ? (
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              <h2 className="text-heading text-sm font-semibold uppercase">
+                {toolbar.title}
+              </h2>
+            </div>
+
+            {hasSearch || toolbar.actionLabel ? (
+              <form
+                className="flex flex-col gap-2 sm:flex-row sm:items-center"
+                onSubmit={handleSubmit}
+              >
+                {hasSearch ? (
+                  <div className="relative min-w-0 sm:w-80">
+                    <Search className="text-secondary pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                    <Input
+                      name="q"
+                      type="search"
+                      value={draftValue}
+                      onChange={(event) =>
+                        setDraftState({
+                          source: externalSearchValue,
+                          value: event.target.value,
+                        })
+                      }
+                      placeholder={toolbar.searchPlaceholder}
+                      aria-label={toolbar.searchPlaceholder}
+                      className="pl-9"
+                    />
+                  </div>
+                ) : null}
+
+                {toolbar.actionLabel && toolbar.actionHref ? (
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={toolbar.actionHref} className="gap-1.5">
+                      <Plus className="size-4" />
+                      {toolbar.actionLabel}
+                    </Link>
+                  </Button>
+                ) : toolbar.actionLabel ? (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5"
+                    onClick={toolbar.onActionClick}
+                    disabled={!toolbar.onActionClick}
+                  >
+                    <Plus className="size-4" />
+                    {toolbar.actionLabel}
+                  </Button>
+                ) : null}
+              </form>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+
       <div className="hidden md:block">
-        <Table>
-          <TableHeader>
+        <Table className="min-w-full">
+          <TableHeader className="[&_tr]:border-hairline">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        "bg-surface text-secondary sticky top-0 z-10 font-semibold",
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="align-top">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
+                <TableRow
+                  key={row.id}
+                  className="hover:bg-subtle/70 cursor-default"
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <TableCell key={cell.id} className={cn("align-middle")}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (
@@ -162,9 +327,9 @@ export default function AdminDataTable<TData>({
                   </div>
                 </div>
 
-                {contentFields.length > 0 ? (
+                {mobileContentFields.length > 0 ? (
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {contentFields.map((field) => {
+                    {mobileContentFields.map((field) => {
                       const value = field.accessor
                         ? field.accessor(row)
                         : (row as Record<string, unknown>)[field.key];

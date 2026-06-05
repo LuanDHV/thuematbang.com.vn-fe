@@ -136,7 +136,7 @@ function buildRevenueDemoData() {
       {
         label: "Gói đăng tin",
         amount: packageTotal,
-        fill: "var(--admin-info-text)",
+        fill: "var(--primary)",
       },
       {
         label: "Boost tin",
@@ -167,13 +167,13 @@ function buildOverviewData(args: {
       status: "Đã đăng",
       total: args.properties.data.filter((item) => item.status === "PUBLISHED")
         .length,
-      fill: "var(--admin-success-text)",
+      fill: "var(--primary)",
     },
     {
       status: "Nháp",
       total: args.properties.data.filter((item) => item.status === "DRAFT")
         .length,
-      fill: "var(--admin-warning-text)",
+      fill: "var(--muted)",
     },
     {
       status: "Lưu trữ",
@@ -190,7 +190,7 @@ function buildOverviewData(args: {
     {
       state: "Đang bật",
       total: activeBanners,
-      fill: "var(--admin-success-text)",
+      fill: "var(--primary)",
     },
     {
       state: "Đang tắt",
@@ -249,7 +249,7 @@ function buildOverviewData(args: {
       {
         module: "Cho thuê",
         total: totalProperties,
-        fill: "var(--admin-info-text)",
+        fill: "var(--primary)",
       },
       {
         module: "Cần thuê",
@@ -264,7 +264,7 @@ function buildOverviewData(args: {
       {
         module: "Lead",
         total: totalLeads,
-        fill: "var(--admin-warning-text)",
+        fill: "var(--muted)",
       },
       {
         module: "Banner",

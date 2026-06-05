@@ -70,7 +70,6 @@ Current semantic tokens in `globals.css`:
 | `--primary` | `#f7aa1b` | primary CTA, active state, highlight |
 | `--app` | `#f8f6f2` | app/page background |
 | `--subtle` | `#f0ede7` | softer section background |
-| `--elevated` | `#ffffff` | elevated white surface |
 | `--surface` | `#ffffff` | main card/surface color |
 | `--footer` | `#26231f` | footer dark zone |
 | `--footer-heading` | `#f5f0e8` | footer headings |
@@ -86,8 +85,9 @@ Current semantic tokens in `globals.css`:
 
 - use semantic tokens before raw color values
 - keep `primary` for action emphasis, not for full-page dominance
-- keep large surfaces in the `app/subtle/surface/elevated` family
+- keep large surfaces in the `app/subtle/surface` family
 - do not introduce a separate dashboard palette unless the whole system changes
+- keep admin status/badge tones local to the badge component instead of adding a scoped admin theme
 
 ## 5. Layout Primitives
 

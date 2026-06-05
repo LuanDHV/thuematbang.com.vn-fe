@@ -2,25 +2,63 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminEntityCell from "@/components/cms/admin/AdminEntityCell";
+import AdminPriorityBadge, {
+  type AdminPriorityTone,
+} from "@/components/cms/admin/AdminPriorityBadge";
+import AdminStatusBadge, {
+  publishStatusBadgeToneMap,
+} from "@/components/cms/admin/AdminStatusBadge";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import {
   createPaginationChangeHandler,
   formatLocationParts,
   formatNegotiablePrice,
 } from "@/lib/utils";
+import type { PropertyPriority, PublishStatus } from "@/types/enums";
 import type { Property } from "@/types/property";
 
 type AdminPropertiesTableProps = {
   properties: Property[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
 };
+
+const priorityToneMap: Record<PropertyPriority, AdminPriorityTone> = {
+  FREE: "free",
+  STANDARD: "standard",
+  PREMIUM: "premium",
+};
+
+const priorityLabelMap: Record<PropertyPriority, string> = {
+  FREE: "Miễn phí",
+  STANDARD: "Tiêu chuẩn",
+  PREMIUM: "Cao cấp",
+};
+
+const statusLabelMap: Record<PublishStatus, string> = {
+  DRAFT: "Nháp",
+  PUBLISHED: "Đã đăng",
+  ARCHIVED: "Lưu trữ",
+};
+
+function getPrimaryPropertyImage(property: Property) {
+  return (
+    property.images?.find((image) => image.sortOrder === 0)?.imageUrl ??
+    property.images?.[0]?.imageUrl ??
+    null
+  );
+}
 
 export default function AdminPropertiesTable({
   properties,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminPropertiesTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -43,7 +81,13 @@ export default function AdminPropertiesTable({
         key: "title",
         header: "Tin cho thuê",
         fieldType: "text",
-        accessor: (property) => property.title,
+        render: ({ row }) => (
+          <AdminEntityCell
+            imageUrl={getPrimaryPropertyImage(row)}
+            title={row.title}
+            slug={row.slug}
+          />
+        ),
       },
       {
         key: "category",
@@ -71,21 +115,32 @@ export default function AdminPropertiesTable({
       },
       {
         key: "priorityStatus",
-        header: "Loại Tin",
+        header: "Loại tin",
         fieldType: "text",
         accessor: (property) => property.priorityStatus,
+        render: ({ row }) => (
+          <AdminPriorityBadge tone={priorityToneMap[row.priorityStatus]}>
+            {priorityLabelMap[row.priorityStatus]}
+          </AdminPriorityBadge>
+        ),
       },
       {
         key: "status",
         header: "Trạng thái",
         fieldType: "text",
         accessor: (property) => property.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
+            {statusLabelMap[row.status]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "createdAt",
         header: "Ngày tạo",
         fieldType: "date",
         accessor: (property) => property.createdAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -106,6 +161,7 @@ export default function AdminPropertiesTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

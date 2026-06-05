@@ -2,21 +2,45 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
+import AdminStatusBadge, {
+  type AdminBadgeTone,
+  publishStatusBadgeToneMap,
+} from "@/components/cms/admin/AdminStatusBadge";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import { createPaginationChangeHandler } from "@/lib/utils";
+import type { PublishStatus } from "@/types/enums";
 import type { News } from "@/types/news";
+import AdminEntityCell from "./AdminEntityCell";
 
 type AdminNewsTableProps = {
   items: News[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
 };
+
+const statusLabelMap: Record<PublishStatus, string> = {
+  DRAFT: "Nháp",
+  PUBLISHED: "Đã đăng",
+  ARCHIVED: "Lưu trữ",
+};
+
+function getFeaturedTone(isFeatured: boolean): AdminBadgeTone {
+  return isFeatured ? "warning" : "info";
+}
+
+function getFeaturedLabel(isFeatured: boolean) {
+  return isFeatured ? "Nổi bật" : "Thường";
+}
 
 export default function AdminNewsTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminNewsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -38,7 +62,13 @@ export default function AdminNewsTable({
         key: "title",
         header: "Bài viết",
         fieldType: "text",
-        accessor: (item) => item.title,
+        render: ({ row }) => (
+          <AdminEntityCell
+            imageUrl={row.imageUrl}
+            title={row.title}
+            slug={row.slug}
+          />
+        ),
       },
       {
         key: "category",
@@ -48,15 +78,25 @@ export default function AdminNewsTable({
       },
       {
         key: "isFeatured",
-        header: "Nổi bật",
+        header: "Loại tin",
         fieldType: "text",
         accessor: (item) => item.isFeatured,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={getFeaturedTone(row.isFeatured)}>
+            {getFeaturedLabel(row.isFeatured)}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "status",
         header: "Trạng thái",
         fieldType: "text",
         accessor: (item) => item.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
+            {statusLabelMap[row.status]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "viewCount",
@@ -69,6 +109,7 @@ export default function AdminNewsTable({
         header: "Ngày tạo",
         fieldType: "date",
         accessor: (item) => item.createdAt,
+        mobileHidden: true,
       },
       {
         key: "actions",
@@ -89,6 +130,7 @@ export default function AdminNewsTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
+      toolbar={toolbar}
     />
   );
 }

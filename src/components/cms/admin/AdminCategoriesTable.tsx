@@ -1,20 +1,50 @@
 "use client";
 
 import { useMemo } from "react";
-import AdminDataTable from "@/components/cms/admin/data-table";
+import AdminStatusBadge, {
+  type AdminBadgeTone,
+} from "@/components/cms/admin/AdminStatusBadge";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/data-table";
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
+import type { CategoryType } from "@/types/enums";
 import type { Category } from "@/types/category";
 
 type AdminCategoriesTableProps = {
   items: Category[];
   currentPage: number;
   totalPages: number;
+  toolbar?: AdminTableToolbar;
+};
+
+function getActiveTone(isActive: boolean): AdminBadgeTone {
+  return isActive ? "success" : "muted";
+}
+
+function getActiveLabel(isActive: boolean) {
+  return isActive ? "Đang bật" : "Đang tắt";
+}
+
+const typeToneMap: Record<CategoryType, AdminBadgeTone> = {
+  PROPERTY: "info",
+  RENT_REQUEST: "warning",
+  PROJECT: "success",
+  NEWS: "muted",
+};
+
+const typeLabelMap: Record<CategoryType, string> = {
+  PROPERTY: "Cho thuê",
+  RENT_REQUEST: "Cần thuê",
+  PROJECT: "Dự án",
+  NEWS: "Tin tức",
 };
 
 export default function AdminCategoriesTable({
   items,
   currentPage,
   totalPages,
+  toolbar,
 }: AdminCategoriesTableProps) {
   async function handleDeleteCategory(id: string | number) {
     console.info("Delete category requested", { id });
@@ -30,9 +60,14 @@ export default function AdminCategoriesTable({
       },
       {
         key: "type",
-        header: "Type",
+        header: "Loại danh mục",
         fieldType: "text",
         accessor: (item) => item.type,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={typeToneMap[row.type]}>
+            {typeLabelMap[row.type]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "slug",
@@ -51,6 +86,11 @@ export default function AdminCategoriesTable({
         header: "Trạng thái",
         fieldType: "text",
         accessor: (item) => item.isActive,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={getActiveTone(row.isActive)}>
+            {getActiveLabel(row.isActive)}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "createdAt",
@@ -83,6 +123,7 @@ export default function AdminCategoriesTable({
       page={currentPage}
       totalPages={totalPages}
       onPageChange={() => {}}
+      toolbar={toolbar}
     />
   );
 }
