@@ -37,6 +37,10 @@ type PasswordActionResponse = {
   message?: string;
 };
 
+type AuthenticatedRequestOptions = {
+  mutateAuthCookies?: boolean;
+};
+
 function buildProfileFormData(payload: UpdateMePayload) {
   const formData = new FormData();
   formData.append("fullName", payload.fullName);
@@ -59,16 +63,20 @@ function buildProfileFormData(payload: UpdateMePayload) {
 }
 
 export const userService = {
-  me: async () =>
+  me: async (options: AuthenticatedRequestOptions = {}) =>
     (
       await requestServerApi<User | null>("/users/me", {
         auth: "required",
         cache: "no-store",
         tags: ["auth-me"],
+        mutateAuthCookies: options.mutateAuthCookies,
       })
     ).data,
 
-  getAdminUsers: async (params: AdminUserListParams = {}) =>
+  getAdminUsers: async (
+    params: AdminUserListParams = {},
+    options: AuthenticatedRequestOptions = {},
+  ) =>
     requestServerApi<User[]>(buildListPath("/admin/users", params), {
       auth: "required",
       cache: "no-store",
@@ -76,23 +84,32 @@ export const userService = {
         page: params.page,
         limit: params.limit,
       }),
+      mutateAuthCookies: options.mutateAuthCookies,
     }),
 
-  updateMe: async (payload: UpdateMePayload) => {
+  updateMe: async (
+    payload: UpdateMePayload,
+    options: AuthenticatedRequestOptions = {},
+  ) => {
     const response = await requestServerApi<User>("/users/me", {
       method: "PATCH",
       auth: "required",
       body: buildProfileFormData(payload),
+      mutateAuthCookies: options.mutateAuthCookies,
     });
     return response.data;
   },
 
-  changeMyPassword: async (payload: ChangeMyPasswordPayload) => {
+  changeMyPassword: async (
+    payload: ChangeMyPasswordPayload,
+    options: AuthenticatedRequestOptions = {},
+  ) => {
     const response = await requestServerApi<PasswordActionResponse>(
       "/users/me/password",
       {
         method: "PATCH",
         auth: "required",
+        mutateAuthCookies: options.mutateAuthCookies,
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,12 +119,16 @@ export const userService = {
     return response.data;
   },
 
-  setMyPassword: async (payload: SetMyPasswordPayload) => {
+  setMyPassword: async (
+    payload: SetMyPasswordPayload,
+    options: AuthenticatedRequestOptions = {},
+  ) => {
     const response = await requestServerApi<PasswordActionResponse>(
       "/users/me/password/set",
       {
         method: "POST",
         auth: "required",
+        mutateAuthCookies: options.mutateAuthCookies,
         headers: {
           "Content-Type": "application/json",
         },
