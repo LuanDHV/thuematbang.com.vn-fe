@@ -57,7 +57,7 @@ export function RentRequestCard({
         className={`surface-card ${CARD_HOVER_CLASSES} ${isFeatured ? "rounded-2xl" : "rounded-xl"}`}
       >
         <div
-          className={`bg-elevated relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
+          className={`bg-subtle relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
         >
           <CloudinaryImage
             src={request.imageUrl || "/imgs/wallpaper-1.jpg"}

@@ -1,5 +1,4 @@
 import AdminBannersTable from "@/components/cms/admin/AdminBannersTable";
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import {
   resolvePaginationServer,
   resolveSearchQueryValue,
@@ -33,18 +32,16 @@ export default async function AdminBannersPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí banner"
-        searchPlaceholder="Tìm kiếm theo tiêu đề"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminBannersTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        toolbar={{
+          title: "Quản lí banner",
+          searchPlaceholder: "Tìm kiếm theo tiêu đề",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

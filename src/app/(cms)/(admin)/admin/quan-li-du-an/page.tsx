@@ -1,4 +1,3 @@
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminProjectsTable from "@/components/cms/admin/AdminProjectsTable";
 import {
   resolvePaginationServer,
@@ -35,18 +34,16 @@ export default async function AdminDuAnPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí dự án"
-        searchPlaceholder="Tìm kiếm theo tên hoặc slug"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminProjectsTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        toolbar={{
+          title: "Quản lí dự án",
+          searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

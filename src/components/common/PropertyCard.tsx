@@ -196,7 +196,7 @@ function PremiumCard({ property }: { property: Property }) {
     <article
       className={`surface-card ${CARD_HOVER_CLASSES} border-primary/10 rounded-2xl`}
     >
-      <div className="bg-elevated relative flex h-60 w-full gap-0.5 overflow-hidden">
+      <div className="bg-subtle relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
           className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
         >

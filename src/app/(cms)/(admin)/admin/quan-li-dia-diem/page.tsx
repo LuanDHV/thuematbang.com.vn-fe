@@ -1,4 +1,3 @@
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminLocationsTable from "@/components/cms/admin/AdminLocationsTable";
 import {
   resolveSearchQueryValue,
@@ -74,24 +73,8 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
       : streets
     : [];
 
-  const hiddenParams = [
-    selectedProvince
-      ? { name: "provinceId", value: String(selectedProvince.id) }
-      : null,
-    selectedWard ? { name: "wardId", value: String(selectedWard.id) } : null,
-  ].filter((field): field is { name: string; value: string } => Boolean(field));
-
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí địa điểm"
-        searchPlaceholder="Tìm kiếm theo tên"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-        hiddenParams={hiddenParams}
-      />
-
       <AdminLocationsTable
         provinces={filteredProvinces}
         wards={filteredWards}
@@ -99,6 +82,12 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
         selectedProvince={selectedProvince}
         selectedWard={selectedWard}
         searchValue={searchValue}
+        toolbar={{
+          title: "Quản lí địa điểm",
+          searchPlaceholder: "Tìm kiếm theo tên",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

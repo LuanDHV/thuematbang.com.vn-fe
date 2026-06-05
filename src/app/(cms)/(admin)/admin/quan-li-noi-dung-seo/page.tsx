@@ -1,4 +1,3 @@
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminSeoContentsTable from "@/components/cms/admin/AdminSeoContentsTable";
 import {
   resolvePaginationServer,
@@ -33,18 +32,16 @@ export default async function AdminSeoContentsPage({
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí nội dung SEO"
-        searchPlaceholder="Tìm kiếm theo nội dung SEO"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminSeoContentsTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        toolbar={{
+          title: "Quản lí nội dung SEO",
+          searchPlaceholder: "Tìm kiếm theo nội dung SEO",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

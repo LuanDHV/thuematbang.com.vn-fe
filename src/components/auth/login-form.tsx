@@ -75,7 +75,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden border-black/6 p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <div className="surface-elevated relative hidden md:block">
+          <div className="relative hidden bg-surface md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
               alt="Hình nền đăng nhập"

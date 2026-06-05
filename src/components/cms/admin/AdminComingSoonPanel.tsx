@@ -14,7 +14,7 @@ export default function AdminComingSoonPanel({
   return (
     <section className="space-y-5">
       <div className="space-y-2">
-        <p className="text-primary text-xs font-semibold tracking-[0.24em] uppercase">
+        <p className="text-secondary text-xs font-semibold tracking-[0.24em] uppercase">
           CMS
         </p>
         <h1 className="text-heading text-xl font-semibold tracking-[-0.03em] md:text-2xl">
@@ -27,7 +27,7 @@ export default function AdminComingSoonPanel({
 
       <article className="surface-panel p-5">
         <div className="flex items-start gap-3">
-          <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-2xl">
+          <div className="bg-admin-info-bg text-admin-info-text flex size-10 shrink-0 items-center justify-center rounded-2xl">
             <FileText className="size-5" />
           </div>
           <div className="space-y-3">

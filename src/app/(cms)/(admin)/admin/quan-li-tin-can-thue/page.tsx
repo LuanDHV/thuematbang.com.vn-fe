@@ -1,4 +1,3 @@
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminRentRequestsTable from "@/components/cms/admin/AdminRentRequestsTable";
 import {
   resolvePaginationServer,
@@ -35,18 +34,16 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí tin cần thuê"
-        searchPlaceholder="Tìm kiếm theo tên hoặc slug"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminRentRequestsTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        toolbar={{
+          title: "Quản lí tin cần thuê",
+          searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

@@ -1,5 +1,4 @@
 import AdminFaqsTable from "@/components/cms/admin/AdminFaqsTable";
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import {
   resolvePaginationServer,
   resolveSearchQueryValue,
@@ -31,18 +30,16 @@ export default async function AdminFaqsPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí FAQS"
-        searchPlaceholder="Tìm kiếm theo câu hỏi"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminFaqsTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        toolbar={{
+          title: "Quản lí FAQS",
+          searchPlaceholder: "Tìm kiếm theo câu hỏi",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

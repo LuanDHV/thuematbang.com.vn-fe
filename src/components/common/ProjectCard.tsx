@@ -63,7 +63,7 @@ export function ProjectCard({ project }: { project: Project }) {
       className="surface-card interactive-lift group block overflow-hidden rounded-2xl"
     >
       <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
-        <div className="bg-elevated relative h-56 overflow-hidden">
+        <div className="bg-subtle relative h-56 overflow-hidden">
           <CloudinaryImage
             src={thumbnailImageUrl}
             alt={project.name}

@@ -1,4 +1,3 @@
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminNewsTable from "@/components/cms/admin/AdminNewsTable";
 import {
   resolvePaginationServer,
@@ -35,18 +34,16 @@ export default async function AdminTinTucPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lý tin tức"
-        searchPlaceholder="Tìm kiếm theo tiêu đề hoặc slug"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminNewsTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        toolbar={{
+          title: "Quản lý tin tức",
+          searchPlaceholder: "Tìm kiếm theo tiêu đề hoặc slug",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

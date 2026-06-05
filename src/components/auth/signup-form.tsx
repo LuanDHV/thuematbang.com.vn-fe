@@ -218,7 +218,7 @@ export function SignupForm({
             </FieldGroup>
           </form>
 
-          <div className="surface-elevated relative hidden md:block">
+          <div className="relative hidden bg-surface md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
               alt="Hình nền đăng ký"

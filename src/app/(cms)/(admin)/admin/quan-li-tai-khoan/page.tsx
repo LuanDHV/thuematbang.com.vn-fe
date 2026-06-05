@@ -1,4 +1,3 @@
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import AdminUsersTable from "@/components/cms/admin/AdminUsersTable";
 import {
   resolvePaginationServer,
@@ -34,19 +33,17 @@ export default async function AdminNguoiDungPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí tài khoản"
-        searchPlaceholder="Tìm kiếm tên, email hoặc sđt"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminUsersTable
         users={users}
         currentPage={currentPage}
         totalPages={totalPages}
         totalItems={totalItems}
+        toolbar={{
+          title: "Quản lí tài khoản",
+          searchPlaceholder: "Tìm kiếm tên, email hoặc sđt",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );

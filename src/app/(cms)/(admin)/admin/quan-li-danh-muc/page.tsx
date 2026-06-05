@@ -1,5 +1,4 @@
 import AdminCategoriesTable from "@/components/cms/admin/AdminCategoriesTable";
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import {
   resolveSearchQueryValue,
   resolveSearchParamValue,
@@ -26,15 +25,17 @@ export default async function AdminCategoriesPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí danh mục"
-        searchPlaceholder="Tìm kiếm theo tên"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
+      <AdminCategoriesTable
+        items={items}
+        currentPage={1}
+        totalPages={1}
+        toolbar={{
+          title: "Quản lí danh mục",
+          searchPlaceholder: "Tìm kiếm theo tên",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
-
-      <AdminCategoriesTable items={items} currentPage={1} totalPages={1} />
     </section>
   );
 }

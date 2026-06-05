@@ -1,5 +1,4 @@
 import AdminLeadsTable from "@/components/cms/admin/AdminLeadsTable";
-import AdminListToolbar from "@/components/cms/admin/AdminListToolbar";
 import {
   resolvePaginationServer,
   resolveSearchQueryValue,
@@ -43,18 +42,16 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
-      <AdminListToolbar
-        eyebrow="Quản lí leads"
-        searchPlaceholder="Tìm kiếm tên, email hoặc sđt"
-        actionLabel="Tạo mới"
-        key={searchValue ?? ""}
-        searchValue={searchValue}
-      />
-
       <AdminLeadsTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        toolbar={{
+          title: "Quản lí leads",
+          searchPlaceholder: "Tìm kiếm tên, email hoặc sđt",
+          searchValue,
+          actionLabel: "Tạo mới",
+        }}
       />
     </section>
   );
