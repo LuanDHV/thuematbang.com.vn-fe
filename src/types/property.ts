@@ -1,4 +1,4 @@
-﻿import { Category } from "./category";
+import { Category } from "./category";
 import { PropertyBoostOrder, PropertyPackageOrder } from "./commerce";
 import {
   PropertyDirection,

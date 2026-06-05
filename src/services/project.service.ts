@@ -1,13 +1,20 @@
-﻿import { Project } from "@/types/project";
+import "server-only";
+
+import { Project } from "@/types/project";
 import { PublishStatus } from "@/types/enums";
-import { getApiResponse } from "./shared/api-client";
-import { buildListPath, buildListTags, buildScopedListPath } from "./shared/list-service";
+import { requestServerApi } from "./shared/server-api-client";
+import {
+  buildListPath,
+  buildListTags,
+  buildScopedListPath,
+} from "./shared/list-service";
 
 export type ProjectSortBy = "createdAt" | "price" | "area" | "viewCount";
 
 export type ProjectListFilters = {
   categoryId?: number;
   categorySlug?: string;
+  q?: string;
   slug?: string;
   name?: string;
   developer?: string;
@@ -36,7 +43,7 @@ export const projectService = {
       categorySlug: params.categorySlug ?? params.filters?.categorySlug,
     };
 
-    return getApiResponse<Project[]>(
+    return requestServerApi<Project[]>(
       buildListPath("/projects", {
         filters,
         page: params.page,
@@ -59,7 +66,7 @@ export const projectService = {
     slug: string,
     params: Omit<ProjectGetAllParams, "filters" | "categorySlug"> = {},
   ) =>
-    getApiResponse<Project[]>(
+    requestServerApi<Project[]>(
       buildScopedListPath("/projects/category", slug, {
         page: params.page,
         limit: params.limit,
@@ -75,7 +82,7 @@ export const projectService = {
     ),
 
   getBySlug: async (slug: string) => {
-    const response = await getApiResponse<Project>(
+    const response = await requestServerApi<Project>(
       `/projects/slug/${encodeURIComponent(slug)}`,
       {
         cache: "no-store",
@@ -85,5 +92,3 @@ export const projectService = {
     return response.data;
   },
 };
-
-

@@ -1,5 +1,8 @@
-﻿import Title from "@/components/common/Title";
-import { ShieldCheck, Users, ListCheck, LockKeyhole } from "lucide-react";
+﻿"use client";
+
+import Title from "@/components/common/Title";
+import HomeCarousel from "@/components/home/HomeCarousel";
+import { ListCheck, LockKeyhole, ShieldCheck, Users } from "lucide-react";
 
 const features = [
   {
@@ -27,34 +30,50 @@ const features = [
 
 export default function IntroduceSection() {
   return (
-    <section className="to-primary/10 relative h-auto w-full overflow-hidden bg-linear-to-b from-white px-4 py-12">
-      <div className="layout-container">
+    <section className="to-primary/10 relative h-auto w-full overflow-hidden bg-linear-to-b from-white px-4 py-12 lg:flex lg:min-h-screen lg:items-center">
+      <div className="layout-container w-full">
         <Title
           title="Giới thiệu"
           description="Chúng tôi là nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. Với hệ thống danh mục đa dạng và dịch vụ chuyên nghiệp, chúng tôi cam kết tạo ra trải nghiệm tốt nhất cho khách hàng."
         />
 
-        {/* Grid các đặc điểm nổi bật */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <HomeCarousel className="mt-8" options={{ align: "center" }}>
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
+            >
+              <div className="group hover:shadow-primary/20 relative flex min-h-64 cursor-pointer flex-col items-center rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
+                  {feature.icon}
+                </div>
+                <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
+                  {feature.title}
+                </h3>
+                <p className="text-secondary text-sm leading-relaxed font-light">
+                  {feature.description}
+                </p>
+                <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-lg transition-all duration-300 group-hover:w-full"></div>
+              </div>
+            </div>
+          ))}
+        </HomeCarousel>
+
+        <div className="mt-8 hidden grid-cols-1 gap-5 lg:grid lg:grid-cols-4">
           {features.map((feature, index) => (
             <div
               key={index}
               className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
             >
-              {/* Icon Container */}
               <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
                 {feature.icon}
               </div>
-
               <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
                 {feature.title}
               </h3>
-
               <p className="text-secondary text-sm leading-relaxed font-light">
                 {feature.description}
               </p>
-
-              {/* Decor Line */}
               <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-lg transition-all duration-300 group-hover:w-full"></div>
             </div>
           ))}

@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { CalendarDays, Eye, Layers } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { formatDate, formatNumber } from "@/lib/utils";
 import { News } from "@/types/news";
 
 type NewsDetailContentProps = {
@@ -12,7 +12,7 @@ export default function NewsDetailContent({ news }: NewsDetailContentProps) {
     <div className="surface-card flex flex-col gap-6 p-5 lg:gap-8">
       <section>
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-          <Image
+          <CloudinaryImage
             src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
             alt={news.title}
             fill
@@ -43,7 +43,7 @@ export default function NewsDetailContent({ news }: NewsDetailContentProps) {
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Eye size={14} className="text-primary" />
-            Lượt xem: {(news.viewCount || 0).toLocaleString("vi-VN")}
+            Lượt xem: {formatNumber(news.viewCount, { fallback: "0" })}
           </span>
         </div>
       </section>

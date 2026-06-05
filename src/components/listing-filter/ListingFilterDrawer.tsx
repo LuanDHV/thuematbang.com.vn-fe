@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +27,10 @@ import {
   toAreaRange,
   toPriceRange,
 } from "@/helpers/filterHelpers";
+import {
+  getProvinceWardsAction,
+  getProvincesAction,
+} from "@/actions/location.actions";
 import {
   AdvancedMainTab,
   AreaDetailTab,
@@ -68,6 +73,46 @@ export function ListingFilterDrawer({
     value ?? INITIAL_ADVANCED_FILTER_VALUE,
   );
 
+  const { data: provincesData = [] } = useQuery({
+    queryKey: ["locations", "provinces"],
+    queryFn: getProvincesAction,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const selectedProvinceId = useMemo(() => {
+    if (!localValue.province || !provincesData.length) return null;
+
+    const selectedProvince = provincesData.find(
+      (province) => province.name === localValue.province,
+    );
+
+    return selectedProvince?.id ?? null;
+  }, [localValue.province, provincesData]);
+
+  const { data: selectedProvinceWards = [] } = useQuery({
+    queryKey: ["locations", "wards", "drawer", selectedProvinceId],
+    queryFn: () => getProvinceWardsAction(selectedProvinceId ?? undefined),
+    enabled: typeof selectedProvinceId === "number",
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+  });
+
+  const effectiveProvinceWardMap = useMemo(() => {
+    if (!localValue.province || !selectedProvinceWards.length) {
+      return provinceWardMap;
+    }
+
+    return {
+      ...provinceWardMap,
+      [localValue.province]: selectedProvinceWards.reduce<
+        Record<string, string[]>
+      >((acc, ward) => {
+        acc[ward.name] = [];
+        return acc;
+      }, {}),
+    };
+  }, [localValue.province, provinceWardMap, selectedProvinceWards]);
+
   const current = localValue;
   const updateCurrent = (
     updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
@@ -84,9 +129,7 @@ export function ListingFilterDrawer({
       const exists = list.includes(item);
       return {
         ...prev,
-        [key]: exists
-          ? list.filter((value) => value !== item)
-          : [...list, item],
+        [key]: exists ? [] : [item],
       };
     });
   };
@@ -97,6 +140,9 @@ export function ListingFilterDrawer({
       current.province || current.ward || current.street ? 1 : 0,
       current.priceMin || current.priceMax || current.negotiable ? 1 : 0,
       current.areaMin || current.areaMax ? 1 : 0,
+      current.bedrooms.length,
+      current.bathrooms.length,
+      current.directions.length,
     ].filter(Boolean).length;
   }, [current]);
 
@@ -143,7 +189,7 @@ export function ListingFilterDrawer({
           } ${
             activeCount > 0
               ? "border-primary text-primary bg-primary/5"
-              : "border-black/8 bg-white text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary"
+              : "text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary border-black/8 bg-white"
           }`}
         >
           <Filter size={14} />
@@ -157,11 +203,11 @@ export function ListingFilterDrawer({
       </DialogTrigger>
 
       <DialogContent className="flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border border-black/6 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
-        <DialogHeader className="border-b border-black/6 bg-linear-to-b from-primary/10 via-white to-white p-5">
+        <DialogHeader className="from-primary/10 border-b border-black/6 bg-linear-to-b via-white to-white p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao
           </DialogTitle>
-          <DialogDescription className="mt-1 text-sm text-body">
+          <DialogDescription className="text-body mt-1 text-sm">
             Chọn các tiêu chí để lọc bất động sản theo nhu cầu của bạn.
           </DialogDescription>
 
@@ -187,12 +233,12 @@ export function ListingFilterDrawer({
         </DialogHeader>
 
         <div className="flex min-h-0 flex-1 flex-col bg-white">
-          <div className="min-h-0 flex-1 overflow-y-auto bg-linear-to-b from-white via-app/60 to-white px-4">
+          <div className="via-app/60 min-h-0 flex-1 overflow-y-auto bg-linear-to-b from-white to-white px-4">
             {detailTab !== "main" ? (
               <Button
                 variant="ghost"
                 onClick={goMain}
-                className="mb-3 h-8 rounded-lg px-2 text-xs font-medium text-primary hover:bg-primary/8"
+                className="text-primary hover:bg-primary/8 mb-3 h-8 rounded-lg px-2 text-xs font-medium"
               >
                 <ArrowLeft className="mr-1 size-5" />
                 Quay lại
@@ -222,7 +268,7 @@ export function ListingFilterDrawer({
               <LocationDetailTab
                 current={current}
                 updateCurrent={setLocalValue}
-                provinceWardMap={provinceWardMap}
+                provinceWardMap={effectiveProvinceWardMap}
               />
             ) : null}
 
@@ -263,4 +309,3 @@ export function ListingFilterDrawer({
     </Dialog>
   );
 }
-

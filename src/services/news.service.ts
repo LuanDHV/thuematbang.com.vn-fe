@@ -1,13 +1,20 @@
-﻿import { News } from "@/types/news";
+import "server-only";
+
+import { News } from "@/types/news";
 import { PublishStatus } from "@/types/enums";
-import { getApiResponse } from "./shared/api-client";
-import { buildListPath, buildListTags, buildScopedListPath } from "./shared/list-service";
+import { requestServerApi } from "./shared/server-api-client";
+import {
+  buildListPath,
+  buildListTags,
+  buildScopedListPath,
+} from "./shared/list-service";
 
 export type NewsSortBy = "createdAt" | "viewCount";
 
 export type NewsListFilters = {
   categoryId?: number;
   categorySlug?: string;
+  q?: string;
   status?: PublishStatus;
   slug?: string;
   title?: string;
@@ -30,7 +37,7 @@ export const newsService = {
       categorySlug: params.categorySlug ?? params.filters?.categorySlug,
     };
 
-    return getApiResponse<News[]>(
+    return requestServerApi<News[]>(
       buildListPath("/news", {
         filters,
         page: params.page,
@@ -53,7 +60,7 @@ export const newsService = {
     slug: string,
     params: Omit<NewsGetAllParams, "filters" | "categorySlug"> = {},
   ) =>
-    getApiResponse<News[]>(
+    requestServerApi<News[]>(
       buildScopedListPath("/news/category/slug", slug, {
         page: params.page,
         limit: params.limit,
@@ -69,7 +76,7 @@ export const newsService = {
     ),
 
   getBySlug: async (slug: string) => {
-    const response = await getApiResponse<News>(
+    const response = await requestServerApi<News>(
       `/news/slug/${encodeURIComponent(slug)}`,
       {
         cache: "no-store",
@@ -79,5 +86,3 @@ export const newsService = {
     return response.data;
   },
 };
-
-

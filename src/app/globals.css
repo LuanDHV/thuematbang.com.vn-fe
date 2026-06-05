@@ -3,10 +3,11 @@
 @import "shadcn/tailwind.css";
 
 @theme {
+  /* Tailwind color aliases */
   --color-primary: var(--primary);
   --color-app: var(--app);
   --color-subtle: var(--subtle);
-  --color-elevated: var(--elevated);
+  --color-surface: var(--surface);
   --color-footer: var(--footer);
   --color-footer-heading: var(--footer-heading);
   --color-footer-body: var(--footer-body);
@@ -14,16 +15,18 @@
   --color-body: var(--body);
   --color-secondary: var(--secondary);
   --color-muted: var(--muted);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
 
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
 }
 
 :root {
+  /* Client/global semantic colors */
   --primary: #f7aa1b;
   --app: #f8f6f2;
   --subtle: #f0ede7;
-  --elevated: #ffffff;
-  --surface: #fafaf8;
+  --surface: #ffffff;
   --footer: #26231f;
   --footer-heading: #f5f0e8;
   --footer-body: #c8bfb2;

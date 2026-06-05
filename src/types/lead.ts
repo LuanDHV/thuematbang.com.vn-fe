@@ -1,4 +1,4 @@
-﻿import { LeadStatus } from "./enums";
+import { LeadStatus } from "./enums";
 import { Property } from "./property";
 import { User } from "./user";
 

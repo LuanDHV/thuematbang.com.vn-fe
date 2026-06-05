@@ -1,7 +1,9 @@
-import { User } from "@/types";
-import { getApiResponse } from "./shared/api-client";
+import "server-only";
 
-// Define TypeScript types for updating user profile payload
+import { User } from "@/types";
+import { buildListPath, buildListTags } from "./shared/list-service";
+import { requestServerApi } from "./shared/server-api-client";
+
 export type UpdateMePayload = {
   fullName: string;
   phone: string;
@@ -11,51 +13,128 @@ export type UpdateMePayload = {
   avatarPublicId?: string;
 };
 
-// Service object containing user-related API calls
+export type ChangeMyPasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export type SetMyPasswordPayload = {
+  newPassword: string;
+  confirmPassword: string;
+};
+
+export type AdminUserListFilters = {
+  q?: string;
+};
+
+export type AdminUserListParams = {
+  page?: number;
+  limit?: number;
+  filters?: AdminUserListFilters;
+};
+
+type PasswordActionResponse = {
+  message?: string;
+};
+
+type AuthenticatedRequestOptions = {
+  mutateAuthCookies?: boolean;
+};
+
+function buildProfileFormData(payload: UpdateMePayload) {
+  const formData = new FormData();
+  formData.append("fullName", payload.fullName);
+  formData.append("phone", payload.phone);
+
+  if (payload.email) {
+    formData.append("email", payload.email);
+  }
+  if (payload.avatar) {
+    formData.append("avatar", payload.avatar);
+  }
+  if (payload.avatarUrl) {
+    formData.append("avatarUrl", payload.avatarUrl);
+  }
+  if (payload.avatarPublicId) {
+    formData.append("avatarPublicId", payload.avatarPublicId);
+  }
+
+  return formData;
+}
+
 export const userService = {
-  // Fetch the current authenticated user details
-  me: async () =>
+  me: async (options: AuthenticatedRequestOptions = {}) =>
     (
-      await getApiResponse<User | null>("/users/me", {
+      await requestServerApi<User | null>("/users/me", {
+        auth: "required",
         cache: "no-store",
         tags: ["auth-me"],
+        mutateAuthCookies: options.mutateAuthCookies,
       })
     ).data,
 
-  // Method to update user profile using multipart FormData via PATCH request
-  updateMe: async (payload: UpdateMePayload) => {
-    const formData = new FormData();
-    formData.append("fullName", payload.fullName);
-    formData.append("phone", payload.phone);
+  getAdminUsers: async (
+    params: AdminUserListParams = {},
+    options: AuthenticatedRequestOptions = {},
+  ) =>
+    requestServerApi<User[]>(buildListPath("/admin/users", params), {
+      auth: "required",
+      cache: "no-store",
+      tags: buildListTags("admin-users", {
+        page: params.page,
+        limit: params.limit,
+      }),
+      mutateAuthCookies: options.mutateAuthCookies,
+    }),
 
-    // Append optional fields to FormData if they exist
-    if (payload.email) {
-      formData.append("email", payload.email);
-    }
-    if (payload.avatar) {
-      formData.append("avatar", payload.avatar);
-    }
-    if (payload.avatarUrl) {
-      formData.append("avatarUrl", payload.avatarUrl);
-    }
-    if (payload.avatarPublicId) {
-      formData.append("avatarPublicId", payload.avatarPublicId);
-    }
-
-    // Call Next.js PATCH API route
-    const response = await fetch("/api/v1/users/me", {
+  updateMe: async (
+    payload: UpdateMePayload,
+    options: AuthenticatedRequestOptions = {},
+  ) => {
+    const response = await requestServerApi<User>("/users/me", {
       method: "PATCH",
-      body: formData,
+      auth: "required",
+      body: buildProfileFormData(payload),
+      mutateAuthCookies: options.mutateAuthCookies,
     });
+    return response.data;
+  },
 
-    // Parse response body, return null if parsing fails
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-      throw new Error(
-        data?.message || "Không thể cập nhật thông tin tài khoản",
-      );
-    }
+  changeMyPassword: async (
+    payload: ChangeMyPasswordPayload,
+    options: AuthenticatedRequestOptions = {},
+  ) => {
+    const response = await requestServerApi<PasswordActionResponse>(
+      "/users/me/password",
+      {
+        method: "PATCH",
+        auth: "required",
+        mutateAuthCookies: options.mutateAuthCookies,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    return response.data;
+  },
 
-    return (data?.data ?? data) as User;
+  setMyPassword: async (
+    payload: SetMyPasswordPayload,
+    options: AuthenticatedRequestOptions = {},
+  ) => {
+    const response = await requestServerApi<PasswordActionResponse>(
+      "/users/me/password/set",
+      {
+        method: "POST",
+        auth: "required",
+        mutateAuthCookies: options.mutateAuthCookies,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    return response.data;
   },
 };

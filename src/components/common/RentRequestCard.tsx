@@ -1,39 +1,20 @@
 "use client";
 
-import CloudinaryImage from "@/components/common/CloudinaryImage";
-import { formatDate, formatPrice } from "@/lib/utils";
-import { RentRequest } from "@/types/rent-request";
-import { Calendar, Eye, MapPin, Maximize } from "lucide-react";
 import Link from "next/link";
+import { Calendar, Eye, MapPin, Maximize } from "lucide-react";
+
+import CloudinaryImage from "@/components/common/CloudinaryImage";
+import {
+  formatAreaRange,
+  formatBudgetRange,
+  formatDate,
+  formatLocationParts,
+  formatNumber,
+} from "@/lib/utils";
+import { RentRequest } from "@/types/rent-request";
 
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(26,18,8,0.13)]";
-
-function formatBudgetRange(request: RentRequest) {
-  const min = request.minBudget ?? 0;
-  const max = request.maxBudget ?? 0;
-
-  if (min > 0 && max > 0) return `${formatPrice(min)} - ${formatPrice(max)}`;
-  if (min > 0) return `Từ ${formatPrice(min)}`;
-  if (max > 0) return `Dưới ${formatPrice(max)}`;
-  return "Thỏa thuận";
-}
-
-function formatAreaRange(request: RentRequest) {
-  const min = request.minArea ?? 0;
-  const max = request.maxArea ?? 0;
-
-  if (min > 0 && max > 0) return `${min} - ${max} m²`;
-  if (min > 0) return `Từ ${min} m²`;
-  if (max > 0) return `Dưới ${max} m²`;
-  return "Đang cập nhật";
-}
-
-function getLocationText(request: RentRequest) {
-  return [request.desiredWard?.name, request.desiredProvince?.name]
-    .filter(Boolean)
-    .join(", ");
-}
 
 function CardFooter({ request }: { request: RentRequest }) {
   return (
@@ -44,7 +25,7 @@ function CardFooter({ request }: { request: RentRequest }) {
       </span>
       <span className="inline-flex items-center justify-end gap-1">
         <Eye size={14} />
-        {(request.viewCount || 0).toLocaleString("vi-VN")}
+        {formatNumber(request.viewCount, { fallback: "0" })}
       </span>
     </div>
   );
@@ -63,7 +44,10 @@ export function RentRequestCard({
   request: RentRequest;
   variant?: "default" | "featured";
 }) {
-  const location = getLocationText(request) || "Toàn quốc";
+  const location = formatLocationParts(
+    [request.desiredWard?.name, request.desiredProvince?.name],
+    "Toàn quốc",
+  );
   const isFeatured = variant === "featured";
   const categoryName = request.category?.name ?? "";
 
@@ -73,7 +57,7 @@ export function RentRequestCard({
         className={`surface-card ${CARD_HOVER_CLASSES} ${isFeatured ? "rounded-2xl" : "rounded-xl"}`}
       >
         <div
-          className={`bg-elevated relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
+          className={`bg-subtle relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
         >
           <CloudinaryImage
             src={request.imageUrl || "/imgs/wallpaper-1.jpg"}
@@ -99,7 +83,10 @@ export function RentRequestCard({
             </span>
           ) : null}
           <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
-            {formatBudgetRange(request)}
+            {formatBudgetRange(request.minBudget, request.maxBudget, {
+              fallback: "Thỏa thuận",
+              upperBoundPrefix: "Dưới",
+            })}
           </p>
 
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">
@@ -110,7 +97,7 @@ export function RentRequestCard({
             <p className="flex items-start gap-1.5">
               <Maximize size={14} className="text-primary mt-0.5 shrink-0" />
               <span className="line-clamp-1 text-sm">
-                {formatAreaRange(request)}
+                {formatAreaRange(request.minArea, request.maxArea)}
               </span>
             </p>
           </div>

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { proxyJsonRequest } from "@/app/api/v1/_utils/proxy";
-import { clearAuthCookies, readAuthCookies } from "@/app/api/v1/_utils/auth";
+import { clearAuthCookies, readAuthCookies } from "@/lib/server/auth-cookies";
 
 // Handle user logout
 export async function POST() {

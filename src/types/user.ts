@@ -1,4 +1,4 @@
-﻿import {
+import {
   PaymentTransaction,
   PropertyBoostOrder,
   PropertyPackageOrder,
@@ -19,6 +19,7 @@ export interface User {
   avatarUrl?: string | null;
   avatarPublicId?: string | null;
   passwordHash?: string | null;
+  hasPassword?: boolean;
   authProvider?: AuthProvider;
   role: UserRole;
   createdAt: Date | string;

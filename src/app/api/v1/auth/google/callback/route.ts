@@ -1,6 +1,6 @@
 ﻿import { NextResponse } from "next/server";
 import { getPrivateApiBaseUrl } from "@/lib/env";
-import { applyAuthCookies, extractTokenPair } from "@/app/api/v1/_utils/auth";
+import { applyAuthCookies, extractTokenPair } from "@/lib/server/auth-cookies";
 
 function redirectToLoginWithReason(request: Request, reason: string) {
   const url = new URL("/dang-nhap", request.url);

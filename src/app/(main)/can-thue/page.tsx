@@ -1,11 +1,12 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { faqService } from "@/services/faq.service";
+import { seoContentService } from "@/services/seo-content.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import SafeFetch from "@/components/common/SafeFetch";
 
@@ -18,8 +19,10 @@ export const metadata: Metadata = createPageMetadata({
 export default async function CanThuePage() {
   await connection();
 
-  // Load static SEO/FAQ content for rent request page.
-  const pageContent = pageSeoFaq["can-thue"];
+  const [seoRes, faqRes] = await Promise.all([
+    seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
+    faqService.getByPage("can-thue").catch(() => ({ data: { page: "can-thue", faqs: [] } })),
+  ]);
 
   return (
     <>
@@ -31,7 +34,6 @@ export default async function CanThuePage() {
       >
         {(response) => (
           <ListingFilterSection
-            title="Cần thuê bất động sản"
             properties={response.data ?? []}
             listingMode="rentRequest"
             serverDriven
@@ -42,12 +44,8 @@ export default async function CanThuePage() {
         )}
       </SafeFetch>
 
-      <PageSeoContent content={pageContent.seoContent} />
-      <PageFaq
-        title={pageContent.faqTitle}
-        description={pageContent.faqDescription}
-        items={pageContent.faqs}
-      />
+      <PageSeoContent seoData={seoRes.data} />
+      <PageFaq faqData={faqRes.data} />
     </>
   );
 }

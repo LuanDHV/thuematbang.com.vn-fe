@@ -1,11 +1,13 @@
-﻿import { Property } from "@/types/property";
+import "server-only";
+
+import { Property } from "@/types/property";
 import {
   PropertyDirection,
   PropertyPriority,
   PublishSource,
   PublishStatus,
 } from "@/types/enums";
-import { getApiResponse } from "./shared/api-client";
+import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
   buildListTags,
@@ -25,6 +27,7 @@ export type PropertyListFilters = {
   categoryId?: number;
   userId?: number;
   categorySlug?: string;
+  q?: string;
   slug?: string;
   title?: string;
   provinceId?: number;
@@ -64,23 +67,29 @@ export type PropertyGetByFlatSlugParams = {
   limit?: number;
 };
 
+export type PropertyMineParams = {
+  page?: number;
+  limit?: number;
+};
+
+export type UpdatePropertyPayload = FormData;
+
 export const propertyService = {
   getAll: async (params: PropertyGetAllParams = {}) =>
-    getApiResponse<Property[]>(buildListPath("/properties", params), {
+    requestServerApi<Property[]>(buildListPath("/properties", params), {
       cache: "no-store",
-      tags: buildListTags("properties", { page: params.page, limit: params.limit }),
+      tags: buildListTags("properties", {
+        page: params.page,
+        limit: params.limit,
+      }),
     }),
 
   getAllByFlatSlug: async (params: PropertyGetByFlatSlugParams) =>
-    getApiResponse<Property[]>(
-      buildScopedListPath(
-        "/properties/search/by-slug",
-        params.flatSlug,
-        {
-          page: params.page,
-          limit: params.limit,
-        },
-      ),
+    requestServerApi<Property[]>(
+      buildScopedListPath("/properties/search/by-slug", params.flatSlug, {
+        page: params.page,
+        limit: params.limit,
+      }),
       {
         cache: "no-store",
         tags: buildListTags("properties", {
@@ -92,7 +101,7 @@ export const propertyService = {
     ),
 
   getBySlug: async (slug: string) => {
-    const response = await getApiResponse<Property>(
+    const response = await requestServerApi<Property>(
       `/properties/slug/${encodeURIComponent(slug)}`,
       {
         cache: "no-store",
@@ -101,6 +110,40 @@ export const propertyService = {
     );
     return response.data;
   },
+
+  getById: async (id: number) => {
+    const response = await requestServerApi<Property>(`/properties/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["property-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  getMine: async (params: PropertyMineParams = {}) =>
+    requestServerApi<Property[]>(buildListPath("/me/properties", params), {
+      auth: "required",
+      cache: "no-store",
+      tags: buildListTags("my-properties", {
+        page: params.page,
+        limit: params.limit,
+      }),
+    }),
+
+  update: async (id: number, payload: UpdatePropertyPayload) => {
+    const response = await requestServerApi<Property>(`/properties/${id}`, {
+      method: "PATCH",
+      auth: "required",
+      body: payload,
+    });
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    const response = await requestServerApi<Property>(`/properties/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
+    return response.data;
+  },
 };
-
-

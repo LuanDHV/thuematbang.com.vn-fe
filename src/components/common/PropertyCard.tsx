@@ -1,7 +1,14 @@
 "use client";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
-import { formatDate, formatPrice } from "@/lib/utils";
+import {
+  formatAreaValue,
+  formatDate,
+  formatLocationParts,
+  formatNegotiablePrice,
+  formatNumber,
+} from "@/lib/utils";
+import type { PropertyPriority } from "@/types";
 import { Property } from "@/types/property";
 import {
   Bath,
@@ -20,7 +27,7 @@ const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(26,18,8,0.13)]";
 
-type CardTone = "gold" | "silver" | "normal";
+type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
 
 function resolvePropertyHref(property: Property) {
@@ -55,30 +62,13 @@ function getPropertyGalleryImages(property: Property) {
 
 function getTierTone(priorityStatus?: string | null): CardTone {
   switch (priorityStatus) {
-    case "GOLD":
-      return "gold";
-    case "SILVER":
-      return "silver";
+    case "PREMIUM":
+      return "PREMIUM";
+    case "STANDARD":
+      return "STANDARD";
     default:
-      return "normal";
+      return "FREE";
   }
-}
-
-function getTierLabel(tone: CardTone) {
-  switch (tone) {
-    case "gold":
-      return "Gold";
-    case "silver":
-      return "Silver";
-    default:
-      return "Normal";
-  }
-}
-
-function getLocationText(property: Property) {
-  return [property.ward?.name, property.province?.name]
-    .filter(Boolean)
-    .join(", ");
 }
 
 function CardFooter({ property }: { property: Property }) {
@@ -90,7 +80,7 @@ function CardFooter({ property }: { property: Property }) {
       </span>
       <span className="inline-flex items-center justify-end gap-1">
         <Eye size={14} />
-        {(property.viewCount || 0).toLocaleString("vi-VN")}
+        {formatNumber(property.viewCount, { fallback: "0" })}
       </span>
     </div>
   );
@@ -98,28 +88,28 @@ function CardFooter({ property }: { property: Property }) {
 
 function TierBadge({ tone }: { tone: CardTone }) {
   const toneClasses =
-    tone === "gold"
+    tone === "PREMIUM"
       ? "bg-primary text-white"
-      : tone === "silver"
+      : tone === "STANDARD"
         ? "bg-white/90 text-body"
         : "bg-white/80 text-secondary";
-  const iconSize = tone === "gold" ? 14 : 14;
+  const iconSize = 14;
 
   return (
     <span
       className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${toneClasses}`}
     >
-      {tone === "gold" ? <Crown size={iconSize} /> : null}
-      {tone === "silver" ? <Star size={iconSize} /> : null}
-      {getTierLabel(tone)}
+      {tone === "PREMIUM" ? <Crown size={iconSize} /> : null}
+      {tone === "STANDARD" ? <Star size={iconSize} /> : null}
+      {tone}
     </span>
   );
 }
 
 function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
   const badgeSizeClass =
-    tone === "gold" ? "px-2 py-0.5 text-sm" : "px-2 py-0.5 text-xs";
-  const iconSize = tone === "gold" ? 14 : 14;
+    tone === "PREMIUM" ? "px-2 py-0.5 text-sm" : "px-2 py-0.5 text-xs";
+  const iconSize = 14;
 
   return (
     <div
@@ -141,7 +131,11 @@ function OverlayTitle({
   tone: CardTone;
 }) {
   const titleClass =
-    tone === "gold" ? "text-2xl" : tone === "silver" ? "text-xl " : "text-lg";
+    tone === "PREMIUM"
+      ? "text-2xl"
+      : tone === "STANDARD"
+        ? "text-xl "
+        : "text-lg";
 
   return (
     <div className="absolute right-3 bottom-3 left-3 z-20">
@@ -190,7 +184,7 @@ function FeaturedCard({ property }: { property: Property }) {
   );
 }
 
-function GoldCard({ property }: { property: Property }) {
+function PremiumCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
   const imagesList = getPropertyGalleryImages(property);
   const realImageCount = Math.max(
@@ -202,7 +196,7 @@ function GoldCard({ property }: { property: Property }) {
     <article
       className={`surface-card ${CARD_HOVER_CLASSES} border-primary/10 rounded-2xl`}
     >
-      <div className="bg-elevated relative flex h-60 w-full gap-0.5 overflow-hidden">
+      <div className="bg-subtle relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
           className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
         >
@@ -254,18 +248,18 @@ function GoldCard({ property }: { property: Property }) {
         ) : null}
 
         <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
-        <TierBadge tone="gold" />
-        <ImageCountBadge count={realImageCount} tone="gold" />
-        <OverlayTitle property={property} tone="gold" />
+        <TierBadge tone="PREMIUM" />
+        <ImageCountBadge count={realImageCount} tone="PREMIUM" />
+        <OverlayTitle property={property} tone="PREMIUM" />
       </div>
 
-      <CardBody property={property} density="rich" tone="gold" showPreview />
+      <CardBody property={property} density="rich" tone="PREMIUM" showPreview />
       <CardHoverBar />
     </article>
   );
 }
 
-function SilverCard({ property }: { property: Property }) {
+function StandardCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
   const imagesList = getPropertyGalleryImages(property);
   const realImageCount = Math.max(
@@ -311,18 +305,23 @@ function SilverCard({ property }: { property: Property }) {
         </div>
 
         <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
-        <TierBadge tone="silver" />
-        <ImageCountBadge count={realImageCount} tone="silver" />
-        <OverlayTitle property={property} tone="silver" />
+        <TierBadge tone="STANDARD" />
+        <ImageCountBadge count={realImageCount} tone="STANDARD" />
+        <OverlayTitle property={property} tone="STANDARD" />
       </div>
 
-      <CardBody property={property} density="rich" tone="silver" showPreview />
+      <CardBody
+        property={property}
+        density="rich"
+        tone="STANDARD"
+        showPreview
+      />
       <CardHoverBar />
     </article>
   );
 }
 
-function NormalCard({ property }: { property: Property }) {
+function FreeCard({ property }: { property: Property }) {
   const image = getPropertyThumbnailUrl(property);
 
   return (
@@ -337,14 +336,14 @@ function NormalCard({ property }: { property: Property }) {
           cldQuality="auto:best"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/22 to-transparent" />
-        <TierBadge tone="normal" />
-        <OverlayTitle property={property} tone="normal" />
+        <TierBadge tone="FREE" />
+        <OverlayTitle property={property} tone="FREE" />
       </div>
 
       <CardBody
         property={property}
         density="compact"
-        tone="normal"
+        tone="FREE"
         showPreview={false}
       />
       <CardHoverBar />
@@ -363,7 +362,10 @@ function CardBody({
   tone: CardTone;
   showPreview: boolean;
 }) {
-  const location = getLocationText(property) || "Đang cập nhật vị trí";
+  const location = formatLocationParts(
+    [property.ward?.name, property.province?.name],
+    "Đang cập nhật vị trí",
+  );
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
   const isCompact = density === "compact";
 
@@ -383,24 +385,36 @@ function CardBody({
     { icon: MapPin, text: location },
     {
       icon: Maximize,
-      text: property.area ? `${property.area} m²` : "Đang cập nhật diện tích",
+      text: formatAreaValue(property.area, "Đang cập nhật diện tích"),
     },
     bedroomsText ? { icon: Bed, text: bedroomsText } : null,
     bathroomsText ? { icon: Bath, text: bathroomsText } : null,
   ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
 
   const categoryBadgeSizeClass =
-    tone === "gold" ? "text-base" : tone === "silver" ? "text-sm" : "text-xs";
+    tone === "PREMIUM"
+      ? "text-base"
+      : tone === "STANDARD"
+        ? "text-sm"
+        : "text-xs";
 
   const priceClass =
-    tone === "gold" ? "text-xl " : tone === "silver" ? "text-lg " : "text-base";
+    tone === "PREMIUM"
+      ? "text-xl "
+      : tone === "STANDARD"
+        ? "text-lg "
+        : "text-base";
 
   const metaTextClass =
-    tone === "gold" ? "text-sm" : tone === "silver" ? "text-sm" : "text-xs";
+    tone === "PREMIUM"
+      ? "text-sm"
+      : tone === "STANDARD"
+        ? "text-sm"
+        : "text-xs";
 
-  const previewTextClass = tone === "gold" ? "text-sm" : "text-xs";
+  const previewTextClass = tone === "PREMIUM" ? "text-sm" : "text-xs";
   const metaGridClass =
-    tone === "gold" || tone === "silver"
+    tone === "PREMIUM" || tone === "STANDARD"
       ? "grid-cols-1"
       : isCompact
         ? "grid-cols-1"
@@ -418,7 +432,9 @@ function CardBody({
       <p
         className={`group-hover:text-primary text-heading transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
       >
-        {formatPrice(property.price || 0)}
+        {formatNegotiablePrice(property.price, property.isNegotiable, {
+          fallback: "Liên hệ",
+        })}
       </p>
 
       <div
@@ -462,16 +478,16 @@ export function PropertyCard({
   if (variant === "featured") {
     content = <FeaturedCard property={property} />;
   } else {
-    const tier = property.priorityStatus ?? "NORMAL";
+    const tier = (property.priorityStatus ?? "FREE") as PropertyPriority;
     switch (tier) {
-      case "GOLD":
-        content = <GoldCard property={property} />;
+      case "PREMIUM":
+        content = <PremiumCard property={property} />;
         break;
-      case "SILVER":
-        content = <SilverCard property={property} />;
+      case "STANDARD":
+        content = <StandardCard property={property} />;
         break;
       default:
-        content = <NormalCard property={property} />;
+        content = <FreeCard property={property} />;
         break;
     }
   }

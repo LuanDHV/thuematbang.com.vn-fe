@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { proxyJsonRequest } from "@/app/api/v1/_utils/proxy";
-import { applyAuthCookies, extractTokenPair } from "@/app/api/v1/_utils/auth";
+import { applyAuthCookies, extractTokenPair } from "@/lib/server/auth-cookies";
 
 // Handle user registration
 export async function POST(request: Request) {

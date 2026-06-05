@@ -366,7 +366,7 @@ export function LocationDetailTab({
         <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
           <SelectValue placeholder="Chọn tỉnh / thành phố" />
         </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
+        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-80 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
           {Object.keys(provinceWardMap).map((province) => (
             <SelectItem
               key={province}
@@ -389,7 +389,7 @@ export function LocationDetailTab({
         <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
           <SelectValue placeholder="Chọn phường / xã" />
         </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-60 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
+        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-80 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
           {wards.map((ward) => (
             <SelectItem key={ward} value={ward} className="cursor-pointer">
               {ward}

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { resolvePaginationClientMeta } from "@/lib/client-side";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import { CategoryChips } from "@/components/common/CategoryChips";
@@ -88,15 +89,16 @@ export default function NewsListingClient({
 
   const { data: mostViewedNewsResponse } = useMostViewedNews(
     selectedCategorySlug,
-    4,
+    10,
   );
 
   const mostViewedNews = useMemo(() => {
-    return mostViewedNewsResponse?.data ?? sourceNews.slice(0, 4);
+    return mostViewedNewsResponse?.data ?? sourceNews.slice(0, 10);
   }, [mostViewedNewsResponse?.data, sourceNews]);
 
-  const totalPages = Math.max(1, paginationMeta?.totalPage ?? 1);
-  const currentPage = Math.max(1, paginationMeta?.currentPage ?? 1);
+  const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
+  const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
+  const currentPage = Math.max(1, resolvedPaginationMeta.currentPage ?? 1);
 
   const handleSelectCategory = useCallback(
     (categorySlug: string) => {
@@ -107,18 +109,6 @@ export default function NewsListingClient({
       });
     },
     [router],
-  );
-
-  const handlePageChange = useCallback(
-    (nextPage: number) => {
-      router.replace(
-        buildPagedPath(getCategoryPath(selectedCategorySlug), nextPage),
-        {
-          scroll: false,
-        },
-      );
-    },
-    [router, selectedCategorySlug],
   );
 
   return (
@@ -137,28 +127,44 @@ export default function NewsListingClient({
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <div className="flex w-full flex-col lg:w-4/6">
-          <div className="surface-card grid gap-5 p-5">
-            {featuredNews ? <FeaturedNewsCard news={featuredNews} /> : null}
+          <div className="surface-card space-y-5 p-5">
+            {featuredNews ? (
+              <FeaturedNewsCard
+                news={featuredNews}
+                className="aspect-16/10 lg:aspect-16/8"
+              />
+            ) : null}
+
             {remainingNews.length > 0 ? (
-              remainingNews.map((newsItem) => (
-                <NewsCard key={newsItem.id} news={newsItem} />
-              ))
+              <div className="grid grid-cols-1 gap-5">
+                {remainingNews.map((newsItem) => (
+                  <NewsCard key={newsItem.id} news={newsItem} />
+                ))}
+              </div>
             ) : sourceNews.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-gray-500">Không có bài viết nào</p>
               </div>
             ) : null}
           </div>
+
           <Pagination
             page={currentPage}
             totalPages={totalPages}
-            onChange={handlePageChange}
+            onChange={(nextPage) =>
+              router.replace(
+                buildPagedPath(getCategoryPath(selectedCategorySlug), nextPage),
+                {
+                  scroll: false,
+                },
+              )
+            }
           />
         </div>
 
         <aside className="w-full lg:w-2/6">
           <div className="lg:sticky lg:top-24">
-            <section className="surface-card rounded-2xl border p-5 md:p-6">
+            <section className="surface-card hidden rounded-2xl border p-5 lg:block">
               <h2 className="text-heading text-base font-medium">
                 <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
                 Bài viết được xem nhiều nhất

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
+import { isProductionAppEnv } from "@/lib/app-env";
 import { siteConfig } from "@/lib/metadata";
 import AppProviders from "@/components/providers/AppProviders";
+
+const isProduction = isProductionAppEnv();
 
 const geistSans = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700"],
@@ -47,6 +50,16 @@ export const metadata: Metadata = {
     icon: "/imgs/brand-logo.png",
     apple: "/imgs/brand-logo.png",
   },
+  robots: isProduction
+    ? {
+        index: true,
+        follow: true,
+      }
+    : {
+        index: false,
+        follow: false,
+        nocache: true,
+      },
 };
 
 export default function RootLayout({
@@ -55,10 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="vi"
-      className={`${geistSans.variable} h-full antialiased`}
-    >
+    <html lang="vi" className={`${geistSans.variable} h-full antialiased`}>
       <body className="bg-app text-body min-h-screen">
         <AppProviders>{children}</AppProviders>
       </body>

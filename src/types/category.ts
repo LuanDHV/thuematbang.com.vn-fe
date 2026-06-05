@@ -1,4 +1,4 @@
-﻿import { CategoryType } from "./enums";
+import { CategoryType } from "./enums";
 import { News } from "./news";
 import { Project } from "./project";
 import { Property } from "./property";

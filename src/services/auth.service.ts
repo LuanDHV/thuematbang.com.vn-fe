@@ -1,16 +1,26 @@
-﻿import { postApiData } from "./shared/api-client";
+import { getPublicApiBaseUrl } from "@/lib/env";
+import { postJson, unwrapApiData } from "@/lib/http";
 import { AuthResponse, LoginPayload, RegisterPayload } from "@/types";
+
+function createAuthUrl(path: string) {
+  const base = getPublicApiBaseUrl().replace(/\/$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${base}${normalizedPath}`;
+}
 
 export const authService = {
   login: (payload: LoginPayload) =>
-    postApiData<AuthResponse>("/auth/login", payload),
+    postJson<unknown>(createAuthUrl("/auth/login"), payload, {
+      cache: "no-store",
+    }).then(unwrapApiData<AuthResponse>),
 
   register: (payload: RegisterPayload) =>
-    postApiData<AuthResponse>("/auth/register", payload),
+    postJson<unknown>(createAuthUrl("/auth/register"), payload, {
+      cache: "no-store",
+    }).then(unwrapApiData<AuthResponse>),
 
-  refresh: () => postApiData<AuthResponse>("/auth/refresh"),
-
-  logout: () => postApiData<{ ok?: boolean; message?: string }>("/auth/logout"),
+  logout: () =>
+    postJson<unknown>(createAuthUrl("/auth/logout"), undefined, {
+      cache: "no-store",
+    }).then(unwrapApiData<{ ok?: boolean; message?: string }>),
 };
-
-

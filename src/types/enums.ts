@@ -1,4 +1,4 @@
-﻿export type AuthProvider = "LOCAL" | "GOOGLE";
+export type AuthProvider = "LOCAL" | "GOOGLE";
 
 export type UserRole = "CUSTOMER" | "AGENT" | "ADMIN";
 
@@ -11,7 +11,7 @@ export type LeadStatus =
   | "CLOSED"
   | "REJECTED";
 
-export type PropertyPriority = "NORMAL" | "SILVER" | "GOLD";
+export type PropertyPriority = "FREE" | "STANDARD" | "PREMIUM";
 
 export type PropertyDirection =
   | "BAC"
@@ -39,4 +39,3 @@ export type PurchaseType = "PROPERTY_POST_PACKAGE" | "PROPERTY_BOOST";
 export type OrderStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELED";
 
 export type PublishSource = "FREE_QUOTA" | "PAID_PACKAGE";
-

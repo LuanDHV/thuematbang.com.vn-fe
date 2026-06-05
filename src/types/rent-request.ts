@@ -1,4 +1,4 @@
-﻿import { Category } from "./category";
+import { Category } from "./category";
 import { PropertyDirection, RentRequestStatus } from "./enums";
 import { Province, Street, Ward } from "./location";
 import { User } from "./user";

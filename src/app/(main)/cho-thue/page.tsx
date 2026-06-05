@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
@@ -6,7 +6,8 @@ import SafeFetch from "@/components/common/SafeFetch";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { faqService } from "@/services/faq.service";
+import { seoContentService } from "@/services/seo-content.service";
 import { propertyService } from "@/services/property.service";
 
 export const metadata: Metadata = createPageMetadata({
@@ -18,8 +19,12 @@ export const metadata: Metadata = createPageMetadata({
 export default async function ChoThuePage() {
   await connection();
 
-  // Load static SEO/FAQ content for rental listing page.
-  const pageContent = pageSeoFaq["cho-thue"];
+  const [seoRes, faqRes] = await Promise.all([
+    seoContentService.getByPage("cho-thue").catch(() => ({ data: null })),
+    faqService
+      .getByPage("cho-thue")
+      .catch(() => ({ data: { page: "cho-thue", faqs: [] } })),
+  ]);
 
   return (
     <>
@@ -31,7 +36,6 @@ export default async function ChoThuePage() {
       >
         {(response) => (
           <ListingFilterSection
-            title="Cho thuê bất động sản"
             properties={response.data ?? []}
             listingMode="property"
             serverDriven
@@ -41,12 +45,8 @@ export default async function ChoThuePage() {
           />
         )}
       </SafeFetch>
-      <PageSeoContent content={pageContent.seoContent} />
-      <PageFaq
-        title={pageContent.faqTitle}
-        description={pageContent.faqDescription}
-        items={pageContent.faqs}
-      />
+      <PageSeoContent seoData={seoRes.data} />
+      <PageFaq faqData={faqRes.data} />
     </>
   );
 }

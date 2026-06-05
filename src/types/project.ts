@@ -1,4 +1,4 @@
-﻿import { Category } from "./category";
+import { Category } from "./category";
 import { PublishStatus } from "./enums";
 import { Province, Ward } from "./location";
 import { ProjectImage } from "./media";

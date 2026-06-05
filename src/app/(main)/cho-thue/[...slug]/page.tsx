@@ -15,19 +15,20 @@ import {
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
-import { pageSeoFaq } from "@/constants/pageSeoFaq";
+import { readAuthCookies } from "@/lib/server/auth-cookies";
+import { faqService } from "@/services/faq.service";
 import { Property } from "@/types/property";
 import { propertyService } from "@/services/property.service";
 import { locationService } from "@/services/location.service";
-import { readAuthCookies } from "@/app/api/v1/_utils/auth";
+import { seoContentService } from "@/services/seo-content.service";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
 type LocationContext = {
-  provinces: { name: string; slug: string }[];
-  wards: { name: string; slug: string }[];
+  provinces: { id: number; name: string; slug: string }[];
+  wards: { name: string; slug: string; provinceId: number }[];
 };
 
 function buildLocationContextFromProperties(
@@ -38,8 +39,9 @@ function buildLocationContextFromProperties(
       properties
         .filter((item) => item.province?.name && item.province?.slug)
         .map((item) => [item.province!.slug, item.province!]),
-    ).values(),
+  ).values(),
   ).map((province) => ({
+    id: province.id,
     name: province.name,
     slug: province.slug,
   }));
@@ -49,10 +51,11 @@ function buildLocationContextFromProperties(
       properties
         .filter((item) => item.ward?.name && item.ward?.slug)
         .map((item) => [item.ward!.slug, item.ward!]),
-    ).values(),
+  ).values(),
   ).map((ward) => ({
     name: ward.name,
     slug: ward.slug,
+    provinceId: ward.provinceId,
   }));
 
   return { provinces, wards };
@@ -97,17 +100,21 @@ const resolveLocationContext = cache(async (): Promise<LocationContext> => {
     const provinces = await locationService.getProvinces();
 
     const wardsByProvince = await Promise.all(
-      provinces.map((province) => locationService.getWards(province.id)),
+      provinces.map((province) =>
+        locationService.getWards({ provinceId: province.id }),
+      ),
     );
 
     return {
       provinces: provinces.map((item) => ({
+        id: item.id,
         name: item.name,
         slug: item.slug,
       })),
       wards: wardsByProvince.flat().map((item) => ({
         name: item.name,
         slug: item.slug,
+        provinceId: item.provinceId,
       })),
     };
   } catch {
@@ -150,7 +157,10 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   const { rawSlug, page } = parsePagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
-  const pageContent = pageSeoFaq["cho-thue"];
+  const [seoRes, faqRes] = await Promise.all([
+    seoContentService.getByPage("cho-thue").catch(() => ({ data: null })),
+    faqService.getByPage("cho-thue").catch(() => ({ data: { page: "cho-thue", faqs: [] } })),
+  ]);
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
   if (property) {
@@ -195,9 +205,9 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       ? `https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`
       : null;
 
-    const citySlug = property.province?.slug;
+    const provinceSlug = property.province?.slug;
 
-    const relatedCategoryCityLinks = citySlug
+    const relatedCategoryProvinceLinks = provinceSlug
       ? properties
           .filter(
             (item) =>
@@ -207,7 +217,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           )
           .map((item) => ({
             label: `${item.category?.name} khu vực ${property.province?.name}`,
-            href: `/cho-thue/${item.category?.slug}-khu-vuc-${citySlug}`,
+            href: `/cho-thue/${item.category?.slug}-khu-vuc-${provinceSlug}`,
           }))
           .filter(
             (item, index, arr) =>
@@ -240,7 +250,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
               contactName={property.contactName}
               contactPhone={property.contactPhone}
               isLoggedIn={isLoggedIn}
-              relatedCategoryCityLinks={relatedCategoryCityLinks}
+              relatedCategoryProvinceLinks={relatedCategoryProvinceLinks}
             />
           }
         />
@@ -248,7 +258,8 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     );
   }
 
-  const initialFilters = parsePropertyFilterSlug(rawSlug);
+  const locationContext = await resolveLocationContext();
+  const initialFilters = parsePropertyFilterSlug(rawSlug, locationContext);
 
   const listFetcher = rawSlug
     ? propertyService.getAllByFlatSlug({
@@ -262,8 +273,6 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       });
 
   const paginationBasePath = rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue";
-  const locationContext = await resolveLocationContext();
-
   return (
     <>
       <SafeFetch fetcher={listFetcher} debugLabel="Properties Dynamic Response">
@@ -280,7 +289,6 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
           return (
             <ListingFilterSection
-              title="Cho thuê bất động sản"
               properties={properties}
               listingMode="property"
               serverDriven
@@ -298,13 +306,8 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         }}
       </SafeFetch>
 
-      <PageSeoContent content={pageContent.seoContent} />
-
-      <PageFaq
-        title={pageContent.faqTitle}
-        description={pageContent.faqDescription}
-        items={pageContent.faqs}
-      />
+      <PageSeoContent seoData={seoRes.data} />
+      <PageFaq faqData={faqRes.data} />
     </>
   );
 }

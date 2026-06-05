@@ -11,9 +11,9 @@ import {
 } from "@/types/filter";
 import type { BreadcrumbItem } from "@/lib/flat-url";
 import { PaginationMeta } from "@/types/api";
+import { resolvePaginationClientMeta } from "@/lib/client-side";
 
 type Props = {
-  title: string;
   properties: Property[] | RentRequest[];
   listingMode?: "property" | "rentRequest";
   serverDriven?: boolean;
@@ -25,7 +25,6 @@ type Props = {
 };
 
 export default function ListingFilterSection({
-  title,
   properties,
   listingMode = "property",
   serverDriven = false,
@@ -38,6 +37,7 @@ export default function ListingFilterSection({
   const [filteredProperties, setFilteredProperties] = useState<
     Property[] | RentRequest[]
   >(properties);
+  const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
   return (
     <div className="relative">
@@ -52,11 +52,10 @@ export default function ListingFilterSection({
         />
       </div>
       <ListingResultsClient
-        title={title}
         properties={serverDriven ? properties : filteredProperties}
         listingMode={listingMode}
         breadcrumbItems={breadcrumbItems}
-        paginationMeta={paginationMeta}
+        paginationMeta={resolvedPaginationMeta}
         paginationBasePath={paginationBasePath ?? basePath}
       />
     </div>

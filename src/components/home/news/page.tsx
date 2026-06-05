@@ -7,11 +7,11 @@ import { newsService } from "@/services/news.service";
 import { News } from "@/types/news";
 
 export default async function NewsSection() {
-  const newsFetch = newsService.getAll();
+  const newsFetch = newsService.getAll({ limit: 4 });
 
   return (
-    <section className="layout-section w-full">
-      <div className="layout-container">
+    <section className="layout-section w-full lg:flex lg:min-h-screen lg:items-center">
+      <div className="layout-container w-full">
         <div className="mb-16 text-center">
           <Title
             title="Tin tức"
@@ -28,12 +28,25 @@ export default async function NewsSection() {
 
             return (
               <>
-                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-8">
-                  <div className="min-h-105">
-                    {featuredNews ? (
-                      <FeaturedNewsCard news={featuredNews} />
-                    ) : null}
+                <div className="space-y-5 lg:hidden">
+                  {featuredNews ? (
+                    <FeaturedNewsCard news={featuredNews} />
+                  ) : null}
+
+                  <div className="grid grid-cols-1 gap-5">
+                    {sideNews.map((newsItem) => (
+                      <NewsCard key={newsItem.id} news={newsItem} />
+                    ))}
                   </div>
+                </div>
+
+                <div className="hidden grid-cols-1 items-stretch gap-5 lg:grid lg:grid-cols-2 lg:gap-8">
+                  {featuredNews ? (
+                    <FeaturedNewsCard
+                      news={featuredNews}
+                      className="aspect-auto h-full min-h-136"
+                    />
+                  ) : null}
 
                   <div className="grid grid-cols-1 gap-5">
                     {sideNews.map((newsItem) => (
