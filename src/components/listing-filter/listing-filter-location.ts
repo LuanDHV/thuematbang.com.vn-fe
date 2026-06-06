@@ -2,93 +2,27 @@ import type { FlatUrlContext } from "@/lib/flat-url";
 import { normalizeVietnameseText } from "@/lib/text-normalize";
 import type { AdvancedFilterValue } from "@/types/filter";
 import type { Province, Ward } from "@/types/location";
-import type { Property } from "@/types/property";
-import type { RentRequest } from "@/types/rent-request";
 
 export type ProvinceWardMap = Record<string, Record<string, string[]>>;
-
-type ListingMode = "property" | "rentRequest";
-
-type SourceLocationMap = {
-  provinceMap: Map<string, Province>;
-  wardMap: Map<string, Ward[]>;
-};
-
-// Listing pages reuse the same UI for supply and demand, so these helpers keep
-// the location orchestration in one place instead of duplicating it per component.
-function resolveLocationParts(
-  item: Property | RentRequest,
-  listingMode: ListingMode,
-) {
-  if (listingMode === "rentRequest") {
-    const rentRequest = item as RentRequest;
-    return {
-      province: rentRequest.desiredProvince,
-      ward: rentRequest.desiredWard,
-    };
-  }
-
-  const property = item as Property;
-  return {
-    province: property.province,
-    ward: property.ward,
-  };
-}
-
-export function buildSourceLocationMap(
-  sourceItems: Array<Property | RentRequest>,
-  listingMode: ListingMode,
-): SourceLocationMap {
-  const provinceMap = new Map<string, Province>();
-  const wardMap = new Map<string, Ward[]>();
-
-  for (const item of sourceItems) {
-    const { province, ward } = resolveLocationParts(item, listingMode);
-
-    if (province?.name && !provinceMap.has(province.name)) {
-      provinceMap.set(province.name, {
-        id: province.id,
-        name: province.name,
-        slug: province.slug,
-      });
-    }
-
-    if (province?.name && ward?.name) {
-      const existing = wardMap.get(province.name) ?? [];
-
-      if (!existing.some((entry) => entry.name === ward.name)) {
-        existing.push({
-          id: ward.id,
-          provinceId: ward.provinceId,
-          name: ward.name,
-          slug: ward.slug,
-        });
-        wardMap.set(province.name, existing);
-      }
-    }
-  }
-
-  return { provinceMap, wardMap };
-}
 
 // Merge server lookups and local fallback data into the map consumed by filter UI.
 export function buildProvinceWardMap(options: {
   provinces: Province[];
   selectedProvinceId: number | null;
   selectedProvinceWards: Ward[];
-  sourceLocationMap: SourceLocationMap;
+  fallbackWards?: Ward[];
 }): ProvinceWardMap {
-  const {
-    provinces,
-    selectedProvinceId,
-    selectedProvinceWards,
-    sourceLocationMap,
-  } = options;
+  const { provinces, selectedProvinceId, selectedProvinceWards, fallbackWards } =
+    options;
 
   return provinces.reduce<ProvinceWardMap>((acc, province) => {
-    const sourceWards = sourceLocationMap.wardMap.get(province.name) ?? [];
     const wardsForProvince =
-      selectedProvinceId === province.id ? selectedProvinceWards : sourceWards;
+      selectedProvinceId === province.id
+        ? (selectedProvinceWards.length > 0
+            ? selectedProvinceWards
+            : fallbackWards?.filter((ward) => ward.provinceId === province.id)) ??
+          []
+        : [];
 
     acc[province.name] = wardsForProvince.reduce<Record<string, string[]>>(
       (wardAcc, ward) => {
@@ -128,18 +62,16 @@ export function buildEffectiveProvinceWardMap(
 export function buildFlatUrlLocationContext(options: {
   provinces: Province[];
   selectedProvinceWards: Ward[];
-  sourceLocationMap: SourceLocationMap;
+  fallbackWards?: Ward[];
 }): FlatUrlContext {
-  const { provinces, selectedProvinceWards, sourceLocationMap } = options;
+  const { provinces, selectedProvinceWards, fallbackWards = [] } = options;
   const wardMap = new Map<string, Pick<Ward, "name" | "slug" | "provinceId">>();
 
-  sourceLocationMap.wardMap.forEach((wards) => {
-    wards.forEach((ward) => {
-      wardMap.set(`${ward.provinceId}:${ward.slug}`, {
-        name: ward.name,
-        slug: ward.slug,
-        provinceId: ward.provinceId,
-      });
+  fallbackWards.forEach((ward) => {
+    wardMap.set(`${ward.provinceId}:${ward.slug}`, {
+      name: ward.name,
+      slug: ward.slug,
+      provinceId: ward.provinceId,
     });
   });
 

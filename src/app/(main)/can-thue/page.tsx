@@ -36,7 +36,6 @@ export default async function CanThuePage() {
           <ListingFilterSection
             properties={response.data ?? []}
             listingMode="rentRequest"
-            serverDriven
             basePath="/can-thue"
             breadcrumbItems={buildPropertyFilterBreadcrumbs("/can-thue")}
             paginationMeta={response.meta}

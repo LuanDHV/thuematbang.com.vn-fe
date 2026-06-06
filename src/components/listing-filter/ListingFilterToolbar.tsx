@@ -10,9 +10,7 @@ import {
 } from "@/actions/location.actions";
 import { getPublicSearchSuggestionsAction } from "@/actions/public-search.actions";
 import { Button } from "@/components/ui/button";
-import { Property } from "@/types/property";
 import { PublicSearchSuggestion } from "@/types/public-search";
-import { RentRequest } from "@/types/rent-request";
 import { ListingFilterDrawer } from "./ListingFilterDrawer";
 import {
   AreaDetailTab,
@@ -26,7 +24,6 @@ import {
   mockFilterPropertyTypes,
 } from "@/constants/filter";
 import {
-  parseNumericInput,
   resolveAreaSummary,
   resolvePriceSummary,
   toAreaRange,
@@ -41,11 +38,10 @@ import {
   buildPropertyFilterPath,
   type FlatUrlContext,
 } from "@/lib/flat-url";
-import { normalizeVietnameseText } from "@/lib/text-normalize";
+import type { Province, Ward } from "@/types/location";
 import {
   buildFlatUrlLocationContext,
   buildProvinceWardMap,
-  buildSourceLocationMap,
   reconcileLocationFilter,
   type ProvinceWardMap,
 } from "./listing-filter-location";
@@ -53,10 +49,8 @@ import {
 type Props = {
   basePath: string;
   listingMode?: "property" | "rentRequest";
-  serverDriven?: boolean;
   initialFilters?: AdvancedFilterValue;
-  sourceProperties: Property[] | RentRequest[];
-  onFilteredChange: (items: Property[] | RentRequest[]) => void;
+  initialLocationContext?: FlatUrlContext;
 };
 
 const isSameFilterValue = (
@@ -79,10 +73,8 @@ const isSameFilterValue = (
 export default function ListingFilterToolbar({
   basePath,
   listingMode = "property",
-  serverDriven = false,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
-  sourceProperties,
-  onFilteredChange,
+  initialLocationContext,
 }: Props) {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
@@ -95,19 +87,46 @@ export default function ListingFilterToolbar({
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Server data should stay authoritative when available, but the toolbar still
-  // needs a local fallback so draft filters keep working before all lookups load.
+  // needs the initial server context so slug-derived filters stay stable before
+  // the client queries finish loading.
   const { data: provincesData = [] } = useQuery({
     queryKey: ["locations", "provinces"],
     queryFn: getProvincesAction,
     staleTime: 5 * 60 * 1000,
   });
+
+  const fallbackProvinces = useMemo<Province[]>(
+    () =>
+      (initialLocationContext?.provinces ?? []).map((province) => ({
+        id: province.id,
+        name: province.name,
+        slug: province.slug,
+      })),
+    [initialLocationContext],
+  );
+
+  const fallbackWards = useMemo<Ward[]>(
+    () =>
+      (initialLocationContext?.wards ?? []).map((ward, index) => ({
+        id: -(index + 1),
+        name: ward.name,
+        slug: ward.slug,
+        provinceId: ward.provinceId,
+      })),
+    [initialLocationContext],
+  );
+
+  const resolvedProvinces = provincesData.length
+    ? provincesData
+    : fallbackProvinces;
+
   const selectedProvinceId = useMemo(() => {
-    if (!advancedFilters.province || !provincesData.length) return null;
-    const selected = provincesData.find(
+    if (!advancedFilters.province || !resolvedProvinces.length) return null;
+    const selected = resolvedProvinces.find(
       (province) => province.name === advancedFilters.province,
     );
     return selected?.id ?? null;
-  }, [advancedFilters.province, provincesData]);
+  }, [advancedFilters.province, resolvedProvinces]);
 
   const { data: selectedProvinceWards = [] } = useQuery({
     queryKey: ["locations", "wards", selectedProvinceId],
@@ -137,44 +156,30 @@ export default function ListingFilterToolbar({
       staleTime: 30 * 1000,
     });
 
-  const sourceLocationMap = useMemo(() => {
-    return buildSourceLocationMap(sourceProperties, listingMode);
-  }, [listingMode, sourceProperties]);
-
   const provinceWardMap = useMemo<ProvinceWardMap>(() => {
-    const provinces = provincesData.length
-      ? provincesData
-      : Array.from(sourceLocationMap.provinceMap.values());
-
     return buildProvinceWardMap({
-      provinces,
+      provinces: resolvedProvinces,
       selectedProvinceId,
       selectedProvinceWards,
-      sourceLocationMap,
+      fallbackWards,
     });
   }, [
-    provincesData,
+    fallbackWards,
+    resolvedProvinces,
     selectedProvinceId,
     selectedProvinceWards,
-    sourceLocationMap,
   ]);
 
   const flatUrlContext = useMemo<FlatUrlContext>(() => {
-    const provinces = (
-      provincesData.length
-        ? provincesData
-        : Array.from(sourceLocationMap.provinceMap.values())
-    );
-
     return buildFlatUrlLocationContext({
-      provinces,
+      provinces: resolvedProvinces,
       selectedProvinceWards,
-      sourceLocationMap,
+      fallbackWards,
     });
   }, [
-    provincesData,
+    fallbackWards,
+    resolvedProvinces,
     selectedProvinceWards,
-    sourceLocationMap,
   ]);
 
   const displayTypeLabel =
@@ -219,141 +224,6 @@ export default function ListingFilterToolbar({
     router.replace(resolveSuggestionHref(suggestion), { scroll: false });
   };
 
-  // Client-side filtering is kept here so the public routes and the CMS preview
-  // can share the same filter state without routing every interaction to the API.
-  const getFilteredProperties = (activeFilters: AdvancedFilterValue) => {
-    const keywordText = normalizeVietnameseText(keyword);
-    const minPrice = parseNumericInput(activeFilters.priceMin || "");
-    const maxPrice = parseNumericInput(activeFilters.priceMax || "");
-    const minArea = Number(activeFilters.areaMin || 0);
-    const maxArea = Number(activeFilters.areaMax || 0);
-
-    const filtered =
-      listingMode === "rentRequest"
-        ? (sourceProperties as RentRequest[]).filter((request) => {
-            const categoryName = request.category?.name ?? "";
-            const provinceName = request.desiredProvince?.name ?? "";
-            const wardName = request.desiredWard?.name ?? "";
-            const streetName = request.desiredStreet?.name ?? "";
-            const haystack = normalizeVietnameseText(
-              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
-            );
-
-            if (keywordText && !haystack.includes(keywordText)) return false;
-
-            if (activeFilters.propertyTypes.length > 0) {
-              const normalizedCategory = normalizeVietnameseText(categoryName);
-              const matched = activeFilters.propertyTypes.some(
-                (type) => normalizedCategory === normalizeVietnameseText(type),
-              );
-              if (!matched) return false;
-            }
-
-            const requestMinBudget = Number(request.minBudget || 0);
-            const requestMaxBudget = Number(request.maxBudget || 0);
-            if (
-              minPrice > 0 &&
-              requestMaxBudget > 0 &&
-              requestMaxBudget < minPrice
-            )
-              return false;
-            if (maxPrice > 0 && requestMinBudget > maxPrice) return false;
-
-            const requestMinArea = request.minArea ?? 0;
-            const requestMaxArea = request.maxArea ?? 0;
-            if (minArea > 0 && requestMaxArea > 0 && requestMaxArea < minArea)
-              return false;
-            if (maxArea > 0 && requestMinArea > maxArea) return false;
-
-            if (
-              activeFilters.province &&
-              request.desiredProvince?.name !== activeFilters.province
-            )
-              return false;
-            if (
-              activeFilters.ward &&
-              request.desiredWard?.name !== activeFilters.ward
-            )
-              return false;
-
-            if (activeFilters.directions.length > 0) {
-              const direction = (request.preferredDirection ?? "")
-                .toString()
-                .toUpperCase();
-              if (!activeFilters.directions.includes(direction)) return false;
-            }
-
-            return true;
-          })
-        : (sourceProperties as Property[]).filter((property) => {
-            const categoryName = property.category?.name ?? "";
-            const provinceName = property.province?.name ?? "";
-            const wardName = property.ward?.name ?? "";
-            const streetName = property.street?.name ?? "";
-            const haystack = normalizeVietnameseText(
-              `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
-            );
-
-            if (keywordText && !haystack.includes(keywordText)) return false;
-
-            if (activeFilters.propertyTypes.length > 0) {
-              const normalizedCategory = normalizeVietnameseText(categoryName);
-              const matched = activeFilters.propertyTypes.some(
-                (type) => normalizedCategory === normalizeVietnameseText(type),
-              );
-              if (!matched) return false;
-            }
-
-            const priceValue = Number(property.price || 0);
-            if (minPrice > 0 && priceValue < minPrice) return false;
-            if (maxPrice > 0 && priceValue > maxPrice) return false;
-
-            const areaValue = property.area ?? 0;
-            if (minArea > 0 && areaValue < minArea) return false;
-            if (maxArea > 0 && areaValue > maxArea) return false;
-
-            if (
-              activeFilters.province &&
-              property.province?.name !== activeFilters.province
-            )
-              return false;
-            if (
-              activeFilters.ward &&
-              property.ward?.name !== activeFilters.ward
-            )
-              return false;
-
-            if (activeFilters.bedrooms.length > 0) {
-              const bedMatched = activeFilters.bedrooms.some((item) => {
-                if (item === "5+") return (property.bedrooms ?? 0) >= 5;
-                return String(property.bedrooms ?? 0) === item;
-              });
-              if (!bedMatched) return false;
-            }
-
-            if (activeFilters.bathrooms.length > 0) {
-              const bathMatched = activeFilters.bathrooms.some((item) => {
-                if (item === "5+") return (property.bathrooms ?? 0) >= 5;
-                return String(property.bathrooms ?? 0) === item;
-              });
-              if (!bathMatched) return false;
-            }
-
-            if (activeFilters.directions.length > 0) {
-              const direction = (property.direction ?? "")
-                .toString()
-                .toUpperCase();
-              if (!activeFilters.directions.includes(direction)) return false;
-            }
-
-            if (activeFilters.negotiable && !property.isNegotiable)
-              return false;
-            return true;
-          });
-
-    return filtered;
-  };
-
   // All URL sync goes through the same builder so pagination, breadcrumbs, and
   // autocomplete links remain aligned with the flat-url contract.
   const runFilter = (
@@ -362,9 +232,6 @@ export default function ListingFilterToolbar({
   ) => {
     const activeFilters = nextFilters ?? advancedFilters;
     const nextBasePath = options?.targetBasePath ?? basePath;
-    if (!serverDriven) {
-      onFilteredChange(getFilteredProperties(activeFilters));
-    }
 
     if (options?.syncUrl !== false) {
       router.replace(
@@ -382,9 +249,6 @@ export default function ListingFilterToolbar({
   const resetAll = () => {
     setKeyword("");
     setAdvancedFilters(INITIAL_ADVANCED_FILTER_VALUE);
-    if (!serverDriven) {
-      onFilteredChange(sourceProperties);
-    }
     router.replace(buildPagedPath(basePath, 1), { scroll: false });
   };
 
@@ -404,11 +268,7 @@ export default function ListingFilterToolbar({
         isSameFilterValue(prev, nextFilters) ? prev : nextFilters,
       );
     });
-
-    if (serverDriven) return;
-    onFilteredChange(getFilteredProperties(nextFilters));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialFilters, provinceWardMap, serverDriven, sourceProperties]);
+  }, [initialFilters, provinceWardMap]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {

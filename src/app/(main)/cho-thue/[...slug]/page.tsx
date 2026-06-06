@@ -26,14 +26,11 @@ type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-type LocationContext = {
-  provinces: { id: number; name: string; slug: string }[];
-  wards: { name: string; slug: string; provinceId: number }[];
-};
-
 function buildLocationContextFromProperties(
   properties: Property[],
-): LocationContext {
+): Awaited<
+  ReturnType<typeof locationService.resolvePropertyFilterLocationContext>
+> {
   const provinces = Array.from(
     new Map(
       properties
@@ -94,33 +91,6 @@ async function resolvePropertyIfDetailSlug(rawSlug?: string) {
     return null;
   }
 }
-
-const resolveLocationContext = cache(async (): Promise<LocationContext> => {
-  try {
-    const provinces = await locationService.getProvinces();
-
-    const wardsByProvince = await Promise.all(
-      provinces.map((province) =>
-        locationService.getWards({ provinceId: province.id }),
-      ),
-    );
-
-    return {
-      provinces: provinces.map((item) => ({
-        id: item.id,
-        name: item.name,
-        slug: item.slug,
-      })),
-      wards: wardsByProvince.flat().map((item) => ({
-        name: item.name,
-        slug: item.slug,
-        provinceId: item.provinceId,
-      })),
-    };
-  } catch {
-    return { provinces: [], wards: [] };
-  }
-});
 
 export async function generateMetadata({
   params,
@@ -258,8 +228,8 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     );
   }
 
-  const locationContext = await resolveLocationContext();
-  const initialFilters = parsePropertyFilterSlug(rawSlug, locationContext);
+  const locationContext =
+    await locationService.resolvePropertyFilterLocationContext(rawSlug);
 
   const listFetcher = rawSlug
     ? propertyService.getAllByFlatSlug({
@@ -282,23 +252,32 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           const fallbackLocationContext =
             buildLocationContextFromProperties(properties);
 
-          const breadcrumbLocationContext =
-            locationContext.provinces.length || locationContext.wards.length
-              ? locationContext
-              : fallbackLocationContext;
+          const resolvedLocationContext = {
+            provinces: locationContext.provinces.length
+              ? locationContext.provinces
+              : fallbackLocationContext.provinces,
+            wards: locationContext.wards.length
+              ? locationContext.wards
+              : fallbackLocationContext.wards,
+          };
+
+          const initialFilters = parsePropertyFilterSlug(
+            rawSlug,
+            resolvedLocationContext,
+          );
 
           return (
             <ListingFilterSection
               properties={properties}
               listingMode="property"
-              serverDriven
               basePath="/cho-thue"
               paginationBasePath={paginationBasePath}
               initialFilters={initialFilters}
+              initialLocationContext={resolvedLocationContext}
               breadcrumbItems={buildPropertyFilterBreadcrumbs(
                 "/cho-thue",
                 rawSlug,
-                breadcrumbLocationContext,
+                resolvedLocationContext,
               )}
               paginationMeta={response.meta}
             />

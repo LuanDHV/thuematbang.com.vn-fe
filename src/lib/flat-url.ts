@@ -3,10 +3,7 @@ import {
   DIRECTION_OPTIONS,
   FILTER_LIMITS,
 } from "@/constants/filter";
-import {
-  compactSlugToken,
-  humanizeSlugToken,
-} from "@/lib/text-normalize";
+import { compactSlugToken, humanizeSlugToken } from "@/lib/text-normalize";
 import { Category } from "@/types/category";
 import {
   AdvancedFilterValue,
@@ -268,8 +265,7 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
       );
 
       return Boolean(wardProvince);
-    })?.name ??
-    humanizeSlugToken(wardSlug);
+    })?.name ?? humanizeSlugToken(wardSlug);
 
   return {
     pending: removeMatchedSuffix(pending, locationMatch[0]),
@@ -453,6 +449,48 @@ export function buildPropertyFilterPathFromRouteParts(
   }
 
   return `${basePath}/${tokens.join("-")}`;
+}
+
+// Extract category and location route parts without expanding the full filter state.
+export function extractPropertyFilterRouteParts(
+  rawSlug?: string,
+): FlatUrlRouteParts {
+  if (!rawSlug) {
+    return {};
+  }
+
+  const slug = compactSlugToken(rawSlug);
+  const locationMatch = slug.match(
+    new RegExp(`${LOCATION_TOKEN_PREFIX}[a-z0-9-]+$`),
+  );
+
+  let pending = slug;
+  let provinceSlug: string | undefined;
+  let wardSlug: string | undefined;
+
+  if (locationMatch?.[0]) {
+    pending = removeMatchedSuffix(slug, locationMatch[0]);
+    const locationRaw = locationMatch[0].replace(LOCATION_TOKEN_PREFIX, "");
+    const wardMarker = `-${LOCATION_WARD_PREFIX}`;
+
+    if (locationRaw.startsWith(LOCATION_PROVINCE_PREFIX)) {
+      const afterProvince = locationRaw.slice(LOCATION_PROVINCE_PREFIX.length);
+      const wardIndex = afterProvince.indexOf(wardMarker);
+
+      if (wardIndex >= 0) {
+        provinceSlug = afterProvince.slice(0, wardIndex);
+        wardSlug = afterProvince.slice(wardIndex + wardMarker.length);
+      } else {
+        provinceSlug = afterProvince;
+      }
+    }
+  }
+
+  return {
+    categorySlug: (CATEGORY_TOKEN_TO_SLUG.get(pending) ?? pending) || undefined,
+    provinceSlug,
+    wardSlug,
+  };
 }
 
 // Parsing removes recognized suffix tokens in reverse order so the remaining

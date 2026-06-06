@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
 import ListingFilterToolbar from "./ListingFilterToolbar";
@@ -9,16 +8,16 @@ import {
   type AdvancedFilterValue,
   INITIAL_ADVANCED_FILTER_VALUE,
 } from "@/types/filter";
-import type { BreadcrumbItem } from "@/lib/flat-url";
+import type { BreadcrumbItem, FlatUrlContext } from "@/lib/flat-url";
 import { PaginationMeta } from "@/types/api";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
 
 type Props = {
   properties: Property[] | RentRequest[];
   listingMode?: "property" | "rentRequest";
-  serverDriven?: boolean;
   basePath: string;
   initialFilters?: AdvancedFilterValue;
+  initialLocationContext?: FlatUrlContext;
   breadcrumbItems?: BreadcrumbItem[];
   paginationMeta?: PaginationMeta;
   paginationBasePath?: string;
@@ -27,16 +26,13 @@ type Props = {
 export default function ListingFilterSection({
   properties,
   listingMode = "property",
-  serverDriven = false,
   basePath,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
+  initialLocationContext,
   breadcrumbItems,
   paginationMeta,
   paginationBasePath,
 }: Props) {
-  const [filteredProperties, setFilteredProperties] = useState<
-    Property[] | RentRequest[]
-  >(properties);
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
   return (
@@ -45,14 +41,12 @@ export default function ListingFilterSection({
         <ListingFilterToolbar
           basePath={basePath}
           listingMode={listingMode}
-          serverDriven={serverDriven}
           initialFilters={initialFilters}
-          sourceProperties={properties}
-          onFilteredChange={setFilteredProperties}
+          initialLocationContext={initialLocationContext}
         />
       </div>
       <ListingResultsClient
-        properties={serverDriven ? properties : filteredProperties}
+        properties={properties}
         listingMode={listingMode}
         breadcrumbItems={breadcrumbItems}
         paginationMeta={resolvedPaginationMeta}
