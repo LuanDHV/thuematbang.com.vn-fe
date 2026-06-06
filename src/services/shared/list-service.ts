@@ -6,6 +6,7 @@ export type ListParams<TFilters extends Record<string, QueryValue>> = {
   limit?: number;
 };
 
+// Append only meaningful query values so empty filter fields do not leak into the URL.
 export function appendQuery(
   query: URLSearchParams,
   values?: Record<string, QueryValue>,
@@ -17,6 +18,7 @@ export function appendQuery(
   }
 }
 
+// Build the canonical list endpoint path with optional filters and pagination.
 export function buildListPath<TFilters extends Record<string, QueryValue>>(
   basePath: string,
   params: ListParams<TFilters> = {},
@@ -30,6 +32,7 @@ export function buildListPath<TFilters extends Record<string, QueryValue>>(
   return queryText ? `${basePath}?${queryText}` : basePath;
 }
 
+// Build a list endpoint path whose primary filter is encoded in the path itself.
 export function buildScopedListPath<TFilters extends Record<string, QueryValue>>(
   basePath: string,
   scopeValue: string,
@@ -44,6 +47,7 @@ export function buildScopedListPath<TFilters extends Record<string, QueryValue>>
   return queryText ? `${scopedBase}?${queryText}` : scopedBase;
 }
 
+// Generate stable cache tags for list reads so invalidation can target one slice.
 export function buildListTags(
   resource: string,
   options?: {

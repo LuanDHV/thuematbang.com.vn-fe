@@ -41,7 +41,14 @@ import {
   buildPropertyFilterPath,
   type FlatUrlContext,
 } from "@/lib/flat-url";
-import { Province, Ward } from "@/types/location";
+import { normalizeVietnameseText } from "@/lib/text-normalize";
+import {
+  buildFlatUrlLocationContext,
+  buildProvinceWardMap,
+  buildSourceLocationMap,
+  reconcileLocationFilter,
+  type ProvinceWardMap,
+} from "./listing-filter-location";
 
 type Props = {
   basePath: string;
@@ -50,46 +57,6 @@ type Props = {
   initialFilters?: AdvancedFilterValue;
   sourceProperties: Property[] | RentRequest[];
   onFilteredChange: (items: Property[] | RentRequest[]) => void;
-};
-
-const normalize = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
-
-const reconcileLocationFilter = (
-  value: AdvancedFilterValue,
-  provinceWardMap: Record<string, Record<string, string[]>>,
-): AdvancedFilterValue => {
-  const provinceEntries = Object.keys(provinceWardMap);
-  if (!provinceEntries.length) return value;
-
-  const matchedProvince =
-    provinceEntries.find(
-      (province) => normalize(province) === normalize(value.province),
-    ) ?? "";
-
-  if (!matchedProvince) {
-    return {
-      ...value,
-      province: "",
-      ward: "",
-      street: "",
-    };
-  }
-
-  const wardEntries = Object.keys(provinceWardMap[matchedProvince] ?? {});
-  const matchedWard =
-    wardEntries.find((ward) => normalize(ward) === normalize(value.ward)) ?? "";
-
-  return {
-    ...value,
-    province: matchedProvince,
-    ward: matchedWard,
-    street: matchedWard ? value.street : "",
-  };
 };
 
 const isSameFilterValue = (
@@ -127,6 +94,8 @@ export default function ListingFilterToolbar({
   const lastSyncedInitialFiltersRef = useRef<AdvancedFilterValue | null>(null);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Server data should stay authoritative when available, but the toolbar still
+  // needs a local fallback so draft filters keep working before all lookups load.
   const { data: provincesData = [] } = useQuery({
     queryKey: ["locations", "provinces"],
     queryFn: getProvincesAction,
@@ -169,77 +138,25 @@ export default function ListingFilterToolbar({
     });
 
   const sourceLocationMap = useMemo(() => {
-    const provinceMap = new Map<string, Province>();
-    const wardMap = new Map<string, Ward[]>();
-
-    for (const item of sourceProperties) {
-      const province =
-        listingMode === "rentRequest"
-          ? (item as RentRequest).desiredProvince
-          : (item as Property).province;
-      const ward =
-        listingMode === "rentRequest"
-          ? (item as RentRequest).desiredWard
-          : (item as Property).ward;
-
-      if (province?.name && !provinceMap.has(province.name)) {
-        provinceMap.set(province.name, {
-          id: province.id,
-          name: province.name,
-          slug: province.slug,
-        });
-      }
-      if (province?.name && ward?.name) {
-        const existing = wardMap.get(province.name) ?? [];
-        if (!existing.some((x) => x.name === ward.name)) {
-          existing.push({
-            id: ward.id,
-            provinceId: ward.provinceId,
-            name: ward.name,
-            slug: ward.slug,
-          });
-          wardMap.set(province.name, existing);
-        }
-      }
-    }
-
-    return { provinceMap, wardMap };
+    return buildSourceLocationMap(sourceProperties, listingMode);
   }, [listingMode, sourceProperties]);
 
-  const provinceWardMap = useMemo<
-    Record<string, Record<string, string[]>>
-  >(() => {
+  const provinceWardMap = useMemo<ProvinceWardMap>(() => {
     const provinces = provincesData.length
       ? provincesData
       : Array.from(sourceLocationMap.provinceMap.values());
-    const sourceWardsByProvince = sourceLocationMap.wardMap;
 
-    return provinces.reduce<Record<string, Record<string, string[]>>>(
-      (acc, province) => {
-        const sourceWards = sourceWardsByProvince.get(province.name) ?? [];
-        const wardsForProvince =
-          selectedProvinceId === province.id
-            ? selectedProvinceWards
-            : sourceWards;
-
-        acc[province.name] = wardsForProvince.reduce<Record<string, string[]>>(
-          (wardAcc, ward) => {
-            wardAcc[ward.name] = [];
-            return wardAcc;
-          },
-          {},
-        );
-
-        return acc;
-      },
-      {},
-    );
+    return buildProvinceWardMap({
+      provinces,
+      selectedProvinceId,
+      selectedProvinceWards,
+      sourceLocationMap,
+    });
   }, [
     provincesData,
     selectedProvinceId,
     selectedProvinceWards,
-    sourceLocationMap.provinceMap,
-    sourceLocationMap.wardMap,
+    sourceLocationMap,
   ]);
 
   const flatUrlContext = useMemo<FlatUrlContext>(() => {
@@ -247,44 +164,17 @@ export default function ListingFilterToolbar({
       provincesData.length
         ? provincesData
         : Array.from(sourceLocationMap.provinceMap.values())
-    ).map((province) => ({
-      id: province.id,
-      name: province.name,
-      slug: province.slug,
-    }));
+    );
 
-    const wardMap = new Map<
-      string,
-      Pick<Ward, "name" | "slug" | "provinceId">
-    >();
-
-    sourceLocationMap.wardMap.forEach((wards) => {
-      wards.forEach((ward) => {
-        wardMap.set(`${ward.provinceId}:${ward.slug}`, {
-          name: ward.name,
-          slug: ward.slug,
-          provinceId: ward.provinceId,
-        });
-      });
-    });
-
-    selectedProvinceWards.forEach((ward) => {
-      wardMap.set(`${ward.provinceId}:${ward.slug}`, {
-        name: ward.name,
-        slug: ward.slug,
-        provinceId: ward.provinceId,
-      });
-    });
-
-    return {
+    return buildFlatUrlLocationContext({
       provinces,
-      wards: Array.from(wardMap.values()),
-    };
+      selectedProvinceWards,
+      sourceLocationMap,
+    });
   }, [
     provincesData,
     selectedProvinceWards,
-    sourceLocationMap.provinceMap,
-    sourceLocationMap.wardMap,
+    sourceLocationMap,
   ]);
 
   const displayTypeLabel =
@@ -329,8 +219,10 @@ export default function ListingFilterToolbar({
     router.replace(resolveSuggestionHref(suggestion), { scroll: false });
   };
 
+  // Client-side filtering is kept here so the public routes and the CMS preview
+  // can share the same filter state without routing every interaction to the API.
   const getFilteredProperties = (activeFilters: AdvancedFilterValue) => {
-    const keywordText = normalize(keyword);
+    const keywordText = normalizeVietnameseText(keyword);
     const minPrice = parseNumericInput(activeFilters.priceMin || "");
     const maxPrice = parseNumericInput(activeFilters.priceMax || "");
     const minArea = Number(activeFilters.areaMin || 0);
@@ -343,16 +235,16 @@ export default function ListingFilterToolbar({
             const provinceName = request.desiredProvince?.name ?? "";
             const wardName = request.desiredWard?.name ?? "";
             const streetName = request.desiredStreet?.name ?? "";
-            const haystack = normalize(
+            const haystack = normalizeVietnameseText(
               `${request.title} ${request.requirementText ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
             );
 
             if (keywordText && !haystack.includes(keywordText)) return false;
 
             if (activeFilters.propertyTypes.length > 0) {
-              const normalizedCategory = normalize(categoryName);
+              const normalizedCategory = normalizeVietnameseText(categoryName);
               const matched = activeFilters.propertyTypes.some(
-                (type) => normalizedCategory === normalize(type),
+                (type) => normalizedCategory === normalizeVietnameseText(type),
               );
               if (!matched) return false;
             }
@@ -398,16 +290,16 @@ export default function ListingFilterToolbar({
             const provinceName = property.province?.name ?? "";
             const wardName = property.ward?.name ?? "";
             const streetName = property.street?.name ?? "";
-            const haystack = normalize(
+            const haystack = normalizeVietnameseText(
               `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
             );
 
             if (keywordText && !haystack.includes(keywordText)) return false;
 
             if (activeFilters.propertyTypes.length > 0) {
-              const normalizedCategory = normalize(categoryName);
+              const normalizedCategory = normalizeVietnameseText(categoryName);
               const matched = activeFilters.propertyTypes.some(
-                (type) => normalizedCategory === normalize(type),
+                (type) => normalizedCategory === normalizeVietnameseText(type),
               );
               if (!matched) return false;
             }
@@ -462,6 +354,8 @@ export default function ListingFilterToolbar({
     return filtered;
   };
 
+  // All URL sync goes through the same builder so pagination, breadcrumbs, and
+  // autocomplete links remain aligned with the flat-url contract.
   const runFilter = (
     nextFilters?: AdvancedFilterValue,
     options?: { syncUrl?: boolean; targetBasePath?: string },

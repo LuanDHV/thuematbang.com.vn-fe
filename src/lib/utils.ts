@@ -15,6 +15,8 @@ const DEFAULT_VND_CURRENCY_FORMAT: Intl.NumberFormatOptions = {
   currency: "VND",
 };
 
+// Formatter instances are cached because these helpers are called heavily across
+// cards, tables, and detail screens.
 const dateFormatterCache = new Map<string, Intl.DateTimeFormat>();
 const numberFormatterCache = new Map<string, Intl.NumberFormat>();
 
@@ -24,12 +26,14 @@ type RangeOptions = {
   upperBoundPrefix?: string;
 };
 
+// Merge conditional class names while preserving Tailwind override order.
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 type NumericLike = bigint | number | string;
 
+// Normalize loose backend values once so the public formatters can stay small.
 function toNumber(value?: NumericLike | null) {
   if (typeof value === "bigint") {
     return Number(value);
@@ -50,10 +54,12 @@ function toNumber(value?: NumericLike | null) {
   return undefined;
 }
 
+// Guard formatter inputs so range and currency helpers can share one predicate.
 function hasNumber(value?: number | null): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+// Reuse locale date formatters instead of recreating them in every render path.
 function getDateFormatter(options?: Intl.DateTimeFormatOptions) {
   const cacheKey = JSON.stringify(options ?? {});
   const cachedFormatter = dateFormatterCache.get(cacheKey);
@@ -67,6 +73,7 @@ function getDateFormatter(options?: Intl.DateTimeFormatOptions) {
   return formatter;
 }
 
+// Reuse locale number formatters for prices, metrics, and table values.
 function getNumberFormatter(options?: Intl.NumberFormatOptions) {
   const cacheKey = JSON.stringify(options ?? {});
   const cachedFormatter = numberFormatterCache.get(cacheKey);
@@ -80,6 +87,7 @@ function getNumberFormatter(options?: Intl.NumberFormatOptions) {
   return formatter;
 }
 
+// Accept either Date objects or backend date strings and reject invalid values.
 function toValidDate(value?: Date | string | null) {
   if (!value) {
     return null;
@@ -89,6 +97,7 @@ function toValidDate(value?: Date | string | null) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+// Centralize date formatting so public helpers only choose the desired flavor.
 function formatDateValue(
   value: Date | string | null | undefined,
   formatterOptions?: Intl.DateTimeFormatOptions,
@@ -102,6 +111,7 @@ function formatDateValue(
   return getDateFormatter(formatterOptions).format(date);
 }
 
+// Centralize number formatting so public helpers only choose labels and fallback rules.
 function formatNumberValue(
   value: number | null | undefined,
   formatterOptions?: Intl.NumberFormatOptions,
@@ -113,11 +123,13 @@ function formatNumberValue(
   return getNumberFormatter(formatterOptions).format(value);
 }
 
+// Render a numeric VND value without currency decimals for compact UI labels.
 function formatVndNumber(value: number) {
   const formatted = formatNumberValue(value, DEFAULT_VND_NUMBER_FORMAT);
   return formatted ? `${formatted} đ` : "";
 }
 
+// Share one range formatter for both money and area display helpers.
 function formatRange(
   min: number | null | undefined,
   max: number | null | undefined,
@@ -141,16 +153,19 @@ function formatRange(
   return `${upperBoundPrefix} ${unitFormatter(max as number)}`;
 }
 
+// Normalize URLSearchParams-like inputs before pagination helpers consume them.
 function serializeSearch(search: string | { toString(): string }) {
   return typeof search === "string" ? search : search.toString();
 }
 
+// Format one price using the locale currency formatter and the shared numeric normalizer.
 export function formatPrice(price: NumericLike) {
   return getNumberFormatter(DEFAULT_VND_CURRENCY_FORMAT).format(
     toNumber(price) ?? 0,
   );
 }
 
+// Format any numeric-like value with an optional locale override and fallback.
 export function formatNumber(
   value?: NumericLike | null,
   options: {
@@ -171,6 +186,7 @@ export function formatDate(date?: Date | string | null, fallback = "Vừa đăng
   return formatDateValue(date, undefined, fallback);
 }
 
+// Format a date for detail or metadata views with a fixed day-month-year shape.
 export function formatDateDisplay(
   date?: Date | string | null,
   fallback = "Chưa cập nhật",
@@ -178,6 +194,7 @@ export function formatDateDisplay(
   return formatDateValue(date, DEFAULT_DAY_MONTH_YEAR_FORMAT, fallback);
 }
 
+// Format table dates while still allowing table-specific display overrides.
 export function formatTableDate(
   value?: Date | string | null,
   options: {
@@ -194,6 +211,7 @@ export function formatTableDate(
   );
 }
 
+// Format numeric cells without forcing a fallback string into table layouts.
 export function formatTableNumber(
   value?: number | null,
   options: {
@@ -203,6 +221,7 @@ export function formatTableNumber(
   return formatNumberValue(value, options.numberFormatOptions);
 }
 
+// Format a plain VND amount and fall back when the backend has no usable value.
 export function formatVndAmount(
   value?: NumericLike | null,
   fallback = "Chưa cập nhật",
@@ -213,6 +232,7 @@ export function formatVndAmount(
     : fallback;
 }
 
+// Prefer the negotiable label when the listing explicitly marks price as flexible.
 export function formatNegotiablePrice(
   value?: NumericLike | null,
   isNegotiable = false,
@@ -228,6 +248,7 @@ export function formatNegotiablePrice(
   return formatVndAmount(value, options?.fallback);
 }
 
+// Format a budget range using the same shared range semantics as listing summaries.
 export function formatBudgetRange(
   min?: NumericLike | null,
   max?: NumericLike | null,
@@ -240,6 +261,7 @@ export function formatBudgetRange(
   });
 }
 
+// Format an area range while preserving the same fallback semantics across screens.
 export function formatAreaRange(
   min?: NumericLike | null,
   max?: NumericLike | null,
@@ -252,6 +274,7 @@ export function formatAreaRange(
   });
 }
 
+// Format one area value for cards and detail metadata rows.
 export function formatAreaValue(
   value?: NumericLike | null,
   fallback = "Đang cập nhật",
@@ -262,6 +285,7 @@ export function formatAreaValue(
     : fallback;
 }
 
+// Turn enum-like underscore strings into readable text labels.
 export function formatTextSource(value: string) {
   return value
     .split("_")
@@ -270,6 +294,7 @@ export function formatTextSource(value: string) {
     .join(" ");
 }
 
+// Join location parts while automatically dropping empty segments from the backend.
 export function formatLocationParts(
   parts: Array<string | null | undefined>,
   fallback = "Chưa cập nhật",
@@ -283,6 +308,9 @@ export function formatLocationParts(
     : fallback;
 }
 
+// Pagination helpers stay in this file for now, but they are intentionally kept
+// separate from display formatting so more navigation logic does not accumulate
+// in the formatter section above.
 export function buildPaginationUrl(
   pathname: string,
   search: string,
@@ -300,6 +328,7 @@ export function buildPaginationUrl(
   return query ? `${pathname}?${query}` : pathname;
 }
 
+// Return a bounded page-change callback for CMS tables and paginated list views.
 export function createPaginationChangeHandler(
   navigate: (href: string) => void,
   pathname: string,

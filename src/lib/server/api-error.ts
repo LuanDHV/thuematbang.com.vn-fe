@@ -30,6 +30,7 @@ type CreateApiErrorResponseInput = {
   details?: unknown;
 };
 
+// Map HTTP status codes into the FE error codes used by route handlers.
 function mapStatusToCode(statusCode: number): ApiErrorCode {
   switch (statusCode) {
     case 400:
@@ -51,10 +52,12 @@ function mapStatusToCode(statusCode: number): ApiErrorCode {
   }
 }
 
+// Mark errors as retryable only when a follow-up attempt could realistically succeed.
 function isRetryable(statusCode: number) {
   return statusCode === 429 || statusCode >= 500;
 }
 
+// Extract the most useful human-readable message from heterogeneous backend payloads.
 export function extractErrorMessage(payload: unknown) {
   if (!payload) return undefined;
   if (typeof payload === "string") return payload;
@@ -81,6 +84,7 @@ export function extractErrorMessage(payload: unknown) {
   return undefined;
 }
 
+// Build the normalized API error envelope returned by FE route handlers.
 export function createApiErrorResponse({
   statusCode,
   message,
@@ -101,6 +105,7 @@ export function createApiErrorResponse({
   return NextResponse.json(payload, { status: statusCode });
 }
 
+// Convert one backend failure into the normalized FE error response shape.
 export function createBackendErrorResponse(
   statusCode: number,
   backendPayload: unknown,
@@ -114,6 +119,7 @@ export function createBackendErrorResponse(
   });
 }
 
+// Build a normalized response for transport-level connection failures.
 export function createConnectionErrorResponse(details?: unknown) {
   return createApiErrorResponse({
     statusCode: 500,

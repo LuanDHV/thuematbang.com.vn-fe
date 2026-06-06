@@ -7,7 +7,7 @@ type ListEnvelope<T> = {
   meta?: PaginationMeta;
 };
 
-// Safely extract or validate array from API response
+// Safely extract an array from either a raw list payload or a common list envelope.
 export function ensureArray<T>(value: unknown, label: string): T[] {
   if (Array.isArray(value)) {
     return value as T[];
@@ -22,7 +22,7 @@ export function ensureArray<T>(value: unknown, label: string): T[] {
   throw new Error(`Invalid ${label} response: expected array/items/data array`);
 }
 
-// Normalize different backend pagination formats into a standard meta object
+// Normalize legacy and current backend pagination shapes into the shared FE meta format.
 export function normalizePaginationMeta(
   input?: PaginationMeta | BackendPagination | null,
 ): PaginationMeta | undefined {

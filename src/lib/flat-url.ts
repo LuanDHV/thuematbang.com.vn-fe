@@ -3,6 +3,10 @@ import {
   DIRECTION_OPTIONS,
   FILTER_LIMITS,
 } from "@/constants/filter";
+import {
+  compactSlugToken,
+  humanizeSlugToken,
+} from "@/lib/text-normalize";
 import { Category } from "@/types/category";
 import {
   AdvancedFilterValue,
@@ -29,6 +33,7 @@ export type FlatUrlRouteParts = {
   wardSlug?: string;
 };
 
+// Keep these prefixes centralized so parsing and building stay symmetrical.
 const PAGE_SEGMENT_REGEX = /^p([1-9]\d*)$/i;
 
 const AREA_TOKEN_PREFIX = "dien-tich-";
@@ -66,27 +71,8 @@ const CATEGORY_SLUG_TO_LABEL = new Map<string, string>([
   ["nha-tro-phong-tro", "Nhà Trọ, Phòng Trọ"],
 ]);
 
-const normalize = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
-
-const compact = (value: string) =>
-  normalize(value)
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-function humanizeSlug(slug: string) {
-  if (!slug) return "";
-  return slug
-    .split("-")
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
+// Token builders must stay lightweight because both listing routes and suggestion
+// navigation depend on the same slug contract.
 function millionsLabel(value: number) {
   if (value >= 1000) {
     const ty = value / 1000;
@@ -97,6 +83,7 @@ function millionsLabel(value: number) {
   return `${value}-trieu`;
 }
 
+// Build the price segment used by the flat listing URL contract.
 function buildPriceToken(
   priceMin: string,
   priceMax: string,
@@ -111,6 +98,7 @@ function buildPriceToken(
   return `${PRICE_TOKEN_PREFIX}${millionsLabel(min)}-${millionsLabel(max)}`;
 }
 
+// Build the area segment used by the flat listing URL contract.
 function buildAreaToken(areaMin: string, areaMax: string) {
   const min = Number(areaMin || 0);
   const max = Number(areaMax || 0);
@@ -120,17 +108,19 @@ function buildAreaToken(areaMin: string, areaMax: string) {
   return `${AREA_TOKEN_PREFIX}${min}-${max}m2`;
 }
 
+// Resolve province and ward labels into the canonical location token for the URL.
 function buildLocationToken(
   province: string,
   ward: string,
   context?: FlatUrlContext,
 ) {
-  const provinceValue = compact(province);
+  const provinceValue = compactSlugToken(province);
   const matchedProvince = province
     ? context?.provinces?.find(
         (provinceItem) =>
-          compact(provinceItem.name) === provinceValue ||
-          compact(provinceItem.slug).replace(/^tp-/, "") === provinceValue,
+          compactSlugToken(provinceItem.name) === provinceValue ||
+          compactSlugToken(provinceItem.slug).replace(/^tp-/, "") ===
+            provinceValue,
       )
     : undefined;
   const provinceSlugRaw = matchedProvince?.slug ?? provinceValue;
@@ -138,12 +128,12 @@ function buildLocationToken(
   const provincePart = provinceSlug
     ? `${LOCATION_PROVINCE_PREFIX}${provinceSlug}`
     : "";
-  const wardValue = compact(ward);
+  const wardValue = compactSlugToken(ward);
   const matchedWard = ward
     ? context?.wards?.find(
         (wardItem) =>
-          (compact(wardItem.name) === wardValue ||
-            compact(wardItem.slug) === wardValue) &&
+          (compactSlugToken(wardItem.name) === wardValue ||
+            compactSlugToken(wardItem.slug) === wardValue) &&
           (!matchedProvince || wardItem.provinceId === matchedProvince.id),
       )
     : undefined;
@@ -154,6 +144,7 @@ function buildLocationToken(
   return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
 }
 
+// Rebuild the location token directly from parsed route parts when suggestions supply them.
 function buildLocationTokenFromRouteParts(routeParts: FlatUrlRouteParts) {
   if (!routeParts.provinceSlug) return "";
 
@@ -165,29 +156,35 @@ function buildLocationTokenFromRouteParts(routeParts: FlatUrlRouteParts) {
   return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
 }
 
+// Normalize bedroom and bathroom values into the slug format used by the route.
 function bedBathValueToSlug(value: string) {
-  return value === "5+" ? "5-plus" : compact(value);
+  return value === "5+" ? "5-plus" : compactSlugToken(value);
 }
 
+// Convert slug values back into the UI format expected by the filter state.
 function bedBathSlugToValue(value: string) {
   return value === "5-plus" ? "5+" : value;
 }
 
+// Build the bedroom token when the filter has a selected value.
 function buildBedroomToken(values: string[]) {
   if (!values.length) return "";
   return `${BEDROOM_TOKEN_PREFIX}${bedBathValueToSlug(values[0])}`;
 }
 
+// Build the bathroom token when the filter has a selected value.
 function buildBathroomToken(values: string[]) {
   if (!values.length) return "";
   return `${BATHROOM_TOKEN_PREFIX}${bedBathValueToSlug(values[0])}`;
 }
 
+// Build the direction token from the selected filter option id.
 function buildDirectionToken(values: string[]) {
   if (!values.length) return "";
-  return `${DIRECTION_TOKEN_PREFIX}${compact(values[0].replaceAll("_", "-"))}`;
+  return `${DIRECTION_TOKEN_PREFIX}${compactSlugToken(values[0].replaceAll("_", "-"))}`;
 }
 
+// Remove one parsed token from the pending slug without disturbing earlier tokens.
 function removeMatchedSuffix(value: string, token: string) {
   if (value === token) return "";
   if (value.endsWith(`-${token}`)) {
@@ -196,6 +193,7 @@ function removeMatchedSuffix(value: string, token: string) {
   return value;
 }
 
+// Parse one trailing token that maps to a single filter value.
 function parseSingleListToken(
   pending: string,
   prefix: string,
@@ -217,6 +215,7 @@ function parseSingleListToken(
   };
 }
 
+// Parse the location token and map it back to readable province and ward labels.
 function parseLocationToken(pending: string, context?: FlatUrlContext) {
   const locationTokenPattern = new RegExp(
     `${LOCATION_TOKEN_PREFIX}[a-z0-9-]+$`,
@@ -252,24 +251,25 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
 
   const provinceName =
     context?.provinces?.find(
-      (item) => compact(item.slug).replace(/^tp-/, "") === provinceSlug,
-    )?.name ?? humanizeSlug(provinceSlug);
+      (item) =>
+        compactSlugToken(item.slug).replace(/^tp-/, "") === provinceSlug,
+    )?.name ?? humanizeSlugToken(provinceSlug);
 
   const wardName =
     context?.wards?.find((item) => {
-      if (compact(item.slug) !== wardSlug) return false;
+      if (compactSlugToken(item.slug) !== wardSlug) return false;
 
       if (!provinceSlug) return true;
 
       const wardProvince = context?.provinces?.find(
         (province) =>
           province.id === item.provinceId &&
-          compact(province.slug).replace(/^tp-/, "") === provinceSlug,
+          compactSlugToken(province.slug).replace(/^tp-/, "") === provinceSlug,
       );
 
       return Boolean(wardProvince);
     })?.name ??
-    humanizeSlug(wardSlug);
+    humanizeSlugToken(wardSlug);
 
   return {
     pending: removeMatchedSuffix(pending, locationMatch[0]),
@@ -290,6 +290,7 @@ type ParsedArea = {
   maxArea?: number;
 };
 
+// Parse one money segment into VND for both single-sided and between ranges.
 function parseMoneyPartToVnd(value: string): number | undefined {
   const tyMatch = value.match(/^(\d+)(?:-(\d+))?-ty$/);
   if (tyMatch) {
@@ -308,6 +309,7 @@ function parseMoneyPartToVnd(value: string): number | undefined {
   return undefined;
 }
 
+// Parse the price token back into the filter fields used by the toolbar.
 function parsePriceToken(token: string): ParsedPrice | undefined {
   if (token === `${PRICE_TOKEN_PREFIX}thoa-thuan`) {
     return { isNegotiable: true };
@@ -341,6 +343,7 @@ function parsePriceToken(token: string): ParsedPrice | undefined {
   };
 }
 
+// Parse the area token back into the filter fields used by the toolbar.
 function parseAreaToken(token: string): ParsedArea | undefined {
   const raw = token.replace(AREA_TOKEN_PREFIX, "");
   const belowMatch = raw.match(/^duoi-(\d+)m2$/);
@@ -360,6 +363,8 @@ function parseAreaToken(token: string): ParsedArea | undefined {
   return undefined;
 }
 
+// Parsing walks suffix tokens from the most specific fields first so mixed slugs
+// like category + location + ranges can be consumed without ambiguity.
 function extractSuffixToken(value: string, prefix: string) {
   const regex = new RegExp(`${prefix}[a-z0-9-]+$`);
   const match = value.match(regex);
@@ -367,25 +372,31 @@ function extractSuffixToken(value: string, prefix: string) {
   return match[0];
 }
 
+// Resolve a category label into the slug used by the flat-url contract.
 function findCategorySlugByName(
   name: string,
   categories?: Array<Pick<Category, "name" | "slug">>,
 ) {
-  const target = compact(name);
-  const found = categories?.find((item) => compact(item.name) === target);
+  const target = compactSlugToken(name);
+  const found = categories?.find(
+    (item) => compactSlugToken(item.name) === target,
+  );
   return found?.slug;
 }
 
+// Resolve a category slug back to the preferred display label when rebuilding state.
 function findCategoryNameBySlug(
   slug: string,
   categories?: Array<Pick<Category, "name" | "slug">>,
 ) {
   const found = categories?.find(
-    (item) => compact(item.slug) === compact(slug),
+    (item) => compactSlugToken(item.slug) === compactSlugToken(slug),
   );
   return found?.name;
 }
 
+// Builders feed both manual filter interactions and suggestion navigation, so
+// they must avoid introducing default placeholder tokens into the slug.
 export function buildPropertyFilterPath(
   basePath: string,
   value: AdvancedFilterValue,
@@ -397,7 +408,7 @@ export function buildPropertyFilterPath(
   if (propertyTypeName) {
     const slug =
       findCategorySlugByName(propertyTypeName, context?.propertyCategories) ??
-      compact(propertyTypeName);
+      compactSlugToken(propertyTypeName);
     tokens.push(CATEGORY_SLUG_TO_TOKEN.get(slug) ?? slug);
   }
 
@@ -427,6 +438,7 @@ export function buildPropertyFilterPath(
   return `${basePath}/${tokens.join("-")}`;
 }
 
+// Rebuild a listing path from route parts that already came from the backend contract.
 export function buildPropertyFilterPathFromRouteParts(
   basePath: string,
   routeParts: FlatUrlRouteParts,
@@ -443,6 +455,8 @@ export function buildPropertyFilterPathFromRouteParts(
   return `${basePath}/${tokens.join("-")}`;
 }
 
+// Parsing removes recognized suffix tokens in reverse order so the remaining
+// segment can still resolve to a category token or raw category slug.
 export function parsePropertyFilterSlug(
   rawSlug: string | undefined,
   context?: FlatUrlContext,
@@ -453,10 +467,10 @@ export function parsePropertyFilterSlug(
     return initial;
   }
 
-  let pending = compact(rawSlug);
+  let pending = compactSlugToken(rawSlug);
   const directionSlugToId = new Map<string, string>(
     DIRECTION_OPTIONS.map((option) => [
-      compact(option.id.replaceAll("_", "-")),
+      compactSlugToken(option.id.replaceAll("_", "-")),
       option.id,
     ]),
   );
@@ -530,7 +544,7 @@ export function parsePropertyFilterSlug(
   const typeName =
     findCategoryNameBySlug(typeSlug, context?.propertyCategories) ??
     CATEGORY_SLUG_TO_LABEL.get(typeSlug) ??
-    humanizeSlug(typeSlug);
+    humanizeSlugToken(typeSlug);
 
   if (typeName) {
     initial.propertyTypes = [typeName];
@@ -539,9 +553,10 @@ export function parsePropertyFilterSlug(
   return initial;
 }
 
+// Detect whether a slug contains filter tokens before route code treats it as a detail slug.
 export function isLikelyPropertyFilterSlug(rawSlug?: string) {
   if (!rawSlug) return false;
-  const slug = compact(rawSlug);
+  const slug = compactSlugToken(rawSlug);
 
   if (CATEGORY_TOKEN_TO_SLUG.has(slug)) return true;
 
@@ -559,6 +574,7 @@ export function isLikelyPropertyFilterSlug(rawSlug?: string) {
   );
 }
 
+// Keep news category parsing tolerant when a slug does not match the current dataset.
 export function parseNewsCategoryFromSlug(
   slug?: string,
   categories?: Category[],
@@ -569,6 +585,7 @@ export function parseNewsCategoryFromSlug(
   return matched ? matched.slug : "tin-tuc";
 }
 
+// Separate pagination suffixes from the core flat slug so route parsing stays stable.
 export function parsePagedSlugSegments(segments?: string[]) {
   if (!segments?.length) {
     return { rawSlug: undefined as string | undefined, page: 1 };
@@ -586,12 +603,14 @@ export function parsePagedSlugSegments(segments?: string[]) {
   };
 }
 
+// Append the canonical page segment only when the page is greater than one.
 export function buildPagedPath(basePath: string, page: number) {
   const normalizedBase = basePath.replace(/\/+$/, "");
   if (page <= 1) return normalizedBase || "/";
   return `${normalizedBase}/p${page}`;
 }
 
+// Keep project category parsing tolerant when a slug does not match the current dataset.
 export function parseProjectCategoryFromSlug(
   slug?: string,
   categories?: Category[],
@@ -605,6 +624,7 @@ export function parseProjectCategoryFromSlug(
   return matched ? matched.slug : "du-an";
 }
 
+// Build the breadcrumb trail for the news listing hierarchy.
 export function buildNewsCategoryBreadcrumbs(
   slug?: string,
   categories?: Category[],
@@ -620,12 +640,13 @@ export function buildNewsCategoryBreadcrumbs(
       .filter((item) => item.type === "NEWS")
       .find((item) => item.slug === categorySlug);
 
-    items.push({ label: category?.name ?? humanizeSlug(categorySlug) });
+    items.push({ label: category?.name ?? humanizeSlugToken(categorySlug) });
   }
 
   return items;
 }
 
+// Build the breadcrumb trail for the project listing hierarchy.
 export function buildProjectCategoryBreadcrumbs(
   slug?: string,
   categories?: Category[],
@@ -641,12 +662,13 @@ export function buildProjectCategoryBreadcrumbs(
       .filter((item) => item.type === "PROJECT")
       .find((item) => item.slug === categorySlug);
 
-    items.push({ label: category?.name ?? humanizeSlug(categorySlug) });
+    items.push({ label: category?.name ?? humanizeSlugToken(categorySlug) });
   }
 
   return items;
 }
 
+// Format one VND value into the short breadcrumb label variant.
 function formatVndLabel(value: string) {
   const amount = Number(value || 0);
   if (!amount) return "";
@@ -660,12 +682,15 @@ function formatVndLabel(value: string) {
   return `${trieu} triệu`;
 }
 
+// Format one area value into the short breadcrumb label variant.
 function formatAreaLabel(value: string) {
   const amount = Number(value || 0);
   if (!amount) return "";
   return `${amount}m2`;
 }
 
+// Breadcrumb labels are derived from parsed filter state so page shells and
+// suggestion links always describe the same canonical slug.
 export function buildPropertyFilterBreadcrumbs(
   basePath: "/cho-thue" | "/can-thue",
   rawSlug?: string,

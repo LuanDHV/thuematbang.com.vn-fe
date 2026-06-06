@@ -38,6 +38,10 @@ import {
   PriceDetailTab,
   PropertyTypeDetailTab,
 } from "./ListingFilterPanels";
+import {
+  buildEffectiveProvinceWardMap,
+  type ProvinceWardMap,
+} from "./listing-filter-location";
 
 type DemandTab = "cho-thue" | "can-thue";
 type DetailTab = "main" | "propertyType" | "location" | "price" | "area";
@@ -47,7 +51,7 @@ type Props = {
   defaultDemandTab?: DemandTab;
   listingMode?: "property" | "rentRequest";
   propertyTypeOptions: string[];
-  provinceWardMap: Record<string, Record<string, string[]>>;
+  provinceWardMap: ProvinceWardMap;
   value?: AdvancedFilterValue;
   onApply?: (value: AdvancedFilterValue, demandTab: DemandTab) => void;
   onReset?: () => void;
@@ -97,20 +101,14 @@ export function ListingFilterDrawer({
     gcTime: 60 * 60 * 1000,
   });
 
+  // The drawer can fetch a richer ward list for the selected province without
+  // mutating the shared toolbar map for every unopened province.
   const effectiveProvinceWardMap = useMemo(() => {
-    if (!localValue.province || !selectedProvinceWards.length) {
-      return provinceWardMap;
-    }
-
-    return {
-      ...provinceWardMap,
-      [localValue.province]: selectedProvinceWards.reduce<
-        Record<string, string[]>
-      >((acc, ward) => {
-        acc[ward.name] = [];
-        return acc;
-      }, {}),
-    };
+    return buildEffectiveProvinceWardMap(
+      provinceWardMap,
+      localValue.province,
+      selectedProvinceWards,
+    );
   }, [localValue.province, provinceWardMap, selectedProvinceWards]);
 
   const current = localValue;

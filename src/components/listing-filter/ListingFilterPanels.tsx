@@ -29,6 +29,8 @@ import {
   millionToVnd,
   parseNumericInput,
 } from "@/helpers/filterHelpers";
+import { normalizeVietnameseText } from "@/lib/text-normalize";
+import type { ProvinceWardMap } from "./listing-filter-location";
 
 type UpdateCurrent = (
   updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
@@ -39,13 +41,6 @@ type DetailTabSharedProps = {
   updateCurrent: UpdateCurrent;
   onDone?: () => void;
 };
-
-const normalizeText = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
 
 export function PropertyTypeDetailTab({
   current,
@@ -81,8 +76,8 @@ export function PropertyTypeDetailTab({
             type="checkbox"
             name="property-type-single"
             checked={
-              normalizeText(current.propertyTypes[0] || "") ===
-              normalizeText(type)
+              normalizeVietnameseText(current.propertyTypes[0] || "") ===
+              normalizeVietnameseText(type)
             }
             onChange={() => {
               updateCurrent((prev) => ({
@@ -345,7 +340,7 @@ export function LocationDetailTab({
   updateCurrent,
   provinceWardMap,
 }: DetailTabSharedProps & {
-  provinceWardMap: Record<string, Record<string, string[]>>;
+  provinceWardMap: ProvinceWardMap;
 }) {
   const wards = current.province
     ? Object.keys(provinceWardMap[current.province] ?? {})

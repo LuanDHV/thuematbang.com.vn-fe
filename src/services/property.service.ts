@@ -75,6 +75,7 @@ export type PropertyMineParams = {
 export type UpdatePropertyPayload = FormData;
 
 export const propertyService = {
+  // Fetch one paginated property list with the filter contract used across public and CMS pages.
   getAll: async (params: PropertyGetAllParams = {}) =>
     requestServerApi<Property[]>(buildListPath("/properties", params), {
       cache: "no-store",
@@ -84,6 +85,7 @@ export const propertyService = {
       }),
     }),
 
+  // Fetch the property list resolved from one flat-url slug produced by the listing filters.
   getAllByFlatSlug: async (params: PropertyGetByFlatSlugParams) =>
     requestServerApi<Property[]>(
       buildScopedListPath("/properties/search/by-slug", params.flatSlug, {
@@ -100,6 +102,7 @@ export const propertyService = {
       },
     ),
 
+  // Fetch one public property detail by its SEO slug.
   getBySlug: async (slug: string) => {
     const response = await requestServerApi<Property>(
       `/properties/slug/${encodeURIComponent(slug)}`,
@@ -111,6 +114,7 @@ export const propertyService = {
     return response.data;
   },
 
+  // Fetch one property by numeric id for authenticated CMS flows.
   getById: async (id: number) => {
     const response = await requestServerApi<Property>(`/properties/${id}`, {
       auth: "required",
@@ -120,6 +124,7 @@ export const propertyService = {
     return response.data;
   },
 
+  // Fetch the current user's own property listings for the account area.
   getMine: async (params: PropertyMineParams = {}) =>
     requestServerApi<Property[]>(buildListPath("/me/properties", params), {
       auth: "required",
@@ -130,6 +135,7 @@ export const propertyService = {
       }),
     }),
 
+  // Update one property through the authenticated CMS mutation contract.
   update: async (id: number, payload: UpdatePropertyPayload) => {
     const response = await requestServerApi<Property>(`/properties/${id}`, {
       method: "PATCH",
@@ -139,6 +145,7 @@ export const propertyService = {
     return response.data;
   },
 
+  // Delete one property through the authenticated CMS mutation contract.
   remove: async (id: number) => {
     const response = await requestServerApi<Property>(`/properties/${id}`, {
       method: "DELETE",

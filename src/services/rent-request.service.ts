@@ -58,6 +58,7 @@ export type RentRequestMineParams = {
 };
 
 export const rentRequestService = {
+  // Fetch one paginated rent-request list with the filter contract used by listings and CMS.
   getAll: async (params: RentRequestGetAllParams = {}) =>
     requestServerApi<RentRequest[]>(buildListPath("/rent-requests", params), {
       cache: "no-store",
@@ -67,6 +68,7 @@ export const rentRequestService = {
       }),
     }),
 
+  // Fetch rent requests resolved from one flat-url slug produced by the demand filters.
   getAllByFlatSlug: async (params: RentRequestGetByFlatSlugParams) =>
     requestServerApi<RentRequest[]>(
       buildScopedListPath("/rent-requests/search/by-slug", params.flatSlug, {
@@ -83,6 +85,7 @@ export const rentRequestService = {
       },
     ),
 
+  // Fetch rent requests by category slug for category-specific landing pages.
   getByCategorySlug: async (slug: string) =>
     requestServerApi<RentRequest[]>(
       `/rent-requests/category/${encodeURIComponent(slug)}`,
@@ -94,6 +97,7 @@ export const rentRequestService = {
       },
     ),
 
+  // Fetch one public rent-request detail by its SEO slug.
   getBySlug: async (slug: string) => {
     const response = await requestServerApi<RentRequest>(
       `/rent-requests/slug/${encodeURIComponent(slug)}`,
@@ -105,6 +109,7 @@ export const rentRequestService = {
     return response.data;
   },
 
+  // Fetch the current user's own rent requests for the account area.
   getMine: async (params: RentRequestMineParams = {}) =>
     requestServerApi<RentRequest[]>(buildListPath("/me/rent-requests", params), {
       auth: "required",
