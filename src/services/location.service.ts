@@ -1,5 +1,10 @@
 import "server-only";
 
+import {
+  extractPropertyFilterRouteParts,
+  type FlatUrlContext,
+} from "@/lib/flat-url";
+import { compactSlugToken } from "@/lib/text-normalize";
 import { Province, Street, Ward } from "@/types/location";
 import { buildListPath } from "./shared/list-service";
 import { requestServerApi } from "./shared/server-api-client";
@@ -23,6 +28,10 @@ export type LocationGetStreetsByWardParams = {
   limit?: number;
   filters?: LocationSearchFilters;
 };
+
+type PropertyFilterLocationContext = Required<
+  Pick<FlatUrlContext, "provinces" | "wards">
+>;
 
 export const locationService = {
   getProvinces: async (params: LocationGetProvincesParams = {}) => {
@@ -64,4 +73,39 @@ export const locationService = {
     );
     return ensureArray<Street>(response.data, "streets");
   },
+
+  // Listing pages only need all provinces plus the ward list for the slug's province.
+  resolvePropertyFilterLocationContext:
+    async (rawSlug?: string): Promise<PropertyFilterLocationContext> => {
+      try {
+        const provinces = await locationService.getProvinces();
+        const { provinceSlug } = extractPropertyFilterRouteParts(rawSlug);
+        const selectedProvince = provinceSlug
+          ? provinces.find(
+              (province) =>
+                compactSlugToken(province.slug).replace(/^tp-/, "") ===
+                provinceSlug,
+            )
+          : undefined;
+
+        const wards = selectedProvince
+          ? await locationService.getWards({ provinceId: selectedProvince.id })
+          : [];
+
+        return {
+          provinces: provinces.map((province) => ({
+            id: province.id,
+            name: province.name,
+            slug: province.slug,
+          })),
+          wards: wards.map((ward) => ({
+            name: ward.name,
+            slug: ward.slug,
+            provinceId: ward.provinceId,
+          })),
+        };
+      } catch {
+        return { provinces: [], wards: [] };
+      }
+    },
 };

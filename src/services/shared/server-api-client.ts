@@ -23,12 +23,15 @@ type ServerApiClientOptions = {
   mutateAuthCookies?: boolean;
 };
 
+// All server-side services should go through this URL builder so auth refresh,
+// cache tags, and backend error handling stay centralized.
 function createServerApiUrl(path: string) {
   const base = getPrivateApiBaseUrl().replace(/\/$/, "");
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${base}${normalizedPath}`;
 }
 
+// Parse JSON bodies defensively so transport failures do not mask the real error.
 async function parseJsonSafe(response: Response) {
   try {
     return await response.json();
@@ -37,6 +40,7 @@ async function parseJsonSafe(response: Response) {
   }
 }
 
+// Normalize both the current and legacy backend envelopes into one FE response shape.
 function normalizeApiResponse<T>(payload: unknown): ApiResponse<T> {
   if (payload && typeof payload === "object") {
     const record = payload as Record<string, unknown>;
@@ -71,6 +75,7 @@ function normalizeApiResponse<T>(payload: unknown): ApiResponse<T> {
   };
 }
 
+// Apply auth headers in one place so server reads do not hand-roll header logic.
 async function buildRequestHeaders(
   auth: "none" | "required",
   headers?: HeadersInit,
@@ -86,6 +91,7 @@ async function buildRequestHeaders(
   return resolvedHeaders;
 }
 
+// Execute one raw server request with the normalized cache and header contract.
 async function executeServerRequest(
   path: string,
   options: ServerApiClientOptions,
@@ -110,6 +116,7 @@ async function executeServerRequest(
   });
 }
 
+// Refresh the access token through the backend contract used by auth routes.
 async function refreshServerAccessToken(refreshToken: string) {
   const response = await fetch(createServerApiUrl("/auth/refresh"), {
     method: "POST",
@@ -134,6 +141,7 @@ async function refreshServerAccessToken(refreshToken: string) {
   return tokenPair;
 }
 
+// Resolve one server API call, including optional auth recovery and error mapping.
 export async function requestServerApi<T>(
   path: string,
   options: ServerApiClientOptions = {},
@@ -148,6 +156,8 @@ export async function requestServerApi<T>(
       throw new HttpError("Unauthorized", 401);
     }
 
+    // Authenticated server reads retry once through the refresh flow so pages do
+    // not need to duplicate cookie and token recovery logic.
     const refreshAndRetry = async () => {
       if (!refreshToken) {
         return null;

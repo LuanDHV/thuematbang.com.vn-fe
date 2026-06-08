@@ -38,7 +38,6 @@ export default async function ChoThuePage() {
           <ListingFilterSection
             properties={response.data ?? []}
             listingMode="property"
-            serverDriven
             basePath="/cho-thue"
             breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue")}
             paginationMeta={response.meta}

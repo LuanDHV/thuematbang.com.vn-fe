@@ -41,6 +41,7 @@ type AuthenticatedRequestOptions = {
   mutateAuthCookies?: boolean;
 };
 
+// Build the multipart payload expected by the profile update endpoint.
 function buildProfileFormData(payload: UpdateMePayload) {
   const formData = new FormData();
   formData.append("fullName", payload.fullName);
@@ -63,6 +64,7 @@ function buildProfileFormData(payload: UpdateMePayload) {
 }
 
 export const userService = {
+  // Fetch the authenticated user snapshot used by auth-aware UI.
   me: async (options: AuthenticatedRequestOptions = {}) =>
     (
       await requestServerApi<User | null>("/users/me", {
@@ -73,6 +75,7 @@ export const userService = {
       })
     ).data,
 
+  // Fetch paginated admin users for CMS user-management tables.
   getAdminUsers: async (
     params: AdminUserListParams = {},
     options: AuthenticatedRequestOptions = {},
@@ -87,6 +90,7 @@ export const userService = {
       mutateAuthCookies: options.mutateAuthCookies,
     }),
 
+  // Update the current user's profile, including avatar metadata when present.
   updateMe: async (
     payload: UpdateMePayload,
     options: AuthenticatedRequestOptions = {},
@@ -100,6 +104,7 @@ export const userService = {
     return response.data;
   },
 
+  // Change the current user's password when the old password is known.
   changeMyPassword: async (
     payload: ChangeMyPasswordPayload,
     options: AuthenticatedRequestOptions = {},
@@ -119,6 +124,7 @@ export const userService = {
     return response.data;
   },
 
+  // Set the first password for accounts that do not yet have one.
   setMyPassword: async (
     payload: SetMyPasswordPayload,
     options: AuthenticatedRequestOptions = {},

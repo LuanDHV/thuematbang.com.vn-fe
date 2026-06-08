@@ -10,9 +10,7 @@ import {
 } from "@/actions/location.actions";
 import { getPublicSearchSuggestionsAction } from "@/actions/public-search.actions";
 import { Button } from "@/components/ui/button";
-import { Property } from "@/types/property";
 import { PublicSearchSuggestion } from "@/types/public-search";
-import { RentRequest } from "@/types/rent-request";
 import { ListingFilterDrawer } from "./ListingFilterDrawer";
 import {
   AreaDetailTab,
@@ -26,7 +24,6 @@ import {
   mockFilterPropertyTypes,
 } from "@/constants/filter";
 import {
-  parseNumericInput,
   resolveAreaSummary,
   resolvePriceSummary,
   toAreaRange,
@@ -41,55 +38,19 @@ import {
   buildPropertyFilterPath,
   type FlatUrlContext,
 } from "@/lib/flat-url";
-import { Province, Ward } from "@/types/location";
+import type { Province, Ward } from "@/types/location";
+import {
+  buildFlatUrlLocationContext,
+  buildProvinceWardMap,
+  reconcileLocationFilter,
+  type ProvinceWardMap,
+} from "./listing-filter-location";
 
 type Props = {
   basePath: string;
   listingMode?: "property" | "rentRequest";
-  serverDriven?: boolean;
   initialFilters?: AdvancedFilterValue;
-  sourceProperties: Property[] | RentRequest[];
-  onFilteredChange: (items: Property[] | RentRequest[]) => void;
-};
-
-const normalize = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
-
-const reconcileLocationFilter = (
-  value: AdvancedFilterValue,
-  provinceWardMap: Record<string, Record<string, string[]>>,
-): AdvancedFilterValue => {
-  const provinceEntries = Object.keys(provinceWardMap);
-  if (!provinceEntries.length) return value;
-
-  const matchedProvince =
-    provinceEntries.find(
-      (province) => normalize(province) === normalize(value.province),
-    ) ?? "";
-
-  if (!matchedProvince) {
-    return {
-      ...value,
-      province: "",
-      ward: "",
-      street: "",
-    };
-  }
-
-  const wardEntries = Object.keys(provinceWardMap[matchedProvince] ?? {});
-  const matchedWard =
-    wardEntries.find((ward) => normalize(ward) === normalize(value.ward)) ?? "";
-
-  return {
-    ...value,
-    province: matchedProvince,
-    ward: matchedWard,
-    street: matchedWard ? value.street : "",
-  };
+  initialLocationContext?: FlatUrlContext;
 };
 
 const isSameFilterValue = (
@@ -112,10 +73,8 @@ const isSameFilterValue = (
 export default function ListingFilterToolbar({
   basePath,
   listingMode = "property",
-  serverDriven = false,
   initialFilters = INITIAL_ADVANCED_FILTER_VALUE,
-  sourceProperties,
-  onFilteredChange,
+  initialLocationContext,
 }: Props) {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
@@ -127,18 +86,47 @@ export default function ListingFilterToolbar({
   const lastSyncedInitialFiltersRef = useRef<AdvancedFilterValue | null>(null);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Server data should stay authoritative when available, but the toolbar still
+  // needs the initial server context so slug-derived filters stay stable before
+  // the client queries finish loading.
   const { data: provincesData = [] } = useQuery({
     queryKey: ["locations", "provinces"],
     queryFn: getProvincesAction,
     staleTime: 5 * 60 * 1000,
   });
+
+  const fallbackProvinces = useMemo<Province[]>(
+    () =>
+      (initialLocationContext?.provinces ?? []).map((province) => ({
+        id: province.id,
+        name: province.name,
+        slug: province.slug,
+      })),
+    [initialLocationContext],
+  );
+
+  const fallbackWards = useMemo<Ward[]>(
+    () =>
+      (initialLocationContext?.wards ?? []).map((ward, index) => ({
+        id: -(index + 1),
+        name: ward.name,
+        slug: ward.slug,
+        provinceId: ward.provinceId,
+      })),
+    [initialLocationContext],
+  );
+
+  const resolvedProvinces = provincesData.length
+    ? provincesData
+    : fallbackProvinces;
+
   const selectedProvinceId = useMemo(() => {
-    if (!advancedFilters.province || !provincesData.length) return null;
-    const selected = provincesData.find(
+    if (!advancedFilters.province || !resolvedProvinces.length) return null;
+    const selected = resolvedProvinces.find(
       (province) => province.name === advancedFilters.province,
     );
     return selected?.id ?? null;
-  }, [advancedFilters.province, provincesData]);
+  }, [advancedFilters.province, resolvedProvinces]);
 
   const { data: selectedProvinceWards = [] } = useQuery({
     queryKey: ["locations", "wards", selectedProvinceId],
@@ -168,123 +156,30 @@ export default function ListingFilterToolbar({
       staleTime: 30 * 1000,
     });
 
-  const sourceLocationMap = useMemo(() => {
-    const provinceMap = new Map<string, Province>();
-    const wardMap = new Map<string, Ward[]>();
-
-    for (const item of sourceProperties) {
-      const province =
-        listingMode === "rentRequest"
-          ? (item as RentRequest).desiredProvince
-          : (item as Property).province;
-      const ward =
-        listingMode === "rentRequest"
-          ? (item as RentRequest).desiredWard
-          : (item as Property).ward;
-
-      if (province?.name && !provinceMap.has(province.name)) {
-        provinceMap.set(province.name, {
-          id: province.id,
-          name: province.name,
-          slug: province.slug,
-        });
-      }
-      if (province?.name && ward?.name) {
-        const existing = wardMap.get(province.name) ?? [];
-        if (!existing.some((x) => x.name === ward.name)) {
-          existing.push({
-            id: ward.id,
-            provinceId: ward.provinceId,
-            name: ward.name,
-            slug: ward.slug,
-          });
-          wardMap.set(province.name, existing);
-        }
-      }
-    }
-
-    return { provinceMap, wardMap };
-  }, [listingMode, sourceProperties]);
-
-  const provinceWardMap = useMemo<
-    Record<string, Record<string, string[]>>
-  >(() => {
-    const provinces = provincesData.length
-      ? provincesData
-      : Array.from(sourceLocationMap.provinceMap.values());
-    const sourceWardsByProvince = sourceLocationMap.wardMap;
-
-    return provinces.reduce<Record<string, Record<string, string[]>>>(
-      (acc, province) => {
-        const sourceWards = sourceWardsByProvince.get(province.name) ?? [];
-        const wardsForProvince =
-          selectedProvinceId === province.id
-            ? selectedProvinceWards
-            : sourceWards;
-
-        acc[province.name] = wardsForProvince.reduce<Record<string, string[]>>(
-          (wardAcc, ward) => {
-            wardAcc[ward.name] = [];
-            return wardAcc;
-          },
-          {},
-        );
-
-        return acc;
-      },
-      {},
-    );
+  const provinceWardMap = useMemo<ProvinceWardMap>(() => {
+    return buildProvinceWardMap({
+      provinces: resolvedProvinces,
+      selectedProvinceId,
+      selectedProvinceWards,
+      fallbackWards,
+    });
   }, [
-    provincesData,
+    fallbackWards,
+    resolvedProvinces,
     selectedProvinceId,
     selectedProvinceWards,
-    sourceLocationMap.provinceMap,
-    sourceLocationMap.wardMap,
   ]);
 
   const flatUrlContext = useMemo<FlatUrlContext>(() => {
-    const provinces = (
-      provincesData.length
-        ? provincesData
-        : Array.from(sourceLocationMap.provinceMap.values())
-    ).map((province) => ({
-      id: province.id,
-      name: province.name,
-      slug: province.slug,
-    }));
-
-    const wardMap = new Map<
-      string,
-      Pick<Ward, "name" | "slug" | "provinceId">
-    >();
-
-    sourceLocationMap.wardMap.forEach((wards) => {
-      wards.forEach((ward) => {
-        wardMap.set(`${ward.provinceId}:${ward.slug}`, {
-          name: ward.name,
-          slug: ward.slug,
-          provinceId: ward.provinceId,
-        });
-      });
+    return buildFlatUrlLocationContext({
+      provinces: resolvedProvinces,
+      selectedProvinceWards,
+      fallbackWards,
     });
-
-    selectedProvinceWards.forEach((ward) => {
-      wardMap.set(`${ward.provinceId}:${ward.slug}`, {
-        name: ward.name,
-        slug: ward.slug,
-        provinceId: ward.provinceId,
-      });
-    });
-
-    return {
-      provinces,
-      wards: Array.from(wardMap.values()),
-    };
   }, [
-    provincesData,
+    fallbackWards,
+    resolvedProvinces,
     selectedProvinceWards,
-    sourceLocationMap.provinceMap,
-    sourceLocationMap.wardMap,
   ]);
 
   const displayTypeLabel =
@@ -329,148 +224,14 @@ export default function ListingFilterToolbar({
     router.replace(resolveSuggestionHref(suggestion), { scroll: false });
   };
 
-  const getFilteredProperties = (activeFilters: AdvancedFilterValue) => {
-    const keywordText = normalize(keyword);
-    const minPrice = parseNumericInput(activeFilters.priceMin || "");
-    const maxPrice = parseNumericInput(activeFilters.priceMax || "");
-    const minArea = Number(activeFilters.areaMin || 0);
-    const maxArea = Number(activeFilters.areaMax || 0);
-
-    const filtered =
-      listingMode === "rentRequest"
-        ? (sourceProperties as RentRequest[]).filter((request) => {
-            const categoryName = request.category?.name ?? "";
-            const provinceName = request.desiredProvince?.name ?? "";
-            const wardName = request.desiredWard?.name ?? "";
-            const streetName = request.desiredStreet?.name ?? "";
-            const haystack = normalize(
-              `${request.title} ${request.requirementText ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
-            );
-
-            if (keywordText && !haystack.includes(keywordText)) return false;
-
-            if (activeFilters.propertyTypes.length > 0) {
-              const normalizedCategory = normalize(categoryName);
-              const matched = activeFilters.propertyTypes.some(
-                (type) => normalizedCategory === normalize(type),
-              );
-              if (!matched) return false;
-            }
-
-            const requestMinBudget = Number(request.minBudget || 0);
-            const requestMaxBudget = Number(request.maxBudget || 0);
-            if (
-              minPrice > 0 &&
-              requestMaxBudget > 0 &&
-              requestMaxBudget < minPrice
-            )
-              return false;
-            if (maxPrice > 0 && requestMinBudget > maxPrice) return false;
-
-            const requestMinArea = request.minArea ?? 0;
-            const requestMaxArea = request.maxArea ?? 0;
-            if (minArea > 0 && requestMaxArea > 0 && requestMaxArea < minArea)
-              return false;
-            if (maxArea > 0 && requestMinArea > maxArea) return false;
-
-            if (
-              activeFilters.province &&
-              request.desiredProvince?.name !== activeFilters.province
-            )
-              return false;
-            if (
-              activeFilters.ward &&
-              request.desiredWard?.name !== activeFilters.ward
-            )
-              return false;
-
-            if (activeFilters.directions.length > 0) {
-              const direction = (request.preferredDirection ?? "")
-                .toString()
-                .toUpperCase();
-              if (!activeFilters.directions.includes(direction)) return false;
-            }
-
-            return true;
-          })
-        : (sourceProperties as Property[]).filter((property) => {
-            const categoryName = property.category?.name ?? "";
-            const provinceName = property.province?.name ?? "";
-            const wardName = property.ward?.name ?? "";
-            const streetName = property.street?.name ?? "";
-            const haystack = normalize(
-              `${property.title} ${property.addressDetail ?? ""} ${categoryName} ${provinceName} ${wardName} ${streetName}`,
-            );
-
-            if (keywordText && !haystack.includes(keywordText)) return false;
-
-            if (activeFilters.propertyTypes.length > 0) {
-              const normalizedCategory = normalize(categoryName);
-              const matched = activeFilters.propertyTypes.some(
-                (type) => normalizedCategory === normalize(type),
-              );
-              if (!matched) return false;
-            }
-
-            const priceValue = Number(property.price || 0);
-            if (minPrice > 0 && priceValue < minPrice) return false;
-            if (maxPrice > 0 && priceValue > maxPrice) return false;
-
-            const areaValue = property.area ?? 0;
-            if (minArea > 0 && areaValue < minArea) return false;
-            if (maxArea > 0 && areaValue > maxArea) return false;
-
-            if (
-              activeFilters.province &&
-              property.province?.name !== activeFilters.province
-            )
-              return false;
-            if (
-              activeFilters.ward &&
-              property.ward?.name !== activeFilters.ward
-            )
-              return false;
-
-            if (activeFilters.bedrooms.length > 0) {
-              const bedMatched = activeFilters.bedrooms.some((item) => {
-                if (item === "5+") return (property.bedrooms ?? 0) >= 5;
-                return String(property.bedrooms ?? 0) === item;
-              });
-              if (!bedMatched) return false;
-            }
-
-            if (activeFilters.bathrooms.length > 0) {
-              const bathMatched = activeFilters.bathrooms.some((item) => {
-                if (item === "5+") return (property.bathrooms ?? 0) >= 5;
-                return String(property.bathrooms ?? 0) === item;
-              });
-              if (!bathMatched) return false;
-            }
-
-            if (activeFilters.directions.length > 0) {
-              const direction = (property.direction ?? "")
-                .toString()
-                .toUpperCase();
-              if (!activeFilters.directions.includes(direction)) return false;
-            }
-
-            if (activeFilters.negotiable && !property.isNegotiable)
-              return false;
-            return true;
-          });
-
-    return filtered;
-  };
-
+  // All URL sync goes through the same builder so pagination, breadcrumbs, and
+  // autocomplete links remain aligned with the flat-url contract.
   const runFilter = (
     nextFilters?: AdvancedFilterValue,
     options?: { syncUrl?: boolean; targetBasePath?: string },
   ) => {
     const activeFilters = nextFilters ?? advancedFilters;
     const nextBasePath = options?.targetBasePath ?? basePath;
-    if (!serverDriven) {
-      onFilteredChange(getFilteredProperties(activeFilters));
-    }
 
     if (options?.syncUrl !== false) {
       router.replace(
@@ -488,9 +249,6 @@ export default function ListingFilterToolbar({
   const resetAll = () => {
     setKeyword("");
     setAdvancedFilters(INITIAL_ADVANCED_FILTER_VALUE);
-    if (!serverDriven) {
-      onFilteredChange(sourceProperties);
-    }
     router.replace(buildPagedPath(basePath, 1), { scroll: false });
   };
 
@@ -510,11 +268,7 @@ export default function ListingFilterToolbar({
         isSameFilterValue(prev, nextFilters) ? prev : nextFilters,
       );
     });
-
-    if (serverDriven) return;
-    onFilteredChange(getFilteredProperties(nextFilters));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialFilters, provinceWardMap, serverDriven, sourceProperties]);
+  }, [initialFilters, provinceWardMap]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {

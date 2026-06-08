@@ -8,10 +8,12 @@ export { extractTokenPair };
 export const ACCESS_TOKEN_COOKIE = "accessToken";
 export const REFRESH_TOKEN_COOKIE = "refreshToken";
 
+// Enable secure cookies only when the app is running in production mode.
 function getCookieSecureFlag() {
   return isProductionAppEnv();
 }
 
+// Keep auth cookie options consistent across read, write, and delete flows.
 function getCookieOptions() {
   return {
     httpOnly: true,
@@ -21,6 +23,7 @@ function getCookieOptions() {
   };
 }
 
+// Write both auth cookies onto a response returned by a route handler.
 export function applyAuthCookies(response: NextResponse, tokenPair: TokenPair) {
   const options = getCookieOptions();
 
@@ -39,6 +42,7 @@ export function applyAuthCookies(response: NextResponse, tokenPair: TokenPair) {
   }
 }
 
+// Expire both auth cookies on a route-handler response.
 export function clearAuthCookies(response: NextResponse) {
   const options = getCookieOptions();
 
@@ -52,6 +56,7 @@ export function clearAuthCookies(response: NextResponse) {
   });
 }
 
+// Read the current auth cookie pair from the server request context.
 export async function readAuthCookies() {
   const store = await cookies();
   return {
@@ -60,6 +65,7 @@ export async function readAuthCookies() {
   };
 }
 
+// Persist the current auth cookie pair into the server response context.
 export async function writeAuthCookies(tokenPair: TokenPair) {
   const store = await cookies();
   const options = getCookieOptions();
@@ -79,6 +85,7 @@ export async function writeAuthCookies(tokenPair: TokenPair) {
   }
 }
 
+// Remove both auth cookies from the server response context.
 export async function deleteAuthCookies() {
   const store = await cookies();
   const options = getCookieOptions();

@@ -19,12 +19,14 @@ type CloudinaryPresetName =
 const CLOUDINARY_HOST = "res.cloudinary.com";
 const IMAGE_UPLOAD_SEGMENT = "/image/upload/";
 
+// Round transform inputs to the positive integers expected by Cloudinary.
 function toInteger(value?: number) {
   if (!value) return undefined;
   const rounded = Math.round(value);
   return rounded > 0 ? rounded : undefined;
 }
 
+// Inject responsive optimization transforms into one Cloudinary delivery URL.
 export function optimizeCloudinaryImage(
   rawUrl: string,
   options: CloudinaryImageOptions = {},
@@ -73,6 +75,7 @@ export function optimizeCloudinaryImage(
   return parsed.toString();
 }
 
+// Detect whether one URL points to a Cloudinary image upload resource.
 export function isCloudinaryImageUrl(rawUrl?: string | null) {
   if (!rawUrl) return false;
 
@@ -87,6 +90,7 @@ export function isCloudinaryImageUrl(rawUrl?: string | null) {
   }
 }
 
+// Extract the public id portion from one Cloudinary delivery URL.
 export function getCloudinaryPublicId(rawUrl: string) {
   if (!isCloudinaryImageUrl(rawUrl)) return null;
 
@@ -116,6 +120,7 @@ const CLOUDINARY_PRESETS: Record<CloudinaryPresetName, CloudinaryImageOptions> =
   listingGalleryThumb: { width: 220, height: 140, quality: "auto:good" },
 };
 
+// Apply one named Cloudinary preset while still allowing per-call overrides.
 export function optimizeCloudinaryByPreset(
   rawUrl: string,
   preset: CloudinaryPresetName,
