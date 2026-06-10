@@ -6,7 +6,7 @@ export const editProfileSchema = z.object({
   fullName: z
     .string()
     .trim()
-    .min(16, "Họ và tên phải có ít nhất 16 ký tự")
+    .min(12, "Họ và tên phải có ít nhất 12 ký tự")
     .max(120, "Họ và tên không vượt quá 120 ký tự"),
 
   // Phone number field validation with format regex

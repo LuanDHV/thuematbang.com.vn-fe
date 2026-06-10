@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function DangNhapPage() {
   return (
-    <div className="to-primary/10 flex min-h-svh flex-col items-center justify-center bg-linear-to-b from-white p-6 md:p-10">
+    <div className="to-primary/10 flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-white p-6 md:p-10">
       <div className="w-full max-w-lg md:max-w-5xl">
         <Link
           href="/"

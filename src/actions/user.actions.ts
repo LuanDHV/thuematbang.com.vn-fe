@@ -2,6 +2,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { userService } from "@/services/user.service";
+import { HttpError } from "@/lib/http";
 import { changePasswordPayloadSchema, setPasswordPayloadSchema } from "@/schemas/password.schema";
 import { editProfileSchema } from "@/schemas/user.schema";
 import type {
@@ -19,7 +20,15 @@ function toOptionalFile(value: FormDataEntryValue | null) {
 }
 
 export async function getCurrentUserAction() {
-  return userService.me({ mutateAuthCookies: true });
+  try {
+    return await userService.me({ mutateAuthCookies: true });
+  } catch (error) {
+    if (error instanceof HttpError && error.status === 401) {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function updateMyProfileAction(formData: FormData) {

@@ -15,10 +15,10 @@ export default function CmsLayout({ sidebar, children }: CmsLayoutProps) {
   );
 
   return (
-    <section className="bg-app min-h-svh lg:flex">
+    <section className="bg-app min-h-screen lg:flex">
       <aside
         className={cn(
-          "border-hairline bg-surface fixed inset-y-0 left-0 z-30 w-18 border-r lg:sticky lg:top-0 lg:h-svh lg:shrink-0",
+          "border-hairline bg-surface fixed inset-y-0 left-0 z-30 w-18 border-r lg:sticky lg:top-0 lg:h-screen lg:shrink-0",
           isCmsSidebarCollapsed ? "lg:w-22" : "lg:w-[18rem]",
         )}
       >
