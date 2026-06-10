@@ -11,6 +11,7 @@ import {
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
+import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
   formatAreaRange,
   formatBudgetRange,
@@ -50,7 +51,7 @@ export default function RentRequestDetailContent({
         <section>
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
             <CloudinaryImage
-              src={rentRequest.imageUrl || "/imgs/wallpaper-1.jpg"}
+              src={RENT_REQUEST_COVER_IMAGE}
               alt={rentRequest.title}
               fill
               sizes="(max-width: 1024px) 100vw, 75vw"

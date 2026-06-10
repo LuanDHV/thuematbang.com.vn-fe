@@ -17,6 +17,7 @@ import {
 import { createPageMetadata } from "@/lib/metadata";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
+import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import { RentRequest } from "@/types/rent-request";
 import { rentRequestService } from "@/services/rent-request.service";
 import { locationService } from "@/services/location.service";
@@ -95,7 +96,7 @@ export async function generateMetadata({
       title: rentRequest.title,
       description: rentRequest.requirementText || "Chi tiết nhu cầu cần thuê.",
       pathname: `/can-thue/${rentRequest.slug}`,
-      image: rentRequest.imageUrl || undefined,
+      image: RENT_REQUEST_COVER_IMAGE,
       type: "article",
     });
   }

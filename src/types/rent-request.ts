@@ -9,8 +9,6 @@ export interface RentRequest {
   title: string;
   slug: string;
   categoryId?: number | null;
-  imageUrl?: string | null;
-  imagePublicId?: string | null;
   desiredProvinceId?: number | null;
   desiredWardId?: number | null;
   desiredStreetId?: number | null;

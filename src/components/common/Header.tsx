@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { LogOut, Menu, Settings, SquarePlus, User } from "lucide-react";
+import { LogOut, Menu, Settings, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -80,12 +80,6 @@ export default function Header() {
           </div>
 
           <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3 lg:flex-none lg:justify-start">
-            <Button asChild size="lg" className="hidden lg:inline-flex">
-              <Link href="#">
-                Đăng tin
-                <SquarePlus className="size-5" />
-              </Link>
-            </Button>
             {authUser ? (
               <Popover open={isUserMenuOpen} onOpenChange={setUserMenuOpen}>
                 <PopoverTrigger asChild>
@@ -142,7 +136,6 @@ export default function Header() {
               <Button
                 asChild
                 size="lg"
-                variant="outline"
                 className="hidden lg:inline-flex"
               >
                 <Link href="/dang-nhap">
@@ -182,16 +175,6 @@ export default function Header() {
                     </div>
                     <div className="border-t border-black/6 pt-4" />
                     <div className="flex flex-col gap-2">
-                      <Button
-                        asChild
-                        size="lg"
-                        className="w-full justify-between"
-                      >
-                        <Link href="#" onClick={closeMobileMenu}>
-                          Đăng tin
-                          <SquarePlus className="size-5" />
-                        </Link>
-                      </Button>
                       {authUser ? (
                         <div className="flex flex-col gap-2">
                           <Button

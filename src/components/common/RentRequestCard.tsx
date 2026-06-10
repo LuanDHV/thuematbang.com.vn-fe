@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Calendar, Eye, MapPin, Maximize } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
   formatAreaRange,
   formatBudgetRange,
@@ -60,7 +61,7 @@ export function RentRequestCard({
           className={`bg-subtle relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
         >
           <CloudinaryImage
-            src={request.imageUrl || "/imgs/wallpaper-1.jpg"}
+            src={RENT_REQUEST_COVER_IMAGE}
             alt={request.title}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"

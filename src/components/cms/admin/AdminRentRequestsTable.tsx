@@ -16,6 +16,7 @@ import {
 } from "@/lib/utils";
 import type { RentRequestStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
+import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import AdminEntityCell from "./AdminEntityCell";
 
 type AdminRentRequestsTableProps = {
@@ -67,7 +68,7 @@ export default function AdminRentRequestsTable({
         fieldType: "text",
         render: ({ row }) => (
           <AdminEntityCell
-            imageUrl={row.imageUrl}
+            imageUrl={RENT_REQUEST_COVER_IMAGE}
             title={row.title}
             slug={row.slug}
           />
