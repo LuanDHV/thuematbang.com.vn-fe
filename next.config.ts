@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Give server actions enough headroom for a 2MB file plus multipart overhead.
+      bodySizeLimit: "3mb",
+    },
+  },
   images: {
     qualities: [75, 80, 85, 90],
     // Allow Next.js Image component to optimize images from Cloudinary
