@@ -1,9 +1,20 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getPrivateApiBaseUrl } from "@/lib/env";
 import { applyAuthCookies, extractTokenPair } from "@/lib/server/auth-cookies";
 
+function getRequestOrigin(request: Request) {
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+  const forwardedHost = request.headers.get("x-forwarded-host");
+
+  if (forwardedProto && forwardedHost) {
+    return `${forwardedProto}://${forwardedHost}`;
+  }
+
+  return new URL(request.url).origin;
+}
+
 function redirectToLoginWithReason(request: Request, reason: string) {
-  const url = new URL("/dang-nhap", request.url);
+  const url = new URL("/dang-nhap", getRequestOrigin(request));
   url.searchParams.set("google", reason);
   return NextResponse.redirect(url);
 }
@@ -56,7 +67,9 @@ export async function GET(request: Request) {
       return redirectToLoginWithReason(request, "failed");
     }
 
-    const nextResponse = NextResponse.redirect(new URL("/", request.url));
+    const nextResponse = NextResponse.redirect(
+      new URL("/", getRequestOrigin(request)),
+    );
     applyAuthCookies(nextResponse, tokenPair);
     return nextResponse;
   } catch {
