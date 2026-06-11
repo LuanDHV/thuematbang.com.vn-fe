@@ -42,7 +42,7 @@ export default function RentRequestDetailContent({
 }: RentRequestDetailContentProps) {
   const hasArea =
     (rentRequest.minArea ?? 0) > 0 || (rentRequest.maxArea ?? 0) > 0;
-  const hasDirection = Boolean(rentRequest.preferredDirection);
+  const hasDirection = Boolean(rentRequest.desiredDirection);
   const categoryName = rentRequest.category?.name ?? "";
 
   return (
@@ -161,9 +161,7 @@ export default function RentRequestDetailContent({
                     Hướng
                   </p>
                   <p className="text-heading text-sm font-semibold">
-                    {getDirectionLabel(
-                      rentRequest.preferredDirection?.toString(),
-                    )}
+                    {getDirectionLabel(rentRequest.desiredDirection?.toString())}
                   </p>
                 </div>
               </div>

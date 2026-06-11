@@ -100,11 +100,7 @@ export default function AdminPropertiesTable({
         header: "Khu vực",
         fieldType: "text",
         accessor: (property) =>
-          formatLocationParts([
-            property.street?.name,
-            property.ward?.name,
-            property.province?.name,
-          ]),
+          formatLocationParts([property.ward?.name, property.province?.name]),
       },
       {
         key: "price",

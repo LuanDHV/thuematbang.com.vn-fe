@@ -5,7 +5,7 @@ import {
   type FlatUrlContext,
 } from "@/lib/flat-url";
 import { compactSlugToken } from "@/lib/text-normalize";
-import { Province, Street, Ward } from "@/types/location";
+import { Province, Ward } from "@/types/location";
 import { buildListPath } from "./shared/list-service";
 import { requestServerApi } from "./shared/server-api-client";
 import { ensureArray } from "./shared/validation";
@@ -20,12 +20,6 @@ export type LocationGetProvincesParams = {
 
 export type LocationGetWardsParams = {
   provinceId?: number;
-  filters?: LocationSearchFilters;
-};
-
-export type LocationGetStreetsByWardParams = {
-  wardId?: number;
-  limit?: number;
   filters?: LocationSearchFilters;
 };
 
@@ -57,21 +51,6 @@ export const locationService = {
       },
     );
     return ensureArray<Ward>(response.data, "wards");
-  },
-
-  getStreetsByWard: async (params: LocationGetStreetsByWardParams = {}) => {
-    if (typeof params.wardId !== "number") return [];
-    const response = await requestServerApi<unknown>(
-      buildListPath(`/locations/wards/${params.wardId}/streets`, {
-        limit: params.limit ?? 50,
-        filters: params.filters,
-      }),
-      {
-        cache: "no-store",
-        tags: ["streets"],
-      },
-    );
-    return ensureArray<Street>(response.data, "streets");
   },
 
   // Listing pages only need all provinces plus the ward list for the slug's province.

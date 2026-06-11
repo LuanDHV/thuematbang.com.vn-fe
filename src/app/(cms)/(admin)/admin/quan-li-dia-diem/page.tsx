@@ -17,9 +17,7 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
     resolvedSearchParams,
     "provinceId",
   );
-  const wardIdValue = resolveSearchParamValue(resolvedSearchParams, "wardId");
   const selectedProvinceId = provinceIdValue ? Number(provinceIdValue) : null;
-  const selectedWardId = wardIdValue ? Number(wardIdValue) : null;
   const provinces = await locationService.getProvinces().catch(() => []);
 
   const filteredProvinces = searchQuery
@@ -51,36 +49,13 @@ export default async function AdminLocationsPage({ searchParams }: PageProps) {
       : wards
     : [];
 
-  const selectedWard =
-    selectedWardId !== null && Number.isFinite(selectedWardId)
-      ? (wards.find((ward) => ward.id === selectedWardId) ?? null)
-      : null;
-
-  const streets = selectedWard
-    ? await locationService
-        .getStreetsByWard({ wardId: selectedWard.id })
-        .catch(() => [])
-    : [];
-
-  const filteredStreets = selectedWard
-    ? searchQuery
-      ? await locationService
-          .getStreetsByWard({
-            wardId: selectedWard.id,
-            filters: { q: searchQuery },
-          })
-          .catch(() => [])
-      : streets
-    : [];
-
   return (
     <section className="space-y-5">
       <AdminLocationsTable
         provinces={filteredProvinces}
         wards={filteredWards}
-        streets={filteredStreets}
         selectedProvince={selectedProvince}
-        selectedWard={selectedWard}
+        selectedWard={null}
         searchValue={searchValue}
         toolbar={{
           title: "Quản lí địa điểm",

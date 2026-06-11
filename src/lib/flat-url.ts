@@ -1,8 +1,4 @@
-import {
-  BED_BATH_OPTIONS,
-  DIRECTION_OPTIONS,
-  FILTER_LIMITS,
-} from "@/constants/filter";
+import { DIRECTION_OPTIONS, FILTER_LIMITS } from "@/constants/filter";
 import { compactSlugToken, humanizeSlugToken } from "@/lib/text-normalize";
 import { Category } from "@/types/category";
 import {
@@ -38,8 +34,6 @@ const PRICE_TOKEN_PREFIX = "gia-";
 const LOCATION_TOKEN_PREFIX = "khu-vuc-";
 const LOCATION_PROVINCE_PREFIX = "tp-";
 const LOCATION_WARD_PREFIX = "phuong-";
-const BEDROOM_TOKEN_PREFIX = "phong-ngu-";
-const BATHROOM_TOKEN_PREFIX = "phong-tam-";
 const DIRECTION_TOKEN_PREFIX = "huong-";
 
 const CATEGORY_SLUG_TO_TOKEN = new Map<string, string>([
@@ -153,28 +147,6 @@ function buildLocationTokenFromRouteParts(routeParts: FlatUrlRouteParts) {
   return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
 }
 
-// Normalize bedroom and bathroom values into the slug format used by the route.
-function bedBathValueToSlug(value: string) {
-  return value === "5+" ? "5-plus" : compactSlugToken(value);
-}
-
-// Convert slug values back into the UI format expected by the filter state.
-function bedBathSlugToValue(value: string) {
-  return value === "5-plus" ? "5+" : value;
-}
-
-// Build the bedroom token when the filter has a selected value.
-function buildBedroomToken(values: string[]) {
-  if (!values.length) return "";
-  return `${BEDROOM_TOKEN_PREFIX}${bedBathValueToSlug(values[0])}`;
-}
-
-// Build the bathroom token when the filter has a selected value.
-function buildBathroomToken(values: string[]) {
-  if (!values.length) return "";
-  return `${BATHROOM_TOKEN_PREFIX}${bedBathValueToSlug(values[0])}`;
-}
-
 // Build the direction token from the selected filter option id.
 function buildDirectionToken(values: string[]) {
   if (!values.length) return "";
@@ -223,7 +195,6 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
       pending,
       province: "",
       ward: "",
-      street: "",
     };
   }
 
@@ -271,7 +242,6 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
     pending: removeMatchedSuffix(pending, locationMatch[0]),
     province: provinceSlug ? provinceName : "",
     ward: wardSlug ? wardName : "",
-    street: "",
   };
 }
 
@@ -421,12 +391,6 @@ export function buildPropertyFilterPath(
   const locationToken = buildLocationToken(value.province, value.ward, context);
   if (locationToken) tokens.push(locationToken);
 
-  const bedroomToken = buildBedroomToken(value.bedrooms);
-  if (bedroomToken) tokens.push(bedroomToken);
-
-  const bathroomToken = buildBathroomToken(value.bathrooms);
-  if (bathroomToken) tokens.push(bathroomToken);
-
   const directionToken = buildDirectionToken(value.directions);
   if (directionToken) tokens.push(directionToken);
 
@@ -513,7 +477,6 @@ export function parsePropertyFilterSlug(
     ]),
   );
   const directionSlugPattern = Array.from(directionSlugToId.keys()).join("|");
-  const bedBathSinglePattern = `(?:${BED_BATH_OPTIONS.map((value) => bedBathValueToSlug(value)).join("|")})`;
 
   const directionParsed = parseSingleListToken(
     pending,
@@ -524,29 +487,10 @@ export function parsePropertyFilterSlug(
   pending = directionParsed.pending;
   initial.directions = directionParsed.value ? [directionParsed.value] : [];
 
-  const bathroomParsed = parseSingleListToken(
-    pending,
-    BATHROOM_TOKEN_PREFIX,
-    bedBathSinglePattern,
-    bedBathSlugToValue,
-  );
-  pending = bathroomParsed.pending;
-  initial.bathrooms = bathroomParsed.value ? [bathroomParsed.value] : [];
-
-  const bedroomParsed = parseSingleListToken(
-    pending,
-    BEDROOM_TOKEN_PREFIX,
-    bedBathSinglePattern,
-    bedBathSlugToValue,
-  );
-  pending = bedroomParsed.pending;
-  initial.bedrooms = bedroomParsed.value ? [bedroomParsed.value] : [];
-
   const locationParsed = parseLocationToken(pending, context);
   pending = locationParsed.pending;
   initial.province = locationParsed.province;
   initial.ward = locationParsed.ward;
-  initial.street = locationParsed.street;
 
   const areaToken = extractSuffixToken(pending, AREA_TOKEN_PREFIX);
   if (areaToken) {
@@ -602,8 +546,6 @@ export function isLikelyPropertyFilterSlug(rawSlug?: string) {
     PRICE_TOKEN_PREFIX,
     AREA_TOKEN_PREFIX,
     LOCATION_TOKEN_PREFIX,
-    BEDROOM_TOKEN_PREFIX,
-    BATHROOM_TOKEN_PREFIX,
     DIRECTION_TOKEN_PREFIX,
   ];
 
@@ -778,19 +720,11 @@ export function buildPropertyFilterBreadcrumbs(
     }
   }
 
-  const locationLabel = [parsed.province, parsed.ward, parsed.street]
+  const locationLabel = [parsed.province, parsed.ward]
     .filter(Boolean)
     .join(", ");
   if (locationLabel) {
     items.push({ label: locationLabel });
-  }
-
-  if (parsed.bedrooms.length > 0) {
-    items.push({ label: `${parsed.bedrooms[0]} Phòng ngủ` });
-  }
-
-  if (parsed.bathrooms.length > 0) {
-    items.push({ label: `${parsed.bathrooms[0]} Phòng tắm` });
   }
 
   if (parsed.directions.length > 0) {

@@ -1,6 +1,4 @@
 import {
-  Bath,
-  Bed,
   CalendarDays,
   Eye,
   Layers,
@@ -48,10 +46,6 @@ export default function PropertyDetailContent({
   viewedProperties,
 }: PropertyDetailContentProps) {
   const hasArea = typeof property.area === "number" && property.area > 0;
-  const hasBathrooms =
-    typeof property.bathrooms === "number" && property.bathrooms > 0;
-  const hasBedrooms =
-    typeof property.bedrooms === "number" && property.bedrooms > 0;
   const hasDirection = Boolean(property.direction);
 
   return (
@@ -153,34 +147,6 @@ export default function PropertyDetailContent({
                   Diện tích
                 </p>
                 <p className="text-heading text-sm font-semibold">{formatAreaValue(property.area)}</p>
-              </div>
-            </div>
-          ) : null}
-
-          {hasBedrooms ? (
-            <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
-              <Bed className="text-primary mt-0.5 size-5 shrink-0" />
-              <div>
-                <p className="text-secondary text-xs tracking-wide uppercase">
-                  Phòng ngủ
-                </p>
-                <p className="text-heading text-sm font-semibold">
-                  {property.bedrooms}
-                </p>
-              </div>
-            </div>
-          ) : null}
-
-          {hasBathrooms ? (
-            <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
-              <Bath className="text-primary mt-0.5 size-5 shrink-0" />
-              <div>
-                <p className="text-secondary text-xs tracking-wide uppercase">
-                  Phòng tắm
-                </p>
-                <p className="text-heading text-sm font-semibold">
-                  {property.bathrooms}
-                </p>
               </div>
             </div>
           ) : null}

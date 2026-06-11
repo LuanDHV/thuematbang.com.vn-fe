@@ -137,7 +137,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     }
 
     const locationText = [
-      rentRequest.desiredStreet?.name,
       rentRequest.desiredWard?.name,
       rentRequest.desiredProvince?.name,
     ]

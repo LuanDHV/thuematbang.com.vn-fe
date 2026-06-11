@@ -19,7 +19,6 @@ export type PropertySortBy =
   | "price"
   | "area"
   | "viewCount"
-  | "boostedAt"
   | "priorityStatus"
   | "isFeatured";
 
@@ -32,18 +31,12 @@ export type PropertyListFilters = {
   title?: string;
   provinceId?: number;
   wardId?: number;
-  streetId?: number;
   provinceSlug?: string;
   wardSlug?: string;
-  streetSlug?: string;
   minPrice?: number;
   maxPrice?: number;
   minArea?: number;
   maxArea?: number;
-  bedrooms?: number;
-  minBedrooms?: number;
-  bathrooms?: number;
-  minBathrooms?: number;
   isNegotiable?: boolean;
   direction?: PropertyDirection;
   priorityStatus?: PropertyPriority;

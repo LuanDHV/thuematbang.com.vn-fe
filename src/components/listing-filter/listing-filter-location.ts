@@ -113,7 +113,6 @@ export function reconcileLocationFilter(
       ...value,
       province: "",
       ward: "",
-      street: "",
     };
   }
 
@@ -128,6 +127,5 @@ export function reconcileLocationFilter(
     ...value,
     province: matchedProvince,
     ward: matchedWard,
-    street: matchedWard ? value.street : "",
   };
 }

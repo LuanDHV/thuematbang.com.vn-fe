@@ -7,7 +7,7 @@ import {
   PublishStatus,
 } from "./enums";
 import { Lead } from "./lead";
-import { Province, Street, Ward } from "./location";
+import { Province, Ward } from "./location";
 import { PropertyImage } from "./media";
 import { User } from "./user";
 
@@ -17,33 +17,25 @@ export interface Property {
   title: string;
   slug: string;
   categoryId: number;
-  price?: number | null;
+  price: number;
   isNegotiable: boolean;
-  area?: number | null;
-  direction?: PropertyDirection | null;
-  bedrooms?: number | null;
-  bathrooms?: number | null;
+  area: number;
+  direction: PropertyDirection;
   priorityStatus: PropertyPriority;
   publishSource: PublishSource;
   isBoosted: boolean;
-  boostedAt?: Date | string | null;
-  boostStartAt?: Date | string | null;
-  boostEndAt?: Date | string | null;
   boostCount: number;
-  lastBoostAt?: Date | string | null;
-  provinceId?: number | null;
-  wardId?: number | null;
-  streetId?: number | null;
+  provinceId: number;
+  wardId: number;
   addressDetail?: string | null;
   longitude?: number | null;
   latitude?: number | null;
-  contactName?: string | null;
-  contactPhone?: string | null;
+  contactName: string;
+  contactPhone: string;
   content?: string | null;
   viewCount: number;
   status: PublishStatus;
   isFeatured: boolean;
-  publishedAt?: Date | string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
   propertyPackageOrderId?: number | null;
@@ -51,7 +43,6 @@ export interface Property {
   category?: Category;
   province?: Province | null;
   ward?: Ward | null;
-  street?: Street | null;
   leads?: Lead[];
   images?: PropertyImage[];
   boostOrders?: PropertyBoostOrder[];

@@ -24,16 +24,13 @@ export type RentRequestListFilters = {
   title?: string;
   provinceId?: number;
   wardId?: number;
-  streetId?: number;
   provinceSlug?: string;
   wardSlug?: string;
-  streetSlug?: string;
   minBudget?: number;
   maxBudget?: number;
   minArea?: number;
   maxArea?: number;
-  direction?: PropertyDirection;
-  preferredDirection?: PropertyDirection;
+  desiredDirection?: PropertyDirection;
   status?: RentRequestStatus;
   sortBy?: RentRequestSortBy;
   sortOrder?: "asc" | "desc";
