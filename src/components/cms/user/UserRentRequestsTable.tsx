@@ -93,7 +93,6 @@ export default function UserRentRequestsTable({
   const stats = useMemo(
     () => ({
       active: items.filter((item) => item.status === "ACTIVE").length,
-      featured: items.filter((item) => item.isFeatured).length,
     }),
     [items],
   );
@@ -109,7 +108,7 @@ export default function UserRentRequestsTable({
 
   return (
     <section className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <article className="surface-card p-4">
           <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
             Tổng nhu cầu
@@ -124,14 +123,6 @@ export default function UserRentRequestsTable({
           </p>
           <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
             {stats.active}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Nổi bật
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.featured}
           </p>
         </article>
         <article className="surface-card p-4">

@@ -30,14 +30,12 @@ const statusToneMap: Record<RentRequestStatus, AdminBadgeTone> = {
   ACTIVE: "success",
   MATCHED: "info",
   CLOSED: "muted",
-  EXPIRED: "warning",
 };
 
 const statusLabelMap: Record<RentRequestStatus, string> = {
   ACTIVE: "Đang tìm",
   MATCHED: "Đã khớp",
   CLOSED: "Đã đóng",
-  EXPIRED: "Hết hạn",
 };
 
 export default function AdminRentRequestsTable({

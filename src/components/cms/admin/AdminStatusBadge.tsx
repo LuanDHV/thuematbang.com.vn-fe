@@ -44,7 +44,6 @@ export const leadStatusBadgeToneMap: Record<LeadStatus, AdminBadgeTone> = {
   NEW: "info",
   CONTACTED: "warning",
   QUALIFIED: "success",
-  CLOSED: "neutral",
   REJECTED: "danger",
 };
 
@@ -56,7 +55,6 @@ export const paymentStatusBadgeToneMap: Record<
   SUCCESS: "success",
   FAILED: "danger",
   CANCELED: "danger",
-  REFUNDED: "purple",
 };
 
 export default function AdminStatusBadge({

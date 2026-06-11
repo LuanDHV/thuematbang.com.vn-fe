@@ -23,9 +23,6 @@ export interface Property {
   direction?: PropertyDirection | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
-  floors?: number | null;
-  frontage?: number | null;
-  roadWidth?: number | null;
   priorityStatus: PropertyPriority;
   publishSource: PublishSource;
   isBoosted: boolean;
@@ -47,7 +44,6 @@ export interface Property {
   status: PublishStatus;
   isFeatured: boolean;
   publishedAt?: Date | string | null;
-  expiredAt?: Date | string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
   propertyPackageOrderId?: number | null;

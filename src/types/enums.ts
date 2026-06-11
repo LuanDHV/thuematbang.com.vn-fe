@@ -8,7 +8,6 @@ export type LeadStatus =
   | "NEW"
   | "CONTACTED"
   | "QUALIFIED"
-  | "CLOSED"
   | "REJECTED";
 
 export type PropertyPriority = "FREE" | "STANDARD" | "PREMIUM";
@@ -25,14 +24,13 @@ export type PropertyDirection =
 
 export type CategoryType = "PROPERTY" | "RENT_REQUEST" | "PROJECT" | "NEWS";
 
-export type RentRequestStatus = "ACTIVE" | "MATCHED" | "CLOSED" | "EXPIRED";
+export type RentRequestStatus = "ACTIVE" | "MATCHED" | "CLOSED";
 
 export type PaymentStatus =
   | "PENDING"
   | "SUCCESS"
   | "FAILED"
-  | "CANCELED"
-  | "REFUNDED";
+  | "CANCELED";
 
 export type PurchaseType = "PROPERTY_POST_PACKAGE" | "PROPERTY_BOOST";
 

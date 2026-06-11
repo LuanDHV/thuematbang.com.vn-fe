@@ -24,7 +24,6 @@ const statusLabelMap: Record<LeadStatus, string> = {
   NEW: "Mới",
   CONTACTED: "Đã liên hệ",
   QUALIFIED: "Đủ điều kiện",
-  CLOSED: "Đã đóng",
   REJECTED: "Từ chối",
 };
 

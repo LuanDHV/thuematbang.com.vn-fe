@@ -21,10 +21,8 @@ export interface RentRequest {
   contactName?: string | null;
   contactPhone?: string | null;
   status: RentRequestStatus;
-  isFeatured: boolean;
   viewCount: number;
   publishedAt?: Date | string | null;
-  expiredAt?: Date | string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
   user?: User | null;

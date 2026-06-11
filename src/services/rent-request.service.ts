@@ -35,7 +35,6 @@ export type RentRequestListFilters = {
   direction?: PropertyDirection;
   preferredDirection?: PropertyDirection;
   status?: RentRequestStatus;
-  isFeatured?: boolean;
   sortBy?: RentRequestSortBy;
   sortOrder?: "asc" | "desc";
 };

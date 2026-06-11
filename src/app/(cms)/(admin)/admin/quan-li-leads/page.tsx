@@ -20,9 +20,9 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
   const limit = 10;
   const status =
     statusValue &&
-    (
-      ["NEW", "CONTACTED", "QUALIFIED", "CLOSED", "REJECTED"] as LeadStatus[]
-    ).includes(statusValue as LeadStatus)
+    (["NEW", "CONTACTED", "QUALIFIED", "REJECTED"] as LeadStatus[]).includes(
+      statusValue as LeadStatus,
+    )
       ? (statusValue as LeadStatus)
       : undefined;
 
