@@ -73,6 +73,7 @@ export type PropertyMineParams = {
 };
 
 export type UpdatePropertyPayload = FormData;
+export type CreatePropertyPayload = FormData;
 
 export const propertyService = {
   // Fetch one paginated property list with the filter contract used across public and CMS pages.
@@ -120,6 +121,16 @@ export const propertyService = {
       auth: "required",
       cache: "no-store",
       tags: ["property-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  // Create one property through the authenticated CMS mutation contract.
+  create: async (payload: CreatePropertyPayload) => {
+    const response = await requestServerApi<Property>("/properties", {
+      method: "POST",
+      auth: "required",
+      body: payload,
     });
     return response.data;
   },

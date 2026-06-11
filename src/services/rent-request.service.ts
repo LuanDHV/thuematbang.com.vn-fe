@@ -56,6 +56,9 @@ export type RentRequestMineParams = {
   limit?: number;
 };
 
+export type CreateRentRequestPayload = FormData;
+export type UpdateRentRequestPayload = FormData;
+
 export const rentRequestService = {
   // Fetch one paginated rent-request list with the filter contract used by listings and CMS.
   getAll: async (params: RentRequestGetAllParams = {}) =>
@@ -105,6 +108,51 @@ export const rentRequestService = {
         tags: ["rent-request-detail", slug],
       },
     );
+    return response.data;
+  },
+
+  // Fetch one rent-request detail by numeric id for authenticated CMS flows.
+  getById: async (id: number) => {
+    const response = await requestServerApi<RentRequest>(
+      `/rent-requests/${id}`,
+      {
+        auth: "required",
+        cache: "no-store",
+        tags: ["rent-request-detail", String(id)],
+      },
+    );
+    return response.data;
+  },
+
+  // Create one rent request through the authenticated CMS mutation contract.
+  create: async (payload: CreateRentRequestPayload) => {
+    const response = await requestServerApi<RentRequest>("/rent-requests", {
+      method: "POST",
+      auth: "required",
+      body: payload,
+    });
+    return response.data;
+  },
+
+  // Update one rent request through the authenticated CMS mutation contract.
+  update: async (id: number, payload: UpdateRentRequestPayload) => {
+    const response = await requestServerApi<RentRequest>(
+      `/rent-requests/${id}`,
+      {
+        method: "PATCH",
+        auth: "required",
+        body: payload,
+      },
+    );
+    return response.data;
+  },
+
+  // Delete one rent request through the authenticated CMS mutation contract.
+  remove: async (id: number) => {
+    const response = await requestServerApi<RentRequest>(`/rent-requests/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
     return response.data;
   },
 
