@@ -47,8 +47,8 @@ export const metadata: Metadata = {
     images: [siteConfig.defaultImage],
   },
   icons: {
-    icon: "/imgs/brand-logo.png",
-    apple: "/imgs/brand-logo.png",
+    icon: "/imgs/logo-TMB-black.png",
+    apple: "/imgs/logo-TMB-black.png",
   },
   robots: isProduction
     ? {

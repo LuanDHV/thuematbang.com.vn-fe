@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/login-form";
+import Image from "next/image";
 
 type AdminLoginPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -33,7 +33,7 @@ export default async function DangNhapAdminPage({
           className="inline-flex rounded-lg px-2 py-1 transition-opacity hover:opacity-85 lg:mb-5"
         >
           <Image
-            src="/imgs/brand-logo.png"
+            src="/imgs/logo-TMB-black.png"
             alt="Thuematbang.com.vn"
             width={160}
             height={80}

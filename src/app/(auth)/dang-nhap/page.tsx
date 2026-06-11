@@ -11,7 +11,7 @@ export default function DangNhapPage() {
           className="inline-flex rounded-lg px-2 py-1 transition-opacity hover:opacity-85 lg:mb-5"
         >
           <Image
-            src="/imgs/brand-logo.png"
+            src="/imgs/logo-TMB-black.png"
             alt="Thuematbang.com.vn"
             width={160}
             height={80}

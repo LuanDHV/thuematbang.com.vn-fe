@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   const aboutLinks = [
@@ -25,8 +25,8 @@ export default function Footer() {
             <div className="relative h-20 w-64 sm:h-24 sm:w-72">
               <Link href="/" className="block h-full w-full">
                 <Image
-                  src="/imgs/brand-logo.png"
-                  alt="thuematbang-logo"
+                  src="/imgs/logo-TMB-white.png"
+                  alt="Thuematbang.com.vn"
                   width={280}
                   height={80}
                   priority

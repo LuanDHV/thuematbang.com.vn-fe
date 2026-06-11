@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { LogOut, Menu, Settings, User } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
@@ -15,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Image from "next/image";
 
 const HEADER_ITEMS = [
   { id: "cho-thue", name: "Cho thuê", href: "/cho-thue" },
@@ -58,8 +58,8 @@ export default function Header() {
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0"
           >
             <Image
-              src="/imgs/brand-logo.png"
-              alt="thuematbang.com.vn"
+              src="/imgs/logo-TMB-black.png"
+              alt="Thuematbang.com.vn"
               width={280}
               height={80}
               priority
@@ -133,11 +133,7 @@ export default function Header() {
                 </PopoverContent>
               </Popover>
             ) : (
-              <Button
-                asChild
-                size="lg"
-                className="hidden lg:inline-flex"
-              >
+              <Button asChild size="lg" className="hidden lg:inline-flex">
                 <Link href="/dang-nhap">
                   Đăng nhập
                   <User className="size-5" />
