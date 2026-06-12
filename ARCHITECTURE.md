@@ -316,6 +316,7 @@ CMS uses a shared shell with role-specific ownership.
 - navigation config
 - layout container for CMS content structure
 - desktop-collapsible sidebar state and rail behavior
+- shared form-page shell for CMS screens that only render input forms
 
 ### Admin CMS
 
@@ -333,6 +334,11 @@ CMS uses a shared shell with role-specific ownership.
 - password flow
 - my-properties table
 - my-rent-requests table
+
+### CMS page width patterns
+
+- table and dashboard screens remain full-width inside the CMS shell
+- form-only screens use the shared CMS form shell so content does not stretch across the full available width
 
 ## 12. Refactor Rules
 

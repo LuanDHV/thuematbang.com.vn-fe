@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail, Phone, Upload, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import CmsFormPageShell from "@/components/cms/shared/CmsFormPageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -145,7 +146,7 @@ export default function EditProfileForm() {
   const avatarDisplay = previewUrl || authUser.avatarUrl || null;
 
   return (
-    <div className="mx-auto flex flex-col gap-5">
+    <CmsFormPageShell>
       <form className="flex flex-col gap-5" onSubmit={onSubmit}>
         <section className="surface-panel p-5">
           <div className="flex flex-col items-center gap-5">
@@ -269,6 +270,6 @@ export default function EditProfileForm() {
           </div>
         </section>
       </form>
-    </div>
+    </CmsFormPageShell>
   );
 }

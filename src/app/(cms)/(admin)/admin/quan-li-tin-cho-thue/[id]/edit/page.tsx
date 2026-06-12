@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { updatePropertyAction } from "@/actions/property.actions";
+import CmsFormPageShell from "@/components/cms/shared/CmsFormPageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -72,7 +73,7 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
   }
 
   return (
-    <section className="space-y-6">
+    <CmsFormPageShell>
       <div className="surface-panel overflow-hidden">
         <div className="border-hairline border-b px-4 py-4 md:px-5">
           <h1 className="text-heading text-lg font-semibold tracking-[-0.02em]">
@@ -207,6 +208,6 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
           </div>
         </form>
       </div>
-    </section>
+    </CmsFormPageShell>
   );
 }

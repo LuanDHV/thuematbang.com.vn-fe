@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
+import CmsFormPageShell from "@/components/cms/shared/CmsFormPageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -115,105 +116,111 @@ export default function ChangePasswordForm() {
 
   if (isLoading) {
     return (
-      <div className="surface-panel p-5">
-        <p className="text-secondary text-sm">Đang tải thông tin bảo mật...</p>
-      </div>
+      <CmsFormPageShell>
+        <div className="surface-panel p-5">
+          <p className="text-secondary text-sm">
+            Đang tải thông tin bảo mật...
+          </p>
+        </div>
+      </CmsFormPageShell>
     );
   }
 
   if (!authUser) return null;
 
   return (
-    <div className="surface-panel p-5">
-      <div className="flex items-center gap-2">
-        <KeyRound className="text-primary h-5 w-5" />
-        <h1 className="text-heading text-xl font-semibold">{title}</h1>
-      </div>
+    <CmsFormPageShell>
+      <div className="surface-panel p-5">
+        <div className="flex items-center gap-2">
+          <KeyRound className="text-primary h-5 w-5" />
+          <h1 className="text-heading text-xl font-semibold">{title}</h1>
+        </div>
 
-      <p className="text-secondary mt-2 text-sm">{description}</p>
+        <p className="text-secondary mt-2 text-sm">{description}</p>
 
-      <form className="mt-5 space-y-4" onSubmit={onSubmit}>
-        {hasPassword ? (
+        <form className="mt-5 space-y-4" onSubmit={onSubmit}>
+          {hasPassword ? (
+            <div className="space-y-2">
+              <Label htmlFor="currentPassword">Mật khẩu hiện tại</Label>
+              <Input
+                id="currentPassword"
+                type="password"
+                autoComplete="current-password"
+                className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
+                {...form.register("currentPassword")}
+              />
+              {form.formState.errors.currentPassword?.message ? (
+                <p className="text-xs text-red-600">
+                  {form.formState.errors.currentPassword.message}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           <div className="space-y-2">
-            <Label htmlFor="currentPassword">Mật khẩu hiện tại</Label>
+            <Label htmlFor="newPassword">{passwordFieldLabel}</Label>
             <Input
-              id="currentPassword"
+              id="newPassword"
               type="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
-              {...form.register("currentPassword")}
+              {...form.register("newPassword")}
             />
-            {form.formState.errors.currentPassword?.message ? (
+            {form.formState.errors.newPassword?.message ? (
               <p className="text-xs text-red-600">
-                {form.formState.errors.currentPassword.message}
+                {form.formState.errors.newPassword.message}
               </p>
             ) : null}
           </div>
-        ) : null}
 
-        <div className="space-y-2">
-          <Label htmlFor="newPassword">{passwordFieldLabel}</Label>
-          <Input
-            id="newPassword"
-            type="password"
-            autoComplete="new-password"
-            className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
-            {...form.register("newPassword")}
-          />
-          {form.formState.errors.newPassword?.message ? (
-            <p className="text-xs text-red-600">
-              {form.formState.errors.newPassword.message}
-            </p>
-          ) : null}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
-          <Input
-            id="confirmPassword"
-            type="password"
-            autoComplete="new-password"
-            className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
-            {...form.register("confirmPassword")}
-          />
-          {form.formState.errors.confirmPassword?.message ? (
-            <p className="text-xs text-red-600">
-              {form.formState.errors.confirmPassword.message}
-            </p>
-          ) : null}
-        </div>
-
-        {formError ? (
-          <div
-            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
-            role="alert"
-          >
-            {formError}
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
+              {...form.register("confirmPassword")}
+            />
+            {form.formState.errors.confirmPassword?.message ? (
+              <p className="text-xs text-red-600">
+                {form.formState.errors.confirmPassword.message}
+              </p>
+            ) : null}
           </div>
-        ) : null}
 
-        {successMessage ? (
-          <div
-            className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600"
-            role="status"
-          >
-            {successMessage}
+          {formError ? (
+            <div
+              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
+              role="alert"
+            >
+              {formError}
+            </div>
+          ) : null}
+
+          {successMessage ? (
+            <div
+              className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600"
+              role="status"
+            >
+              {successMessage}
+            </div>
+          ) : null}
+
+          <div className="flex justify-end">
+            <Button type="submit" size="lg" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  {submitButtonLabel}
+                </>
+              ) : (
+                submitButtonLabel
+              )}
+            </Button>
           </div>
-        ) : null}
-
-        <div className="flex justify-end">
-          <Button type="submit" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="size-4 animate-spin" />
-                {submitButtonLabel}
-              </>
-            ) : (
-              submitButtonLabel
-            )}
-          </Button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </CmsFormPageShell>
   );
 }

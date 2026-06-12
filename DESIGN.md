@@ -260,6 +260,8 @@ From `src/components/cms/shared/CmsLayout.tsx`:
 - keep the mobile CMS sidebar as a fixed rail instead of a sheet menu
 - use panel-based content inside the right column
 - avoid squeezing CMS content into public-page width rules
+- keep table and dashboard screens full-width
+- constrain form-only CMS screens to a shared centered form shell
 
 ## 11. Component Language
 
@@ -289,6 +291,8 @@ UI rules:
 - inputs should feel clean and readable first
 - validation messages should be concise and visible
 - success/error states should not invent a second design language
+- form-only CMS screens and listing-create screens should use a shared `max-w-2xl` content width
+- use `surface-panel` as the default surface for those centered form screens
 
 ### Tables
 
