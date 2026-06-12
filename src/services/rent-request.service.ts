@@ -51,8 +51,21 @@ export type RentRequestMineParams = {
   limit?: number;
 };
 
-export type CreateRentRequestPayload = FormData;
-export type UpdateRentRequestPayload = FormData;
+export type CreateRentRequestPayload = {
+  title: string;
+  slug: string;
+  categoryId: number;
+  budget: number;
+  desiredArea: number;
+  desiredDirection?: PropertyDirection | null;
+  desiredProvinceId: number;
+  desiredWardId: number;
+  contactName: string;
+  contactPhone: string;
+  requirementText?: string;
+};
+
+export type UpdateRentRequestPayload = Partial<CreateRentRequestPayload>;
 
 export const rentRequestService = {
   // Fetch one paginated rent-request list with the filter contract used by listings and CMS.
@@ -124,7 +137,10 @@ export const rentRequestService = {
     const response = await requestServerApi<RentRequest>("/rent-requests", {
       method: "POST",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },
@@ -136,7 +152,10 @@ export const rentRequestService = {
       {
         method: "PATCH",
         auth: "required",
-        body: payload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       },
     );
     return response.data;

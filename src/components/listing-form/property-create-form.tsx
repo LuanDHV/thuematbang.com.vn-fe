@@ -77,6 +77,7 @@ export function PropertyCreateForm({
   const [images, setImages] = useState<File[]>([]);
   const [imagesError, setImagesError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
+  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
 
   const resolvedDefaults = useMemo(
     () =>
@@ -132,6 +133,7 @@ export function PropertyCreateForm({
     setSubmitError(null);
     setImagesError(null);
     setSuccessOpen(false);
+    setCreatedSlug(null);
 
     if (!images.length) {
       setImagesError("Vui lòng chọn ít nhất 1 ảnh cho tin đăng.");
@@ -160,9 +162,10 @@ export function PropertyCreateForm({
     images.forEach((image) => payload.append("images", image));
 
     try {
-      await submitAction(payload);
+      const createdProperty = await submitAction(payload);
       form.reset(resolvedDefaults);
       setImages([]);
+      setCreatedSlug(createdProperty.slug);
       setSuccessOpen(true);
     } catch (error) {
       setSubmitError(
@@ -290,7 +293,9 @@ export function PropertyCreateForm({
         title="Đã đăng tin thành công"
         description="Bạn có muốn xem các nhu cầu thuê không?"
         primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref="/quan-li-tai-khoan/cho-thue"
+        primaryActionHref={
+          createdSlug ? `/cho-thue/${createdSlug}` : "/quan-li-tai-khoan/cho-thue"
+        }
         secondaryActionLabel="Trang cần thuê"
         secondaryActionHref="/can-thue"
       />

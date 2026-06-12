@@ -18,7 +18,7 @@
   --color-hairline: var(--hairline);
   --color-hairline-strong: var(--hairline-strong);
 
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-sans: system-ui, sans-serif;
 }
 
 :root {
@@ -58,6 +58,16 @@ html {
 *::before,
 *::after {
   box-sizing: inherit;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 body {

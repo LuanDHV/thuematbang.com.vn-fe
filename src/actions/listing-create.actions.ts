@@ -5,6 +5,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { buildListingSlug } from "@/lib/listing-slug";
 import { propertyService } from "@/services/property.service";
 import { rentRequestService } from "@/services/rent-request.service";
+import type { PropertyDirection } from "@/types/enums";
 
 function cloneFormData(formData: FormData) {
   const nextFormData = new FormData();
@@ -28,6 +29,28 @@ function normalizeBooleanLike(value: FormDataEntryValue | null) {
   return value === "true" || value === "on" || value === "1";
 }
 
+function normalizePropertyDirection(
+  value: FormDataEntryValue | null,
+): PropertyDirection | null {
+  const normalizedValue = String(value ?? "").trim();
+  if (!normalizedValue) return null;
+
+  const allowedDirections: PropertyDirection[] = [
+    "BAC",
+    "DONG_BAC",
+    "DONG",
+    "DONG_NAM",
+    "NAM",
+    "TAY_NAM",
+    "TAY",
+    "TAY_BAC",
+  ];
+
+  return allowedDirections.includes(normalizedValue as PropertyDirection)
+    ? (normalizedValue as PropertyDirection)
+    : null;
+}
+
 function normalizePropertyPayload(formData: FormData) {
   const nextFormData = cloneFormData(formData);
   normalizeListingSlug(nextFormData);
@@ -42,11 +65,42 @@ function normalizePropertyPayload(formData: FormData) {
 function normalizeRentRequestPayload(formData: FormData) {
   const nextFormData = cloneFormData(formData);
   normalizeListingSlug(nextFormData);
-  return nextFormData;
+
+  const title = String(nextFormData.get("title") ?? "").trim();
+  const slug = String(nextFormData.get("slug") ?? "").trim();
+  const categoryId = Number(nextFormData.get("categoryId"));
+  const budget = Number(nextFormData.get("budget"));
+  const desiredArea = Number(nextFormData.get("desiredArea"));
+  const desiredDirection = normalizePropertyDirection(
+    nextFormData.get("desiredDirection"),
+  );
+  const desiredProvinceId = Number(nextFormData.get("desiredProvinceId"));
+  const desiredWardId = Number(nextFormData.get("desiredWardId"));
+  const contactName = String(nextFormData.get("contactName") ?? "").trim();
+  const contactPhone = String(nextFormData.get("contactPhone") ?? "").trim();
+  const requirementText = String(
+    nextFormData.get("requirementText") ?? "",
+  ).trim();
+
+  return {
+    title,
+    slug,
+    categoryId,
+    budget,
+    desiredArea,
+    desiredDirection,
+    desiredProvinceId,
+    desiredWardId,
+    contactName,
+    contactPhone,
+    requirementText: requirementText || undefined,
+  };
 }
 
 export async function createPropertyAction(formData: FormData) {
-  const result = await propertyService.create(normalizePropertyPayload(formData));
+  const result = await propertyService.create(
+    normalizePropertyPayload(formData),
+  );
 
   revalidateTag("properties", "max");
   revalidateTag("my-properties", "max");

@@ -71,6 +71,7 @@ export function RentRequestCreateForm({
 }: RentRequestCreateFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
+  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
 
   const resolvedDefaults = useMemo(
     () =>
@@ -127,6 +128,7 @@ export function RentRequestCreateForm({
   ) => {
     setSubmitError(null);
     setSuccessOpen(false);
+    setCreatedSlug(null);
 
     const payload = new FormData();
     appendString(payload, "title", values.title);
@@ -142,8 +144,9 @@ export function RentRequestCreateForm({
     appendString(payload, "requirementText", values.requirementText);
 
     try {
-      await submitAction(payload);
+      const createdRentRequest = await submitAction(payload);
       form.reset(resolvedDefaults);
+      setCreatedSlug(createdRentRequest.slug);
       setSuccessOpen(true);
     } catch (error) {
       setSubmitError(
@@ -254,7 +257,9 @@ export function RentRequestCreateForm({
         title="Đã đăng tin thành công"
         description="Bạn có muốn xem các tin đăng không?"
         primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref="/quan-li-tai-khoan/cau-thue"
+        primaryActionHref={
+          createdSlug ? `/can-thue/${createdSlug}` : "/quan-li-tai-khoan/cau-thue"
+        }
         secondaryActionLabel="Trang cho thuê"
         secondaryActionHref="/cho-thue"
       />
