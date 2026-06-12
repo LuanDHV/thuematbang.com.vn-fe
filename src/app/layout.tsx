@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
+import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { isProductionAppEnv } from "@/lib/app-env";
 import { siteConfig } from "@/lib/metadata";
 import AppProviders from "@/components/providers/AppProviders";
 
 const isProduction = isProductionAppEnv();
+
+const geistSans = Be_Vietnam_Pro({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-geist-sans",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -60,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className="h-full antialiased">
+    <html lang="vi" className={`${geistSans.variable} h-full antialiased`}>
       <body className="bg-app text-body min-h-screen">
         <AppProviders>{children}</AppProviders>
       </body>
