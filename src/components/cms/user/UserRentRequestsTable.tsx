@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 
+import AdminStatusBadge, {
+  type AdminBadgeTone,
+} from "@/components/cms/admin/AdminStatusBadge";
 import { TablePaginationFooter } from "@/components/common/Pagination";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -30,12 +32,24 @@ import {
   formatVndAmount,
 } from "@/lib/utils";
 import type { RentRequest } from "@/types/rent-request";
+import type { RentRequestStatus } from "@/types/enums";
 
 type UserRentRequestsTableProps = {
   items: RentRequest[];
   currentPage: number;
   totalPages: number;
-  totalItems: number;
+};
+
+const statusLabelMap: Record<RentRequestStatus, string> = {
+  ACTIVE: "Đang tìm",
+  MATCHED: "Đã khớp",
+  CLOSED: "Đã đóng",
+};
+
+const statusToneMap: Record<RentRequestStatus, AdminBadgeTone> = {
+  ACTIVE: "success",
+  MATCHED: "info",
+  CLOSED: "muted",
 };
 
 function getPublicPath(item: RentRequest) {
@@ -54,7 +68,11 @@ function RentRequestActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label={`Tác vụ cho ${item.title}`}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Tác vụ cho ${item.title}`}
+        >
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -78,7 +96,6 @@ export default function UserRentRequestsTable({
   items,
   currentPage,
   totalPages,
-  totalItems,
 }: UserRentRequestsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -91,13 +108,6 @@ export default function UserRentRequestsTable({
     totalPages,
   );
 
-  const stats = useMemo(
-    () => ({
-      active: items.filter((item) => item.status === "ACTIVE").length,
-    }),
-    [items],
-  );
-
   const handleCopy = async (item: RentRequest) => {
     const publicUrl = `${window.location.origin}${getPublicPath(item)}`;
     await navigator.clipboard.writeText(publicUrl);
@@ -108,134 +118,102 @@ export default function UserRentRequestsTable({
   };
 
   return (
-    <section className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Tổng nhu cầu
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {totalItems}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Đang mở
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {stats.active}
-          </p>
-        </article>
-        <article className="surface-card p-4">
-          <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
-            Trang hiện tại
-          </p>
-          <p className="text-heading mt-2 text-2xl font-semibold tracking-[-0.03em]">
-            {currentPage}/{Math.max(totalPages, 1)}
-          </p>
-        </article>
+    <section className="surface-panel overflow-hidden">
+      <div className="border-b border-hairline px-4 py-4 md:px-5">
+        <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
+          Tin cần thuê của tôi
+        </h2>
       </div>
 
-      <div className="surface-panel overflow-hidden">
-        <div className="border-b border-hairline px-4 py-4 md:px-5">
-          <div className="space-y-2">
-            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
-              Nhu cầu thuê của tôi
-            </h2>
-            <p className="text-secondary text-sm">
-              Dữ liệu thật từ endpoint `/me/rent-requests`.
-            </p>
-          </div>
-        </div>
-
-        <Table>
-          <TableHeader>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[30%]">Nhu cầu</TableHead>
+            <TableHead className="w-[18%]">Danh mục</TableHead>
+            <TableHead className="w-[18%]">Khu vực mong muốn</TableHead>
+            <TableHead className="w-[12%]">Ngân sách</TableHead>
+            <TableHead className="w-[12%]">Diện tích</TableHead>
+            <TableHead className="w-[12%]">Trạng thái</TableHead>
+            <TableHead className="w-[10%]">Ngày tạo</TableHead>
+            <TableHead className="text-right">Tác vụ</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.length > 0 ? (
+            items.map((item) => {
+              const isCopied = copiedSlug === item.slug;
+              return (
+                <TableRow key={item.id}>
+                  <TableCell className="align-top">
+                    <div className="space-y-1">
+                      <Link
+                        href={getPublicPath(item)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-heading hover:text-primary line-clamp-2 font-semibold transition-colors"
+                      >
+                        {item.title}
+                      </Link>
+                      <p className="text-secondary text-xs">{item.slug}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-body">
+                    {item.category?.name || "Chưa có danh mục"}
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-body">
+                    {formatLocationParts([
+                      item.desiredWard?.name,
+                      item.desiredProvince?.name,
+                    ])}
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-body">
+                    {formatVndAmount(item.budget, "Đang cập nhật")}
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-body">
+                    {formatAreaValue(item.desiredArea)}
+                  </TableCell>
+                  <TableCell className="align-top">
+                    <AdminStatusBadge tone={statusToneMap[item.status]}>
+                      {statusLabelMap[item.status]}
+                    </AdminStatusBadge>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-body">
+                    {formatDateDisplay(item.createdAt)}
+                  </TableCell>
+                  <TableCell className="align-top text-right">
+                    <div className="flex justify-end">
+                      <RentRequestActions
+                        item={item}
+                        copied={isCopied}
+                        onCopy={handleCopy}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })
+          ) : (
             <TableRow>
-              <TableHead className="w-[30%]">Nhu cầu</TableHead>
-              <TableHead className="w-[18%]">Danh mục</TableHead>
-              <TableHead className="w-[18%]">Khu vực mong muốn</TableHead>
-              <TableHead className="w-[12%]">Ngân sách</TableHead>
-              <TableHead className="w-[12%]">Diện tích</TableHead>
-              <TableHead className="w-[12%]">Trạng thái</TableHead>
-              <TableHead className="w-[10%]">Ngày tạo</TableHead>
-              <TableHead className="text-right">Tác vụ</TableHead>
+              <TableCell colSpan={8} className="py-14 text-center">
+                <div className="space-y-2">
+                  <p className="text-heading text-base font-semibold">
+                    Không có dữ liệu
+                  </p>
+                  <p className="text-secondary text-sm">
+                    Endpoint `/me/rent-requests` chưa trả về bản ghi nào.
+                  </p>
+                </div>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.length > 0 ? (
-              items.map((item) => {
-                const isCopied = copiedSlug === item.slug;
-                return (
-                  <TableRow key={item.id}>
-                    <TableCell className="align-top">
-                      <div className="space-y-1">
-                        <Link
-                          href={getPublicPath(item)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-heading hover:text-primary line-clamp-2 font-semibold transition-colors"
-                        >
-                          {item.title}
-                        </Link>
-                        <p className="text-secondary text-xs">{item.slug}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="align-top text-sm text-body">
-                      {item.category?.name || "Chưa có danh mục"}
-                    </TableCell>
-                    <TableCell className="align-top text-sm text-body">
-                      {formatLocationParts([
-                        item.desiredWard?.name,
-                        item.desiredProvince?.name,
-                      ])}
-                    </TableCell>
-                    <TableCell className="align-top text-sm text-body">
-                      {formatVndAmount(item.budget, "Đang cập nhật")}
-                    </TableCell>
-                    <TableCell className="align-top text-sm text-body">
-                      {formatAreaValue(item.desiredArea)}
-                    </TableCell>
-                    <TableCell className="align-top">
-                      <Badge variant="outline">{item.status}</Badge>
-                    </TableCell>
-                    <TableCell className="align-top text-sm text-body">
-                      {formatDateDisplay(item.createdAt)}
-                    </TableCell>
-                    <TableCell className="align-top text-right">
-                      <div className="flex justify-end">
-                        <RentRequestActions
-                          item={item}
-                          copied={isCopied}
-                          onCopy={handleCopy}
-                        />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            ) : (
-              <TableRow>
-                <TableCell colSpan={8} className="py-14 text-center">
-                  <div className="space-y-2">
-                    <p className="text-heading text-base font-semibold">
-                      Không có dữ liệu
-                    </p>
-                    <p className="text-secondary text-sm">
-                      Endpoint `/me/rent-requests` chưa trả về bản ghi nào.
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-          <TablePaginationFooter
-            page={currentPage}
-            totalPages={totalPages}
-            onChange={handlePageChange}
-            colSpan={8}
-          />
-        </Table>
-      </div>
+          )}
+        </TableBody>
+        <TablePaginationFooter
+          page={currentPage}
+          totalPages={totalPages}
+          onChange={handlePageChange}
+          colSpan={8}
+        />
+      </Table>
     </section>
   );
 }

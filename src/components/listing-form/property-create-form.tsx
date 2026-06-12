@@ -305,9 +305,7 @@ export function PropertyCreateForm({
         title="Đã đăng tin thành công"
         description="Bạn có muốn xem các nhu cầu thuê không?"
         primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref={
-          createdSlug ? `/cho-thue/${createdSlug}` : "/quan-li-tai-khoan/cho-thue"
-        }
+        primaryActionHref={createdSlug ? `/cho-thue/${createdSlug}` : "/cho-thue"}
         secondaryActionLabel="Trang cần thuê"
         secondaryActionHref="/can-thue"
       />

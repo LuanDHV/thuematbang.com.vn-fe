@@ -257,9 +257,7 @@ export function RentRequestCreateForm({
         title="Đã đăng tin thành công"
         description="Bạn có muốn xem các tin đăng không?"
         primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref={
-          createdSlug ? `/can-thue/${createdSlug}` : "/quan-li-tai-khoan/cau-thue"
-        }
+        primaryActionHref={createdSlug ? `/can-thue/${createdSlug}` : "/can-thue"}
         secondaryActionLabel="Trang cho thuê"
         secondaryActionHref="/cho-thue"
       />

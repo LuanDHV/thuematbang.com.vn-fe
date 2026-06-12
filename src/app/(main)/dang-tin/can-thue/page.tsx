@@ -1,9 +1,10 @@
-import { RentRequestCreateForm } from "@/components/listing-form/rent-request-create-form";
+import type { Metadata } from "next";
+
 import { createRentRequestAction } from "@/actions/listing-create.actions";
+import { RentRequestCreateForm } from "@/components/listing-form/rent-request-create-form";
+import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";
-import { createPageMetadata } from "@/lib/metadata";
-import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Đăng tin cần thuê",
