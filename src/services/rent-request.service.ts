@@ -11,8 +11,8 @@ import {
 
 export type RentRequestSortBy =
   | "createdAt"
-  | "minBudget"
-  | "maxBudget"
+  | "budget"
+  | "desiredArea"
   | "viewCount";
 
 export type RentRequestListFilters = {
@@ -26,11 +26,9 @@ export type RentRequestListFilters = {
   wardId?: number;
   provinceSlug?: string;
   wardSlug?: string;
-  minBudget?: number;
-  maxBudget?: number;
-  minArea?: number;
-  maxArea?: number;
-  desiredDirection?: PropertyDirection;
+  budget?: number;
+  desiredArea?: number;
+  desiredDirection?: PropertyDirection | null;
   status?: RentRequestStatus;
   sortBy?: RentRequestSortBy;
   sortOrder?: "asc" | "desc";

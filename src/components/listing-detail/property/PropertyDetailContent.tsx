@@ -146,7 +146,9 @@ export default function PropertyDetailContent({
                 <p className="text-secondary text-xs tracking-wide uppercase">
                   Diện tích
                 </p>
-                <p className="text-heading text-sm font-semibold">{formatAreaValue(property.area)}</p>
+                <p className="text-heading text-sm font-semibold">
+                  {formatAreaValue(property.area)}
+                </p>
               </div>
             </div>
           ) : null}
@@ -218,10 +220,6 @@ export default function PropertyDetailContent({
               Bất động sản đã xem
             </h2>
           </div>
-          <p className="text-secondary text-sm">
-            Hiện đang hiển thị mẫu. Có thể thay bằng dữ liệu lịch sử xem thật từ
-            localStorage/cookie.
-          </p>
           <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
             {viewedProperties.map((item) => (
               <PropertyCard

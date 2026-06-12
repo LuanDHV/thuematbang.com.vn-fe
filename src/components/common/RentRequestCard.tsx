@@ -6,9 +6,9 @@ import { Calendar, Eye, MapPin, Maximize } from "lucide-react";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
-  formatAreaRange,
-  formatBudgetRange,
   formatDate,
+  formatAreaValue,
+  formatVndAmount,
   formatLocationParts,
   formatNumber,
 } from "@/lib/utils";
@@ -84,10 +84,7 @@ export function RentRequestCard({
             </span>
           ) : null}
           <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
-            {formatBudgetRange(request.minBudget, request.maxBudget, {
-              fallback: "Thỏa thuận",
-              upperBoundPrefix: "Dưới",
-            })}
+            {formatVndAmount(request.budget, "Đang cập nhật")}
           </p>
 
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">
@@ -98,7 +95,7 @@ export function RentRequestCard({
             <p className="flex items-start gap-1.5">
               <Maximize size={14} className="text-primary mt-0.5 shrink-0" />
               <span className="line-clamp-1 text-sm">
-                {formatAreaRange(request.minArea, request.maxArea)}
+                {formatAreaValue(request.desiredArea)}
               </span>
             </p>
           </div>

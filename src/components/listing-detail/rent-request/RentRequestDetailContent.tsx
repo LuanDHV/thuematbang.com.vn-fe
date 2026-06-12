@@ -13,10 +13,10 @@ import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
-  formatAreaRange,
-  formatBudgetRange,
   formatDate,
+  formatAreaValue,
   formatNumber,
+  formatVndAmount,
 } from "@/lib/utils";
 import { RentRequest } from "@/types/rent-request";
 
@@ -40,8 +40,7 @@ export default function RentRequestDetailContent({
   locationText,
   viewedRequests,
 }: RentRequestDetailContentProps) {
-  const hasArea =
-    (rentRequest.minArea ?? 0) > 0 || (rentRequest.maxArea ?? 0) > 0;
+  const hasArea = typeof rentRequest.desiredArea === "number";
   const hasDirection = Boolean(rentRequest.desiredDirection);
   const categoryName = rentRequest.category?.name ?? "";
 
@@ -127,14 +126,7 @@ export default function RentRequestDetailContent({
                   Ngân sách
                 </p>
                 <p className="text-heading text-sm font-semibold">
-                  {formatBudgetRange(
-                    rentRequest.minBudget,
-                    rentRequest.maxBudget,
-                    {
-                      fallback: "Thỏa thuận",
-                      upperBoundPrefix: "Dưới",
-                    },
-                  )}
+                  {formatVndAmount(rentRequest.budget, "Đang cập nhật")}
                 </p>
               </div>
             </div>
@@ -147,7 +139,7 @@ export default function RentRequestDetailContent({
                     Diện tích cần thuê
                   </p>
                   <p className="text-heading text-sm font-semibold">
-                    {formatAreaRange(rentRequest.minArea, rentRequest.maxArea)}
+                    {formatAreaValue(rentRequest.desiredArea)}
                   </p>
                 </div>
               </div>

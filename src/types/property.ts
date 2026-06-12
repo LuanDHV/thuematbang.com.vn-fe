@@ -20,7 +20,7 @@ export interface Property {
   price: number;
   isNegotiable: boolean;
   area: number;
-  direction: PropertyDirection;
+  direction?: PropertyDirection | null;
   priorityStatus: PropertyPriority;
   publishSource: PublishSource;
   isBoosted: boolean;

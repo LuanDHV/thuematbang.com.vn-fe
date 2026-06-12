@@ -11,8 +11,9 @@ import AdminStatusBadge, {
 import { type FieldConfig } from "@/components/cms/admin/column-generator";
 import {
   createPaginationChangeHandler,
-  formatBudgetRange,
   formatLocationParts,
+  formatAreaValue,
+  formatVndAmount,
 } from "@/lib/utils";
 import type { RentRequestStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
@@ -92,7 +93,13 @@ export default function AdminRentRequestsTable({
         key: "budget",
         header: "Ngân sách",
         fieldType: "text",
-        accessor: (item) => formatBudgetRange(item.minBudget, item.maxBudget),
+        accessor: (item) => formatVndAmount(item.budget, "Đang cập nhật"),
+      },
+      {
+        key: "desiredArea",
+        header: "Diện tích",
+        fieldType: "text",
+        accessor: (item) => formatAreaValue(item.desiredArea),
       },
       {
         key: "status",

@@ -11,11 +11,9 @@ export interface RentRequest {
   categoryId: number;
   desiredProvinceId: number;
   desiredWardId: number;
-  minBudget: number;
-  maxBudget: number;
-  minArea: number;
-  maxArea: number;
-  desiredDirection: PropertyDirection;
+  budget: number;
+  desiredArea: number;
+  desiredDirection?: PropertyDirection | null;
   requirementText?: string | null;
   contactName: string;
   contactPhone: string;

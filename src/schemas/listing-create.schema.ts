@@ -1,0 +1,189 @@
+import { z } from "zod";
+
+import { DIRECTION_OPTIONS } from "@/constants/filter";
+
+const PROPERTY_DIRECTION_VALUES = DIRECTION_OPTIONS.map(
+  (option) => option.id,
+) as [string, ...string[]];
+
+const slugSchema = z
+  .string()
+  .trim()
+  .min(1, "Vui lòng nhập slug")
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    "Slug chỉ được chứa chữ thường, số và dấu gạch ngang",
+  );
+
+const optionalTextSchema = z.string().trim().max(10_000).optional();
+const nullableDirectionSchema = z
+  .enum(PROPERTY_DIRECTION_VALUES, {
+    message: "Vui lòng chọn hướng hợp lệ",
+  })
+  .nullable();
+
+const optionalNumberSchema = z.preprocess((value) => {
+  if (value === "" || value === null || value === undefined) {
+    return undefined;
+  }
+
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : undefined;
+}, z.number().optional());
+
+function requiredNumberSchema({
+  requiredMessage,
+  invalidMessage,
+  positiveMessage,
+  integer = false,
+  max,
+  maxMessage,
+}: {
+  requiredMessage: string;
+  invalidMessage: string;
+  positiveMessage: string;
+  integer?: boolean;
+  max?: number;
+  maxMessage?: string;
+}) {
+  const numberSchema = integer
+    ? z.number({
+        error: requiredMessage,
+      }).int(invalidMessage)
+    : z.number({
+        error: requiredMessage,
+      });
+
+  let schema = numberSchema.positive(positiveMessage);
+
+  if (typeof max === "number") {
+    schema = schema.max(max, maxMessage ?? positiveMessage);
+  }
+
+  return z.preprocess((value) => {
+    if (value === "" || value === null || value === undefined) {
+      return undefined;
+    }
+
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : value;
+  }, schema);
+}
+
+export const propertyCreateFormSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập tiêu đề hợp lệ")
+    .max(255, "Tiêu đề không vượt quá 255 ký tự"),
+  slug: slugSchema,
+  categoryId: requiredNumberSchema({
+    requiredMessage: "Vui lòng chọn danh mục",
+    invalidMessage: "Danh mục không hợp lệ",
+    positiveMessage: "Vui lòng chọn danh mục",
+    integer: true,
+  }),
+  price: requiredNumberSchema({
+    requiredMessage: "Vui lòng nhập giá",
+    invalidMessage: "Giá không hợp lệ",
+    positiveMessage: "Vui lòng nhập giá hợp lệ",
+    max: Number.MAX_SAFE_INTEGER,
+    maxMessage: "Giá không hợp lệ",
+  }),
+  isNegotiable: z.boolean().default(false),
+  area: requiredNumberSchema({
+    requiredMessage: "Vui lòng nhập diện tích",
+    invalidMessage: "Diện tích không hợp lệ",
+    positiveMessage: "Vui lòng nhập diện tích hợp lệ",
+    max: Number.MAX_SAFE_INTEGER,
+    maxMessage: "Diện tích không hợp lệ",
+  }),
+  direction: nullableDirectionSchema,
+  provinceId: requiredNumberSchema({
+    requiredMessage: "Vui lòng chọn tỉnh/thành",
+    invalidMessage: "Khu vực không hợp lệ",
+    positiveMessage: "Vui lòng chọn tỉnh/thành",
+    integer: true,
+  }),
+  wardId: requiredNumberSchema({
+    requiredMessage: "Vui lòng chọn phường/xã",
+    invalidMessage: "Khu vực không hợp lệ",
+    positiveMessage: "Vui lòng chọn phường/xã",
+    integer: true,
+  }),
+  contactName: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập họ và tên hợp lệ")
+    .max(255, "Họ và tên không vượt quá 255 ký tự"),
+  contactPhone: z
+    .string()
+    .trim()
+    .min(9, "Số điện thoại không hợp lệ")
+    .max(20, "Số điện thoại không hợp lệ"),
+  addressDetail: optionalTextSchema,
+  longitude: optionalNumberSchema,
+  latitude: optionalNumberSchema,
+  content: optionalTextSchema,
+});
+
+export const rentRequestCreateFormSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập tiêu đề hợp lệ")
+    .max(255, "Tiêu đề không vượt quá 255 ký tự"),
+  slug: slugSchema,
+  categoryId: requiredNumberSchema({
+    requiredMessage: "Vui lòng chọn danh mục",
+    invalidMessage: "Danh mục không hợp lệ",
+    positiveMessage: "Vui lòng chọn danh mục",
+    integer: true,
+  }),
+  budget: requiredNumberSchema({
+    requiredMessage: "Vui lòng nhập ngân sách",
+    invalidMessage: "Ngân sách không hợp lệ",
+    positiveMessage: "Vui lòng nhập ngân sách hợp lệ",
+    integer: true,
+    max: Number.MAX_SAFE_INTEGER,
+    maxMessage: "Ngân sách không hợp lệ",
+  }),
+  desiredArea: requiredNumberSchema({
+    requiredMessage: "Vui lòng nhập diện tích mong muốn",
+    invalidMessage: "Diện tích không hợp lệ",
+    positiveMessage: "Vui lòng nhập diện tích mong muốn hợp lệ",
+    max: Number.MAX_SAFE_INTEGER,
+    maxMessage: "Diện tích không hợp lệ",
+  }),
+  desiredDirection: nullableDirectionSchema,
+  desiredProvinceId: requiredNumberSchema({
+    requiredMessage: "Vui lòng chọn tỉnh/thành",
+    invalidMessage: "Khu vực không hợp lệ",
+    positiveMessage: "Vui lòng chọn tỉnh/thành",
+    integer: true,
+  }),
+  desiredWardId: requiredNumberSchema({
+    requiredMessage: "Vui lòng chọn phường/xã",
+    invalidMessage: "Khu vực không hợp lệ",
+    positiveMessage: "Vui lòng chọn phường/xã",
+    integer: true,
+  }),
+  contactName: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập họ và tên hợp lệ")
+    .max(255, "Họ và tên không vượt quá 255 ký tự"),
+  contactPhone: z
+    .string()
+    .trim()
+    .min(9, "Số điện thoại không hợp lệ")
+    .max(20, "Số điện thoại không hợp lệ"),
+  requirementText: optionalTextSchema,
+});
+
+export type PropertyCreateFormValues = z.infer<
+  typeof propertyCreateFormSchema
+>;
+export type RentRequestCreateFormValues = z.infer<
+  typeof rentRequestCreateFormSchema
+>;

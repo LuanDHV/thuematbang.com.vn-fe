@@ -24,9 +24,10 @@ import {
 } from "@/components/ui/table";
 import {
   createPaginationChangeHandler,
-  formatBudgetRange,
   formatDateDisplay,
   formatLocationParts,
+  formatAreaValue,
+  formatVndAmount,
 } from "@/lib/utils";
 import type { RentRequest } from "@/types/rent-request";
 
@@ -154,6 +155,7 @@ export default function UserRentRequestsTable({
               <TableHead className="w-[18%]">Danh mục</TableHead>
               <TableHead className="w-[18%]">Khu vực mong muốn</TableHead>
               <TableHead className="w-[12%]">Ngân sách</TableHead>
+              <TableHead className="w-[12%]">Diện tích</TableHead>
               <TableHead className="w-[12%]">Trạng thái</TableHead>
               <TableHead className="w-[10%]">Ngày tạo</TableHead>
               <TableHead className="text-right">Tác vụ</TableHead>
@@ -188,7 +190,10 @@ export default function UserRentRequestsTable({
                       ])}
                     </TableCell>
                     <TableCell className="align-top text-sm text-body">
-                      {formatBudgetRange(item.minBudget, item.maxBudget)}
+                      {formatVndAmount(item.budget, "Đang cập nhật")}
+                    </TableCell>
+                    <TableCell className="align-top text-sm text-body">
+                      {formatAreaValue(item.desiredArea)}
                     </TableCell>
                     <TableCell className="align-top">
                       <Badge variant="outline">{item.status}</Badge>
@@ -210,7 +215,7 @@ export default function UserRentRequestsTable({
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="py-14 text-center">
+                <TableCell colSpan={8} className="py-14 text-center">
                   <div className="space-y-2">
                     <p className="text-heading text-base font-semibold">
                       Không có dữ liệu
@@ -227,7 +232,7 @@ export default function UserRentRequestsTable({
             page={currentPage}
             totalPages={totalPages}
             onChange={handlePageChange}
-            colSpan={7}
+            colSpan={8}
           />
         </Table>
       </div>
