@@ -14,6 +14,7 @@ import { ListingSelectField } from "@/components/listing-form/listing-select-fie
 import { ListingTextField } from "@/components/listing-form/listing-text-field";
 import { ListingTextareaField } from "@/components/listing-form/listing-textarea-field";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
+import { MAX_IMAGE_FILE_SIZE_BYTES } from "@/constants/upload";
 import { buildListingSlug } from "@/lib/listing-slug";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
@@ -62,6 +63,10 @@ function appendString(
 function appendNumber(formData: FormData, key: string, value?: number) {
   if (typeof value !== "number" || Number.isNaN(value)) return;
   formData.set(key, String(value));
+}
+
+function isOversizedImage(file: File) {
+  return file.size > MAX_IMAGE_FILE_SIZE_BYTES;
 }
 
 export function PropertyCreateForm({
@@ -137,6 +142,11 @@ export function PropertyCreateForm({
 
     if (!images.length) {
       setImagesError("Vui lòng chọn ít nhất 1 ảnh cho tin đăng.");
+      return;
+    }
+
+    if (images.some(isOversizedImage)) {
+      setImagesError("Kích thước ảnh không được vượt quá 2MB.");
       return;
     }
 
@@ -282,8 +292,10 @@ export function PropertyCreateForm({
         <ListingImageField
           files={images}
           onFilesChange={setImages}
+          onErrorChange={setImagesError}
           required
           error={imagesError}
+          maxFileSizeBytes={MAX_IMAGE_FILE_SIZE_BYTES}
         />
       </ListingCreateFormShell>
 

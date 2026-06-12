@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import type { ChangeEventHandler } from "react";
+import Image from "next/image";
 import { Trash2, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,21 +16,27 @@ import {
 type ListingImageFieldProps = {
   files: File[];
   onFilesChange: (files: File[]) => void;
+  onErrorChange?: (error: string | null) => void;
   label?: string;
   description?: string;
   error?: string | null;
   required?: boolean;
   maxFiles?: number;
+  maxFileSizeBytes?: number;
 };
+
+const DEFAULT_MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
 
 export function ListingImageField({
   files,
   onFilesChange,
+  onErrorChange,
   label = "Hình ảnh",
   description = "Tải lên ít nhất 1 ảnh. Có thể chọn nhiều ảnh cùng lúc.",
   error,
   required = false,
   maxFiles = 25,
+  maxFileSizeBytes = DEFAULT_MAX_FILE_SIZE_BYTES,
 }: ListingImageFieldProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const previewUrls = useMemo(
@@ -47,7 +54,20 @@ export function ListingImageField({
     const selectedFiles = Array.from(event.target.files ?? []);
     if (!selectedFiles.length) return;
 
-    const nextFiles = [...files, ...selectedFiles].slice(0, maxFiles);
+    const oversizedFiles = selectedFiles.filter(
+      (file) => file.size > maxFileSizeBytes,
+    );
+    const validFiles = selectedFiles.filter(
+      (file) => file.size <= maxFileSizeBytes,
+    );
+    const nextFiles = [...files, ...validFiles].slice(0, maxFiles);
+
+    if (oversizedFiles.length > 0) {
+      onErrorChange?.("Kích thước ảnh không được vượt quá 2MB.");
+    } else {
+      onErrorChange?.(null);
+    }
+
     onFilesChange(nextFiles);
 
     if (inputRef.current) {
@@ -62,7 +82,7 @@ export function ListingImageField({
         className="text-heading font-semibold"
       >
         {label}
-        {required ? <span className="text-primary">*</span> : null}
+        {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <FieldDescription>{description}</FieldDescription>
 
@@ -76,7 +96,7 @@ export function ListingImageField({
               Chọn ảnh từ máy tính
             </p>
             <p className="text-secondary text-xs">
-              Tối đa {maxFiles} ảnh. Kích thước mỗi ảnh dưới 2MB.
+              Tối đa {maxFiles} ảnh. Kích thước mỗi ảnh không được vượt quá 2MB.
             </p>
           </div>
         </div>
@@ -99,9 +119,12 @@ export function ListingImageField({
               key={`${file.name}-${index}`}
               className="surface-card overflow-hidden p-3"
             >
-              <img
+              <Image
                 src={previewUrls[index]}
                 alt={file.name}
+                width={640}
+                height={360}
+                unoptimized
                 className="mb-3 h-32 w-full rounded-lg object-cover"
               />
               <div className="flex items-start justify-between gap-2">
@@ -117,11 +140,16 @@ export function ListingImageField({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  onClick={() =>
-                    onFilesChange(
-                      files.filter((_, current) => current !== index),
-                    )
-                  }
+                  onClick={() => {
+                    const nextFiles = files.filter(
+                      (_, current) => current !== index,
+                    );
+                    onFilesChange(nextFiles);
+
+                    if (nextFiles.every((file) => file.size <= maxFileSizeBytes)) {
+                      onErrorChange?.(null);
+                    }
+                  }}
                 >
                   <Trash2 className="size-4" />
                 </Button>
