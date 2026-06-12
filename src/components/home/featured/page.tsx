@@ -24,6 +24,18 @@ export default async function FeaturedSection() {
         >
           {(response) => {
             const featuredProperties = (response.data ?? []) as Property[];
+            const isEmpty = featuredProperties.length === 0;
+
+            if (isEmpty) {
+              return (
+                <div className="surface-card mt-12 flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-black/8 px-6 py-10 text-center">
+                  <p className="text-body text-base font-medium">
+                    Bất động sản nổi bật sẽ sớm được cập nhật
+                  </p>
+                </div>
+              );
+            }
+
             return (
               <>
                 <HomeCarousel className="mt-12 py-2">

@@ -9,6 +9,7 @@ import {
   MapPinned,
   Megaphone,
   Newspaper,
+  House,
   Search,
   Tags,
   User,
@@ -23,6 +24,15 @@ export type CmsNavItem = {
   icon: LucideIcon;
   exact?: boolean;
 };
+
+export function buildCmsHomeNavItem(): CmsNavItem {
+  return {
+    href: "/",
+    label: "Về trang chủ",
+    icon: House,
+    exact: true,
+  };
+}
 
 export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
   return [

@@ -16,7 +16,7 @@ import { useLogoutMutation } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store";
 import type { User } from "@/types";
-import type { CmsNavItem } from "./cms-navigation";
+import { buildCmsHomeNavItem, type CmsNavItem } from "./cms-navigation";
 
 type CmsSidebarProps = {
   user: User;
@@ -84,6 +84,7 @@ export default function CmsSidebar({
   const logoutLabel = logoutMutation.isPending
     ? "Đang đăng xuất..."
     : "Đăng xuất";
+  const navItems = [buildCmsHomeNavItem(), ...items];
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1024px)");
@@ -233,7 +234,7 @@ export default function CmsSidebar({
         </div>
 
         <nav className="flex flex-1 flex-col gap-2 overflow-y-auto px-2 py-3 lg:px-3">
-          {items.map((item) => {
+          {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.exact
               ? pathname === item.href
