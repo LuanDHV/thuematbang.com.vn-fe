@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/login-form";
-import Image from "next/image";
+import { createPageMetadata } from "@/lib/metadata";
 import Link from "next/link";
+import Image from "next/image";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "Đăng nhập",
+  description:
+    "Đăng nhập vào tài khoản Thuematbang.com.vn để quản lý tin đăng và thông tin cá nhân.",
+  pathname: "/dang-nhap",
+  noIndex: true,
+});
 
 export default function DangNhapPage() {
   return (

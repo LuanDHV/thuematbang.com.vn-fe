@@ -12,6 +12,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
+import { MAX_IMAGE_FILE_COUNT } from "@/constants/upload";
 
 type ListingImageFieldProps = {
   files: File[];
@@ -35,7 +36,7 @@ export function ListingImageField({
   description = "Tải lên ít nhất 1 ảnh. Có thể chọn nhiều ảnh cùng lúc.",
   error,
   required = false,
-  maxFiles = 25,
+  maxFiles = MAX_IMAGE_FILE_COUNT,
   maxFileSizeBytes = DEFAULT_MAX_FILE_SIZE_BYTES,
 }: ListingImageFieldProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -54,16 +55,28 @@ export function ListingImageField({
     const selectedFiles = Array.from(event.target.files ?? []);
     if (!selectedFiles.length) return;
 
+    const availableSlots = Math.max(maxFiles - files.length, 0);
     const oversizedFiles = selectedFiles.filter(
       (file) => file.size > maxFileSizeBytes,
     );
     const validFiles = selectedFiles.filter(
       (file) => file.size <= maxFileSizeBytes,
     );
-    const nextFiles = [...files, ...validFiles].slice(0, maxFiles);
+    const acceptedFiles = validFiles.slice(0, availableSlots);
+    const nextFiles = [...files, ...acceptedFiles];
+    const hasOverflow = validFiles.length > acceptedFiles.length;
+    const maxFileSizeInMb = Math.floor(maxFileSizeBytes / 1024 / 1024);
 
-    if (oversizedFiles.length > 0) {
-      onErrorChange?.("Kích thước ảnh không được vượt quá 2MB.");
+    if (oversizedFiles.length > 0 && hasOverflow) {
+      onErrorChange?.(
+        `Chỉ được chọn tối đa ${maxFiles} ảnh và mỗi ảnh không vượt quá ${maxFileSizeInMb}MB.`,
+      );
+    } else if (oversizedFiles.length > 0) {
+      onErrorChange?.(
+        `Kích thước ảnh không được vượt quá ${maxFileSizeInMb}MB.`,
+      );
+    } else if (hasOverflow) {
+      onErrorChange?.(`Chỉ được chọn tối đa ${maxFiles} ảnh.`);
     } else {
       onErrorChange?.(null);
     }
@@ -96,7 +109,7 @@ export function ListingImageField({
               Chọn ảnh từ máy tính
             </p>
             <p className="text-secondary text-xs">
-              Tối đa {maxFiles} ảnh. Kích thước mỗi ảnh không được vượt quá 2MB.
+              Tối đa {maxFiles} ảnh. Đã chọn {files.length}/{maxFiles}. Kích thước mỗi ảnh không được vượt quá 2MB.
             </p>
           </div>
         </div>
@@ -146,7 +159,9 @@ export function ListingImageField({
                     );
                     onFilesChange(nextFiles);
 
-                    if (nextFiles.every((file) => file.size <= maxFileSizeBytes)) {
+                    if (
+                      nextFiles.every((file) => file.size <= maxFileSizeBytes)
+                    ) {
                       onErrorChange?.(null);
                     }
                   }}

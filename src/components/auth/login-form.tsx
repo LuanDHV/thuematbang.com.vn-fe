@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { getCurrentUserAction } from "@/actions/user.actions";
+import PasswordInput from "@/components/common/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -75,7 +76,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden border-black/6 p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <div className="relative hidden bg-surface md:block">
+          <div className="bg-surface relative hidden md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
               alt="Hình nền đăng nhập"
@@ -131,17 +132,19 @@ export function LoginForm({
                   >
                     Mật khẩu
                   </FieldLabel>
+                  {/*
                   <Link
-                    href="#"
+                    href="/quen-mat-khau"
                     className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
                   >
                     Quên mật khẩu?
                   </Link>
+                  */}
                 </div>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="Mật khẩu"
+                  autoComplete="current-password"
                   {...register("password")}
                 />
                 {errors.password?.message ? (

@@ -14,7 +14,10 @@ import { ListingSelectField } from "@/components/listing-form/listing-select-fie
 import { ListingTextField } from "@/components/listing-form/listing-text-field";
 import { ListingTextareaField } from "@/components/listing-form/listing-textarea-field";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
-import { MAX_IMAGE_FILE_SIZE_BYTES } from "@/constants/upload";
+import {
+  MAX_IMAGE_FILE_COUNT,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+} from "@/constants/upload";
 import { buildListingSlug } from "@/lib/listing-slug";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
@@ -295,6 +298,7 @@ export function PropertyCreateForm({
           onErrorChange={setImagesError}
           required
           error={imagesError}
+          maxFiles={MAX_IMAGE_FILE_COUNT}
           maxFileSizeBytes={MAX_IMAGE_FILE_SIZE_BYTES}
         />
       </ListingCreateFormShell>

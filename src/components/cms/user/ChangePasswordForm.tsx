@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import CmsFormPageShell from "@/components/cms/shared/CmsFormPageShell";
+import PasswordInput from "@/components/common/PasswordInput";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   useChangeMyPasswordMutation,
@@ -73,11 +73,13 @@ export default function ChangePasswordForm() {
     ? "Nhập mật khẩu hiện tại và mật khẩu mới để cập nhật bảo mật tài khoản."
     : "Tài khoản của bạn chưa có mật khẩu. Tạo mật khẩu để có thể đăng nhập bằng email và mật khẩu ngoài Google.";
 
-  const submitButtonLabel = useMemo(() => {
-    if (isSubmitting)
-      return hasPassword ? "Đang đổi mật khẩu..." : "Đang tạo mật khẩu...";
-    return hasPassword ? "Đổi mật khẩu" : "Tạo mật khẩu";
-  }, [hasPassword, isSubmitting]);
+  const submitButtonLabel = isSubmitting
+    ? hasPassword
+      ? "Đang đổi mật khẩu..."
+      : "Đang tạo mật khẩu..."
+    : hasPassword
+      ? "Đổi mật khẩu"
+      : "Tạo mật khẩu";
 
   const onSubmit = form.handleSubmit(async (values) => {
     setFormError(null);
@@ -142,9 +144,8 @@ export default function ChangePasswordForm() {
           {hasPassword ? (
             <div className="space-y-2">
               <Label htmlFor="currentPassword">Mật khẩu hiện tại</Label>
-              <Input
+              <PasswordInput
                 id="currentPassword"
-                type="password"
                 autoComplete="current-password"
                 className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
                 {...form.register("currentPassword")}
@@ -159,9 +160,8 @@ export default function ChangePasswordForm() {
 
           <div className="space-y-2">
             <Label htmlFor="newPassword">{passwordFieldLabel}</Label>
-            <Input
+            <PasswordInput
               id="newPassword"
-              type="password"
               autoComplete="new-password"
               className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
               {...form.register("newPassword")}
@@ -175,9 +175,8 @@ export default function ChangePasswordForm() {
 
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
-            <Input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               autoComplete="new-password"
               className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
               {...form.register("confirmPassword")}

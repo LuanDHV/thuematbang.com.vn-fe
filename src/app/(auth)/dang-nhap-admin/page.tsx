@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/login-form";
+
+import { createPageMetadata } from "@/lib/metadata";
 import Image from "next/image";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "Đăng nhập quản trị",
+  description: "Đăng nhập vào khu vực quản trị Thuematbang.com.vn.",
+  pathname: "/dang-nhap-admin",
+  noIndex: true,
+});
 
 type AdminLoginPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;

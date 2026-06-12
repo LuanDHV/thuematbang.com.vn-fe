@@ -13,6 +13,7 @@ type CreateMetadataOptions = {
   pathname?: string;
   image?: string;
   type?: "website" | "article";
+  noIndex?: boolean;
 };
 
 export function createPageMetadata({
@@ -21,11 +22,18 @@ export function createPageMetadata({
   pathname,
   image = siteConfig.defaultImage,
   type = "website",
+  noIndex = false,
 }: CreateMetadataOptions): Metadata {
   return {
     title,
     description,
     alternates: pathname ? { canonical: pathname } : undefined,
+    robots: noIndex
+      ? {
+          index: false,
+          follow: false,
+        }
+      : undefined,
     openGraph: {
       type,
       locale: "vi_VN",

@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
-
 const HEADER_ITEMS = [
   { id: "cho-thue", name: "Cho thuê", href: "/cho-thue" },
   { id: "can-thue", name: "Cần thuê", href: "/can-thue" },

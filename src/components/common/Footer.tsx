@@ -1,20 +1,26 @@
 import { MapPin } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   const aboutLinks = [
-    { label: "Giới thiệu", href: "#" },
-    { label: "Liên hệ", href: "#" },
-    { label: "Câu hỏi thường gặp", href: "#" },
-    { label: "Tin tức", href: "#" },
+    { label: "Giới thiệu", href: "/gioi-thieu" },
+    { label: "Liên hệ", href: "/lien-he" },
+    { label: "Câu hỏi thường gặp", href: "/cau-hoi-thuong-gap" },
+    { label: "Tin tức", href: "/tin-tuc" },
   ];
   const policyLinks = [
-    { label: "Quy chế hoạt động", href: "#" },
-    { label: "Chính sách bảo mật thông tin", href: "#" },
-    { label: "Giải quyết tranh chấp, khiếu nại", href: "#" },
-    { label: "Điều khoản thỏa thuận", href: "#" },
-    { label: "Quy định đăng tin", href: "#" },
+    { label: "Quy chế hoạt động", href: "/quy-che-hoat-dong" },
+    {
+      label: "Chính sách bảo mật thông tin",
+      href: "/chinh-sach-bao-mat-thong-tin",
+    },
+    {
+      label: "Giải quyết tranh chấp, khiếu nại",
+      href: "/giai-quyet-tranh-chap-khieu-nai",
+    },
+    { label: "Điều khoản thỏa thuận", href: "/dieu-khoan-thoa-thuan" },
+    { label: "Quy định đăng tin", href: "/quy-dinh-dang-tin" },
   ];
 
   return (

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import PasswordInput from "@/components/common/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -57,16 +58,19 @@ export function SignupForm({
           >
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-semibold tracking-[-0.03em] text-heading">
+                <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
                   Tạo tài khoản mới
                 </h1>
-                <p className="text-sm leading-7 text-secondary">
+                <p className="text-secondary text-sm leading-7">
                   Vui lòng nhập thông tin bên dưới để đăng ký
                 </p>
               </div>
 
               <Field className="flex flex-col gap-2">
-                <FieldLabel htmlFor="fullName" className="font-semibold text-heading">
+                <FieldLabel
+                  htmlFor="fullName"
+                  className="text-heading font-semibold"
+                >
                   Họ và tên
                 </FieldLabel>
                 <Input
@@ -84,7 +88,10 @@ export function SignupForm({
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <Field className="flex flex-col gap-2">
-                  <FieldLabel htmlFor="email" className="font-semibold text-heading">
+                  <FieldLabel
+                    htmlFor="email"
+                    className="text-heading font-semibold"
+                  >
                     Email
                   </FieldLabel>
                   <Input
@@ -101,7 +108,10 @@ export function SignupForm({
                 </Field>
 
                 <Field className="flex flex-col gap-2">
-                  <FieldLabel htmlFor="phone" className="font-semibold text-heading">
+                  <FieldLabel
+                    htmlFor="phone"
+                    className="text-heading font-semibold"
+                  >
                     Số điện thoại
                   </FieldLabel>
                   <Input
@@ -120,13 +130,16 @@ export function SignupForm({
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <Field className="flex flex-col gap-2">
-                  <FieldLabel htmlFor="password" className="font-semibold text-heading">
+                  <FieldLabel
+                    htmlFor="password"
+                    className="text-heading font-semibold"
+                  >
                     Mật khẩu
                   </FieldLabel>
-                  <Input
+                  <PasswordInput
                     id="password"
-                    type="password"
                     placeholder="Mật khẩu"
+                    autoComplete="new-password"
                     {...register("password")}
                   />
                   {errors.password?.message ? (
@@ -139,14 +152,14 @@ export function SignupForm({
                 <Field className="flex flex-col gap-2">
                   <FieldLabel
                     htmlFor="confirmPassword"
-                    className="font-semibold text-heading"
+                    className="text-heading font-semibold"
                   >
                     Xác nhận mật khẩu
                   </FieldLabel>
-                  <Input
+                  <PasswordInput
                     id="confirmPassword"
-                    type="password"
                     placeholder="Xác nhận mật khẩu"
+                    autoComplete="new-password"
                     {...register("confirmPassword")}
                   />
                   {errors.confirmPassword?.message ? (
@@ -157,7 +170,7 @@ export function SignupForm({
                 </Field>
               </div>
 
-              <FieldDescription className="-mt-2.5 text-xs text-secondary">
+              <FieldDescription className="text-secondary -mt-2.5 text-xs">
                 Mật khẩu phải có ít nhất 8 ký tự.
               </FieldDescription>
 
@@ -179,7 +192,7 @@ export function SignupForm({
                 </p>
               ) : null}
 
-              <FieldSeparator className="mb-1 py-2 text-secondary *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase *:data-[slot=field-separator-content]:text-secondary">
+              <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary mb-1 py-2 *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
                 Hoặc
               </FieldSeparator>
 
@@ -206,11 +219,11 @@ export function SignupForm({
                 </Button>
               </Field>
 
-              <div className="mt-4 text-center text-sm text-secondary">
+              <div className="text-secondary mt-4 text-center text-sm">
                 Đã có tài khoản?{" "}
                 <Link
                   href="/dang-nhap"
-                  className="text-sm font-medium text-secondary underline-offset-4 transition-colors duration-200 hover:text-primary hover:underline"
+                  className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
                 >
                   Đăng nhập
                 </Link>
@@ -218,7 +231,7 @@ export function SignupForm({
             </FieldGroup>
           </form>
 
-          <div className="relative hidden bg-surface md:block">
+          <div className="bg-surface relative hidden md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
               alt="Hình nền đăng ký"
@@ -233,4 +246,3 @@ export function SignupForm({
     </div>
   );
 }
-
