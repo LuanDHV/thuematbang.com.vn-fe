@@ -131,7 +131,7 @@ export default function PropertyDetailContent({
             <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
               <p className="text-secondary text-xs tracking-wide uppercase">
-                Địa chỉ
+                Khu vực
               </p>
               <p className="text-heading text-sm font-semibold">
                 {locationText || "Đang cập nhật"}
