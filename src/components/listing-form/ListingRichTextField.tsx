@@ -3,7 +3,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
-import { LightRichTextEditor } from "./light-rich-text-editor";
+import { LightRichTextEditor } from "./LightRichTextEditor";
 
 type ListingRichTextFieldProps = {
   name: string;

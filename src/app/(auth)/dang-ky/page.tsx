@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SignupForm } from "@/components/auth/signup-form";
+import { SignupForm } from "@/components/auth/SignupForm";
 import { createPageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import Image from "next/image";

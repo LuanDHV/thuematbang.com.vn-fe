@@ -30,8 +30,8 @@ import { cn } from "@/lib/utils";
 import {
   createColumnsFromFields,
   renderFieldContent,
-} from "./column-generator";
-import type { FieldConfig } from "./column-generator";
+} from "./ColumnGenerator";
+import type { FieldConfig } from "./ColumnGenerator";
 
 type RowId = string | number;
 

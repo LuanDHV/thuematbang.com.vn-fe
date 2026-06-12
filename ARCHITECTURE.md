@@ -155,6 +155,14 @@ Shared components reused across multiple domains and routes, such as:
 - `cms/admin`: admin-specific tables and views
 - `cms/user`: user-specific account/profile views
 
+### File naming
+
+- `src/app/**` route files stay in Next.js route naming, such as `page.tsx`, `layout.tsx`, and `not-found.tsx`
+- `src/components/ui/**` primitives keep the shadcn lowercase filename style
+- reusable React component files under `src/components/**` use `PascalCase` when the file exports a component
+- utility, helper, and non-component support files can stay `kebab-case`
+- keep the file name aligned with the file role rather than forcing one naming style across every layer
+
 ## 6. Data Layer
 
 The repository now follows a server-first data model.

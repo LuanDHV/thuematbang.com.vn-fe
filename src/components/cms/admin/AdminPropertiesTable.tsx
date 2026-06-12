@@ -11,8 +11,8 @@ import AdminStatusBadge, {
 } from "@/components/cms/admin/AdminStatusBadge";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
+} from "@/components/cms/admin/DataTable";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import {
   createPaginationChangeHandler,
   formatLocationParts,

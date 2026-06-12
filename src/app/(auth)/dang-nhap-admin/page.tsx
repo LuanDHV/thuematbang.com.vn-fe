@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LoginForm } from "@/components/auth/login-form";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 import { createPageMetadata } from "@/lib/metadata";
 import Image from "next/image";

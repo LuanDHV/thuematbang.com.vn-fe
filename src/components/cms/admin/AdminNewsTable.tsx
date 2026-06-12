@@ -4,12 +4,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
+} from "@/components/cms/admin/DataTable";
 import AdminStatusBadge, {
   type AdminBadgeTone,
   publishStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import { createPaginationChangeHandler } from "@/lib/utils";
 import type { PublishStatus } from "@/types/enums";
 import type { News } from "@/types/news";

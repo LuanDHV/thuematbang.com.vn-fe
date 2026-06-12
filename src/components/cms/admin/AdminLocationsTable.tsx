@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import type { Province, Ward } from "@/types/location";
-import type { AdminTableToolbar } from "./data-table";
+import type { AdminTableToolbar } from "./DataTable";
 
 type AdminLocationsTableProps = {
   provinces: Province[];

@@ -4,11 +4,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
+} from "@/components/cms/admin/DataTable";
 import AdminStatusBadge, {
   leadStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import { createPaginationChangeHandler, formatTextSource } from "@/lib/utils";
 import type { LeadStatus } from "@/types/enums";
 import type { Lead } from "@/types/lead";

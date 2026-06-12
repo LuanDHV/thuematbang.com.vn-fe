@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { createRentRequestAction } from "@/actions/listing-create.actions";
-import { RentRequestCreateForm } from "@/components/listing-form/rent-request-create-form";
+import { RentRequestCreateForm } from "@/components/listing-form/RentRequestCreateForm";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";

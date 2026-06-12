@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
@@ -163,19 +163,15 @@ function NumberInputControl({
   onBlur,
 }: NumberInputControlProps) {
   const [isFocused, setIsFocused] = useState(false);
-  const [displayValue, setDisplayValue] = useState("");
+  const [draftValue, setDraftValue] = useState("");
 
-  useEffect(() => {
-    if (!isFocused) {
-      setDisplayValue(
-        value === undefined
-          ? ""
-          : format === "currency" || format === "area"
-            ? formatDisplayNumber(value, format)
-            : toRawNumberString(value, format),
-      );
-    }
-  }, [format, isFocused, value]);
+  const displayValue = isFocused
+    ? draftValue
+    : value === undefined
+      ? ""
+      : format === "currency" || format === "area"
+        ? formatDisplayNumber(value, format)
+        : toRawNumberString(value, format);
 
   return (
     <div className="relative">
@@ -191,13 +187,13 @@ function NumberInputControl({
         value={displayValue}
         onFocus={() => {
           setIsFocused(true);
-          setDisplayValue(
+          setDraftValue(
             value === undefined ? "" : toRawNumberString(value, format),
           );
         }}
         onChange={(event) => {
           const nextText = event.target.value;
-          setDisplayValue(nextText);
+          setDraftValue(nextText);
           onChange(normalizeNumberInput(nextText));
         }}
         onBlur={() => {
