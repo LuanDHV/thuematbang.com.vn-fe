@@ -1,43 +1,74 @@
-﻿import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { Building2, ClipboardList, Search, UsersRound } from "lucide-react";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
   return (
-    <div className="relative flex min-h-[calc(100vh-64px)] w-full items-center justify-center bg-[url('/imgs/wallpaper-3.jpg')] bg-cover bg-center">
-      <div className="absolute inset-0 bg-black/40"></div>
+    <section className="relative flex min-h-[calc(100vh-64px)] w-full items-center justify-center overflow-hidden bg-[url('/imgs/wallpaper-3.jpg')] bg-cover bg-center">
+      <div className="absolute inset-0 bg-black/55" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1),rgba(0,0,0,0.48))]" />
 
-      <div className="relative z-10 flex w-full flex-col items-center px-4 text-center">
-        <h1 className="max-w-4xl text-4xl font-extrabold tracking-tight text-white md:text-6xl lg:text-7xl">
-          Lorem ipsum dolor sit amet elit.
+      <div className="layout-container relative z-10 flex flex-col items-center text-center">
+        <h1 className="max-w-5xl text-4xl leading-tight font-extrabold tracking-tight text-white uppercase lg:text-6xl">
+          Sàn kết nối mặt bằng cho thuê và nhu cầu cần thuê
         </h1>
-        <p className="mt-6 max-w-2xl text-lg font-light text-gray-300 md:text-xl">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+        <p className="mt-6 max-w-3xl text-base leading-8 font-light text-white/82 md:text-xl md:leading-9">
+          Đăng mặt bằng, đăng nhu cầu hoặc khám phá nguồn cung và khách thuê
+          đang có trên sàn.
         </p>
 
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-          <Link href="/dang-tin/cho-thue">
-            <Button
-              size="lg"
-              className="bg-primary flex min-w-56 items-center justify-center gap-2.5 rounded-lg px-12 py-8 text-lg font-bold text-white shadow-[0_0_0_4px_rgba(251,170,25,0.25),0_12px_40px_rgba(251,170,25,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_0_6px_rgba(251,170,25,0.3),0_16px_48px_rgba(251,170,25,0.6)]"
-            >
-              <PlusCircle size={20} strokeWidth={2.5} />
+        <div className="mt-12 flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button
+            asChild
+            size="lg"
+            className="h-14 w-full max-w-72 rounded-xl px-8 text-base font-bold shadow-[0_0_0_4px_rgba(251,170,25,0.24),0_18px_46px_rgba(251,170,25,0.38)] sm:w-auto sm:min-w-64"
+          >
+            <Link href="/dang-tin/cho-thue">
+              <Building2 className="size-5" />
               Đăng tin cho thuê
-            </Button>
-          </Link>
+            </Link>
+          </Button>
 
-          <Link href="/dang-tin/can-thue">
-            <Button
-              size="lg"
-              className="text-body flex min-w-56 items-center justify-center gap-2.5 rounded-lg border-0 bg-white px-12 py-8 text-lg font-bold shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(0,0,0,0.35)]"
-            >
-              <PlusCircle size={20} strokeWidth={2.5} />
-              Đăng tin cần thuê
-            </Button>
-          </Link>
+          <Button
+            asChild
+            size="lg"
+            className="text-heading hover:text-primary h-14 w-full max-w-72 rounded-xl bg-white px-8 text-base font-bold shadow-[0_18px_46px_rgba(0,0,0,0.22)] hover:bg-white sm:w-auto sm:min-w-64"
+          >
+            <Link href="/dang-tin/can-thue">
+              <ClipboardList className="size-5" />
+              Đăng nhu cầu cần thuê
+            </Link>
+          </Button>
+        </div>
+
+        <div className="mt-5 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button
+            asChild
+            variant="ghost"
+            size="lg"
+            className="h-12 w-full max-w-72 rounded-full border border-white/18 bg-white/8 px-6 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/14 hover:text-white sm:w-auto sm:min-w-60"
+          >
+            <Link href="/cho-thue">
+              <Search className="size-4" />
+              Xem mặt bằng cho thuê
+            </Link>
+          </Button>
+
+          <Button
+            asChild
+            variant="ghost"
+            size="lg"
+            className="h-12 w-full max-w-72 rounded-full border border-white/18 bg-white/8 px-6 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/14 hover:text-white sm:w-auto sm:min-w-60"
+          >
+            <Link href="/can-thue">
+              <UsersRound className="size-4" />
+              Xem nhu cầu cần thuê
+            </Link>
+          </Button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

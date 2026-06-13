@@ -47,7 +47,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-app/92 fixed top-0 right-0 left-0 z-50 border-b border-black/6 backdrop-blur-xl">
+    <header className="fixed top-0 right-0 left-0 z-50 border-b border-black/6 bg-white backdrop-blur-xl">
       <nav className="layout-container flex h-16 items-center justify-center">
         <div className="relative flex w-full items-center justify-between gap-6">
           <div className="flex flex-1 lg:flex-none" />
