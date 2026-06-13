@@ -119,7 +119,7 @@ export function ListingFilterDrawer({
   };
 
   const toggleFromList = (
-    key: "propertyTypes" | "directions",
+    key: "propertyTypes" | "bedrooms" | "bathrooms" | "directions",
     item: string,
   ) => {
     updateCurrent((prev) => {
@@ -138,6 +138,8 @@ export function ListingFilterDrawer({
       current.province || current.ward ? 1 : 0,
       current.priceMin || current.priceMax || current.negotiable ? 1 : 0,
       current.areaMin || current.areaMax ? 1 : 0,
+      current.bedrooms.length,
+      current.bathrooms.length,
       current.directions.length,
     ].filter(Boolean).length;
   }, [current]);

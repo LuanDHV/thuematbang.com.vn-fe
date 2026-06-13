@@ -31,6 +31,15 @@ const optionalNumberSchema = z.preprocess((value) => {
   return Number.isFinite(numericValue) ? numericValue : undefined;
 }, z.number().optional());
 
+const optionalIntegerSchema = z.preprocess((value) => {
+  if (value === "" || value === null || value === undefined) {
+    return undefined;
+  }
+
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : undefined;
+}, z.number().int().nonnegative().optional());
+
 function requiredNumberSchema({
   requiredMessage,
   invalidMessage,
@@ -98,6 +107,9 @@ export const propertyCreateFormSchema = z.object({
     max: Number.MAX_SAFE_INTEGER,
     maxMessage: "Diện tích không hợp lệ",
   }),
+  bedrooms: optionalIntegerSchema,
+  bathrooms: optionalIntegerSchema,
+  floors: optionalIntegerSchema,
   direction: nullableDirectionSchema,
   provinceId: requiredNumberSchema({
     requiredMessage: "Vui lòng chọn tỉnh/thành",
@@ -155,6 +167,9 @@ export const rentRequestCreateFormSchema = z.object({
     max: Number.MAX_SAFE_INTEGER,
     maxMessage: "Diện tích không hợp lệ",
   }),
+  bedrooms: optionalIntegerSchema,
+  bathrooms: optionalIntegerSchema,
+  floors: optionalIntegerSchema,
   desiredDirection: nullableDirectionSchema,
   desiredProvinceId: requiredNumberSchema({
     requiredMessage: "Vui lòng chọn tỉnh/thành",

@@ -37,6 +37,9 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
   categoryId: undefined,
   budget: undefined,
   desiredArea: undefined,
+  bedrooms: undefined,
+  bathrooms: undefined,
+  floors: undefined,
   desiredDirection: null,
   desiredProvinceId: undefined,
   desiredWardId: undefined,
@@ -45,11 +48,7 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
   requirementText: "",
 };
 
-function appendString(
-  formData: FormData,
-  key: string,
-  value?: string | null,
-) {
+function appendString(formData: FormData, key: string, value?: string | null) {
   const normalizedValue = value?.trim();
   if (!normalizedValue) return;
   formData.set(key, normalizedValue);
@@ -136,6 +135,9 @@ export function RentRequestCreateForm({
     appendNumber(payload, "categoryId", values.categoryId);
     appendNumber(payload, "budget", values.budget);
     appendNumber(payload, "desiredArea", values.desiredArea);
+    appendNumber(payload, "bedrooms", values.bedrooms);
+    appendNumber(payload, "bathrooms", values.bathrooms);
+    appendNumber(payload, "floors", values.floors);
     appendString(payload, "desiredDirection", values.desiredDirection);
     appendNumber(payload, "desiredProvinceId", values.desiredProvinceId);
     appendNumber(payload, "desiredWardId", values.desiredWardId);
@@ -226,6 +228,33 @@ export function RentRequestCreateForm({
           />
         </div>
 
+        <div className="grid gap-4 md:grid-cols-3">
+          <ListingNumberField
+            name="bedrooms"
+            label="Phòng ngủ"
+            placeholder="Nhập số phòng ngủ"
+            inputMode="numeric"
+            min={0}
+            step="1"
+          />
+          <ListingNumberField
+            name="bathrooms"
+            label="Phòng tắm"
+            placeholder="Nhập số phòng tắm"
+            inputMode="numeric"
+            min={0}
+            step="1"
+          />
+          <ListingNumberField
+            name="floors"
+            label="Số tầng"
+            placeholder="Nhập số tầng"
+            inputMode="numeric"
+            min={0}
+            step="1"
+          />
+        </div>
+
         <ListingSelectField
           name="desiredDirection"
           label="Hướng mong muốn"
@@ -257,7 +286,9 @@ export function RentRequestCreateForm({
         title="Đã đăng tin thành công"
         description="Bạn có muốn xem các tin đăng không?"
         primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref={createdSlug ? `/can-thue/${createdSlug}` : "/can-thue"}
+        primaryActionHref={
+          createdSlug ? `/can-thue/${createdSlug}` : "/can-thue"
+        }
         secondaryActionLabel="Trang cho thuê"
         secondaryActionHref="/cho-thue"
       />

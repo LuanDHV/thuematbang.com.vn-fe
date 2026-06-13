@@ -37,6 +37,10 @@ export type PropertyListFilters = {
   maxPrice?: number;
   minArea?: number;
   maxArea?: number;
+  bedrooms?: number;
+  minBedrooms?: number;
+  bathrooms?: number;
+  minBathrooms?: number;
   isNegotiable?: boolean;
   direction?: PropertyDirection;
   priorityStatus?: PropertyPriority;

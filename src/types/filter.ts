@@ -7,6 +7,8 @@ export interface AdvancedFilterValue {
   negotiable: boolean;
   areaMin: string;
   areaMax: string;
+  bedrooms: string[];
+  bathrooms: string[];
   directions: string[];
 }
 
@@ -19,5 +21,7 @@ export const INITIAL_ADVANCED_FILTER_VALUE: AdvancedFilterValue = {
   negotiable: false,
   areaMin: "",
   areaMax: "",
+  bedrooms: [],
+  bathrooms: [],
   directions: [],
 };

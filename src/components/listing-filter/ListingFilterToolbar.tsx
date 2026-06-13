@@ -65,6 +65,8 @@ const isSameFilterValue = (
   left.areaMin === right.areaMin &&
   left.areaMax === right.areaMax &&
   left.propertyTypes.join("|") === right.propertyTypes.join("|") &&
+  left.bedrooms.join("|") === right.bedrooms.join("|") &&
+  left.bathrooms.join("|") === right.bathrooms.join("|") &&
   left.directions.join("|") === right.directions.join("|");
 
 export default function ListingFilterToolbar({
@@ -458,6 +460,8 @@ export default function ListingFilterToolbar({
                   : 0) +
                 (advancedFilters.areaMin || advancedFilters.areaMax ? 1 : 0) +
                 (advancedFilters.province || advancedFilters.ward ? 1 : 0) +
+                advancedFilters.bedrooms.length +
+                advancedFilters.bathrooms.length +
                 advancedFilters.directions.length
               }
               defaultDemandTab={

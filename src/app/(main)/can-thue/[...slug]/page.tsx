@@ -11,7 +11,7 @@ import RentRequestDetailSidebar from "@/components/listing-detail/rent-request/R
 import {
   buildPropertyFilterBreadcrumbs,
   isLikelyPropertyFilterSlug,
-  parsePagedSlugSegments,
+  parseListingPagedSlugSegments,
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
@@ -88,7 +88,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { rawSlug } = parsePagedSlugSegments(slug);
+  const { rawSlug } = parseListingPagedSlugSegments(slug);
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
   if (rentRequest) {
@@ -104,13 +104,13 @@ export async function generateMetadata({
   return createPageMetadata({
     title: "Cần thuê mặt bằng",
     description: "Danh sách cần thuê bất động sản theo bộ lọc.",
-    pathname: `/can-thue/${slug.join("/")}`,
+    pathname: rawSlug ? `/can-thue/${rawSlug}` : "/can-thue",
   });
 }
 
 export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
-  const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const { rawSlug, page } = parseListingPagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
   const [seoRes, faqRes] = await Promise.all([

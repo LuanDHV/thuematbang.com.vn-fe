@@ -29,11 +29,12 @@ export type FlatUrlRouteParts = {
 // Keep these prefixes centralized so parsing and building stay symmetrical.
 const PAGE_SEGMENT_REGEX = /^p([1-9]\d*)$/i;
 
-const AREA_TOKEN_PREFIX = "dien-tich-";
+const AREA_TOKEN_PREFIX = "dt-";
 const PRICE_TOKEN_PREFIX = "gia-";
-const LOCATION_TOKEN_PREFIX = "khu-vuc-";
 const LOCATION_PROVINCE_PREFIX = "tp-";
 const LOCATION_WARD_PREFIX = "phuong-";
+const BEDROOM_TOKEN_SUFFIX = "pn";
+const BATHROOM_TOKEN_SUFFIX = "pt";
 const DIRECTION_TOKEN_PREFIX = "huong-";
 
 const CATEGORY_SLUG_TO_TOKEN = new Map<string, string>([
@@ -89,6 +90,15 @@ function buildPriceToken(
   return `${PRICE_TOKEN_PREFIX}${millionsLabel(min)}-${millionsLabel(max)}`;
 }
 
+function splitListingSlugBlocks(rawSlug?: string) {
+  if (!rawSlug) return [];
+  return rawSlug
+    .replace(/%2F/gi, "/")
+    .split("/")
+    .map((segment) => compactSlugToken(segment))
+    .filter(Boolean);
+}
+
 // Build the area segment used by the flat listing URL contract.
 function buildAreaToken(areaMin: string, areaMax: string) {
   const min = Number(areaMin || 0);
@@ -96,7 +106,7 @@ function buildAreaToken(areaMin: string, areaMax: string) {
   if (!min && !max) return "";
   if (!min && max) return `${AREA_TOKEN_PREFIX}duoi-${max}m2`;
   if (min && !max) return `${AREA_TOKEN_PREFIX}tren-${min}m2`;
-  return `${AREA_TOKEN_PREFIX}${min}-${max}m2`;
+  return `${AREA_TOKEN_PREFIX}tu-${min}m2-den-${max}m2`;
 }
 
 // Resolve province and ward labels into the canonical location token for the URL.
@@ -132,25 +142,52 @@ function buildLocationToken(
   const wardPart = wardSlug ? `${LOCATION_WARD_PREFIX}${wardSlug}` : "";
   const parts = [provincePart, wardPart].filter(Boolean);
   if (parts.length === 0) return "";
-  return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
+  return parts.join("-");
 }
 
 // Rebuild the location token directly from parsed route parts when suggestions supply them.
 function buildLocationTokenFromRouteParts(routeParts: FlatUrlRouteParts) {
   if (!routeParts.provinceSlug) return "";
 
-  const parts = [`${LOCATION_PROVINCE_PREFIX}${routeParts.provinceSlug}`];
-  if (routeParts.wardSlug) {
-    parts.push(`${LOCATION_WARD_PREFIX}${routeParts.wardSlug}`);
+  const provinceSlug = routeParts.provinceSlug.replace(/^tp-/, "");
+  const wardSlug = routeParts.wardSlug?.replace(/^phuong-/, "");
+
+  const parts = [`${LOCATION_PROVINCE_PREFIX}${provinceSlug}`];
+  if (wardSlug) {
+    parts.push(`${LOCATION_WARD_PREFIX}${wardSlug}`);
   }
 
-  return `${LOCATION_TOKEN_PREFIX}${parts.join("-")}`;
+  return parts.join("-");
 }
 
 // Build the direction token from the selected filter option id.
 function buildDirectionToken(values: string[]) {
   if (!values.length) return "";
   return `${DIRECTION_TOKEN_PREFIX}${compactSlugToken(values[0].replaceAll("_", "-"))}`;
+}
+
+// Normalize bedroom and bathroom values into the slug format used by the route.
+function bedBathValueToSlug(value: string) {
+  const normalized = compactSlugToken(value);
+  if (!normalized) return "";
+  return normalized === "5+" ? `5${BEDROOM_TOKEN_SUFFIX}` : `${normalized}${BEDROOM_TOKEN_SUFFIX}`;
+}
+
+// Build the bedroom token when the filter has a selected value.
+function buildBedroomToken(values: string[]) {
+  if (!values.length) return "";
+  const token = bedBathValueToSlug(values[0]);
+  return token ? token : "";
+}
+
+// Build the bathroom token when the filter has a selected value.
+function buildBathroomToken(values: string[]) {
+  if (!values.length) return "";
+  const token = bedBathValueToSlug(values[0]).replace(
+    BEDROOM_TOKEN_SUFFIX,
+    BATHROOM_TOKEN_SUFFIX,
+  );
+  return token ? token : "";
 }
 
 // Remove one parsed token from the pending slug without disturbing earlier tokens.
@@ -162,58 +199,49 @@ function removeMatchedSuffix(value: string, token: string) {
   return value;
 }
 
-// Parse one trailing token that maps to a single filter value.
-function parseSingleListToken(
-  pending: string,
-  prefix: string,
-  pattern: string,
-  toValue: (slug: string) => string | undefined,
-) {
-  const regex = new RegExp(`${prefix}${pattern}$`);
-  const match = pending.match(regex);
-  if (!match?.[0]) {
-    return { pending, value: undefined as string | undefined };
-  }
-
-  const slug = match[0].replace(prefix, "");
-  const value = toValue(slug);
-
-  return {
-    pending: removeMatchedSuffix(pending, match[0]),
-    value,
-  };
-}
-
-// Parse the location token and map it back to readable province and ward labels.
-function parseLocationToken(pending: string, context?: FlatUrlContext) {
-  const locationTokenPattern = new RegExp(
-    `${LOCATION_TOKEN_PREFIX}[a-z0-9-]+$`,
-  );
-  const locationMatch = pending.match(locationTokenPattern);
-  if (!locationMatch?.[0]) {
+function parseLocationBlock(
+  block?: string,
+  context?: FlatUrlContext,
+): {
+  categorySlug?: string;
+  provinceSlug?: string;
+  wardSlug?: string;
+  province: string;
+  ward: string;
+} {
+  if (!block) {
     return {
-      pending,
       province: "",
       ward: "",
     };
   }
 
-  const locationRaw = locationMatch[0].replace(LOCATION_TOKEN_PREFIX, "");
-  const wardMarker = `-${LOCATION_WARD_PREFIX}`;
-  const provincePrefix = LOCATION_PROVINCE_PREFIX;
+  const pending = compactSlugToken(block);
+  const locationTokenPattern =
+    `(?:${LOCATION_PROVINCE_PREFIX}[a-z0-9-]+(?:-${LOCATION_WARD_PREFIX}[a-z0-9-]+)?)`;
+  const locationToken = extractTrailingToken(pending, locationTokenPattern);
 
+  let categorySlug = pending || undefined;
   let provinceSlug = "";
   let wardSlug = "";
 
-  if (locationRaw.startsWith(provincePrefix)) {
-    const afterProvince = locationRaw.slice(provincePrefix.length);
-    const wardIndex = afterProvince.indexOf(wardMarker);
+  if (locationToken) {
+    const nextPending = removeMatchedSuffix(pending, locationToken);
+    categorySlug = nextPending || undefined;
 
-    if (wardIndex >= 0) {
-      provinceSlug = afterProvince.slice(0, wardIndex);
-      wardSlug = afterProvince.slice(wardIndex + wardMarker.length);
-    } else {
-      provinceSlug = afterProvince;
+    const locationRaw = locationToken;
+    const wardMarker = `-${LOCATION_WARD_PREFIX}`;
+
+    if (locationRaw.startsWith(LOCATION_PROVINCE_PREFIX)) {
+      const afterProvince = locationRaw.slice(LOCATION_PROVINCE_PREFIX.length);
+      const wardIndex = afterProvince.indexOf(wardMarker);
+
+      if (wardIndex >= 0) {
+        provinceSlug = afterProvince.slice(0, wardIndex);
+        wardSlug = afterProvince.slice(wardIndex + wardMarker.length);
+      } else {
+        provinceSlug = afterProvince;
+      }
     }
   }
 
@@ -239,7 +267,9 @@ function parseLocationToken(pending: string, context?: FlatUrlContext) {
     })?.name ?? humanizeSlugToken(wardSlug);
 
   return {
-    pending: removeMatchedSuffix(pending, locationMatch[0]),
+    categorySlug,
+    provinceSlug: provinceSlug || undefined,
+    wardSlug: wardSlug || undefined,
     province: provinceSlug ? provinceName : "",
     ward: wardSlug ? wardName : "",
   };
@@ -318,7 +348,7 @@ function parseAreaToken(token: string): ParsedArea | undefined {
   const aboveMatch = raw.match(/^tren-(\d+)m2$/);
   if (aboveMatch) return { minArea: Number(aboveMatch[1]) };
 
-  const betweenMatch = raw.match(/^(\d+)-(\d+)m2$/);
+  const betweenMatch = raw.match(/^tu-(\d+)m2-den-(\d+)m2$/);
   if (betweenMatch) {
     return {
       minArea: Number(betweenMatch[1]),
@@ -329,13 +359,11 @@ function parseAreaToken(token: string): ParsedArea | undefined {
   return undefined;
 }
 
-// Parsing walks suffix tokens from the most specific fields first so mixed slugs
-// like category + location + ranges can be consumed without ambiguity.
-function extractSuffixToken(value: string, prefix: string) {
-  const regex = new RegExp(`${prefix}[a-z0-9-]+$`);
+function extractTrailingToken(value: string, tokenPattern: string) {
+  const regex = new RegExp(`(?:^|-)(${tokenPattern})$`);
   const match = value.match(regex);
-  if (!match?.[0]) return undefined;
-  return match[0];
+  if (!match?.[1]) return undefined;
+  return match[1];
 }
 
 // Resolve a category label into the slug used by the flat-url contract.
@@ -361,6 +389,65 @@ function findCategoryNameBySlug(
   return found?.name;
 }
 
+function buildCanonicalListingBlock1(
+  value: AdvancedFilterValue | FlatUrlRouteParts,
+  context?: FlatUrlContext,
+) {
+  const parts: string[] = [];
+
+  if ("propertyTypes" in value) {
+    const propertyTypeName = value.propertyTypes[0] ?? "";
+    if (propertyTypeName) {
+      const slug =
+        findCategorySlugByName(propertyTypeName, context?.propertyCategories) ??
+        compactSlugToken(propertyTypeName);
+      parts.push(CATEGORY_SLUG_TO_TOKEN.get(slug) ?? slug);
+    }
+  } else if (value.categorySlug) {
+    parts.push(value.categorySlug);
+  }
+
+  const locationToken =
+    "provinceSlug" in value
+      ? buildLocationTokenFromRouteParts(value)
+      : buildLocationToken(
+          "province" in value ? value.province : "",
+          "ward" in value ? value.ward : "",
+          context,
+        );
+
+  if (locationToken) {
+    parts.push(locationToken);
+  }
+
+  return parts.filter(Boolean).join("-");
+}
+
+function buildCanonicalListingBlock2(value: AdvancedFilterValue) {
+  const parts: string[] = [];
+
+  const priceToken = buildPriceToken(
+    value.priceMin,
+    value.priceMax,
+    value.negotiable,
+  );
+  if (priceToken) parts.push(priceToken);
+
+  const areaToken = buildAreaToken(value.areaMin, value.areaMax);
+  if (areaToken) parts.push(areaToken);
+
+  const bedroomToken = buildBedroomToken(value.bedrooms);
+  if (bedroomToken) parts.push(bedroomToken);
+
+  const bathroomToken = buildBathroomToken(value.bathrooms);
+  if (bathroomToken) parts.push(bathroomToken);
+
+  const directionToken = buildDirectionToken(value.directions);
+  if (directionToken) parts.push(directionToken);
+
+  return parts.filter(Boolean).join("-");
+}
+
 // Builders feed both manual filter interactions and suggestion navigation, so
 // they must avoid introducing default placeholder tokens into the slug.
 export function buildPropertyFilterPath(
@@ -368,34 +455,12 @@ export function buildPropertyFilterPath(
   value: AdvancedFilterValue,
   context?: FlatUrlContext,
 ) {
-  const tokens: string[] = [];
+  const block1 = buildCanonicalListingBlock1(value, context);
+  const block2 = buildCanonicalListingBlock2(value);
+  const blocks = [block1, block2].filter(Boolean);
 
-  const propertyTypeName = value.propertyTypes[0] ?? "";
-  if (propertyTypeName) {
-    const slug =
-      findCategorySlugByName(propertyTypeName, context?.propertyCategories) ??
-      compactSlugToken(propertyTypeName);
-    tokens.push(CATEGORY_SLUG_TO_TOKEN.get(slug) ?? slug);
-  }
-
-  const priceToken = buildPriceToken(
-    value.priceMin,
-    value.priceMax,
-    value.negotiable,
-  );
-  if (priceToken) tokens.push(priceToken);
-
-  const areaToken = buildAreaToken(value.areaMin, value.areaMax);
-  if (areaToken) tokens.push(areaToken);
-
-  const locationToken = buildLocationToken(value.province, value.ward, context);
-  if (locationToken) tokens.push(locationToken);
-
-  const directionToken = buildDirectionToken(value.directions);
-  if (directionToken) tokens.push(directionToken);
-
-  if (tokens.length === 0) return basePath;
-  return `${basePath}/${tokens.join("-")}`;
+  if (blocks.length === 0) return basePath;
+  return `${basePath}/${blocks.join("/")}`;
 }
 
 // Rebuild a listing path from route parts that already came from the backend contract.
@@ -403,16 +468,13 @@ export function buildPropertyFilterPathFromRouteParts(
   basePath: string,
   routeParts: FlatUrlRouteParts,
 ) {
-  const tokens = [
-    routeParts.categorySlug,
-    buildLocationTokenFromRouteParts(routeParts),
-  ].filter(Boolean);
+  const block1 = buildCanonicalListingBlock1(routeParts);
 
-  if (tokens.length === 0) {
+  if (!block1) {
     return basePath;
   }
 
-  return `${basePath}/${tokens.join("-")}`;
+  return `${basePath}/${block1}`;
 }
 
 // Extract category and location route parts without expanding the full filter state.
@@ -423,42 +485,53 @@ export function extractPropertyFilterRouteParts(
     return {};
   }
 
-  const slug = compactSlugToken(rawSlug);
-  const locationMatch = slug.match(
-    new RegExp(`${LOCATION_TOKEN_PREFIX}[a-z0-9-]+$`),
-  );
-
-  let pending = slug;
-  let provinceSlug: string | undefined;
-  let wardSlug: string | undefined;
-
-  if (locationMatch?.[0]) {
-    pending = removeMatchedSuffix(slug, locationMatch[0]);
-    const locationRaw = locationMatch[0].replace(LOCATION_TOKEN_PREFIX, "");
-    const wardMarker = `-${LOCATION_WARD_PREFIX}`;
-
-    if (locationRaw.startsWith(LOCATION_PROVINCE_PREFIX)) {
-      const afterProvince = locationRaw.slice(LOCATION_PROVINCE_PREFIX.length);
-      const wardIndex = afterProvince.indexOf(wardMarker);
-
-      if (wardIndex >= 0) {
-        provinceSlug = afterProvince.slice(0, wardIndex);
-        wardSlug = afterProvince.slice(wardIndex + wardMarker.length);
-      } else {
-        provinceSlug = afterProvince;
-      }
-    }
+  const [block1] = splitListingSlugBlocks(rawSlug);
+  if (block1 && isFilterBlock(block1)) {
+    return {};
   }
+  const parsed = parseLocationBlock(block1);
 
   return {
-    categorySlug: (CATEGORY_TOKEN_TO_SLUG.get(pending) ?? pending) || undefined,
-    provinceSlug,
-    wardSlug,
+    categorySlug:
+      (CATEGORY_TOKEN_TO_SLUG.get(parsed.categorySlug ?? "") ??
+        parsed.categorySlug) || undefined,
+    provinceSlug: parsed.provinceSlug,
+    wardSlug: parsed.wardSlug,
   };
 }
 
-// Parsing removes recognized suffix tokens in reverse order so the remaining
-// segment can still resolve to a category token or raw category slug.
+function parseBedBathToken(
+  pending: string,
+  suffix: typeof BEDROOM_TOKEN_SUFFIX | typeof BATHROOM_TOKEN_SUFFIX,
+) {
+  const token = extractTrailingToken(pending, `\\d+${suffix}`);
+  if (!token) {
+    return { pending, value: undefined as string | undefined };
+  }
+
+  const number = Number(token.replace(suffix, ""));
+  if (!Number.isFinite(number)) {
+    return { pending, value: undefined as string | undefined };
+  }
+
+  return {
+    pending: removeMatchedSuffix(pending, token),
+    value: number >= 5 ? "5+" : String(number),
+  };
+}
+
+function isFilterBlock(block: string) {
+  return (
+    block.startsWith(PRICE_TOKEN_PREFIX) ||
+    block.startsWith(AREA_TOKEN_PREFIX) ||
+    block.startsWith(DIRECTION_TOKEN_PREFIX) ||
+    /^\d+pn$/.test(block) ||
+    /^\d+pt$/.test(block)
+  );
+}
+
+// Parsing removes recognized suffix tokens from the filter block so the first
+// block can remain dedicated to category and location.
 export function parsePropertyFilterSlug(
   rawSlug: string | undefined,
   context?: FlatUrlContext,
@@ -469,7 +542,14 @@ export function parsePropertyFilterSlug(
     return initial;
   }
 
-  let pending = compactSlugToken(rawSlug);
+  let [block1, block2] = splitListingSlugBlocks(rawSlug);
+  if (!block2 && block1 && isFilterBlock(block1)) {
+    block2 = block1;
+    block1 = "";
+  }
+
+  const locationParsed = parseLocationBlock(block1, context);
+  let pending = block2 ?? "";
   const directionSlugToId = new Map<string, string>(
     DIRECTION_OPTIONS.map((option) => [
       compactSlugToken(option.id.replaceAll("_", "-")),
@@ -478,21 +558,46 @@ export function parsePropertyFilterSlug(
   );
   const directionSlugPattern = Array.from(directionSlugToId.keys()).join("|");
 
-  const directionParsed = parseSingleListToken(
+  const directionToken = extractTrailingToken(
     pending,
-    DIRECTION_TOKEN_PREFIX,
-    `(?:${directionSlugPattern})`,
-    (slug) => directionSlugToId.get(slug),
+    `${DIRECTION_TOKEN_PREFIX}(?:${directionSlugPattern})`,
   );
-  pending = directionParsed.pending;
-  initial.directions = directionParsed.value ? [directionParsed.value] : [];
+  if (directionToken) {
+    const directionSlug = directionToken.replace(DIRECTION_TOKEN_PREFIX, "");
+    const directionId = directionSlugToId.get(directionSlug);
+    if (directionId) {
+      initial.directions = [directionId];
+      pending = removeMatchedSuffix(pending, directionToken);
+    }
+  }
 
-  const locationParsed = parseLocationToken(pending, context);
-  pending = locationParsed.pending;
+  const bathroomToken = extractTrailingToken(
+    pending,
+    `\\d+${BATHROOM_TOKEN_SUFFIX}`,
+  );
+  if (bathroomToken) {
+    const bathroom = parseBedBathToken(pending, BATHROOM_TOKEN_SUFFIX);
+    pending = bathroom.pending;
+    initial.bathrooms = bathroom.value ? [bathroom.value] : [];
+  }
+
+  const bedroomToken = extractTrailingToken(
+    pending,
+    `\\d+${BEDROOM_TOKEN_SUFFIX}`,
+  );
+  if (bedroomToken) {
+    const bedroom = parseBedBathToken(pending, BEDROOM_TOKEN_SUFFIX);
+    pending = bedroom.pending;
+    initial.bedrooms = bedroom.value ? [bedroom.value] : [];
+  }
+
   initial.province = locationParsed.province;
   initial.ward = locationParsed.ward;
 
-  const areaToken = extractSuffixToken(pending, AREA_TOKEN_PREFIX);
+  const areaToken = extractTrailingToken(
+    pending,
+    `${AREA_TOKEN_PREFIX}(?:duoi-\\d+m2|tren-\\d+m2|tu-\\d+m2-den-\\d+m2)`,
+  );
   if (areaToken) {
     const area = parseAreaToken(areaToken);
     if (area) {
@@ -505,7 +610,11 @@ export function parsePropertyFilterSlug(
     }
   }
 
-  const priceToken = extractSuffixToken(pending, PRICE_TOKEN_PREFIX);
+  const moneyPattern = String.raw`\d+(?:-\d+)?-(?:trieu|ty)`;
+  const priceToken = extractTrailingToken(
+    pending,
+    `${PRICE_TOKEN_PREFIX}(?:thoa-thuan|duoi-${moneyPattern}|tren-${moneyPattern}|${moneyPattern}-${moneyPattern})`,
+  );
   if (priceToken) {
     const price = parsePriceToken(priceToken);
     if (price) {
@@ -522,11 +631,12 @@ export function parsePropertyFilterSlug(
     }
   }
 
-  const typeSlug = CATEGORY_TOKEN_TO_SLUG.get(pending) ?? pending;
+  const typeSlug = locationParsed.categorySlug ?? pending;
+  const normalizedTypeSlug = CATEGORY_TOKEN_TO_SLUG.get(typeSlug) ?? typeSlug;
   const typeName =
-    findCategoryNameBySlug(typeSlug, context?.propertyCategories) ??
-    CATEGORY_SLUG_TO_LABEL.get(typeSlug) ??
-    humanizeSlugToken(typeSlug);
+    findCategoryNameBySlug(normalizedTypeSlug, context?.propertyCategories) ??
+    CATEGORY_SLUG_TO_LABEL.get(normalizedTypeSlug) ??
+    humanizeSlugToken(normalizedTypeSlug);
 
   if (typeName) {
     initial.propertyTypes = [typeName];
@@ -538,19 +648,25 @@ export function parsePropertyFilterSlug(
 // Detect whether a slug contains filter tokens before route code treats it as a detail slug.
 export function isLikelyPropertyFilterSlug(rawSlug?: string) {
   if (!rawSlug) return false;
-  const slug = compactSlugToken(rawSlug);
+  if (rawSlug.includes("/")) return true;
 
-  if (CATEGORY_TOKEN_TO_SLUG.has(slug)) return true;
+  const [block1, block2] = splitListingSlugBlocks(rawSlug);
+  if (CATEGORY_TOKEN_TO_SLUG.has(block1 ?? "")) return true;
 
   const tokenPrefixes = [
     PRICE_TOKEN_PREFIX,
     AREA_TOKEN_PREFIX,
-    LOCATION_TOKEN_PREFIX,
+    LOCATION_PROVINCE_PREFIX,
+    LOCATION_WARD_PREFIX,
+    BEDROOM_TOKEN_SUFFIX,
+    BATHROOM_TOKEN_SUFFIX,
     DIRECTION_TOKEN_PREFIX,
   ];
 
-  return tokenPrefixes.some(
-    (prefix) => slug.startsWith(prefix) || slug.includes(`-${prefix}`),
+  return (
+    tokenPrefixes.some(
+      (prefix) => (block1 ?? "").startsWith(prefix) || (block1 ?? "").includes(`-${prefix}`),
+    ) || Boolean(block2)
   );
 }
 
@@ -576,6 +692,24 @@ export function parsePagedSlugSegments(segments?: string[]) {
   const page = pageMatch ? Number(pageMatch[1]) : 1;
   const core = pageMatch ? segments.slice(0, -1) : segments;
   const rawSlug = core.length > 0 ? core.join("-") : undefined;
+
+  return {
+    rawSlug,
+    page: Number.isFinite(page) && page > 0 ? page : 1,
+  };
+}
+
+// Separate pagination suffixes from the canonical listing slug while preserving slash boundaries.
+export function parseListingPagedSlugSegments(segments?: string[]) {
+  if (!segments?.length) {
+    return { rawSlug: undefined as string | undefined, page: 1 };
+  }
+
+  const last = segments[segments.length - 1];
+  const pageMatch = last.match(PAGE_SEGMENT_REGEX);
+  const page = pageMatch ? Number(pageMatch[1]) : 1;
+  const core = pageMatch ? segments.slice(0, -1) : segments;
+  const rawSlug = core.length > 0 ? core.join("/") : undefined;
 
   return {
     rawSlug,
@@ -725,6 +859,14 @@ export function buildPropertyFilterBreadcrumbs(
     .join(", ");
   if (locationLabel) {
     items.push({ label: locationLabel });
+  }
+
+  if (parsed.bedrooms.length > 0) {
+    items.push({ label: `${parsed.bedrooms[0]} Phòng ngủ` });
+  }
+
+  if (parsed.bathrooms.length > 0) {
+    items.push({ label: `${parsed.bathrooms[0]} Phòng tắm` });
   }
 
   if (parsed.directions.length > 0) {

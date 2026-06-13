@@ -26,8 +26,10 @@ export type RentRequestListFilters = {
   wardId?: number;
   provinceSlug?: string;
   wardSlug?: string;
-  budget?: number;
-  desiredArea?: number;
+  minBudget?: number;
+  maxBudget?: number;
+  minDesiredArea?: number;
+  maxDesiredArea?: number;
   desiredDirection?: PropertyDirection | null;
   status?: RentRequestStatus;
   sortBy?: RentRequestSortBy;
@@ -57,6 +59,9 @@ export type CreateRentRequestPayload = {
   categoryId: number;
   budget: number;
   desiredArea: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  floors?: number;
   desiredDirection?: PropertyDirection | null;
   desiredProvinceId: number;
   desiredWardId: number;

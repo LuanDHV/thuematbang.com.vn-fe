@@ -44,6 +44,9 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   price: undefined,
   isNegotiable: false,
   area: undefined,
+  bedrooms: undefined,
+  bathrooms: undefined,
+  floors: undefined,
   direction: null,
   provinceId: undefined,
   wardId: undefined,
@@ -53,11 +56,7 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   content: "",
 };
 
-function appendString(
-  formData: FormData,
-  key: string,
-  value?: string | null,
-) {
+function appendString(formData: FormData, key: string, value?: string | null) {
   const normalizedValue = value?.trim();
   if (!normalizedValue) return;
   formData.set(key, normalizedValue);
@@ -164,6 +163,9 @@ export function PropertyCreateForm({
       values.isNegotiable ? "true" : "false",
     );
     appendNumber(payload, "area", values.area);
+    appendNumber(payload, "bedrooms", values.bedrooms);
+    appendNumber(payload, "bathrooms", values.bathrooms);
+    appendNumber(payload, "floors", values.floors);
     appendString(payload, "direction", values.direction);
     appendNumber(payload, "provinceId", values.provinceId);
     appendNumber(payload, "wardId", values.wardId);
@@ -219,78 +221,105 @@ export function PropertyCreateForm({
           />
         </div>
 
-      <ListingTextField
-        name="title"
-        label="Tiêu đề"
-        required
-        placeholder="Ví dụ: Mặt bằng kinh doanh quận 1"
-        autoComplete="off"
-      />
-
-      <ListingSelectField
-        name="categoryId"
-        label="Danh mục"
-        required
-        placeholder="Chọn danh mục"
-        options={categoryOptions}
-      />
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <ListingNumberField
-          name="price"
-          label="Giá"
+        <ListingTextField
+          name="title"
+          label="Tiêu đề"
           required
-          placeholder="Nhập giá"
-          inputMode="numeric"
-          min={0}
-          step="1"
-          format="currency"
+          placeholder="Ví dụ: Mặt bằng kinh doanh quận 1"
+          autoComplete="off"
         />
-        <ListingNumberField
-          name="area"
-          label="Diện tích"
+
+        <ListingSelectField
+          name="categoryId"
+          label="Danh mục"
           required
-          placeholder="Nhập diện tích"
-          inputMode="decimal"
-          min={0}
-          step="0.1"
-          format="area"
+          placeholder="Chọn danh mục"
+          options={categoryOptions}
         />
-      </div>
 
-      <ListingCheckboxField
-        name="isNegotiable"
-        label="Thương lượng"
-        description="Đánh dấu nếu bạn muốn người xem hiểu rằng mức giá có thể trao đổi thêm"
-      />
+        <div className="grid gap-4 md:grid-cols-2">
+          <ListingNumberField
+            name="price"
+            label="Giá"
+            required
+            placeholder="Nhập giá"
+            inputMode="numeric"
+            min={0}
+            step="1"
+            format="currency"
+          />
+          <ListingNumberField
+            name="area"
+            label="Diện tích"
+            required
+            placeholder="Nhập diện tích"
+            inputMode="decimal"
+            min={0}
+            step="0.1"
+            format="area"
+          />
+        </div>
 
-      <ListingSelectField
-        name="direction"
-        label="Hướng"
-        placeholder="Chọn hướng"
-        options={directionOptions}
-        allowEmptySelection
-      />
+        <ListingCheckboxField
+          name="isNegotiable"
+          label="Thương lượng"
+          description="Đánh dấu nếu bạn muốn người xem hiểu rằng mức giá có thể trao đổi thêm"
+        />
 
-      <ListingLocationField
-        provinceName="provinceId"
-        wardName="wardId"
-        provinces={provinces}
-        requiredProvince
-        requiredWard
-      />
+        <div className="grid gap-4 md:grid-cols-3">
+          <ListingNumberField
+            name="bedrooms"
+            label="Số phòng ngủ"
+            placeholder="Ví dụ: 2"
+            inputMode="numeric"
+            min={0}
+            step="1"
+          />
+          <ListingNumberField
+            name="bathrooms"
+            label="Số phòng tắm"
+            placeholder="Ví dụ: 1"
+            inputMode="numeric"
+            min={0}
+            step="1"
+          />
+          <ListingNumberField
+            name="floors"
+            label="Số tầng"
+            placeholder="Ví dụ: 3"
+            inputMode="numeric"
+            min={0}
+            step="1"
+          />
+        </div>
 
-      <ListingTextField
-        name="addressDetail"
-        label="Địa chỉ chi tiết"
-        placeholder="Số nhà, tên tòa nhà, hẻm..."
-      />
+        <ListingSelectField
+          name="direction"
+          label="Hướng"
+          placeholder="Chọn hướng"
+          options={directionOptions}
+          allowEmptySelection
+        />
 
-      <ListingTextareaField
-        name="content"
-        label="Mô tả thêm"
-        placeholder="Mô tả chi tiết về tin đăng..."
-      />
+        <ListingLocationField
+          provinceName="provinceId"
+          wardName="wardId"
+          provinces={provinces}
+          requiredProvince
+          requiredWard
+        />
+
+        <ListingTextField
+          name="addressDetail"
+          label="Địa chỉ chi tiết"
+          placeholder="Số nhà, tên tòa nhà, hẻm..."
+        />
+
+        <ListingTextareaField
+          name="content"
+          label="Mô tả thêm"
+          placeholder="Mô tả chi tiết về tin đăng..."
+        />
 
         <ListingImageField
           files={images}
@@ -309,7 +338,9 @@ export function PropertyCreateForm({
         title="Đã đăng tin thành công"
         description="Bạn có muốn xem các nhu cầu thuê không?"
         primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref={createdSlug ? `/cho-thue/${createdSlug}` : "/cho-thue"}
+        primaryActionHref={
+          createdSlug ? `/cho-thue/${createdSlug}` : "/cho-thue"
+        }
         secondaryActionLabel="Trang cần thuê"
         secondaryActionHref="/can-thue"
       />

@@ -71,6 +71,9 @@ function normalizeRentRequestPayload(formData: FormData) {
   const categoryId = Number(nextFormData.get("categoryId"));
   const budget = Number(nextFormData.get("budget"));
   const desiredArea = Number(nextFormData.get("desiredArea"));
+  const bedrooms = Number(nextFormData.get("bedrooms"));
+  const bathrooms = Number(nextFormData.get("bathrooms"));
+  const floors = Number(nextFormData.get("floors"));
   const desiredDirection = normalizePropertyDirection(
     nextFormData.get("desiredDirection"),
   );
@@ -88,6 +91,9 @@ function normalizeRentRequestPayload(formData: FormData) {
     categoryId,
     budget,
     desiredArea,
+    bedrooms: Number.isFinite(bedrooms) ? bedrooms : undefined,
+    bathrooms: Number.isFinite(bathrooms) ? bathrooms : undefined,
+    floors: Number.isFinite(floors) ? floors : undefined,
     desiredDirection,
     desiredProvinceId,
     desiredWardId,

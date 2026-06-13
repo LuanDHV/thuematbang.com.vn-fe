@@ -11,6 +11,8 @@ import {
 import type { PropertyPriority } from "@/types";
 import { Property } from "@/types/property";
 import {
+  Bath,
+  Bed,
   Calendar,
   Crown,
   Eye,
@@ -366,6 +368,16 @@ function CardBody({
   );
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
   const isCompact = density === "compact";
+  const bedroomsText = property.bedrooms
+    ? `${property.bedrooms} phòng ngủ`
+    : isCompact
+      ? null
+      : "Đang cập nhật phòng ngủ";
+  const bathroomsText = property.bathrooms
+    ? `${property.bathrooms} phòng tắm`
+    : isCompact
+      ? null
+      : "Đang cập nhật phòng tắm";
 
   const metaItems = [
     { icon: MapPin, text: location },
@@ -373,6 +385,8 @@ function CardBody({
       icon: Maximize,
       text: formatAreaValue(property.area, "Đang cập nhật diện tích"),
     },
+    bedroomsText ? { icon: Bed, text: bedroomsText } : null,
+    bathroomsText ? { icon: Bath, text: bathroomsText } : null,
   ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
 
   const categoryBadgeSizeClass =

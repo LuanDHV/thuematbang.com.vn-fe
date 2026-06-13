@@ -10,8 +10,9 @@ import PropertyDetailContent from "@/components/listing-detail/property/Property
 import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
 import {
   buildPropertyFilterBreadcrumbs,
+  buildPropertyFilterPathFromRouteParts,
   isLikelyPropertyFilterSlug,
-  parsePagedSlugSegments,
+  parseListingPagedSlugSegments,
   parsePropertyFilterSlug,
 } from "@/lib/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
@@ -96,7 +97,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { rawSlug } = parsePagedSlugSegments(slug);
+  const { rawSlug } = parseListingPagedSlugSegments(slug);
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
   if (property) {
@@ -118,13 +119,13 @@ export async function generateMetadata({
   return createPageMetadata({
     title: "Cho thuê mặt bằng",
     description: "Danh sách cho thuê bất động sản theo bộ lọc.",
-    pathname: `/cho-thue/${slug.join("/")}`,
+    pathname: rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue",
   });
 }
 
 export default async function DynamicChoThuePage({ params }: PageProps) {
   const { slug } = await params;
-  const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const { rawSlug, page } = parseListingPagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
   const [seoRes, faqRes] = await Promise.all([
@@ -187,7 +188,10 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           )
           .map((item) => ({
             label: `${item.category?.name} khu vực ${property.province?.name}`,
-            href: `/cho-thue/${item.category?.slug}-khu-vuc-${provinceSlug}`,
+            href: buildPropertyFilterPathFromRouteParts("/cho-thue", {
+              categorySlug: item.category?.slug,
+              provinceSlug,
+            }),
           }))
           .filter(
             (item, index, arr) =>

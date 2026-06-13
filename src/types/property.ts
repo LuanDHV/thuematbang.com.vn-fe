@@ -21,6 +21,9 @@ export interface Property {
   isNegotiable: boolean;
   area: number;
   direction?: PropertyDirection | null;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  floors?: number | null;
   priorityStatus: PropertyPriority;
   publishSource: PublishSource;
   isBoosted: boolean;

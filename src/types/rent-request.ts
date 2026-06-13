@@ -13,6 +13,9 @@ export interface RentRequest {
   desiredWardId: number;
   budget: number;
   desiredArea: number;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  floors?: number | null;
   desiredDirection?: PropertyDirection | null;
   requirementText?: string | null;
   contactName: string;

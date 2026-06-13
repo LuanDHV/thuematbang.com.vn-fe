@@ -306,6 +306,15 @@ It is responsible for:
 - flat URL building
 - breadcrumb inputs
 - route synchronization rules
+- shared range filter semantics for property and rent-request listing flows
+
+Canonical listing routes use a 2-block flat slug:
+
+- block 1: `category-location` combined into one segment
+- block 2: `price-dt-pn-pt-direction` combined into one segment
+- `dt` is the short form for area
+- `pn` and `pt` are the short forms for bedrooms and bathrooms
+- `5pn` and `5pt` mean `>= 5`
 
 When changing listing routes, breadcrumb logic, or path generation:
 

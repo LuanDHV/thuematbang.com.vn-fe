@@ -16,6 +16,7 @@ import {
   Maximize,
 } from "lucide-react";
 import {
+  BED_BATH_OPTIONS,
   DIRECTION_OPTIONS,
   FILTER_LIMITS,
   mockFilterAreaOptions,
@@ -40,6 +41,10 @@ type DetailTabSharedProps = {
   updateCurrent: UpdateCurrent;
   onDone?: () => void;
 };
+
+const quickCellClass =
+  "mt-2 cursor-pointer rounded-lg border border-black/8 bg-white px-4 py-1.5 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all hover:border-primary/20 hover:bg-primary/5 hover:text-primary";
+const selectedQuickCellClass = "border-primary bg-primary/5 text-primary";
 
 export function PropertyTypeDetailTab({
   current,
@@ -397,6 +402,7 @@ export function LocationDetailTab({
 
 export function AdvancedMainTab({
   current,
+  listingMode = "property",
   priceSummary,
   areaSummary,
   setDetailTab,
@@ -407,7 +413,10 @@ export function AdvancedMainTab({
   priceSummary: string;
   areaSummary: string;
   setDetailTab: (tab: "propertyType" | "location" | "price" | "area") => void;
-  toggleFromList: (key: "propertyTypes" | "directions", item: string) => void;
+  toggleFromList: (
+    key: "propertyTypes" | "bedrooms" | "bathrooms" | "directions",
+    item: string,
+  ) => void;
 }) {
   const locationSummary = [current.province, current.ward]
     .filter(Boolean)
@@ -480,6 +489,46 @@ export function AdvancedMainTab({
           <ChevronRight className="size-5 text-gray-400" />
         </button>
       </div>
+
+      {listingMode === "property" ? (
+        <>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">
+              Số phòng ngủ
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {BED_BATH_OPTIONS.map((item) => (
+                <button
+                  key={`bed-${item}`}
+                  type="button"
+                  onClick={() => toggleFromList("bedrooms", item)}
+                  className={`${quickCellClass} ${current.bedrooms.includes(item) ? selectedQuickCellClass : ""}`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">
+              Số phòng tắm, vệ sinh
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {BED_BATH_OPTIONS.map((item) => (
+                <button
+                  key={`bath-${item}`}
+                  type="button"
+                  onClick={() => toggleFromList("bathrooms", item)}
+                  className={`${quickCellClass} ${current.bathrooms.includes(item) ? selectedQuickCellClass : ""}`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : null}
 
       <div className="flex flex-col gap-4">
         <label className="text-sm font-semibold text-gray-700">Hướng nhà</label>
