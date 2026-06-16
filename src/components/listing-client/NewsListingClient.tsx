@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
-import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/listing/flat-url";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
 import NewsCard from "@/components/common/NewsCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";

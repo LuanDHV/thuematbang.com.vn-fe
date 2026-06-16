@@ -10,7 +10,7 @@ import AdminDataTable, {
   type AdminTableToolbar,
 } from "@/components/cms/admin/DataTable";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
-import { createPaginationChangeHandler } from "@/lib/utils";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import type { AuthProvider, UserRole } from "@/types/enums";
 import type { User } from "@/types/user";
 
@@ -124,3 +124,5 @@ export default function AdminUsersTable({
     />
   );
 }
+
+

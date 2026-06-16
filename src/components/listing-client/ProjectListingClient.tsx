@@ -1,11 +1,11 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Project } from "@/types/project";
 import { Category } from "@/types/category";
-import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/listing/flat-url";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
 import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";

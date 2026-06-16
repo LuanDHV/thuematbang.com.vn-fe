@@ -24,7 +24,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn, formatTableDate, formatTableNumber } from "@/lib/utils";
+import { formatTableDate, formatTableNumber } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 type RowId = string | number;
 

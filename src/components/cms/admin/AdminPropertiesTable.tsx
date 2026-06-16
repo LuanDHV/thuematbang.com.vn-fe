@@ -17,10 +17,10 @@ import AdminDataTable, {
 } from "@/components/cms/admin/DataTable";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import {
-  createPaginationChangeHandler,
   formatLocationParts,
   formatNegotiablePrice,
-} from "@/lib/utils";
+} from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
 import type { PropertyPriority, PublishStatus } from "@/types/enums";
 import type { Property } from "@/types/property";
@@ -162,3 +162,5 @@ export default function AdminPropertiesTable({
     />
   );
 }
+
+

@@ -29,11 +29,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  createPaginationChangeHandler,
   formatDateDisplay,
   formatLocationParts,
   formatNegotiablePrice,
-} from "@/lib/utils";
+} from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import type { PropertyPriority, PublishStatus } from "@/types/enums";
 import type { Property } from "@/types/property";
 
@@ -215,3 +215,5 @@ export default function UserPropertiesTable({
     </section>
   );
 }
+
+

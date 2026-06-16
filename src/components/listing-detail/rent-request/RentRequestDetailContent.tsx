@@ -17,7 +17,7 @@ import {
   formatAreaValue,
   formatNumber,
   formatVndAmount,
-} from "@/lib/utils";
+} from "@/lib/format";
 import { RentRequest } from "@/types/rent-request";
 
 type RentRequestDetailContentProps = {
@@ -184,3 +184,4 @@ export default function RentRequestDetailContent({
     </div>
   );
 }
+

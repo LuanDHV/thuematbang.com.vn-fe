@@ -10,7 +10,7 @@ import {
   formatLocationParts,
   formatNumber,
   formatVndAmount,
-} from "@/lib/utils";
+} from "@/lib/format";
 import { Project } from "@/types/project";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
@@ -127,3 +127,4 @@ export function ProjectCard({ project }: { project: Project }) {
     </Link>
   );
 }
+

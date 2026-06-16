@@ -15,7 +15,7 @@ import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import type { PageValue } from "@/constants/enum-values";
 import { useToast } from "@/components/ui/use-toast";
 import type { FaqItem } from "@/types/faq";
-import { createPaginationChangeHandler } from "@/lib/utils";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type AdminFaqsTableProps = {
@@ -160,3 +160,5 @@ export default function AdminFaqsTable({
     </>
   );
 }
+
+

@@ -13,10 +13,10 @@ import AdminStatusBadge, {
 import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import {
-  createPaginationChangeHandler,
   formatLocationParts,
   formatVndAmount,
-} from "@/lib/utils";
+} from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
 import type { PublishStatus } from "@/types/enums";
 import type { Project } from "@/types/project";
@@ -140,3 +140,5 @@ export default function AdminProjectsTable({
     />
   );
 }
+
+

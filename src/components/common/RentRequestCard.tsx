@@ -11,7 +11,7 @@ import {
   formatVndAmount,
   formatLocationParts,
   formatNumber,
-} from "@/lib/utils";
+} from "@/lib/format";
 import { RentRequest } from "@/types/rent-request";
 
 const CARD_HOVER_CLASSES =
@@ -114,3 +114,4 @@ export function RentRequestCard({
     </Link>
   );
 }
+

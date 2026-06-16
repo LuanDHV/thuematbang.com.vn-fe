@@ -4,7 +4,8 @@ import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { News } from "@/types/news";
-import { cn, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface FeaturedNewsCardProps {
   news: News;

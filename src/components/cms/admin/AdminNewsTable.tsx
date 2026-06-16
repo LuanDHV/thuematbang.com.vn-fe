@@ -14,7 +14,7 @@ import AdminStatusBadge, {
   publishStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
-import { createPaginationChangeHandler } from "@/lib/utils";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
 import type { PublishStatus } from "@/types/enums";
 import type { News } from "@/types/news";
@@ -141,3 +141,5 @@ export default function AdminNewsTable({
     />
   );
 }
+
+

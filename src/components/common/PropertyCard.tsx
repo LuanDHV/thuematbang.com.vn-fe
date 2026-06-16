@@ -7,7 +7,7 @@ import {
   formatLocationParts,
   formatNegotiablePrice,
   formatNumber,
-} from "@/lib/utils";
+} from "@/lib/format";
 import type { PropertyPriority } from "@/types";
 import { Property } from "@/types/property";
 import {
@@ -496,3 +496,4 @@ export function PropertyCard({
     </Link>
   );
 }
+

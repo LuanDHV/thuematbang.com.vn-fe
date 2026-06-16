@@ -1,6 +1,6 @@
 import { CalendarDays, Eye, Layers } from "lucide-react";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
-import { formatDate, formatNumber } from "@/lib/utils";
+import { formatDate, formatNumber } from "@/lib/format";
 import { News } from "@/types/news";
 
 type NewsDetailContentProps = {
@@ -62,3 +62,4 @@ export default function NewsDetailContent({ news }: NewsDetailContentProps) {
     </div>
   );
 }
+

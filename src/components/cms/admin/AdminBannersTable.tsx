@@ -18,7 +18,7 @@ import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import type { PageValue } from "@/constants/enum-values";
 import { useToast } from "@/components/ui/use-toast";
 import type { Banner } from "@/types/banner";
-import { createPaginationChangeHandler } from "@/lib/utils";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AdminEntityCell from "./AdminEntityCell";
 
@@ -203,3 +203,5 @@ export default function AdminBannersTable({
     </>
   );
 }
+
+

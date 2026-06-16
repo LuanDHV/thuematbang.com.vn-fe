@@ -16,11 +16,11 @@ import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import { useToast } from "@/components/ui/use-toast";
 import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
-  createPaginationChangeHandler,
   formatAreaValue,
   formatLocationParts,
   formatVndAmount,
-} from "@/lib/utils";
+} from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import type { PublishStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
 
@@ -160,3 +160,5 @@ export default function AdminRentRequestsTable({
     />
   );
 }
+
+

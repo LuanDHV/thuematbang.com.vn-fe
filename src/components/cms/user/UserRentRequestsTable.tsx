@@ -26,12 +26,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  createPaginationChangeHandler,
   formatDateDisplay,
   formatLocationParts,
   formatAreaValue,
   formatVndAmount,
-} from "@/lib/utils";
+} from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import type { RentRequest } from "@/types/rent-request";
 import type { PublishStatus } from "@/types/enums";
 
@@ -224,3 +224,5 @@ export default function UserRentRequestsTable({
     </section>
   );
 }
+
+

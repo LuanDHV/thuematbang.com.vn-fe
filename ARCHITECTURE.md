@@ -30,6 +30,19 @@ Shared contract constants are split by responsibility:
 - `src/constants/enum-values.ts` for enum/value contracts used by schemas and actions
 - `src/constants/enum-options.ts` for UI labels and select options
 
+Shared helper logic is grouped by domain inside `src/lib`:
+
+- `src/lib/form/` for payload normalization, number input, and form-specific helpers
+- `src/lib/text/` for slug-safe text normalization and humanization helpers
+- `src/lib/listing/` for listing slug and form-default/gallery helpers
+- `src/lib/listing/flat-url.ts` for canonical listing route parsing/building and breadcrumb inputs
+- `src/lib/location/` for location filter and flat-url context helpers
+- `src/lib/navigation/` for shared CMS navigation item builders
+- `src/lib/filter/` for listing filter summary and range helpers
+- `src/lib/format.ts` for shared date, number, currency, and location formatters
+- `src/lib/pagination.ts` for pagination URL and page-change helpers
+- `src/lib/server/` for reusable cache revalidation, auth, and server-side pagination helpers
+
 ## 3. Route Structure
 
 ```text
@@ -174,14 +187,23 @@ Shared components reused across multiple domains and routes, such as:
 - Keep `.ts` helper files inside `src/components/**` only when they are truly feature-local and unlikely to be reused elsewhere
 - Type-only shared contract shapes should live in `src/types`
 - If a helper starts appearing in multiple components, pages, or actions, move it out of the component tree before the duplication spreads
+- Keep `src/helpers/` retired as a legacy layer; do not add new helpers there
 - Current shared helper modules include:
-  - `src/lib/form-normalize.ts` for FormData and payload normalization
-  - `src/lib/form-payload.ts` for `FormData` append helpers
-  - `src/lib/number-input.ts` for shared numeric parsing and formatting
-  - `src/lib/listing-form.ts` for listing form default and gallery transforms
-  - `src/lib/location-filter.ts` for location filter and flat-url context helpers
-  - `src/lib/cms-navigation.ts` for shared CMS navigation item builders
+  - `src/lib/form/form-normalize.ts` for FormData and payload normalization
+  - `src/lib/form/form-payload.ts` for `FormData` append helpers
+  - `src/lib/form/number-input.ts` for shared numeric parsing and formatting
+  - `src/lib/listing/listing-form.ts` for listing form default and gallery transforms
+  - `src/lib/listing/listing-slug.ts` for SEO slug building
+  - `src/lib/listing/flat-url.ts` for canonical listing route parsing/building
+  - `src/lib/location/location-filter.ts` for location filter and flat-url context helpers
+  - `src/lib/navigation/cms-navigation.ts` for shared CMS navigation item builders
+  - `src/lib/filter/filter-helpers.ts` for listing filter summary and range helpers
+  - `src/lib/format.ts` for shared display formatters
+  - `src/lib/pagination.ts` for pagination URL and page-change helpers
+  - `src/lib/text/text-normalize.ts` for Vietnamese text normalization helpers
   - `src/lib/server/revalidate.ts` for reusable cache revalidation helpers
+  - `src/lib/server/server-auth.ts` for server auth user resolution
+  - `src/lib/server/server-side.ts` for server-side search param helpers
 
 ### CMS and listing forms
 

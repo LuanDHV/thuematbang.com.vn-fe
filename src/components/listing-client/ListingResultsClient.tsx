@@ -6,7 +6,7 @@ import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Pagination } from "@/components/common/Pagination";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
-import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/listing/flat-url";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";

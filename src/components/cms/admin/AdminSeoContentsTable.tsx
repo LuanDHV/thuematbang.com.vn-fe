@@ -8,7 +8,7 @@ import AdminDataTable, {
   type AdminTableToolbar,
 } from "@/components/cms/admin/DataTable";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
-import { createPaginationChangeHandler } from "@/lib/utils";
+import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
 import type { SeoContent } from "@/types/seo-content";
 
@@ -92,3 +92,5 @@ export default function AdminSeoContentsTable({
     />
   );
 }
+
+

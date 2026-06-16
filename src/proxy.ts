@@ -1,21 +1,17 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { isProductionAppEnv } from "@/lib/app-env";
 import { resolveAdminAuthState } from "@/lib/auth/admin-auth";
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  applyAuthCookies,
+  clearAuthCookies,
+} from "@/lib/server/auth-cookies";
 
 const LOGIN_ROUTE = "/dang-nhap";
 const ADMIN_LOGIN_ROUTE = "/dang-nhap-admin";
 const ADMIN_ROOT = "/admin";
 const LEGACY_ADMIN_ROOT = "/cms/admin";
-const ACCESS_TOKEN_COOKIE = "accessToken";
-const REFRESH_TOKEN_COOKIE = "refreshToken";
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  sameSite: "lax" as const,
-  secure: isProductionAppEnv(),
-  path: "/",
-};
 
 function isSafeInternalPath(value: string | null): value is string {
   return Boolean(value && value.startsWith("/") && !value.startsWith("//"));
@@ -45,14 +41,7 @@ export async function proxy(request: NextRequest) {
     const target = isSafeInternalPath(nextPath) ? nextPath : ADMIN_ROOT;
     const response = NextResponse.redirect(new URL(target, request.url));
     if (authState.tokenPair) {
-      response.cookies.set(ACCESS_TOKEN_COOKIE, authState.tokenPair.accessToken!, {
-        ...COOKIE_OPTIONS,
-        maxAge: 60 * 60 * 24,
-      });
-      response.cookies.set(REFRESH_TOKEN_COOKIE, authState.tokenPair.refreshToken!, {
-        ...COOKIE_OPTIONS,
-        maxAge: 60 * 60 * 24 * 30,
-      });
+      applyAuthCookies(response, authState.tokenPair);
     }
     return response;
   }
@@ -66,14 +55,7 @@ export async function proxy(request: NextRequest) {
       const loginUrl = new URL(ADMIN_LOGIN_ROUTE, request.url);
       loginUrl.searchParams.set("next", `${pathname}${search}`);
       const response = NextResponse.redirect(loginUrl);
-      response.cookies.set(ACCESS_TOKEN_COOKIE, "", {
-        ...COOKIE_OPTIONS,
-        maxAge: 0,
-      });
-      response.cookies.set(REFRESH_TOKEN_COOKIE, "", {
-        ...COOKIE_OPTIONS,
-        maxAge: 0,
-      });
+      clearAuthCookies(response);
       return response;
     }
 
@@ -83,14 +65,7 @@ export async function proxy(request: NextRequest) {
 
     const response = NextResponse.next();
     if (authState.tokenPair) {
-      response.cookies.set(ACCESS_TOKEN_COOKIE, authState.tokenPair.accessToken!, {
-        ...COOKIE_OPTIONS,
-        maxAge: 60 * 60 * 24,
-      });
-      response.cookies.set(REFRESH_TOKEN_COOKIE, authState.tokenPair.refreshToken!, {
-        ...COOKIE_OPTIONS,
-        maxAge: 60 * 60 * 24 * 30,
-      });
+      applyAuthCookies(response, authState.tokenPair);
     }
     return response;
   }
@@ -113,4 +88,3 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/quan-li-tai-khoan/:path*", "/admin/:path*", "/dang-nhap-admin", "/cms/admin/:path*"],
 };
-

@@ -12,7 +12,7 @@ import {
   formatDate,
   formatNumber,
   formatVndAmount,
-} from "@/lib/utils";
+} from "@/lib/format";
 import { Project } from "@/types/project";
 
 type ProjectDetailContentProps = {
@@ -136,3 +136,4 @@ export default function ProjectDetailContent({
     </div>
   );
 }
+

@@ -1,10 +1,10 @@
-﻿"use client";
+"use client";
 
 import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { News } from "@/types/news";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/format";
 
 interface NewsCardProps {
   news: News;
@@ -58,7 +58,7 @@ export default function NewsCard({ news, category }: NewsCardProps) {
             {formatDate(news.createdAt)}
           </span>
           <span className="group-hover:text-primary text-secondary flex items-center gap-1 text-xs font-medium tracking-wide">
-            Đọc tiếp
+            �?c ti?p
             <ArrowRight size={14} strokeWidth={2} />
           </span>
         </div>
@@ -69,3 +69,4 @@ export default function NewsCard({ news, category }: NewsCardProps) {
     </Link>
   );
 }
+

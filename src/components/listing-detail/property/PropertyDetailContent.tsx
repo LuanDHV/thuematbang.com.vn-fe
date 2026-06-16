@@ -15,7 +15,7 @@ import {
   formatDate,
   formatNegotiablePrice,
   formatNumber,
-} from "@/lib/utils";
+} from "@/lib/format";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { Property } from "@/types/property";
 
@@ -234,3 +234,4 @@ export default function PropertyDetailContent({
     </div>
   );
 }
+

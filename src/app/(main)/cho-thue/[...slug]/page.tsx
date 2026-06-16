@@ -14,7 +14,7 @@ import {
   isLikelyPropertyFilterSlug,
   parseListingPagedSlugSegments,
   parsePropertyFilterSlug,
-} from "@/lib/flat-url";
+} from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
