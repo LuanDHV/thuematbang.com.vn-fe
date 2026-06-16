@@ -1,8 +1,8 @@
 import AdminNewsTable from "@/components/cms/admin/AdminNewsTable";
 import {
   resolvePaginationServer,
-  resolveSearchQueryValue,
   resolveSearchParamValue,
+  resolveSearchQueryValue,
 } from "@/lib/server-side";
 import { newsService } from "@/services/news.service";
 
@@ -43,6 +43,7 @@ export default async function AdminTinTucPage({ searchParams }: PageProps) {
           searchPlaceholder: "Tìm kiếm theo tiêu đề hoặc slug",
           searchValue,
           actionLabel: "Tạo mới",
+          actionHref: "/admin/quan-li-tin-tuc/new",
         }}
       />
     </section>

@@ -30,6 +30,8 @@ export type NewsGetAllParams = {
   limit?: number;
 };
 
+export type NewsUpsertPayload = FormData;
+
 export const newsService = {
   getAll: async (params: NewsGetAllParams = {}) => {
     const filters = {
@@ -83,6 +85,41 @@ export const newsService = {
         tags: ["news-detail", slug],
       },
     );
+    return response.data;
+  },
+
+  getById: async (id: number) => {
+    const response = await requestServerApi<News>(`/news/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["news-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  create: async (payload: NewsUpsertPayload) => {
+    const response = await requestServerApi<News>("/news", {
+      method: "POST",
+      auth: "required",
+      body: payload,
+    });
+    return response.data;
+  },
+
+  update: async (id: number, payload: NewsUpsertPayload) => {
+    const response = await requestServerApi<News>(`/news/${id}`, {
+      method: "PATCH",
+      auth: "required",
+      body: payload,
+    });
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    const response = await requestServerApi<News>(`/news/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
     return response.data;
   },
 };
