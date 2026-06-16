@@ -1,16 +1,25 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import AdminDataTable, {
-  type AdminTableToolbar,
-} from "@/components/cms/admin/DataTable";
+import { useCallback, useMemo, useState } from "react";
+
+import {
+  createBannerAction,
+  deleteBannerAction,
+  updateBannerAction,
+} from "@/actions/admin-crud.actions";
+import BannerFormDialog from "@/components/cms/admin/AdminBannerFormDialog";
 import AdminStatusBadge, {
   type AdminBadgeTone,
 } from "@/components/cms/admin/AdminStatusBadge";
+import AdminDataTable, {
+  type AdminTableToolbar,
+} from "@/components/cms/admin/DataTable";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
-import { createPaginationChangeHandler } from "@/lib/utils";
+import type { PageValue } from "@/constants/enum-values";
+import { useToast } from "@/components/ui/use-toast";
 import type { Banner } from "@/types/banner";
+import { createPaginationChangeHandler } from "@/lib/utils";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AdminEntityCell from "./AdminEntityCell";
 
 type AdminBannersTableProps = {
@@ -37,6 +46,9 @@ export default function AdminBannersTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
+  const { toast } = useToast();
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -44,9 +56,17 @@ export default function AdminBannersTable({
     totalPages,
   );
 
-  async function handleDeleteBanner(id: string | number) {
-    console.info("Delete banner requested", { id });
-  }
+  const handleDeleteBanner = useCallback(
+    async (id: string | number) => {
+      await deleteBannerAction(id);
+      toast({
+        title: "Đã xóa banner",
+        description: "Banner đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
 
   const fields = useMemo<FieldConfig<Banner>[]>(
     () => [
@@ -104,22 +124,82 @@ export default function AdminBannersTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/quan-li-banners/${item.id}`,
+        onEdit: (_id, item) => {
+          setEditingBanner(item);
+        },
         onDelete: handleDeleteBanner,
       },
     ],
-    [],
+    [handleDeleteBanner],
   );
 
+  const toolbarConfig = toolbar
+    ? {
+        ...toolbar,
+        onActionClick: toolbar.actionLabel
+          ? () => {
+              setEditingBanner(null);
+              setCreateOpen(true);
+            }
+          : toolbar.onActionClick,
+      }
+    : toolbar;
+
   return (
-    <AdminDataTable
-      data={items}
-      fields={fields}
-      getRowId={(item) => item.id}
-      page={currentPage}
-      totalPages={totalPages}
-      onPageChange={handlePageChange}
-      toolbar={toolbar}
-    />
+    <>
+      <AdminDataTable
+        data={items}
+        fields={fields}
+        getRowId={(item) => item.id}
+        page={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        toolbar={toolbarConfig}
+      />
+
+      <BannerFormDialog
+        open={createOpen || Boolean(editingBanner)}
+        onOpenChange={(open) => {
+          setCreateOpen(open);
+          if (!open) setEditingBanner(null);
+        }}
+        title={editingBanner ? "Chỉnh sửa banner" : "Tạo banner"}
+        description="Quản lý banner hiển thị trên website."
+        submitLabel={editingBanner ? "Cập nhật" : "Tạo mới"}
+        existingImageUrl={editingBanner?.imageUrl}
+        defaultValues={
+          editingBanner
+            ? {
+                title: editingBanner.title,
+                targetLink: editingBanner.targetLink ?? "",
+                page: editingBanner.page as PageValue,
+                position: editingBanner.position,
+                sortOrder: editingBanner.sortOrder,
+                isActive: editingBanner.isActive,
+              }
+            : {
+                isActive: true,
+              }
+        }
+        onSubmit={async (values, imageFile) => {
+          const payload = new FormData();
+          payload.set("title", values.title);
+          if (values.targetLink) payload.set("targetLink", values.targetLink);
+          if (values.page) payload.set("page", values.page);
+          payload.set("position", values.position);
+          if (typeof values.sortOrder === "number") {
+            payload.set("sortOrder", String(values.sortOrder));
+          }
+          payload.set("isActive", values.isActive ? "true" : "false");
+          if (imageFile) payload.set("image", imageFile);
+
+          if (editingBanner) {
+            return updateBannerAction(editingBanner.id, payload);
+          }
+
+          return createBannerAction(payload);
+        }}
+      />
+    </>
   );
 }

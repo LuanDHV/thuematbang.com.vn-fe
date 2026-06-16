@@ -17,6 +17,14 @@ export type CategoryGetAllParams = {
   filters?: CategoryListFilters;
 };
 
+export type CategoryUpsertPayload = {
+  type: CategoryType;
+  name: string;
+  slug: string;
+  priority?: number;
+  isActive?: boolean;
+};
+
 export const categoryService = {
   getAll: async (options: CategoryGetAllParams = {}) =>
     requestServerApi<Category[]>(
@@ -56,5 +64,46 @@ export const categoryService = {
     });
     const categories = response.data ?? [];
     return categories.filter((item) => item.type === "PROJECT");
+  },
+
+  getById: async (id: number) => {
+    const response = await requestServerApi<Category>(`/categories/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["category-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  create: async (payload: CategoryUpsertPayload) => {
+    const response = await requestServerApi<Category>("/categories", {
+      method: "POST",
+      auth: "required",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.data;
+  },
+
+  update: async (id: number, payload: Partial<CategoryUpsertPayload>) => {
+    const response = await requestServerApi<Category>(`/categories/${id}`, {
+      method: "PATCH",
+      auth: "required",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    const response = await requestServerApi<Category>(`/categories/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
+    return response.data;
   },
 };
