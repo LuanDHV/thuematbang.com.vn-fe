@@ -54,7 +54,8 @@ type DateFieldConfig<TData> = BaseFieldConfig<TData> & { fieldType: "date" };
 
 type ActionsFieldConfig<TData> = BaseFieldConfig<TData> & {
   fieldType: "actions";
-  getEditHref: (row: TData) => string;
+  getEditHref?: (row: TData) => string;
+  onEdit?: (id: RowId, row: TData) => Promise<void> | void;
   onDelete?: (id: RowId, row: TData) => Promise<void> | void;
   editLabel?: string;
   getEditLabel?: (row: TData) => string;
@@ -140,12 +141,24 @@ function RowActionsMenu<TData>({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href={field.getEditHref(row)}>
+            {field.onEdit ? (
+              <DropdownMenuItem
+                onSelect={async (event) => {
+                  event.preventDefault();
+                  await field.onEdit?.(rowId, row);
+                }}
+              >
                 <Pencil className="size-4" />
                 {field.getEditLabel?.(row) ?? field.editLabel ?? "Chỉnh sửa"}
-              </Link>
-            </DropdownMenuItem>
+              </DropdownMenuItem>
+            ) : field.getEditHref ? (
+              <DropdownMenuItem asChild>
+                <Link href={field.getEditHref(row)}>
+                  <Pencil className="size-4" />
+                  {field.getEditLabel?.(row) ?? field.editLabel ?? "Chỉnh sửa"}
+                </Link>
+              </DropdownMenuItem>
+            ) : null}
             <DropdownMenuItem
               className="text-red-700 focus:text-red-700"
               onSelect={(event) => {
