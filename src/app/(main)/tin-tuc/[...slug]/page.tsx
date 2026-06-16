@@ -11,7 +11,7 @@ import {
   buildNewsCategoryBreadcrumbs,
   parsePagedSlugSegments,
   parseNewsCategoryFromSlug,
-} from "@/lib/flat-url";
+} from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { News } from "@/types/news";
 import { categoryService } from "@/services/category.service";

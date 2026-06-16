@@ -1,8 +1,8 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
-import { buildNewsCategoryBreadcrumbs } from "@/lib/flat-url";
+import { buildNewsCategoryBreadcrumbs } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";

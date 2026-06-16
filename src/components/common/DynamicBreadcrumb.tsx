@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import type { BreadcrumbItem as Item } from "@/lib/flat-url";
+import type { BreadcrumbItem as Item } from "@/lib/listing/flat-url";
 
 type Props = {
   items: Item[];

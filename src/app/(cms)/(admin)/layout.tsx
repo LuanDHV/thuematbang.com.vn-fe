@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import CmsLayout from "@/components/cms/shared/CmsLayout";
 import AdminSidebar from "@/components/cms/admin/AdminSidebar";
-import { getServerAuthUser } from "@/lib/server-auth";
+import { getServerAuthUser } from "@/lib/server/server-auth";
 
 export default async function AdminLayout({
   children,

@@ -19,9 +19,9 @@ import {
   appendBoolean,
   appendNumber,
   appendString,
-} from "@/lib/form-payload";
-import { buildListingSlug } from "@/lib/listing-slug";
-import { normalizeRentRequestFormDefaults } from "@/lib/listing-form";
+} from "@/lib/form/form-payload";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
+import { normalizeRentRequestFormDefaults } from "@/lib/listing/listing-form";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
 import type { RentRequest } from "@/types/rent-request";

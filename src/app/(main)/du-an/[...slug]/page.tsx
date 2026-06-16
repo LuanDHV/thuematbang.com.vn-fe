@@ -11,7 +11,7 @@ import {
   buildProjectCategoryBreadcrumbs,
   parsePagedSlugSegments,
   parseProjectCategoryFromSlug,
-} from "@/lib/flat-url";
+} from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { Project } from "@/types/project";
 import { categoryService } from "@/services/category.service";

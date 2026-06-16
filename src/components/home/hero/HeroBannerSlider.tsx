@@ -238,3 +238,4 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
     </div>
   );
 }
+

@@ -3,7 +3,7 @@ import {
   resolvePaginationServer,
   resolveSearchParamValue,
   resolveSearchQueryValue,
-} from "@/lib/server-side";
+} from "@/lib/server/server-side";
 import { rentRequestService } from "@/services/rent-request.service";
 
 type PageProps = {

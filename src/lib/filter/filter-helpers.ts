@@ -1,5 +1,5 @@
 import { FILTER_LIMITS } from "@/constants/filter";
-import { formatAreaValue } from "@/lib/utils";
+import { formatAreaValue } from "@/lib/format";
 
 type RangeOption = {
   label: string;
@@ -96,3 +96,4 @@ export const toAreaRange = (
     maxArea > 0 ? maxArea : FILTER_LIMITS.AREA_MAX,
   ];
 };
+

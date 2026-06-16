@@ -2,7 +2,7 @@ import AdminCategoriesTable from "@/components/cms/admin/AdminCategoriesTable";
 import {
   resolveSearchQueryValue,
   resolveSearchParamValue,
-} from "@/lib/server-side";
+} from "@/lib/server/server-side";
 import { categoryService } from "@/services/category.service";
 
 type PageProps = {

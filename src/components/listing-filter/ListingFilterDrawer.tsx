@@ -26,7 +26,7 @@ import {
   resolvePriceSummary,
   toAreaRange,
   toPriceRange,
-} from "@/helpers/filterHelpers";
+} from "@/lib/filter/filter-helpers";
 import {
   getProvinceWardsAction,
   getProvincesAction,
@@ -41,7 +41,7 @@ import {
 import {
   buildEffectiveProvinceWardMap,
   type ProvinceWardMap,
-} from "@/lib/location-filter";
+} from "@/lib/location/location-filter";
 
 type DemandTab = "cho-thue" | "can-thue";
 type DetailTab = "main" | "propertyType" | "location" | "price" | "area";

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -59,10 +59,10 @@ export function SignupForm({
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
                 <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
-                  Tạo tài khoản mới
+                  T?o t�i kho?n m?i
                 </h1>
                 <p className="text-secondary text-sm leading-7">
-                  Vui lòng nhập thông tin bên dưới để đăng ký
+                  Vui l�ng nh?p th�ng tin b�n du?i d? dang k�
                 </p>
               </div>
 
@@ -71,12 +71,12 @@ export function SignupForm({
                   htmlFor="fullName"
                   className="text-heading font-semibold"
                 >
-                  Họ và tên
+                  H? v� t�n
                 </FieldLabel>
                 <Input
                   id="fullName"
                   type="text"
-                  placeholder="Họ và tên"
+                  placeholder="H? v� t�n"
                   {...register("fullName")}
                 />
                 {errors.fullName?.message ? (
@@ -112,7 +112,7 @@ export function SignupForm({
                     htmlFor="phone"
                     className="text-heading font-semibold"
                   >
-                    Số điện thoại
+                    S? di?n tho?i
                   </FieldLabel>
                   <Input
                     id="phone"
@@ -134,11 +134,11 @@ export function SignupForm({
                     htmlFor="password"
                     className="text-heading font-semibold"
                   >
-                    Mật khẩu
+                    M?t kh?u
                   </FieldLabel>
                   <PasswordInput
                     id="password"
-                    placeholder="Mật khẩu"
+                    placeholder="M?t kh?u"
                     autoComplete="new-password"
                     {...register("password")}
                   />
@@ -154,11 +154,11 @@ export function SignupForm({
                     htmlFor="confirmPassword"
                     className="text-heading font-semibold"
                   >
-                    Xác nhận mật khẩu
+                    X�c nh?n m?t kh?u
                   </FieldLabel>
                   <PasswordInput
                     id="confirmPassword"
-                    placeholder="Xác nhận mật khẩu"
+                    placeholder="X�c nh?n m?t kh?u"
                     autoComplete="new-password"
                     {...register("confirmPassword")}
                   />
@@ -171,7 +171,7 @@ export function SignupForm({
               </div>
 
               <FieldDescription className="text-secondary -mt-2.5 text-xs">
-                Mật khẩu phải có ít nhất 8 ký tự.
+                M?t kh?u ph?i c� �t nh?t 8 k� t?.
               </FieldDescription>
 
               <Field className="mt-2">
@@ -181,19 +181,19 @@ export function SignupForm({
                   className="h-11 w-full"
                 >
                   {isSubmitting || registerMutation.isPending
-                    ? "Đang đăng ký..."
-                    : "Đăng ký"}
+                    ? "�ang dang k�..."
+                    : "�ang k�"}
                 </Button>
               </Field>
 
               {registerMutation.error ? (
                 <p className="text-center text-sm text-red-500">
-                  Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.
+                  �ang k� th?t b?i. Vui l�ng ki?m tra l?i th�ng tin.
                 </p>
               ) : null}
 
               <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary mb-1 py-2 *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
-                Hoặc
+                Ho?c
               </FieldSeparator>
 
               <Field>
@@ -214,18 +214,18 @@ export function SignupForm({
                         fill="currentColor"
                       />
                     </svg>
-                    Đăng nhập với Google
+                    �ang nh?p v?i Google
                   </Link>
                 </Button>
               </Field>
 
               <div className="text-secondary mt-4 text-center text-sm">
-                Đã có tài khoản?{" "}
+                �� c� t�i kho?n?{" "}
                 <Link
                   href="/dang-nhap"
                   className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
                 >
-                  Đăng nhập
+                  �ang nh?p
                 </Link>
               </div>
             </FieldGroup>
@@ -234,7 +234,7 @@ export function SignupForm({
           <div className="bg-surface relative hidden md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
-              alt="Hình nền đăng ký"
+              alt="H�nh n?n dang k�"
               fill
               sizes="(min-width: 768px) 50vw, 0px"
               className="absolute inset-0 h-full w-full object-cover"
@@ -246,3 +246,4 @@ export function SignupForm({
     </div>
   );
 }
+

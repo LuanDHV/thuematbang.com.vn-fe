@@ -1,7 +1,7 @@
 "use client";
 
 import CmsSidebar from "@/components/cms/shared/CmsSidebar";
-import { buildUserCmsNavItems } from "@/lib/cms-navigation";
+import { buildUserCmsNavItems } from "@/lib/navigation/cms-navigation";
 import type { User as UserType } from "@/types";
 
 type UserSidebarProps = {

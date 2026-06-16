@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LoaderCircle, Search } from "lucide-react";
@@ -28,7 +28,7 @@ import {
   resolvePriceSummary,
   toAreaRange,
   toPriceRange,
-} from "@/helpers/filterHelpers";
+} from "@/lib/filter/filter-helpers";
 import {
   INITIAL_ADVANCED_FILTER_VALUE,
   type AdvancedFilterValue,
@@ -37,14 +37,14 @@ import {
   buildPagedPath,
   buildPropertyFilterPath,
   type FlatUrlContext,
-} from "@/lib/flat-url";
+} from "@/lib/listing/flat-url";
 import type { Province, Ward } from "@/types/location";
 import {
   buildFlatUrlLocationContext,
   buildProvinceWardMap,
   reconcileLocationFilter,
   type ProvinceWardMap,
-} from "@/lib/location-filter";
+} from "@/lib/location/location-filter";
 
 type Props = {
   basePath: string;

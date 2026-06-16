@@ -1,5 +1,5 @@
 import UserPropertiesTable from "@/components/cms/user/UserPropertiesTable";
-import { resolvePaginationServer } from "@/lib/server-side";
+import { resolvePaginationServer } from "@/lib/server/server-side";
 import { propertyService } from "@/services/property.service";
 
 type PageProps = {

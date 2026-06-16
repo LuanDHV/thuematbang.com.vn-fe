@@ -31,3 +31,4 @@ export default function CmsLayout({ sidebar, children }: CmsLayoutProps) {
     </section>
   );
 }
+

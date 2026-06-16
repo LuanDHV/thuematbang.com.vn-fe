@@ -31,12 +31,12 @@ import {
   appendNumber,
   appendNumberArray,
   appendString,
-} from "@/lib/form-payload";
-import { buildListingSlug } from "@/lib/listing-slug";
+} from "@/lib/form/form-payload";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
 import {
   normalizeGalleryImages,
   normalizePropertyCreateDefaults,
-} from "@/lib/listing-form";
+} from "@/lib/listing/listing-form";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
 import type { ExistingGalleryImage } from "@/types/gallery";

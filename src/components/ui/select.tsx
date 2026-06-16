@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import * as React from "react";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
@@ -144,3 +144,4 @@ export {
   SelectItem,
   SelectSeparator,
 };
+

@@ -4,7 +4,7 @@ import { refreshCrudTags } from "@/lib/server/revalidate";
 import {
   normalizePropertyPayload,
   normalizeRentRequestPayload,
-} from "@/lib/form-normalize";
+} from "@/lib/form/form-normalize";
 import { propertyService } from "@/services/property.service";
 import { rentRequestService } from "@/services/rent-request.service";
 

@@ -28,9 +28,9 @@ import {
   formatCurrencyShort,
   millionToVnd,
   parseNumericInput,
-} from "@/helpers/filterHelpers";
-import { normalizeVietnameseText } from "@/lib/text-normalize";
-import type { ProvinceWardMap } from "@/lib/location-filter";
+} from "@/lib/filter/filter-helpers";
+import { normalizeVietnameseText } from "@/lib/text/text-normalize";
+import type { ProvinceWardMap } from "@/lib/location/location-filter";
 
 type UpdateCurrent = (
   updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,

@@ -11,8 +11,8 @@ import { ListingRichTextField } from "@/components/listing-form/ListingRichTextF
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
-import { appendBoolean, appendString } from "@/lib/form-payload";
-import { buildListingSlug } from "@/lib/listing-slug";
+import { appendBoolean, appendString } from "@/lib/form/form-payload";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { useToast } from "@/components/ui/use-toast";
 import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
 import {

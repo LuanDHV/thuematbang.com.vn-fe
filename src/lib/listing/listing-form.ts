@@ -5,7 +5,7 @@ import type {
   RentRequestCreateFormValues,
 } from "@/schemas/listing-create.schema";
 import type { Property } from "@/types/property";
-import { toOptionalNumber } from "@/lib/form-normalize";
+import { toOptionalNumber } from "@/lib/form/form-normalize";
 
 export function normalizeGalleryImages(
   images?: ExistingGalleryImage[] | null,

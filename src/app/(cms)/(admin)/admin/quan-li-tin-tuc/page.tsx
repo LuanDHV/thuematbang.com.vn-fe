@@ -3,7 +3,7 @@ import {
   resolvePaginationServer,
   resolveSearchParamValue,
   resolveSearchQueryValue,
-} from "@/lib/server-side";
+} from "@/lib/server/server-side";
 import { newsService } from "@/services/news.service";
 
 type PageProps = {

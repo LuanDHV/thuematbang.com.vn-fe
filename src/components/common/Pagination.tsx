@@ -1,4 +1,4 @@
-﻿import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { TableCell, TableFooter, TableRow } from "@/components/ui/table";
 
 function getPageNumbers(page: number, total: number): (number | "...")[] {
@@ -39,7 +39,7 @@ function PaginationControls({
           "disabled:hover:text-secondary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-black/8 disabled:hover:bg-white",
         )}
       >
-        ‹
+        �
       </button>
 
       {pages.map((p, i) => {
@@ -49,7 +49,7 @@ function PaginationControls({
               key={`ellipsis-${i}`}
               className="text-secondary/40 flex h-10 min-w-10 items-center justify-center text-sm font-semibold tracking-widest"
             >
-              ···
+              ���
             </span>
           );
         }
@@ -83,7 +83,7 @@ function PaginationControls({
           "disabled:hover:text-secondary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-black/8 disabled:hover:bg-white",
         )}
       >
-        ›
+        �
       </button>
     </div>
   );
@@ -130,3 +130,4 @@ export function TablePaginationFooter({
     </TableFooter>
   );
 }
+

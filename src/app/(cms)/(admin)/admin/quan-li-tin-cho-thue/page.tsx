@@ -3,7 +3,7 @@ import {
   resolvePaginationServer,
   resolveSearchParamValue,
   resolveSearchQueryValue,
-} from "@/lib/server-side";
+} from "@/lib/server/server-side";
 import { propertyService } from "@/services/property.service";
 import type { PublishStatus } from "@/types/enums";
 

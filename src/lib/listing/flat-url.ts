@@ -1,5 +1,5 @@
 import { DIRECTION_OPTIONS, FILTER_LIMITS } from "@/constants/filter";
-import { compactSlugToken, humanizeSlugToken } from "@/lib/text-normalize";
+import { compactSlugToken, humanizeSlugToken } from "@/lib/text/text-normalize";
 import { Category } from "@/types/category";
 import {
   AdvancedFilterValue,

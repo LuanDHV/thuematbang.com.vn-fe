@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
-import { buildListingSlug } from "@/lib/listing-slug";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

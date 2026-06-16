@@ -3,8 +3,8 @@ import "server-only";
 import {
   extractPropertyFilterRouteParts,
   type FlatUrlContext,
-} from "@/lib/flat-url";
-import { compactSlugToken } from "@/lib/text-normalize";
+} from "@/lib/listing/flat-url";
+import { compactSlugToken } from "@/lib/text/text-normalize";
 import { Province, Ward } from "@/types/location";
 import { buildListPath } from "./shared/list-service";
 import { requestServerApi } from "./shared/server-api-client";

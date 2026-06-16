@@ -3,7 +3,7 @@
 import {
   normalizePropertyUpdateFormData,
   toPositiveId,
-} from "@/lib/form-normalize";
+} from "@/lib/form/form-normalize";
 import { refreshCrudTags } from "@/lib/server/revalidate";
 import { propertyService } from "@/services/property.service";
 

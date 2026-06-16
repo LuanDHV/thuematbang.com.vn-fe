@@ -3,7 +3,7 @@ import {
   resolvePaginationServer,
   resolveSearchQueryValue,
   resolveSearchParamValue,
-} from "@/lib/server-side";
+} from "@/lib/server/server-side";
 import { leadService } from "@/services/lead.service";
 import type { LeadStatus } from "@/types/enums";
 

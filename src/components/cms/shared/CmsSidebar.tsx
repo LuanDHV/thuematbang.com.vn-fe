@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLogoutMutation } from "@/hooks/use-auth";
-import { buildCmsHomeNavItem, type CmsNavItem } from "@/lib/cms-navigation";
+import { buildCmsHomeNavItem, type CmsNavItem } from "@/lib/navigation/cms-navigation";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store";
 import type { User } from "@/types";
@@ -319,3 +319,4 @@ export default function CmsSidebar({
     </TooltipProvider>
   );
 }
+

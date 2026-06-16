@@ -377,3 +377,4 @@ export default function AdminDataTable<TData>({
     </div>
   );
 }
+

@@ -8,7 +8,7 @@ import {
   type AdvancedFilterValue,
   INITIAL_ADVANCED_FILTER_VALUE,
 } from "@/types/filter";
-import type { BreadcrumbItem, FlatUrlContext } from "@/lib/flat-url";
+import type { BreadcrumbItem, FlatUrlContext } from "@/lib/listing/flat-url";
 import { PaginationMeta } from "@/types/api";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
 

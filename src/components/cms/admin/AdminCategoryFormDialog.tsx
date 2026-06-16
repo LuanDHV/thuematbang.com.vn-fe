@@ -10,7 +10,7 @@ import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxF
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
-import { buildListingSlug } from "@/lib/listing-slug";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { useToast } from "@/components/ui/use-toast";
 import {
   categoryFormSchema,

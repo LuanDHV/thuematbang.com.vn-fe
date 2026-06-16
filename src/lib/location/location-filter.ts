@@ -1,5 +1,5 @@
-import type { FlatUrlContext } from "@/lib/flat-url";
-import { normalizeVietnameseText } from "@/lib/text-normalize";
+import type { FlatUrlContext } from "@/lib/listing/flat-url";
+import { normalizeVietnameseText } from "@/lib/text/text-normalize";
 import type { AdvancedFilterValue } from "@/types/filter";
 import type { Province, Ward } from "@/types/location";
 

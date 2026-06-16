@@ -4,7 +4,7 @@ import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import SafeFetch from "@/components/common/SafeFetch";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
-import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
+import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { faqService } from "@/services/faq.service";
 import { seoContentService } from "@/services/seo-content.service";

@@ -1,4 +1,4 @@
-import { buildListingSlug } from "@/lib/listing-slug";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
 import {
   PROPERTY_DIRECTION_VALUES,
   PUBLISH_STATUS_VALUES,

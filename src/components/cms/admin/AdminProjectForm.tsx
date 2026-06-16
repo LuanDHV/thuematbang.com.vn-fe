@@ -17,12 +17,12 @@ import {
   appendNumber,
   appendNumberArray,
   appendString,
-} from "@/lib/form-payload";
+} from "@/lib/form/form-payload";
 import {
   normalizeGalleryImages,
   normalizeProjectFormDefaults,
-} from "@/lib/listing-form";
-import { buildListingSlug } from "@/lib/listing-slug";
+} from "@/lib/listing/listing-form";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { useToast } from "@/components/ui/use-toast";
 import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
 import {

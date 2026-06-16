@@ -10,7 +10,7 @@ import {
   normalizeNumberInput,
   toRawNumberString,
   type NumberFieldFormat,
-} from "@/lib/number-input";
+} from "@/lib/form/number-input";
 import { cn } from "@/lib/utils";
 
 type ListingNumberFieldProps = {
@@ -160,3 +160,4 @@ function NumberInputControl({
     </div>
   );
 }
+

@@ -2,7 +2,7 @@ import AdminLocationsTable from "@/components/cms/admin/AdminLocationsTable";
 import {
   resolveSearchQueryValue,
   resolveSearchParamValue,
-} from "@/lib/server-side";
+} from "@/lib/server/server-side";
 import { locationService } from "@/services/location.service";
 
 type PageProps = {

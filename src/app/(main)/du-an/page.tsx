@@ -1,10 +1,10 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
-import { buildProjectCategoryBreadcrumbs } from "@/lib/flat-url";
+import { buildProjectCategoryBreadcrumbs } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { faqService } from "@/services/faq.service";

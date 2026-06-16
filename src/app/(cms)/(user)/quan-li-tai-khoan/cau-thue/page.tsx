@@ -1,5 +1,5 @@
 import UserRentRequestsTable from "@/components/cms/user/UserRentRequestsTable";
-import { resolvePaginationServer } from "@/lib/server-side";
+import { resolvePaginationServer } from "@/lib/server/server-side";
 import { rentRequestService } from "@/services/rent-request.service";
 
 type PageProps = {

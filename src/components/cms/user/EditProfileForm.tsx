@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { type ComponentProps, useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,22 +43,22 @@ type ProfileFieldConfig = {
 const PROFILE_FIELDS: ProfileFieldConfig[] = [
   {
     name: "fullName",
-    label: "Họ và tên",
-    placeholder: "Nhập họ và tên",
+    label: "H? v� t�n",
+    placeholder: "Nh?p h? v� t�n",
     icon: UserRound,
     autoComplete: "name",
   },
   {
     name: "phone",
-    label: "Số điện thoại",
-    placeholder: "Nhập số điện thoại",
+    label: "S? di?n tho?i",
+    placeholder: "Nh?p s? di?n tho?i",
     icon: Phone,
     autoComplete: "tel",
     type: "tel",
   },
   {
     name: "email",
-    label: "Email đăng nhập",
+    label: "Email dang nh?p",
     placeholder: "email@example.com",
     icon: Mail,
     autoComplete: "email",
@@ -128,14 +128,14 @@ export default function EditProfileForm() {
     if (!ALLOWED_AVATAR_TYPES.has(file.type)) {
       setAvatarFile(null);
       setAvatarError(
-        "Định dạng ảnh không hợp lệ. Vui lòng chọn JPEG, JPG, PNG hoặc WEBP.",
+        "�?nh d?ng ?nh kh�ng h?p l?. Vui l�ng ch?n JPEG, JPG, PNG ho?c WEBP.",
       );
       return;
     }
 
     if (file.size > MAX_AVATAR_SIZE_BYTES) {
       setAvatarFile(null);
-      setAvatarError("Ảnh vượt quá 2MB. Vui lòng chọn ảnh nhỏ hơn.");
+      setAvatarError("?nh vu?t qu� 2MB. Vui l�ng ch?n ?nh nh? hon.");
       return;
     }
 
@@ -154,7 +154,7 @@ export default function EditProfileForm() {
               {avatarDisplay ? (
                 <CloudinaryImage
                   src={avatarDisplay}
-                  alt={`Ảnh đại diện của ${authUser.fullName || "người dùng"}`}
+                  alt={`?nh d?i di?n c?a ${authUser.fullName || "ngu?i d�ng"}`}
                   width={128}
                   height={128}
                   cldQuality="auto:best"
@@ -172,7 +172,7 @@ export default function EditProfileForm() {
               type="file"
               accept=".jpeg,.jpg,.png,.webp,image/jpeg,image/jpg,image/png,image/webp"
               className="hidden"
-              aria-label="Tải ảnh đại diện"
+              aria-label="T?i ?nh d?i di?n"
               onChange={onAvatarChange}
             />
             <Label
@@ -181,10 +181,10 @@ export default function EditProfileForm() {
             >
               <Upload className="text-secondary group-hover:text-primary size-6" />
               <p className="text-body text-base font-medium">
-                Chọn ảnh hoặc kéo thả vào đây
+                Ch?n ?nh ho?c k�o th? v�o d�y
               </p>
               <p className="text-secondary text-sm">
-                Định dạng jpeg, jpg, png, webp. Tối đa 2MB
+                �?nh d?ng jpeg, jpg, png, webp. T?i da 2MB
               </p>
             </Label>
           </div>
@@ -241,14 +241,14 @@ export default function EditProfileForm() {
             <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
               {getErrorMessage(
                 updateMutation.error,
-                "Không thể cập nhật thông tin. Vui lòng thử lại.",
+                "Kh�ng th? c?p nh?t th�ng tin. Vui l�ng th? l?i.",
               )}
             </div>
           ) : null}
 
           {updateMutation.isSuccess ? (
             <div className="mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">
-              Cập nhật thông tin thành công.
+              C?p nh?t th�ng tin th�nh c�ng.
             </div>
           ) : null}
 
@@ -261,10 +261,10 @@ export default function EditProfileForm() {
               {updateMutation.isPending ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
-                  Đang lưu...
+                  �ang luu...
                 </>
               ) : (
-                "Lưu thay đổi"
+                "Luu thay d?i"
               )}
             </Button>
           </div>
@@ -273,3 +273,4 @@ export default function EditProfileForm() {
     </CmsFormPageShell>
   );
 }
+
