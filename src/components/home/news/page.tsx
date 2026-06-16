@@ -25,6 +25,17 @@ export default async function NewsSection() {
             const newsList = sourceNews.slice(0, 4);
             const featuredNews = newsList[0];
             const sideNews = newsList.slice(1, 4);
+            const isEmpty = sourceNews.length === 0;
+
+            if (isEmpty) {
+              return (
+                <div className="surface-card mt-12 flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-black/8 px-6 py-10 text-center">
+                  <p className="text-body text-base font-medium">
+                    Tin tức sẽ sớm được cập nhật
+                  </p>
+                </div>
+              );
+            }
 
             return (
               <>
