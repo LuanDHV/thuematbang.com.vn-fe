@@ -58,7 +58,7 @@ export default function NewsCard({ news, category }: NewsCardProps) {
             {formatDate(news.createdAt)}
           </span>
           <span className="group-hover:text-primary text-secondary flex items-center gap-1 text-xs font-medium tracking-wide">
-            �?c ti?p
+            Đọc tiếp
             <ArrowRight size={14} strokeWidth={2} />
           </span>
         </div>
