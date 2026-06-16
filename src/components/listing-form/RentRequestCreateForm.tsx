@@ -15,8 +15,13 @@ import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
+import {
+  appendBoolean,
+  appendNumber,
+  appendString,
+} from "@/lib/form-payload";
 import { buildListingSlug } from "@/lib/listing-slug";
-import { normalizeRentRequestFormDefaults } from "@/components/listing-form/listing-form.utils";
+import { normalizeRentRequestFormDefaults } from "@/lib/listing-form";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
 import type { RentRequest } from "@/types/rent-request";
@@ -61,22 +66,6 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
   status: "PUBLISHED",
   isMatched: false,
 };
-
-function appendString(formData: FormData, key: string, value?: string | null) {
-  const normalizedValue = value?.trim();
-  if (!normalizedValue) return;
-  formData.set(key, normalizedValue);
-}
-
-function appendNumber(formData: FormData, key: string, value?: number) {
-  if (typeof value !== "number" || Number.isNaN(value)) return;
-  formData.set(key, String(value));
-}
-
-function appendBoolean(formData: FormData, key: string, value?: boolean) {
-  if (typeof value !== "boolean") return;
-  formData.set(key, value ? "true" : "false");
-}
 
 function getVisibleModeFields(mode: RentRequestCreateFormMode) {
   return {

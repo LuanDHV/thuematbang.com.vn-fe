@@ -168,6 +168,21 @@ Shared components reused across multiple domains and routes, such as:
   - utility, helper, and non-component support files can stay `kebab-case`
   - keep the file name aligned with the file role rather than forcing one naming style across every layer
 
+### Utility ownership
+
+- Pure normalize/transform/map helpers that are reused across more than one feature should live in `src/lib`
+- Keep `.ts` helper files inside `src/components/**` only when they are truly feature-local and unlikely to be reused elsewhere
+- Type-only shared contract shapes should live in `src/types`
+- If a helper starts appearing in multiple components, pages, or actions, move it out of the component tree before the duplication spreads
+- Current shared helper modules include:
+  - `src/lib/form-normalize.ts` for FormData and payload normalization
+  - `src/lib/form-payload.ts` for `FormData` append helpers
+  - `src/lib/number-input.ts` for shared numeric parsing and formatting
+  - `src/lib/listing-form.ts` for listing form default and gallery transforms
+  - `src/lib/location-filter.ts` for location filter and flat-url context helpers
+  - `src/lib/cms-navigation.ts` for shared CMS navigation item builders
+  - `src/lib/server/revalidate.ts` for reusable cache revalidation helpers
+
 ### CMS and listing forms
 
 - CMS CRUD forms should reuse shared shells and field primitives wherever possible

@@ -44,7 +44,7 @@ import {
   buildProvinceWardMap,
   reconcileLocationFilter,
   type ProvinceWardMap,
-} from "./listing-filter-location";
+} from "@/lib/location-filter";
 
 type Props = {
   basePath: string;

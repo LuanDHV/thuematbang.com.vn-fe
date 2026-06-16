@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
-
 import { bannersService } from "@/services/banners.service";
 import { categoryService } from "@/services/category.service";
 import { faqService } from "@/services/faq.service";
@@ -13,58 +11,23 @@ import { seoContentService } from "@/services/seo-content.service";
 import { propertyService } from "@/services/property.service";
 import { userService } from "@/services/user.service";
 import { USER_ROLE_VALUES } from "@/constants/enum-values";
+import {
+  normalizeBooleanField,
+  normalizeSlugField,
+  toPositiveId,
+} from "@/lib/form-normalize";
+import { refreshCrudTags } from "@/lib/server/revalidate";
 import type {
+  CategoryType,
   LeadStatus,
   PropertyDirection,
   PublishStatus,
   UserRole,
 } from "@/types/enums";
 
-function toPositiveId(id: string | number) {
-  const parsedId = typeof id === "number" ? id : Number(id);
-  if (!Number.isInteger(parsedId) || parsedId <= 0) {
-    throw new Error("Invalid id");
-  }
-  return parsedId;
-}
-
-function normalizeBooleanField(formData: FormData, fieldName: string) {
-  const values = formData.getAll(fieldName);
-  if (!values.length) return;
-
-  const normalized = values.some((value) => {
-    if (typeof value !== "string") return false;
-    const lowered = value.toLowerCase().trim();
-    return lowered === "true" || lowered === "on" || lowered === "1";
-  });
-
-  formData.set(fieldName, normalized ? "true" : "false");
-}
-
-function normalizeSlugField(
-  formData: FormData,
-  sourceField: string,
-  targetField: string,
-) {
-  const sourceValue = String(formData.get(sourceField) ?? "").trim();
-  const currentSlug = String(formData.get(targetField) ?? "").trim();
-  if (currentSlug) return;
-
-  formData.set(targetField, sourceValue);
-}
-
-function refreshCrudTags(tags: string[], paths: string[] = []) {
-  for (const tag of tags) {
-    revalidateTag(tag, "max");
-  }
-  for (const path of paths) {
-    revalidatePath(path);
-  }
-}
-
 // Category
 export async function createCategoryAction(payload: {
-  type: "PROPERTY" | "RENT_REQUEST" | "PROJECT" | "NEWS";
+  type: CategoryType;
   name: string;
   slug: string;
   priority?: number;
@@ -78,7 +41,7 @@ export async function createCategoryAction(payload: {
 export async function updateCategoryAction(
   id: string | number,
   payload: Partial<{
-    type: "PROPERTY" | "RENT_REQUEST" | "PROJECT" | "NEWS";
+    type: CategoryType;
     name: string;
     slug: string;
     priority?: number;

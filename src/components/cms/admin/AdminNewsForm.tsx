@@ -11,6 +11,7 @@ import { ListingRichTextField } from "@/components/listing-form/ListingRichTextF
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
+import { appendBoolean, appendString } from "@/lib/form-payload";
 import { buildListingSlug } from "@/lib/listing-slug";
 import { useToast } from "@/components/ui/use-toast";
 import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
@@ -122,13 +123,13 @@ export default function AdminNewsForm({
     }
 
     const payload = new FormData();
-    payload.set("categoryId", String(values.categoryId));
-    payload.set("title", values.title);
-    payload.set("slug", buildListingSlug(values.title));
-    if (values.summary) payload.set("summary", values.summary);
-    if (values.content) payload.set("content", values.content);
-    if (values.status) payload.set("status", values.status);
-    payload.set("isFeatured", values.isFeatured ? "true" : "false");
+    appendString(payload, "categoryId", String(values.categoryId));
+    appendString(payload, "title", values.title);
+    appendString(payload, "slug", buildListingSlug(values.title));
+    appendString(payload, "summary", values.summary);
+    appendString(payload, "content", values.content);
+    appendString(payload, "status", values.status);
+    appendBoolean(payload, "isFeatured", values.isFeatured);
     if (imageFile) payload.set("image", imageFile);
 
     try {

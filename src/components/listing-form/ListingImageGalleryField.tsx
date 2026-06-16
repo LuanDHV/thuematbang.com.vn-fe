@@ -13,13 +13,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
-
-export type ExistingGalleryImage = {
-  id: number;
-  imageUrl: string;
-  sortOrder?: number;
-  imagePublicId?: string | null;
-};
+import type { ExistingGalleryImage } from "@/types/gallery";
 
 type ListingImageGalleryFieldProps = {
   files: File[];

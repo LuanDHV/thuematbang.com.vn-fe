@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 
 import { updatePropertyAction } from "@/actions/property.actions";
 import { PropertyCreateForm } from "@/components/listing-form/PropertyCreateForm";
-import { mapPropertyImagesToGalleryImages } from "@/components/listing-form/listing-form.utils";
 import CmsBackLink from "@/components/cms/shared/CmsBackLink";
+import { mapPropertyImagesToGalleryImages } from "@/lib/listing-form";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";

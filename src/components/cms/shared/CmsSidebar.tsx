@@ -13,10 +13,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLogoutMutation } from "@/hooks/use-auth";
+import { buildCmsHomeNavItem, type CmsNavItem } from "@/lib/cms-navigation";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store";
 import type { User } from "@/types";
-import { buildCmsHomeNavItem, type CmsNavItem } from "./cms-navigation";
 
 type CmsSidebarProps = {
   user: User;

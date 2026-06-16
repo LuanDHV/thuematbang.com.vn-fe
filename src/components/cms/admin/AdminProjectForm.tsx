@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
 import {
   ListingImageGalleryField,
-  type ExistingGalleryImage,
 } from "@/components/listing-form/ListingImageGalleryField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
@@ -15,9 +14,14 @@ import { ListingRichTextField } from "@/components/listing-form/ListingRichTextF
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import {
+  appendNumber,
+  appendNumberArray,
+  appendString,
+} from "@/lib/form-payload";
+import {
   normalizeGalleryImages,
   normalizeProjectFormDefaults,
-} from "@/components/listing-form/listing-form.utils";
+} from "@/lib/listing-form";
 import { buildListingSlug } from "@/lib/listing-slug";
 import { useToast } from "@/components/ui/use-toast";
 import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
@@ -25,6 +29,7 @@ import {
   projectFormSchema,
   type ProjectFormValues,
 } from "@/schemas/admin-crud.schema";
+import type { ExistingGalleryImage } from "@/types/gallery";
 import type { Category } from "@/types/category";
 import type { Project } from "@/types/project";
 import type { Province } from "@/types/location";
@@ -58,22 +63,6 @@ type AdminProjectFormProps = {
   existingImages?: ExistingGalleryImage[];
   requireImages?: boolean;
 };
-
-function appendString(formData: FormData, key: string, value?: string | null) {
-  const normalizedValue = value?.trim();
-  if (!normalizedValue) return;
-  formData.set(key, normalizedValue);
-}
-
-function appendNumber(formData: FormData, key: string, value?: number) {
-  if (typeof value !== "number" || Number.isNaN(value)) return;
-  formData.set(key, String(value));
-}
-
-function appendNumberArray(formData: FormData, key: string, values?: number[]) {
-  if (!values?.length) return;
-  formData.set(key, JSON.stringify(values));
-}
 
 export default function AdminProjectForm({
   categories,

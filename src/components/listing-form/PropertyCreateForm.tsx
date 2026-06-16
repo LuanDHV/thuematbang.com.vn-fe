@@ -9,7 +9,6 @@ import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateF
 import { ListingCreateSuccessDialog } from "@/components/listing-form/ListingCreateSuccessDialog";
 import {
   ListingImageGalleryField,
-  type ExistingGalleryImage,
 } from "@/components/listing-form/ListingImageGalleryField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
@@ -27,13 +26,20 @@ import {
   MAX_IMAGE_FILE_COUNT,
   MAX_IMAGE_FILE_SIZE_BYTES,
 } from "@/constants/upload";
+import {
+  appendBoolean,
+  appendNumber,
+  appendNumberArray,
+  appendString,
+} from "@/lib/form-payload";
 import { buildListingSlug } from "@/lib/listing-slug";
 import {
   normalizeGalleryImages,
   normalizePropertyCreateDefaults,
-} from "@/components/listing-form/listing-form.utils";
+} from "@/lib/listing-form";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
+import type { ExistingGalleryImage } from "@/types/gallery";
 import type { Property } from "@/types/property";
 import {
   propertyCreateFormSchema,
@@ -89,27 +95,6 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   removeImageIds: [],
   orderedExistingImageIds: [],
 };
-
-function appendString(formData: FormData, key: string, value?: string | null) {
-  const normalizedValue = value?.trim();
-  if (!normalizedValue) return;
-  formData.set(key, normalizedValue);
-}
-
-function appendNumber(formData: FormData, key: string, value?: number) {
-  if (typeof value !== "number" || Number.isNaN(value)) return;
-  formData.set(key, String(value));
-}
-
-function appendBoolean(formData: FormData, key: string, value?: boolean) {
-  if (typeof value !== "boolean") return;
-  formData.set(key, value ? "true" : "false");
-}
-
-function appendNumberArray(formData: FormData, key: string, values?: number[]) {
-  if (!values?.length) return;
-  formData.set(key, JSON.stringify(values));
-}
 
 function isOversizedImage(file: File) {
   return file.size > MAX_IMAGE_FILE_SIZE_BYTES;

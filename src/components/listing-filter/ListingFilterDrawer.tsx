@@ -41,7 +41,7 @@ import {
 import {
   buildEffectiveProvinceWardMap,
   type ProvinceWardMap,
-} from "./listing-filter-location";
+} from "@/lib/location-filter";
 
 type DemandTab = "cho-thue" | "can-thue";
 type DetailTab = "main" | "propertyType" | "location" | "price" | "area";

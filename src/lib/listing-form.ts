@@ -1,23 +1,11 @@
-import type { ExistingGalleryImage } from "@/components/listing-form/ListingImageGalleryField";
+import type { ExistingGalleryImage } from "@/types/gallery";
 import type { ProjectFormValues } from "@/schemas/admin-crud.schema";
 import type {
   PropertyCreateFormValues,
   RentRequestCreateFormValues,
 } from "@/schemas/listing-create.schema";
 import type { Property } from "@/types/property";
-
-function toOptionalNumber(value: unknown) {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : undefined;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value.trim());
-    return Number.isFinite(parsed) ? parsed : undefined;
-  }
-
-  return undefined;
-}
+import { toOptionalNumber } from "@/lib/form-normalize";
 
 export function normalizeGalleryImages(
   images?: ExistingGalleryImage[] | null,

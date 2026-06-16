@@ -30,7 +30,7 @@ import {
   parseNumericInput,
 } from "@/helpers/filterHelpers";
 import { normalizeVietnameseText } from "@/lib/text-normalize";
-import type { ProvinceWardMap } from "./listing-filter-location";
+import type { ProvinceWardMap } from "@/lib/location-filter";
 
 type UpdateCurrent = (
   updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,

@@ -5,6 +5,12 @@ import { Controller, useFormContext } from "react-hook-form";
 
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  formatDisplayNumber,
+  normalizeNumberInput,
+  toRawNumberString,
+  type NumberFieldFormat,
+} from "@/lib/number-input";
 import { cn } from "@/lib/utils";
 
 type ListingNumberFieldProps = {
@@ -19,64 +25,8 @@ type ListingNumberFieldProps = {
   max?: number;
   step?: string;
   suffix?: string;
-  format?: "currency" | "area" | "number";
+  format?: NumberFieldFormat;
 };
-
-function normalizeNumberInput(value: string) {
-  const trimmed = value.trim();
-  if (!trimmed) return undefined;
-
-  const withoutSpaces = trimmed.replace(/\s+/g, "");
-  const unsigned = withoutSpaces.startsWith("-")
-    ? withoutSpaces.slice(1)
-    : withoutSpaces;
-  const lastComma = unsigned.lastIndexOf(",");
-  const lastDot = unsigned.lastIndexOf(".");
-  const lastSeparator = Math.max(lastComma, lastDot);
-
-  let integerPart = unsigned;
-  let decimalPart = "";
-
-  if (lastSeparator >= 0) {
-    integerPart = unsigned.slice(0, lastSeparator);
-    decimalPart = unsigned.slice(lastSeparator + 1);
-  }
-
-  integerPart = integerPart.replace(/[.,]/g, "");
-  decimalPart = decimalPart.replace(/[.,]/g, "");
-
-  const composed =
-    decimalPart.length > 0 ? `${integerPart}.${decimalPart}` : integerPart;
-  const sign = withoutSpaces.startsWith("-") ? "-" : "";
-  const numericValue = Number(`${sign}${composed}`);
-
-  return Number.isFinite(numericValue) ? numericValue : undefined;
-}
-
-function formatDisplayNumber(
-  value: number | undefined,
-  format: ListingNumberFieldProps["format"],
-) {
-  if (typeof value !== "number" || Number.isNaN(value)) return "";
-
-  const maximumFractionDigits = format === "area" ? 2 : 0;
-  return new Intl.NumberFormat("vi-VN", {
-    maximumFractionDigits,
-  }).format(value);
-}
-
-function toRawNumberString(
-  value: number | undefined,
-  format: ListingNumberFieldProps["format"],
-) {
-  if (typeof value !== "number" || Number.isNaN(value)) return "";
-
-  const maximumFractionDigits = format === "area" ? 2 : 0;
-  return value.toLocaleString("en-US", {
-    useGrouping: false,
-    maximumFractionDigits,
-  });
-}
 
 export function ListingNumberField({
   name,
@@ -164,14 +114,15 @@ function NumberInputControl({
 }: NumberInputControlProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [draftValue, setDraftValue] = useState("");
+  const resolvedFormat = format ?? "number";
 
   const displayValue = isFocused
     ? draftValue
     : value === undefined
       ? ""
-      : format === "currency" || format === "area"
-        ? formatDisplayNumber(value, format)
-        : toRawNumberString(value, format);
+      : resolvedFormat === "currency" || resolvedFormat === "area"
+        ? formatDisplayNumber(value, resolvedFormat)
+        : toRawNumberString(value, resolvedFormat);
 
   return (
     <div className="relative">
@@ -188,7 +139,7 @@ function NumberInputControl({
         onFocus={() => {
           setIsFocused(true);
           setDraftValue(
-            value === undefined ? "" : toRawNumberString(value, format),
+            value === undefined ? "" : toRawNumberString(value, resolvedFormat),
           );
         }}
         onChange={(event) => {
