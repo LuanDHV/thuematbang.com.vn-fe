@@ -27,6 +27,7 @@ function normalizeBooleanField(formData: FormData, fieldName: string) {
 
 function normalizePropertyUpdateFormData(formData: FormData) {
   normalizeBooleanField(formData, "isNegotiable");
+  normalizeBooleanField(formData, "isBoosted");
   normalizeBooleanField(formData, "isFeatured");
   return formData;
 }
@@ -46,7 +47,7 @@ export async function updatePropertyAction(
   formData: FormData,
 ) {
   const propertyId = toPropertyId(id);
-  await propertyService.update(
+  const result = await propertyService.update(
     propertyId,
     normalizePropertyUpdateFormData(formData),
   );
@@ -56,5 +57,7 @@ export async function updatePropertyAction(
   revalidateTag("my-properties", "max");
   revalidateTag("property-detail", "max");
   revalidatePath("/admin/quan-li-tin-cho-thue");
+  revalidatePath(`/admin/quan-li-tin-cho-thue/${propertyId}`);
   revalidatePath(`/admin/quan-li-tin-cho-thue/${propertyId}/edit`);
+  return result;
 }

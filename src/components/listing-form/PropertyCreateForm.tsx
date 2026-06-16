@@ -5,20 +5,33 @@ import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
-import { ListingImageField } from "@/components/listing-form/ListingImageField";
-import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
-import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
 import { ListingCreateSuccessDialog } from "@/components/listing-form/ListingCreateSuccessDialog";
+import {
+  ListingImageGalleryField,
+  type ExistingGalleryImage,
+} from "@/components/listing-form/ListingImageGalleryField";
+import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
+import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
-import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
+import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
+import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
+import {
+  PROPERTY_PRIORITY_OPTIONS,
+  PUBLISH_SOURCE_OPTIONS,
+  PUBLISH_STATUS_OPTIONS,
+} from "@/constants/enum-options";
 import {
   MAX_IMAGE_FILE_COUNT,
   MAX_IMAGE_FILE_SIZE_BYTES,
 } from "@/constants/upload";
 import { buildListingSlug } from "@/lib/listing-slug";
+import {
+  normalizeGalleryImages,
+  normalizePropertyCreateDefaults,
+} from "@/components/listing-form/listing-form.utils";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
 import type { Property } from "@/types/property";
@@ -26,6 +39,13 @@ import {
   propertyCreateFormSchema,
   type PropertyCreateFormValues,
 } from "@/schemas/listing-create.schema";
+
+type PropertyCreateFormMode =
+  | "public-create"
+  | "admin-edit-full"
+  | "user-edit-limited";
+
+const EMPTY_EXISTING_IMAGES: ExistingGalleryImage[] = [];
 
 type PropertyCreateFormProps = {
   categories: Category[];
@@ -35,6 +55,9 @@ type PropertyCreateFormProps = {
   description: string;
   submitLabel: string;
   defaultValues?: Partial<PropertyCreateFormValues>;
+  mode?: PropertyCreateFormMode;
+  existingImages?: ExistingGalleryImage[];
+  showSuccessDialog?: boolean;
 };
 
 const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
@@ -53,7 +76,18 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   contactName: "",
   contactPhone: "",
   addressDetail: "",
+  longitude: undefined,
+  latitude: undefined,
   content: "",
+  priorityStatus: "FREE",
+  publishSource: "FREE_QUOTA",
+  isBoosted: false,
+  boostCount: undefined,
+  status: "PUBLISHED",
+  isFeatured: false,
+  userId: undefined,
+  removeImageIds: [],
+  orderedExistingImageIds: [],
 };
 
 function appendString(formData: FormData, key: string, value?: string | null) {
@@ -67,8 +101,24 @@ function appendNumber(formData: FormData, key: string, value?: number) {
   formData.set(key, String(value));
 }
 
+function appendBoolean(formData: FormData, key: string, value?: boolean) {
+  if (typeof value !== "boolean") return;
+  formData.set(key, value ? "true" : "false");
+}
+
+function appendNumberArray(formData: FormData, key: string, values?: number[]) {
+  if (!values?.length) return;
+  formData.set(key, JSON.stringify(values));
+}
+
 function isOversizedImage(file: File) {
   return file.size > MAX_IMAGE_FILE_SIZE_BYTES;
+}
+
+function getVisibleModeFields(mode: PropertyCreateFormMode) {
+  return {
+    showAdminOnly: mode === "admin-edit-full",
+  };
 }
 
 export function PropertyCreateForm({
@@ -79,25 +129,47 @@ export function PropertyCreateForm({
   description,
   submitLabel,
   defaultValues,
+  mode = "public-create",
+  existingImages,
+  showSuccessDialog = true,
 }: PropertyCreateFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const stableExistingImages = useMemo(
+    () => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+    [existingImages],
+  );
   const [images, setImages] = useState<File[]>([]);
+  const [existingGalleryImages, setExistingGalleryImages] =
+    useState<ExistingGalleryImage[]>(stableExistingImages);
   const [imagesError, setImagesError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const resolvedDefaults = useMemo(
     () =>
       ({
         ...DEFAULT_VALUES,
-        ...defaultValues,
+        ...normalizePropertyCreateDefaults(defaultValues),
       }) as PropertyCreateFormValues,
     [defaultValues],
   );
 
+  const normalizedDefaults = useMemo(
+    () => ({
+      ...resolvedDefaults,
+      priorityStatus:
+        resolvedDefaults.priorityStatus ?? DEFAULT_VALUES.priorityStatus,
+      publishSource:
+        resolvedDefaults.publishSource ?? DEFAULT_VALUES.publishSource,
+      status: resolvedDefaults.status ?? DEFAULT_VALUES.status,
+    }),
+    [resolvedDefaults],
+  );
+
   const form = useForm<PropertyCreateFormValues>({
     resolver: zodResolver(propertyCreateFormSchema) as never,
-    defaultValues: resolvedDefaults,
+    defaultValues: normalizedDefaults,
     mode: "onSubmit",
   });
 
@@ -105,18 +177,28 @@ export function PropertyCreateForm({
     control: form.control,
     name: "title",
   });
+  const slugValue = useWatch({
+    control: form.control,
+    name: "slug",
+  });
 
   useEffect(() => {
-    form.reset(resolvedDefaults);
-  }, [form, resolvedDefaults]);
+    form.reset(normalizedDefaults);
+  }, [form, normalizedDefaults]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
-    form.setValue("slug", nextSlug, {
-      shouldDirty: false,
-      shouldValidate: true,
-    });
-  }, [form, titleValue]);
+    if (nextSlug !== slugValue) {
+      form.setValue("slug", nextSlug, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [form, slugValue, titleValue]);
+
+  useEffect(() => {
+    setExistingGalleryImages(stableExistingImages);
+  }, [stableExistingImages]);
 
   const categoryOptions = useMemo(
     () =>
@@ -136,13 +218,16 @@ export function PropertyCreateForm({
     [],
   );
 
+  const { showAdminOnly } = getVisibleModeFields(mode);
+
   const onSubmit: SubmitHandler<PropertyCreateFormValues> = async (values) => {
     setSubmitError(null);
     setImagesError(null);
     setSuccessOpen(false);
     setCreatedSlug(null);
 
-    if (!images.length) {
+    const totalImageCount = existingGalleryImages.length + images.length;
+    if (mode === "public-create" && totalImageCount < 1) {
       setImagesError("Vui lòng chọn ít nhất 1 ảnh cho tin đăng.");
       return;
     }
@@ -157,11 +242,7 @@ export function PropertyCreateForm({
     appendString(payload, "slug", buildListingSlug(values.title));
     appendNumber(payload, "categoryId", values.categoryId);
     appendNumber(payload, "price", values.price);
-    appendString(
-      payload,
-      "isNegotiable",
-      values.isNegotiable ? "true" : "false",
-    );
+    appendBoolean(payload, "isNegotiable", Boolean(values.isNegotiable));
     appendNumber(payload, "area", values.area);
     appendNumber(payload, "bedrooms", values.bedrooms);
     appendNumber(payload, "bathrooms", values.bathrooms);
@@ -174,19 +255,57 @@ export function PropertyCreateForm({
     appendString(payload, "addressDetail", values.addressDetail);
     appendString(payload, "content", values.content);
 
+    if (showAdminOnly) {
+      appendString(payload, "priorityStatus", values.priorityStatus);
+      appendString(payload, "publishSource", values.publishSource);
+      appendBoolean(payload, "isBoosted", Boolean(values.isBoosted));
+      appendNumber(payload, "boostCount", values.boostCount);
+      appendString(payload, "status", values.status);
+      appendBoolean(payload, "isFeatured", Boolean(values.isFeatured));
+      appendNumber(payload, "longitude", values.longitude);
+      appendNumber(payload, "latitude", values.latitude);
+    }
+
+    const removedImageIds = stableExistingImages
+      .filter(
+        (image) =>
+          !existingGalleryImages.some(
+            (currentImage) => currentImage.id === image.id,
+          ),
+      )
+      .map((image) => image.id);
+
+    appendNumberArray(
+      payload,
+      "orderedExistingImageIds",
+      existingGalleryImages.map((image) => image.id),
+    );
+    appendNumberArray(payload, "removeImageIds", removedImageIds);
+
     images.forEach((image) => payload.append("images", image));
 
     try {
       const createdProperty = await submitAction(payload);
-      form.reset(resolvedDefaults);
+      form.reset(normalizedDefaults);
+      // Keep enum defaults normalized after successful submit/reset.
       setImages([]);
-      setCreatedSlug(createdProperty.slug);
-      setSuccessOpen(true);
+      setExistingGalleryImages(stableExistingImages);
+
+      if (showSuccessDialog) {
+        setCreatedSlug(createdProperty.slug);
+        setSuccessOpen(true);
+      } else {
+        toast({
+          title: "Đã đăng tin thành công",
+          description: "Tin đăng đã được lưu thành công.",
+          variant: "success",
+        });
+      }
     } catch (error) {
       setSubmitError(
         error instanceof Error
           ? error.message
-          : "Không thể tạo tin đăng. Vui lòng thử lại.",
+          : "Không thể lưu tin đăng. Vui lòng thử lại.",
       );
     }
   };
@@ -199,7 +318,7 @@ export function PropertyCreateForm({
         title={title}
         description={description}
         submitLabel={submitLabel}
-        submitPendingLabel="Đang tạo tin..."
+        submitPendingLabel="Đang lưu..."
         submitError={submitError}
       >
         <div className="grid gap-4 md:grid-cols-2">
@@ -228,6 +347,10 @@ export function PropertyCreateForm({
           placeholder="Ví dụ: Mặt bằng kinh doanh quận 1"
           autoComplete="off"
         />
+
+        {showAdminOnly ? (
+          <ListingTextField name="slug" label="Slug" required readOnly />
+        ) : null}
 
         <ListingSelectField
           name="categoryId"
@@ -263,7 +386,7 @@ export function PropertyCreateForm({
         <ListingCheckboxField
           name="isNegotiable"
           label="Thương lượng"
-          description="Đánh dấu nếu bạn muốn người xem hiểu rằng mức giá có thể trao đổi thêm"
+          description="Đánh dấu nếu giá có thể trao đổi thêm"
         />
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -315,35 +438,96 @@ export function PropertyCreateForm({
           placeholder="Số nhà, tên tòa nhà, hẻm..."
         />
 
-        <ListingTextareaField
+        <ListingRichTextField
           name="content"
           label="Mô tả thêm"
           placeholder="Mô tả chi tiết về tin đăng..."
         />
 
-        <ListingImageField
+        {showAdminOnly ? (
+          <>
+            <div className="grid gap-4 md:grid-cols-2">
+              <ListingSelectField
+                name="priorityStatus"
+                label="Loại tin"
+                options={PROPERTY_PRIORITY_OPTIONS}
+              />
+              <ListingSelectField
+                name="publishSource"
+                label="Nguồn xuất bản"
+                options={PUBLISH_SOURCE_OPTIONS}
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <ListingCheckboxField name="isBoosted" label="Đã boost" />
+              <ListingNumberField
+                name="boostCount"
+                label="Số lần boost"
+                min={0}
+                step="1"
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <ListingSelectField
+                name="status"
+                label="Trạng thái"
+                options={PUBLISH_STATUS_OPTIONS}
+              />
+              <ListingCheckboxField name="isFeatured" label="Nổi bật" />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <ListingNumberField
+                name="longitude"
+                label="Kinh độ"
+                inputMode="decimal"
+                step="0.000001"
+              />
+              <ListingNumberField
+                name="latitude"
+                label="Vĩ độ"
+                inputMode="decimal"
+                step="0.000001"
+              />
+            </div>
+          </>
+        ) : null}
+
+        <ListingImageGalleryField
           files={images}
           onFilesChange={setImages}
-          onErrorChange={setImagesError}
-          required
+          existingImages={existingGalleryImages}
+          onExistingImagesChange={setExistingGalleryImages}
+          label="Hình ảnh"
+          description={
+            mode === "public-create"
+              ? "Tải lên ít nhất 1 ảnh. Có thể chọn nhiều ảnh cùng lúc."
+              : "Quản lý ảnh cũ và tải thêm ảnh mới."
+          }
+          required={mode === "public-create"}
           error={imagesError}
+          onErrorChange={setImagesError}
           maxFiles={MAX_IMAGE_FILE_COUNT}
           maxFileSizeBytes={MAX_IMAGE_FILE_SIZE_BYTES}
         />
       </ListingCreateFormShell>
 
-      <ListingCreateSuccessDialog
-        open={successOpen}
-        onOpenChange={setSuccessOpen}
-        title="Đã đăng tin thành công"
-        description="Bạn có muốn xem các nhu cầu thuê không?"
-        primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref={
-          createdSlug ? `/cho-thue/${createdSlug}` : "/cho-thue"
-        }
-        secondaryActionLabel="Trang cần thuê"
-        secondaryActionHref="/can-thue"
-      />
+      {showSuccessDialog ? (
+        <ListingCreateSuccessDialog
+          open={successOpen}
+          onOpenChange={setSuccessOpen}
+          title="Đã đăng tin thành công"
+          description="Bạn có muốn xem các nhu cầu thuê không?"
+          primaryActionLabel="Xem bài đăng của tôi"
+          primaryActionHref={
+            createdSlug ? `/cho-thue/${createdSlug}` : "/cho-thue"
+          }
+          secondaryActionLabel="Trang cần thuê"
+          secondaryActionHref="/can-thue"
+        />
+      ) : null}
     </>
   );
 }

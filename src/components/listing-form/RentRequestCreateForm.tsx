@@ -4,15 +4,19 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
-import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
 import { ListingCreateSuccessDialog } from "@/components/listing-form/ListingCreateSuccessDialog";
+import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
+import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
+import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
+import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
-import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
+import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
+import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing-slug";
+import { normalizeRentRequestFormDefaults } from "@/components/listing-form/listing-form.utils";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
 import type { RentRequest } from "@/types/rent-request";
@@ -20,6 +24,11 @@ import {
   rentRequestCreateFormSchema,
   type RentRequestCreateFormValues,
 } from "@/schemas/listing-create.schema";
+
+type RentRequestCreateFormMode =
+  | "public-create"
+  | "admin-edit-full"
+  | "user-edit-limited";
 
 type RentRequestCreateFormProps = {
   categories: Category[];
@@ -29,6 +38,8 @@ type RentRequestCreateFormProps = {
   description: string;
   submitLabel: string;
   defaultValues?: Partial<RentRequestCreateFormValues>;
+  mode?: RentRequestCreateFormMode;
+  showSuccessDialog?: boolean;
 };
 
 const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
@@ -46,6 +57,9 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
   contactName: "",
   contactPhone: "",
   requirementText: "",
+  userId: undefined,
+  status: "PUBLISHED",
+  isMatched: false,
 };
 
 function appendString(formData: FormData, key: string, value?: string | null) {
@@ -59,6 +73,17 @@ function appendNumber(formData: FormData, key: string, value?: number) {
   formData.set(key, String(value));
 }
 
+function appendBoolean(formData: FormData, key: string, value?: boolean) {
+  if (typeof value !== "boolean") return;
+  formData.set(key, value ? "true" : "false");
+}
+
+function getVisibleModeFields(mode: RentRequestCreateFormMode) {
+  return {
+    showAdminOnly: mode === "admin-edit-full",
+  };
+}
+
 export function RentRequestCreateForm({
   categories,
   provinces,
@@ -67,16 +92,19 @@ export function RentRequestCreateForm({
   description,
   submitLabel,
   defaultValues,
+  mode = "public-create",
+  showSuccessDialog = true,
 }: RentRequestCreateFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const resolvedDefaults = useMemo(
     () =>
       ({
         ...DEFAULT_VALUES,
-        ...defaultValues,
+        ...normalizeRentRequestFormDefaults(defaultValues),
       }) as RentRequestCreateFormValues,
     [defaultValues],
   );
@@ -91,6 +119,10 @@ export function RentRequestCreateForm({
     control: form.control,
     name: "title",
   });
+  const slugValue = useWatch({
+    control: form.control,
+    name: "slug",
+  });
 
   useEffect(() => {
     form.reset(resolvedDefaults);
@@ -98,11 +130,13 @@ export function RentRequestCreateForm({
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
-    form.setValue("slug", nextSlug, {
-      shouldDirty: false,
-      shouldValidate: true,
-    });
-  }, [form, titleValue]);
+    if (nextSlug !== slugValue) {
+      form.setValue("slug", nextSlug, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [form, slugValue, titleValue]);
 
   const categoryOptions = useMemo(
     () =>
@@ -122,9 +156,9 @@ export function RentRequestCreateForm({
     [],
   );
 
-  const onSubmit: SubmitHandler<RentRequestCreateFormValues> = async (
-    values,
-  ) => {
+  const { showAdminOnly } = getVisibleModeFields(mode);
+
+  const onSubmit: SubmitHandler<RentRequestCreateFormValues> = async (values) => {
     setSubmitError(null);
     setSuccessOpen(false);
     setCreatedSlug(null);
@@ -144,12 +178,22 @@ export function RentRequestCreateForm({
     appendString(payload, "contactName", values.contactName);
     appendString(payload, "contactPhone", values.contactPhone);
     appendString(payload, "requirementText", values.requirementText);
+    appendString(payload, "status", values.status);
+    appendBoolean(payload, "isMatched", values.isMatched);
 
     try {
       const createdRentRequest = await submitAction(payload);
-      form.reset(resolvedDefaults);
-      setCreatedSlug(createdRentRequest.slug);
-      setSuccessOpen(true);
+      if (showSuccessDialog) {
+        form.reset(resolvedDefaults);
+        setCreatedSlug(createdRentRequest.slug);
+        setSuccessOpen(true);
+      } else {
+        toast({
+          title: "Đã đăng tin thành công",
+          description: "Tin đăng đã được lưu thành công.",
+          variant: "success",
+        });
+      }
     } catch (error) {
       setSubmitError(
         error instanceof Error
@@ -167,7 +211,7 @@ export function RentRequestCreateForm({
         title={title}
         description={description}
         submitLabel={submitLabel}
-        submitPendingLabel="Đang tạo yêu cầu..."
+        submitPendingLabel="Đang lưu..."
         submitError={submitError}
       >
         <div className="grid gap-4 md:grid-cols-2">
@@ -196,6 +240,10 @@ export function RentRequestCreateForm({
           placeholder="Ví dụ: Cần thuê mặt bằng quận 3"
           autoComplete="off"
         />
+
+        {showAdminOnly ? (
+          <ListingTextField name="slug" label="Slug" required readOnly />
+        ) : null}
 
         <ListingSelectField
           name="categoryId"
@@ -273,25 +321,42 @@ export function RentRequestCreateForm({
           requiredWard
         />
 
-        <ListingTextareaField
+        <ListingRichTextField
           name="requirementText"
           label="Mô tả thêm"
           placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
         />
+
+        {showAdminOnly ? (
+          <div className="grid gap-4 md:grid-cols-2">
+          <ListingSelectField
+            name="status"
+            label="Trạng thái"
+            options={RENT_REQUEST_STATUS_OPTIONS}
+          />
+          <ListingCheckboxField
+            name="isMatched"
+            label="Đã khớp nhu cầu"
+            description="Bật khi nhu cầu này đã được match với tin phù hợp."
+          />
+        </div>
+      ) : null}
       </ListingCreateFormShell>
 
-      <ListingCreateSuccessDialog
-        open={successOpen}
-        onOpenChange={setSuccessOpen}
-        title="Đã đăng tin thành công"
-        description="Bạn có muốn xem các tin đăng không?"
-        primaryActionLabel="Xem bài đăng của tôi"
-        primaryActionHref={
-          createdSlug ? `/can-thue/${createdSlug}` : "/can-thue"
-        }
-        secondaryActionLabel="Trang cho thuê"
-        secondaryActionHref="/cho-thue"
-      />
+      {showSuccessDialog ? (
+        <ListingCreateSuccessDialog
+          open={successOpen}
+          onOpenChange={setSuccessOpen}
+          title="Đã đăng tin thành công"
+          description="Bạn có muốn xem các tin đăng không?"
+          primaryActionLabel="Xem bài đăng của tôi"
+          primaryActionHref={
+            createdSlug ? `/can-thue/${createdSlug}` : "/can-thue"
+          }
+          secondaryActionLabel="Trang cho thuê"
+          secondaryActionHref="/cho-thue"
+        />
+      ) : null}
     </>
   );
 }

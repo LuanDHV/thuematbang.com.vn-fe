@@ -30,7 +30,7 @@ type ListingSelectFieldProps = {
   label: string;
   placeholder?: string;
   description?: string;
-  options: ListingSelectOption[];
+  options: readonly ListingSelectOption[];
   className?: string;
   disabled?: boolean;
   required?: boolean;

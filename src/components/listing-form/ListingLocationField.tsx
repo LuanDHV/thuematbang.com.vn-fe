@@ -60,7 +60,9 @@ export function ListingLocationField({
 
   useEffect(() => {
     if (!selectedProvinceId) {
-      setValue(wardName, "");
+      if (selectedWardId) {
+        setValue(wardName, "");
+      }
       return;
     }
 
@@ -68,7 +70,7 @@ export function ListingLocationField({
       (ward) => String(ward.id) === String(selectedWardId),
     );
 
-    if (!wardExists) {
+    if (!wardExists && selectedWardId) {
       setValue(wardName, "");
     }
   }, [selectedProvinceId, selectedWardId, setValue, wardName, wards]);

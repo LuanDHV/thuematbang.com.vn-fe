@@ -5,7 +5,11 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { buildListingSlug } from "@/lib/listing-slug";
 import { propertyService } from "@/services/property.service";
 import { rentRequestService } from "@/services/rent-request.service";
-import type { PropertyDirection } from "@/types/enums";
+import {
+  PROPERTY_DIRECTION_VALUES,
+  PUBLISH_STATUS_VALUES,
+} from "@/constants/enum-values";
+import type { PropertyDirection, PublishStatus } from "@/types/enums";
 
 function cloneFormData(formData: FormData) {
   const nextFormData = new FormData();
@@ -35,29 +39,35 @@ function normalizePropertyDirection(
   const normalizedValue = String(value ?? "").trim();
   if (!normalizedValue) return null;
 
-  const allowedDirections: PropertyDirection[] = [
-    "BAC",
-    "DONG_BAC",
-    "DONG",
-    "DONG_NAM",
-    "NAM",
-    "TAY_NAM",
-    "TAY",
-    "TAY_BAC",
-  ];
-
-  return allowedDirections.includes(normalizedValue as PropertyDirection)
+  return PROPERTY_DIRECTION_VALUES.includes(normalizedValue as PropertyDirection)
     ? (normalizedValue as PropertyDirection)
     : null;
+}
+
+function normalizeRentRequestStatus(
+  value: FormDataEntryValue | null,
+): PublishStatus | undefined {
+  const normalizedValue = String(value ?? "").trim();
+  if (!normalizedValue) return undefined;
+
+  return PUBLISH_STATUS_VALUES.includes(normalizedValue as PublishStatus)
+    ? (normalizedValue as PublishStatus)
+    : undefined;
 }
 
 function normalizePropertyPayload(formData: FormData) {
   const nextFormData = cloneFormData(formData);
   normalizeListingSlug(nextFormData);
-  const isNegotiableFromForm = normalizeBooleanLike(
-    nextFormData.get("isNegotiable"),
-  );
-  nextFormData.set("isNegotiable", isNegotiableFromForm ? "true" : "false");
+  const booleanFields = [
+    "isNegotiable",
+    "isBoosted",
+    "isFeatured",
+  ] as const;
+
+  for (const fieldName of booleanFields) {
+    const isTrue = normalizeBooleanLike(nextFormData.get(fieldName));
+    nextFormData.set(fieldName, isTrue ? "true" : "false");
+  }
 
   return nextFormData;
 }
@@ -84,6 +94,12 @@ function normalizeRentRequestPayload(formData: FormData) {
   const requirementText = String(
     nextFormData.get("requirementText") ?? "",
   ).trim();
+  const userIdValue = Number(nextFormData.get("userId"));
+  const status = normalizeRentRequestStatus(nextFormData.get("status"));
+  const isMatched =
+    nextFormData.get("isMatched") === "true" ||
+    nextFormData.get("isMatched") === "on" ||
+    nextFormData.get("isMatched") === "1";
 
   return {
     title,
@@ -100,6 +116,9 @@ function normalizeRentRequestPayload(formData: FormData) {
     contactName,
     contactPhone,
     requirementText: requirementText || undefined,
+    userId: Number.isFinite(userIdValue) ? userIdValue : undefined,
+    status,
+    isMatched,
   };
 }
 

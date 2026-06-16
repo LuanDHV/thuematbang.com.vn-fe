@@ -1,10 +1,12 @@
 import { z } from "zod";
 
-import { DIRECTION_OPTIONS } from "@/constants/filter";
-
-const PROPERTY_DIRECTION_VALUES = DIRECTION_OPTIONS.map(
-  (option) => option.id,
-) as [string, ...string[]];
+import {
+  PROPERTY_DIRECTION_VALUES,
+  PROPERTY_PRIORITY_VALUES,
+  PUBLISH_SOURCE_VALUES,
+  PUBLISH_STATUS_VALUES,
+  RENT_REQUEST_STATUS_VALUES,
+} from "@/constants/enum-values";
 
 const slugSchema = z
   .string()
@@ -16,6 +18,7 @@ const slugSchema = z
   );
 
 const optionalTextSchema = z.string().trim().max(10_000).optional();
+
 const nullableDirectionSchema = z
   .enum(PROPERTY_DIRECTION_VALUES, {
     message: "Vui lòng chọn hướng hợp lệ",
@@ -56,9 +59,11 @@ function requiredNumberSchema({
   maxMessage?: string;
 }) {
   const numberSchema = integer
-    ? z.number({
-        error: requiredMessage,
-      }).int(invalidMessage)
+    ? z
+        .number({
+          error: requiredMessage,
+        })
+        .int(invalidMessage)
     : z.number({
         error: requiredMessage,
       });
@@ -137,6 +142,15 @@ export const propertyCreateFormSchema = z.object({
   longitude: optionalNumberSchema,
   latitude: optionalNumberSchema,
   content: optionalTextSchema,
+  priorityStatus: z.enum(PROPERTY_PRIORITY_VALUES).nullable().optional(),
+  publishSource: z.enum(PUBLISH_SOURCE_VALUES).nullable().optional(),
+  isBoosted: z.boolean().default(false).optional(),
+  boostCount: optionalIntegerSchema,
+  status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
+  isFeatured: z.boolean().default(false).optional(),
+  userId: optionalIntegerSchema,
+  removeImageIds: z.array(z.number().int().nonnegative()).optional(),
+  orderedExistingImageIds: z.array(z.number().int().nonnegative()).optional(),
 });
 
 export const rentRequestCreateFormSchema = z.object({
@@ -194,6 +208,9 @@ export const rentRequestCreateFormSchema = z.object({
     .min(9, "Số điện thoại không hợp lệ")
     .max(20, "Số điện thoại không hợp lệ"),
   requirementText: optionalTextSchema,
+  userId: optionalIntegerSchema,
+  status: z.enum(RENT_REQUEST_STATUS_VALUES).nullable().optional(),
+  isMatched: z.boolean().default(false).optional(),
 });
 
 export type PropertyCreateFormValues = z.infer<
