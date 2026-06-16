@@ -1,6 +1,7 @@
 import "server-only";
 
 import { User } from "@/types";
+import type { UserRole } from "@/types/enums";
 import { buildListPath, buildListTags } from "./shared/list-service";
 import { requestServerApi } from "./shared/server-api-client";
 
@@ -31,6 +32,10 @@ export type AdminUserListParams = {
   page?: number;
   limit?: number;
   filters?: AdminUserListFilters;
+};
+
+export type AdminUserRolePayload = {
+  role: UserRole;
 };
 
 type PasswordActionResponse = {
@@ -89,6 +94,39 @@ export const userService = {
       }),
       mutateAuthCookies: options.mutateAuthCookies,
     }),
+
+  getAdminUserById: async (
+    id: string | number,
+    options: AuthenticatedRequestOptions = {},
+  ) =>
+    (
+      await requestServerApi<User>(`/admin/users/${id}`, {
+        auth: "required",
+        cache: "no-store",
+        tags: ["admin-users", `admin-user-${id}`],
+        mutateAuthCookies: options.mutateAuthCookies,
+      })
+    ).data,
+
+  updateAdminUserRole: async (
+    id: string | number,
+    payload: AdminUserRolePayload,
+    options: AuthenticatedRequestOptions = {},
+  ) => {
+    const response = await requestServerApi<User>(
+      `/admin/users/${id}/role`,
+      {
+        method: "PATCH",
+        auth: "required",
+        mutateAuthCookies: options.mutateAuthCookies,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    return response.data;
+  },
 
   // Update the current user's profile, including avatar metadata when present.
   updateMe: async (

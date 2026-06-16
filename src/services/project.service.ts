@@ -36,6 +36,8 @@ export type ProjectGetAllParams = {
   limit?: number;
 };
 
+export type ProjectUpsertPayload = FormData;
+
 export const projectService = {
   getAll: async (params: ProjectGetAllParams = {}) => {
     const filters = {
@@ -89,6 +91,41 @@ export const projectService = {
         tags: ["project-detail", slug],
       },
     );
+    return response.data;
+  },
+
+  getById: async (id: number) => {
+    const response = await requestServerApi<Project>(`/projects/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["project-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  create: async (payload: ProjectUpsertPayload) => {
+    const response = await requestServerApi<Project>("/projects", {
+      method: "POST",
+      auth: "required",
+      body: payload,
+    });
+    return response.data;
+  },
+
+  update: async (id: number, payload: ProjectUpsertPayload) => {
+    const response = await requestServerApi<Project>(`/projects/${id}`, {
+      method: "PATCH",
+      auth: "required",
+      body: payload,
+    });
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    const response = await requestServerApi<Project>(`/projects/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
     return response.data;
   },
 };

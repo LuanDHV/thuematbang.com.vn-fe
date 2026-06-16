@@ -1,8 +1,8 @@
 import AdminRentRequestsTable from "@/components/cms/admin/AdminRentRequestsTable";
 import {
   resolvePaginationServer,
-  resolveSearchQueryValue,
   resolveSearchParamValue,
+  resolveSearchQueryValue,
 } from "@/lib/server-side";
 import { rentRequestService } from "@/services/rent-request.service";
 
@@ -43,6 +43,7 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
           searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
           searchValue,
           actionLabel: "Tạo mới",
+          actionHref: "/admin/quan-li-tin-can-thue/new",
         }}
       />
     </section>

@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
+import { AUTH_PROVIDER_LABEL_MAP, USER_ROLE_LABEL_MAP } from "@/constants/enum-options";
 import AdminStatusBadge, {
   type AdminBadgeTone,
 } from "@/components/cms/admin/AdminStatusBadge";
@@ -27,20 +28,9 @@ const roleToneMap: Record<UserRole, AdminBadgeTone> = {
   CUSTOMER: "warning",
 };
 
-const roleLabelMap: Record<UserRole, string> = {
-  ADMIN: "Quản trị",
-  AGENT: "Môi giới",
-  CUSTOMER: "Khách hàng",
-};
-
 const providerToneMap: Record<AuthProvider, AdminBadgeTone> = {
   GOOGLE: "info",
   LOCAL: "warning",
-};
-
-const providerLabelMap: Record<AuthProvider, string> = {
-  GOOGLE: "Google",
-  LOCAL: "Local",
 };
 
 export default function AdminUsersTable({
@@ -58,10 +48,6 @@ export default function AdminUsersTable({
     searchParams,
     totalPages,
   );
-
-  async function handleDeleteUser(id: string | number) {
-    console.info("Delete user requested", { id });
-  }
 
   const fields = useMemo<FieldConfig<User>[]>(
     () => [
@@ -90,7 +76,7 @@ export default function AdminUsersTable({
         accessor: (user) => user.role,
         render: ({ row }) => (
           <AdminStatusBadge tone={roleToneMap[row.role]}>
-            {roleLabelMap[row.role]}
+            {USER_ROLE_LABEL_MAP[row.role]}
           </AdminStatusBadge>
         ),
       },
@@ -102,7 +88,7 @@ export default function AdminUsersTable({
         render: ({ row }) =>
           row.authProvider ? (
             <AdminStatusBadge tone={providerToneMap[row.authProvider]}>
-              {providerLabelMap[row.authProvider]}
+              {AUTH_PROVIDER_LABEL_MAP[row.authProvider]}
             </AdminStatusBadge>
           ) : (
             "—"
@@ -120,7 +106,7 @@ export default function AdminUsersTable({
         header: "Tác vụ",
         fieldType: "actions",
         getEditHref: (user) => `/admin/quan-li-tai-khoan/${user.id}`,
-        onDelete: handleDeleteUser,
+        editLabel: "Đổi vai trò",
       },
     ],
     [],

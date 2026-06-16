@@ -1,7 +1,7 @@
 import "server-only";
 
 import { RentRequest } from "@/types/rent-request";
-import { PropertyDirection, RentRequestStatus } from "@/types/enums";
+import { PropertyDirection, PublishStatus } from "@/types/enums";
 import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
@@ -31,7 +31,8 @@ export type RentRequestListFilters = {
   minDesiredArea?: number;
   maxDesiredArea?: number;
   desiredDirection?: PropertyDirection | null;
-  status?: RentRequestStatus;
+  status?: PublishStatus;
+  isMatched?: boolean;
   sortBy?: RentRequestSortBy;
   sortOrder?: "asc" | "desc";
 };
@@ -56,6 +57,7 @@ export type RentRequestMineParams = {
 export type CreateRentRequestPayload = {
   title: string;
   slug: string;
+  userId?: number;
   categoryId: number;
   budget: number;
   desiredArea: number;
@@ -68,6 +70,8 @@ export type CreateRentRequestPayload = {
   contactName: string;
   contactPhone: string;
   requirementText?: string;
+  status?: PublishStatus | null;
+  isMatched?: boolean;
 };
 
 export type UpdateRentRequestPayload = Partial<CreateRentRequestPayload>;

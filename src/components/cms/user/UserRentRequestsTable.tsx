@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
+import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
+import { Copy, ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 
 import AdminStatusBadge, {
   type AdminBadgeTone,
@@ -32,7 +33,7 @@ import {
   formatVndAmount,
 } from "@/lib/utils";
 import type { RentRequest } from "@/types/rent-request";
-import type { RentRequestStatus } from "@/types/enums";
+import type { PublishStatus } from "@/types/enums";
 
 type UserRentRequestsTableProps = {
   items: RentRequest[];
@@ -40,16 +41,10 @@ type UserRentRequestsTableProps = {
   totalPages: number;
 };
 
-const statusLabelMap: Record<RentRequestStatus, string> = {
-  ACTIVE: "Đang tìm",
-  MATCHED: "Đã khớp",
-  CLOSED: "Đã đóng",
-};
-
-const statusToneMap: Record<RentRequestStatus, AdminBadgeTone> = {
-  ACTIVE: "success",
-  MATCHED: "info",
-  CLOSED: "muted",
+const statusToneMap: Record<PublishStatus, AdminBadgeTone> = {
+  DRAFT: "muted",
+  PUBLISHED: "success",
+  ARCHIVED: "neutral",
 };
 
 function getPublicPath(item: RentRequest) {
@@ -77,6 +72,12 @@ function RentRequestActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Link href={`/quan-li-tai-khoan/cau-thue/${item.id}`}>
+            <Pencil className="size-4" />
+            Chỉnh sửa
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
             <ExternalLink className="size-4" />
@@ -134,6 +135,7 @@ export default function UserRentRequestsTable({
             <TableHead className="w-[12%]">Ngân sách</TableHead>
             <TableHead className="w-[12%]">Diện tích</TableHead>
             <TableHead className="w-[12%]">Trạng thái</TableHead>
+            <TableHead className="w-[12%]">Khớp</TableHead>
             <TableHead className="w-[10%]">Ngày tạo</TableHead>
             <TableHead className="text-right">Tác vụ</TableHead>
           </TableRow>
@@ -174,7 +176,12 @@ export default function UserRentRequestsTable({
                   </TableCell>
                   <TableCell className="align-top">
                     <AdminStatusBadge tone={statusToneMap[item.status]}>
-                      {statusLabelMap[item.status]}
+                      {PUBLISH_STATUS_LABEL_MAP[item.status]}
+                    </AdminStatusBadge>
+                  </TableCell>
+                  <TableCell className="align-top">
+                    <AdminStatusBadge tone={item.isMatched ? "success" : "muted"}>
+                      {item.isMatched ? "Đã khớp" : "Chưa khớp"}
                     </AdminStatusBadge>
                   </TableCell>
                   <TableCell className="align-top text-sm text-body">
@@ -194,7 +201,7 @@ export default function UserRentRequestsTable({
             })
           ) : (
             <TableRow>
-              <TableCell colSpan={8} className="py-14 text-center">
+              <TableCell colSpan={9} className="py-14 text-center">
                 <div className="space-y-2">
                   <p className="text-heading text-base font-semibold">
                     Không có dữ liệu

@@ -1,19 +1,23 @@
 "use client";
 
+import { useMemo, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+
+import { deleteProjectAction } from "@/actions/admin-crud.actions";
 import AdminDataTable, {
   type AdminTableToolbar,
 } from "@/components/cms/admin/DataTable";
 import AdminStatusBadge, {
   publishStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
+import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import {
   createPaginationChangeHandler,
   formatLocationParts,
   formatVndAmount,
 } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 import type { PublishStatus } from "@/types/enums";
 import type { Project } from "@/types/project";
 import AdminEntityCell from "./AdminEntityCell";
@@ -25,12 +29,6 @@ type AdminProjectsTableProps = {
   toolbar?: AdminTableToolbar;
 };
 
-const statusLabelMap: Record<PublishStatus, string> = {
-  DRAFT: "Nháp",
-  PUBLISHED: "Đã đăng",
-  ARCHIVED: "Lưu trữ",
-};
-
 export default function AdminProjectsTable({
   items,
   currentPage,
@@ -40,6 +38,7 @@ export default function AdminProjectsTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -47,9 +46,17 @@ export default function AdminProjectsTable({
     totalPages,
   );
 
-  async function handleDeleteProject(id: string | number) {
-    console.info("Delete project requested", { id });
-  }
+  const handleDeleteProject = useCallback(
+    async (id: string | number) => {
+      await deleteProjectAction(id);
+      toast({
+        title: "Đã xóa dự án",
+        description: "Dự án đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
 
   function getPrimaryProjectImage(project: Project) {
     return (
@@ -99,7 +106,7 @@ export default function AdminProjectsTable({
         accessor: (item) => item.status,
         render: ({ row }) => (
           <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
-            {statusLabelMap[row.status]}
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
           </AdminStatusBadge>
         ),
       },
@@ -118,7 +125,7 @@ export default function AdminProjectsTable({
         onDelete: handleDeleteProject,
       },
     ],
-    [],
+    [handleDeleteProject],
   );
 
   return (

@@ -1,8 +1,8 @@
 import AdminPropertiesTable from "@/components/cms/admin/AdminPropertiesTable";
 import {
   resolvePaginationServer,
-  resolveSearchQueryValue,
   resolveSearchParamValue,
+  resolveSearchQueryValue,
 } from "@/lib/server-side";
 import { propertyService } from "@/services/property.service";
 import type { PublishStatus } from "@/types/enums";
@@ -57,6 +57,7 @@ export default async function AdminChoThuePage({ searchParams }: PageProps) {
           searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
           searchValue,
           actionLabel: "Tạo mới",
+          actionHref: "/admin/quan-li-tin-cho-thue/new",
         }}
       />
     </section>

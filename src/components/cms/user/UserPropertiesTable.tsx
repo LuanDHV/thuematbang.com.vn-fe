@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
+import { PROPERTY_PRIORITY_LABEL_MAP, PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
+import { Copy, ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 
 import AdminPriorityBadge, {
   type AdminPriorityTone,
@@ -48,18 +49,6 @@ const priorityToneMap: Record<PropertyPriority, AdminPriorityTone> = {
   PREMIUM: "premium",
 };
 
-const priorityLabelMap: Record<PropertyPriority, string> = {
-  FREE: "Miễn phí",
-  STANDARD: "Tiêu chuẩn",
-  PREMIUM: "Cao cấp",
-};
-
-const statusLabelMap: Record<PublishStatus, string> = {
-  DRAFT: "Nháp",
-  PUBLISHED: "Đã đăng",
-  ARCHIVED: "Lưu trữ",
-};
-
 function getPublicPath(item: Property) {
   return `/cho-thue/${item.slug}`;
 }
@@ -81,6 +70,12 @@ function PropertyActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Link href={`/quan-li-tai-khoan/cho-thue/${item.id}`}>
+            <Pencil className="size-4" />
+            Chỉnh sửa
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
             <ExternalLink className="size-4" />
@@ -172,12 +167,12 @@ export default function UserPropertiesTable({
                   </TableCell>
                   <TableCell className="align-top">
                     <AdminPriorityBadge tone={priorityToneMap[item.priorityStatus]}>
-                      {priorityLabelMap[item.priorityStatus]}
+                      {PROPERTY_PRIORITY_LABEL_MAP[item.priorityStatus]}
                     </AdminPriorityBadge>
                   </TableCell>
                   <TableCell className="align-top">
                     <AdminStatusBadge tone={publishStatusBadgeToneMap[item.status]}>
-                      {statusLabelMap[item.status]}
+                      {PUBLISH_STATUS_LABEL_MAP[item.status]}
                     </AdminStatusBadge>
                   </TableCell>
                   <TableCell className="align-top text-sm text-body">

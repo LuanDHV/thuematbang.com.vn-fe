@@ -7,7 +7,7 @@ export interface Project {
   id: number;
   name: string;
   slug: string;
-  categoryId?: number | null;
+  categoryId: number;
   developer?: string | null;
   provinceId?: number | null;
   wardId?: number | null;

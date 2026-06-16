@@ -1,5 +1,5 @@
 import { Category } from "./category";
-import { PropertyDirection, RentRequestStatus } from "./enums";
+import { PropertyDirection, PublishStatus } from "./enums";
 import { Province, Ward } from "./location";
 import { User } from "./user";
 
@@ -20,7 +20,8 @@ export interface RentRequest {
   requirementText?: string | null;
   contactName: string;
   contactPhone: string;
-  status: RentRequestStatus;
+  status: PublishStatus;
+  isMatched: boolean;
   viewCount: number;
   createdAt: Date | string;
   updatedAt: Date | string;
