@@ -24,8 +24,6 @@ export type PropertyDirection =
 
 export type CategoryType = "PROPERTY" | "RENT_REQUEST" | "PROJECT" | "NEWS";
 
-export type RentRequestStatus = "ACTIVE" | "MATCHED" | "CLOSED";
-
 export type PaymentStatus =
   | "PENDING"
   | "SUCCESS"

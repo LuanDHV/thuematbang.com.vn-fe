@@ -7,11 +7,11 @@ import AppProviders from "@/components/providers/AppProviders";
 
 const isProduction = isProductionAppEnv();
 
-const geistSans = Be_Vietnam_Pro({
+const beVietnamPro = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
-  variable: "--font-geist-sans",
+  variable: "--font-be-vietnam-pro",
 });
 
 export const metadata: Metadata = {
@@ -68,7 +68,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${geistSans.variable} h-full antialiased`}>
+    <html
+      lang="vi"
+      suppressHydrationWarning
+      className={`${beVietnamPro.variable} h-full antialiased`}
+    >
       <body className="bg-app text-body min-h-screen">
         <AppProviders>{children}</AppProviders>
       </body>

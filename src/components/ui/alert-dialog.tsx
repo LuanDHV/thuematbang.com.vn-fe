@@ -125,7 +125,11 @@ function AlertDialogAction({
   return (
     <AlertDialogPrimitive.Action
       data-slot="alert-dialog-action"
-      className={cn(buttonVariants({ variant: "destructive" }), className)}
+      className={cn(
+        buttonVariants({ variant: "destructive" }),
+        "border-red-200 bg-red-600 text-white shadow-[0_12px_28px_rgba(220,38,38,0.22)] hover:bg-red-700 hover:text-white",
+        className,
+      )}
       {...props}
     />
   );
