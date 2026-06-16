@@ -25,6 +25,11 @@ The frontend should stay readable when the product scales. That means keeping ow
 - `@tanstack/react-query` for client async state
 - server actions for browser-triggered mutations and selective browser-triggered reads
 
+Shared contract constants are split by responsibility:
+
+- `src/constants/enum-values.ts` for enum/value contracts used by schemas and actions
+- `src/constants/enum-options.ts` for UI labels and select options
+
 ## 3. Route Structure
 
 ```text
@@ -158,10 +163,16 @@ Shared components reused across multiple domains and routes, such as:
 ### File naming
 
 - `src/app/**` route files stay in Next.js route naming, such as `page.tsx`, `layout.tsx`, and `not-found.tsx`
-- `src/components/ui/**` primitives keep the shadcn lowercase filename style
-- reusable React component files under `src/components/**` use `PascalCase` when the file exports a component
-- utility, helper, and non-component support files can stay `kebab-case`
-- keep the file name aligned with the file role rather than forcing one naming style across every layer
+  - `src/components/ui/**` primitives keep the shadcn lowercase filename style
+  - reusable React component files under `src/components/**` use `PascalCase` when the file exports a component
+  - utility, helper, and non-component support files can stay `kebab-case`
+  - keep the file name aligned with the file role rather than forcing one naming style across every layer
+
+### CMS and listing forms
+
+- CMS CRUD forms should reuse shared shells and field primitives wherever possible
+- Property and rent request forms intentionally share the same base field blocks across public create, admin edit, and user edit variants
+- The homepage hero renders banners from the API as a slider, so banner data should stay API-driven rather than hardcoded in the page
 
 ## 6. Data Layer
 
