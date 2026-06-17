@@ -3,6 +3,7 @@
 import {
   PROPERTY_DIRECTION_VALUES,
   PROPERTY_PRIORITY_VALUES,
+  PRICE_UNIT_VALUES,
   PUBLISH_SOURCE_VALUES,
   PUBLISH_STATUS_VALUES,
   RENT_REQUEST_STATUS_VALUES,
@@ -97,13 +98,17 @@ export const propertyCreateFormSchema = z.object({
     positiveMessage: "Vui lòng chọn danh mục",
     integer: true,
   }),
-  price: requiredNumberSchema({
+  priceAmount: requiredNumberSchema({
     requiredMessage: "Vui lòng nhập giá",
     invalidMessage: "Giá không hợp lệ",
     positiveMessage: "Vui lòng nhập giá hợp lệ",
     max: Number.MAX_SAFE_INTEGER,
     maxMessage: "Giá không hợp lệ",
   }),
+  priceUnit: z.enum(PRICE_UNIT_VALUES, {
+    message: "Vui lòng chọn đơn vị giá",
+  }),
+  price: optionalNumberSchema,
   isNegotiable: z.boolean().default(false),
   area: requiredNumberSchema({
     requiredMessage: "Vui lòng nhập diện tích",
@@ -161,14 +166,17 @@ export const rentRequestCreateFormSchema = z.object({
     positiveMessage: "Vui lòng chọn danh mục",
     integer: true,
   }),
-  budget: requiredNumberSchema({
+  budgetAmount: requiredNumberSchema({
     requiredMessage: "Vui lòng nhập ngân sách",
     invalidMessage: "Ngân sách không hợp lệ",
     positiveMessage: "Vui lòng nhập ngân sách hợp lệ",
-    integer: true,
     max: Number.MAX_SAFE_INTEGER,
     maxMessage: "Ngân sách không hợp lệ",
   }),
+  budgetUnit: z.enum(PRICE_UNIT_VALUES, {
+    message: "Vui lòng chọn đơn vị giá",
+  }),
+  budget: optionalNumberSchema,
   desiredArea: requiredNumberSchema({
     requiredMessage: "Vui lòng nhập diện tích mong muốn",
     invalidMessage: "Diện tích không hợp lệ",

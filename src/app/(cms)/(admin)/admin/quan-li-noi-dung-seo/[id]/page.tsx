@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 
 import { updateSeoContentAction } from "@/actions/admin-crud.actions";
 import AdminSeoContentForm from "@/components/cms/admin/AdminSeoContentForm";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import type { PageValue } from "@/constants/enum-values";
 import { createPageMetadata } from "@/lib/metadata";
 import { seoContentService } from "@/services/seo-content.service";
@@ -35,9 +34,6 @@ export default async function AdminSeoContentEditPage({ params }: PageProps) {
 
   return (
     <section className="layout-container layout-section-sm">
-      <div className="mb-4">
-        <CmsBackLink href="/admin/quan-li-noi-dung-seo" />
-      </div>
       <AdminSeoContentForm
         submitAction={updateSeoContentAction.bind(null, seoContent.id)}
         title={`Chỉnh sửa nội dung SEO #${seoContent.id}`}

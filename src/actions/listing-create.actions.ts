@@ -13,12 +13,15 @@ export async function createPropertyAction(formData: FormData) {
     normalizePropertyPayload(formData),
   );
 
-  refreshCrudTags(["properties", "my-properties"], [
-    "/cho-thue",
-    "/dang-tin/cho-thue",
-    "/quan-li-tai-khoan/cho-thue",
-    "/admin/quan-li-tin-cho-thue",
-  ]);
+  refreshCrudTags(
+    ["properties", "my-properties"],
+    [
+      "/cho-thue",
+      "/dang-tin/cho-thue",
+      "/quan-li-tai-khoan/cho-thue",
+      "/admin/quan-li-tin-cho-thue",
+    ],
+  );
 
   return result;
 }
@@ -28,12 +31,15 @@ export async function createRentRequestAction(formData: FormData) {
     normalizeRentRequestPayload(formData),
   );
 
-  refreshCrudTags(["rent-requests", "my-rent-requests"], [
-    "/can-thue",
-    "/dang-tin/can-thue",
-    "/quan-li-tai-khoan/cau-thue",
-    "/admin/quan-li-tin-can-thue",
-  ]);
+  refreshCrudTags(
+    ["rent-requests", "my-rent-requests"],
+    [
+      "/can-thue",
+      "/dang-tin/can-thue",
+      "/quan-li-tai-khoan/cau-thue",
+      "/admin/quan-li-tin-can-thue",
+    ],
+  );
 
   return result;
 }

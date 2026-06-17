@@ -9,7 +9,7 @@ import {
   formatDate,
   formatLocationParts,
   formatNumber,
-  formatVndAmount,
+  formatListingPrice,
 } from "@/lib/format";
 import { Project } from "@/types/project";
 
@@ -88,7 +88,11 @@ export function ProjectCard({ project }: { project: Project }) {
             </span>
           ) : null}
           <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
-            {formatVndAmount(project.price, "Liên hệ")}
+            {formatListingPrice(project.price, {
+              fallback: "Liên hệ",
+              amount: project.priceAmount,
+              unit: project.priceUnit,
+            })}
           </p>
 
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">

@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { updateUserRoleAction } from "@/actions/admin-crud.actions";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import CmsFormPageShell from "@/components/cms/shared/CmsFormPageShell";
 import { USER_ROLE_OPTIONS } from "@/constants/enum-options";
 import { Button } from "@/components/ui/button";
@@ -37,8 +36,6 @@ export default async function AdminUserRolePage({ params }: PageProps) {
   return (
     <CmsFormPageShell>
       <div className="space-y-4">
-        <CmsBackLink href="/admin/quan-li-tai-khoan" />
-
         <div className="surface-panel overflow-hidden">
         <div className="border-hairline border-b px-4 py-4 md:px-5">
           <h1 className="text-heading text-lg font-semibold tracking-[-0.02em]">

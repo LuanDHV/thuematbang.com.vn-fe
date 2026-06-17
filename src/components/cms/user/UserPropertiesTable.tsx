@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { PROPERTY_PRIORITY_LABEL_MAP, PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
+import {
+  PROPERTY_PRIORITY_LABEL_MAP,
+  PUBLISH_STATUS_LABEL_MAP,
+} from "@/constants/enum-options";
 import { Copy, ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 
 import AdminPriorityBadge, {
@@ -34,7 +37,7 @@ import {
   formatNegotiablePrice,
 } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
-import type { PropertyPriority, PublishStatus } from "@/types/enums";
+import type { PropertyPriority } from "@/types/enums";
 import type { Property } from "@/types/property";
 
 type UserPropertiesTableProps = {
@@ -65,7 +68,11 @@ function PropertyActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label={`Tác vụ cho ${item.title}`}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Tác vụ cho ${item.title}`}
+        >
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -118,7 +125,7 @@ export default function UserPropertiesTable({
 
   return (
     <section className="surface-panel overflow-hidden">
-      <div className="border-b border-hairline px-4 py-4 md:px-5">
+      <div className="border-hairline border-b px-4 py-4 md:px-5">
         <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
           Tin cho thuê của tôi
         </h2>
@@ -156,29 +163,39 @@ export default function UserPropertiesTable({
                       <p className="text-secondary text-xs">{item.slug}</p>
                     </div>
                   </TableCell>
-                  <TableCell className="align-top text-sm text-body">
+                  <TableCell className="text-body align-top text-sm">
                     {item.category?.name || "Chưa có danh mục"}
                   </TableCell>
-                  <TableCell className="align-top text-sm text-body">
-                    {formatLocationParts([item.ward?.name, item.province?.name])}
+                  <TableCell className="text-body align-top text-sm">
+                    {formatLocationParts([
+                      item.ward?.name,
+                      item.province?.name,
+                    ])}
                   </TableCell>
-                  <TableCell className="align-top text-sm text-body">
-                    {formatNegotiablePrice(item.price, item.isNegotiable)}
+                  <TableCell className="text-body align-top text-sm">
+                    {formatNegotiablePrice(item.price, item.isNegotiable, {
+                      amount: item.priceAmount,
+                      unit: item.priceUnit,
+                    })}
                   </TableCell>
                   <TableCell className="align-top">
-                    <AdminPriorityBadge tone={priorityToneMap[item.priorityStatus]}>
+                    <AdminPriorityBadge
+                      tone={priorityToneMap[item.priorityStatus]}
+                    >
                       {PROPERTY_PRIORITY_LABEL_MAP[item.priorityStatus]}
                     </AdminPriorityBadge>
                   </TableCell>
                   <TableCell className="align-top">
-                    <AdminStatusBadge tone={publishStatusBadgeToneMap[item.status]}>
+                    <AdminStatusBadge
+                      tone={publishStatusBadgeToneMap[item.status]}
+                    >
                       {PUBLISH_STATUS_LABEL_MAP[item.status]}
                     </AdminStatusBadge>
                   </TableCell>
-                  <TableCell className="align-top text-sm text-body">
+                  <TableCell className="text-body align-top text-sm">
                     {formatDateDisplay(item.createdAt)}
                   </TableCell>
-                  <TableCell className="align-top text-right">
+                  <TableCell className="text-right align-top">
                     <div className="flex justify-end">
                       <PropertyActions
                         item={item}
@@ -215,5 +232,3 @@ export default function UserPropertiesTable({
     </section>
   );
 }
-
-

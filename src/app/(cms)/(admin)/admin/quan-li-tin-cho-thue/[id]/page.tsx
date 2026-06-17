@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 
 import { updatePropertyAction } from "@/actions/property.actions";
 import { PropertyCreateForm } from "@/components/listing-form/PropertyCreateForm";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import { mapPropertyImagesToGalleryImages } from "@/lib/listing/listing-form";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
@@ -49,9 +48,6 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
 
   return (
     <section className="layout-container layout-section-sm">
-      <div className="mb-4">
-        <CmsBackLink href="/admin/quan-li-tin-cho-thue" />
-      </div>
       <PropertyCreateForm
         categories={propertyCategories}
         provinces={provinces}
@@ -66,7 +62,8 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
           title: property.title,
           slug: property.slug,
           categoryId: property.categoryId,
-          price: property.price,
+          priceAmount: property.priceAmount ?? undefined,
+          priceUnit: property.priceUnit ?? "MILLION",
           isNegotiable: property.isNegotiable,
           area: property.area,
           bedrooms: property.bedrooms ?? undefined,

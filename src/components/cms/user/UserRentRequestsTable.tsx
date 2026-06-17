@@ -29,7 +29,7 @@ import {
   formatDateDisplay,
   formatLocationParts,
   formatAreaValue,
-  formatVndAmount,
+  formatListingPrice,
 } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
 import type { RentRequest } from "@/types/rent-request";
@@ -169,7 +169,11 @@ export default function UserRentRequestsTable({
                     ])}
                   </TableCell>
                   <TableCell className="align-top text-sm text-body">
-                    {formatVndAmount(item.budget, "Đang cập nhật")}
+                    {formatListingPrice(item.budget, {
+                      fallback: "Đang cập nhật",
+                      amount: item.budgetAmount,
+                      unit: item.budgetUnit,
+                    })}
                   </TableCell>
                   <TableCell className="align-top text-sm text-body">
                     {formatAreaValue(item.desiredArea)}

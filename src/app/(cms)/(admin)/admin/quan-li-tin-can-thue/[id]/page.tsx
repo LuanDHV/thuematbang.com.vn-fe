@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 
 import { updateRentRequestAction } from "@/actions/admin-crud.actions";
 import { RentRequestCreateForm } from "@/components/listing-form/RentRequestCreateForm";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";
@@ -48,9 +47,6 @@ export default async function AdminRentRequestEditPage({ params }: PageProps) {
 
   return (
     <section className="layout-container layout-section-sm">
-      <div className="mb-4">
-        <CmsBackLink href="/admin/quan-li-tin-can-thue" />
-      </div>
       <RentRequestCreateForm
         categories={categories}
         provinces={provinces}
@@ -64,7 +60,8 @@ export default async function AdminRentRequestEditPage({ params }: PageProps) {
           title: rentRequest.title,
           slug: rentRequest.slug,
           categoryId: rentRequest.categoryId,
-          budget: rentRequest.budget,
+          budgetAmount: rentRequest.budgetAmount ?? undefined,
+          budgetUnit: rentRequest.budgetUnit ?? "MILLION",
           desiredArea: rentRequest.desiredArea,
           bedrooms: rentRequest.bedrooms ?? undefined,
           bathrooms: rentRequest.bathrooms ?? undefined,

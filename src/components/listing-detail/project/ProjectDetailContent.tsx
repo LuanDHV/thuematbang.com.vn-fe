@@ -11,7 +11,7 @@ import {
   formatAreaValue,
   formatDate,
   formatNumber,
-  formatVndAmount,
+  formatListingPrice,
 } from "@/lib/format";
 import { Project } from "@/types/project";
 
@@ -86,7 +86,11 @@ export default function ProjectDetailContent({
             <div>
               <p className="text-secondary text-xs tracking-wide uppercase">Tổng mức đầu tư</p>
               <p className="text-heading text-sm font-semibold">
-                {formatVndAmount(project.price, "Liên hệ")}
+                {formatListingPrice(project.price, {
+                  fallback: "Liên hệ",
+                  amount: project.priceAmount,
+                  unit: project.priceUnit,
+                })}
               </p>
             </div>
           </div>

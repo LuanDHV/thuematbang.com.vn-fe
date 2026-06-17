@@ -1,5 +1,5 @@
 import { Category } from "./category";
-import { PropertyDirection, PublishStatus } from "./enums";
+import { PriceUnit, PropertyDirection, PublishStatus } from "./enums";
 import { Province, Ward } from "./location";
 import { User } from "./user";
 
@@ -12,6 +12,8 @@ export interface RentRequest {
   desiredProvinceId: number;
   desiredWardId: number | null;
   budget: number;
+  budgetAmount?: number | null;
+  budgetUnit?: PriceUnit | null;
   desiredArea: number;
   bedrooms?: number | null;
   bathrooms?: number | null;

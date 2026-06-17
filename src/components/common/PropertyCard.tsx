@@ -432,6 +432,8 @@ function CardBody({
       >
         {formatNegotiablePrice(property.price, property.isNegotiable, {
           fallback: "Liên hệ",
+          amount: property.priceAmount,
+          unit: property.priceUnit,
         })}
       </p>
 

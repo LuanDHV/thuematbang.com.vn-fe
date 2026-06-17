@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { PROPERTY_PRIORITY_LABEL_MAP, PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
+import {
+  PROPERTY_PRIORITY_LABEL_MAP,
+  PUBLISH_STATUS_LABEL_MAP,
+} from "@/constants/enum-options";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { deletePropertyAction } from "@/actions/property.actions";
@@ -16,13 +19,10 @@ import AdminDataTable, {
   type AdminTableToolbar,
 } from "@/components/cms/admin/DataTable";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
-import {
-  formatLocationParts,
-  formatNegotiablePrice,
-} from "@/lib/format";
+import { formatLocationParts, formatNegotiablePrice } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
-import type { PropertyPriority, PublishStatus } from "@/types/enums";
+import type { PropertyPriority } from "@/types/enums";
 import type { Property } from "@/types/property";
 
 type AdminPropertiesTableProps = {
@@ -108,7 +108,10 @@ export default function AdminPropertiesTable({
         header: "Giá",
         fieldType: "text",
         accessor: (property) =>
-          formatNegotiablePrice(property.price, property.isNegotiable),
+          formatNegotiablePrice(property.price, property.isNegotiable, {
+            amount: property.priceAmount,
+            unit: property.priceUnit,
+          }),
       },
       {
         key: "priorityStatus",
@@ -162,5 +165,3 @@ export default function AdminPropertiesTable({
     />
   );
 }
-
-

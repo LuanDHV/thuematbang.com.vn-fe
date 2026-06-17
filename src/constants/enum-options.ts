@@ -7,6 +7,7 @@ import type {
   PropertyPriority,
   PublishSource,
   PublishStatus,
+  PriceUnit,
   PurchaseType,
   UserRole,
 } from "@/types/enums";
@@ -22,6 +23,7 @@ import {
   PROPERTY_PRIORITY_VALUES,
   PUBLISH_SOURCE_VALUES,
   PUBLISH_STATUS_VALUES,
+  PRICE_UNIT_VALUES,
   PURCHASE_TYPE_VALUES,
   USER_ROLE_VALUES,
 } from "@/constants/enum-values";
@@ -68,6 +70,19 @@ export const PUBLISH_SOURCE_OPTIONS: EnumOption<PublishSource>[] =
 
     return { value, label: labels[value] };
   });
+
+export const PRICE_UNIT_OPTIONS: EnumOption<PriceUnit>[] = PRICE_UNIT_VALUES.map(
+  (value) => {
+    const labels: Record<PriceUnit, string> = {
+      MILLION: "Triệu",
+      BILLION: "Tỷ",
+      HUNDRED_THOUSAND_PER_M2: "Trăm nghìn/m²",
+      MILLION_PER_M2: "Triệu/m²",
+    };
+
+    return { value, label: labels[value] };
+  },
+);
 
 export const PUBLISH_STATUS_OPTIONS: EnumOption<PublishStatus>[] =
   PUBLISH_STATUS_VALUES.map((value) => {

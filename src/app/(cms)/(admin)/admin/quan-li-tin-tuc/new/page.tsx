@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { createNewsAction } from "@/actions/admin-crud.actions";
 import AdminNewsForm from "@/components/cms/admin/AdminNewsForm";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 
@@ -24,9 +23,6 @@ export default async function AdminNewsCreatePage() {
 
   return (
     <section className="layout-container layout-section-sm">
-      <div className="mb-4">
-        <CmsBackLink href="/admin/quan-li-tin-tuc" />
-      </div>
       <AdminNewsForm
         categories={categories}
         submitAction={createNewsAction}

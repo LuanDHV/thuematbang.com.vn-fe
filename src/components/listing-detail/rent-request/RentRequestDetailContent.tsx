@@ -16,7 +16,7 @@ import {
   formatDate,
   formatAreaValue,
   formatNumber,
-  formatVndAmount,
+  formatListingPrice,
 } from "@/lib/format";
 import { RentRequest } from "@/types/rent-request";
 
@@ -126,7 +126,11 @@ export default function RentRequestDetailContent({
                   Ngân sách
                 </p>
                 <p className="text-heading text-sm font-semibold">
-                  {formatVndAmount(rentRequest.budget, "Đang cập nhật")}
+                  {formatListingPrice(rentRequest.budget, {
+                    fallback: "Đang cập nhật",
+                    amount: rentRequest.budgetAmount,
+                    unit: rentRequest.budgetUnit,
+                  })}
                 </p>
               </div>
             </div>

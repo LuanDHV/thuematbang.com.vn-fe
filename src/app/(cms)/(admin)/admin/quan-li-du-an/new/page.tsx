@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { createProjectAction } from "@/actions/admin-crud.actions";
 import AdminProjectForm from "@/components/cms/admin/AdminProjectForm";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";
@@ -28,9 +27,6 @@ export default async function AdminProjectCreatePage() {
 
   return (
     <section className="layout-container layout-section-sm">
-      <div className="mb-4">
-        <CmsBackLink href="/admin/quan-li-du-an" />
-      </div>
       <AdminProjectForm
         categories={categories}
         provinces={provinces}

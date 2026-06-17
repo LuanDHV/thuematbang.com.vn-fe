@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { createRentRequestAction } from "@/actions/listing-create.actions";
 import { RentRequestCreateForm } from "@/components/listing-form/RentRequestCreateForm";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";
@@ -28,9 +27,6 @@ export default async function AdminRentRequestCreatePage() {
 
   return (
     <section className="layout-container layout-section-sm">
-      <div className="mb-4">
-        <CmsBackLink href="/admin/quan-li-tin-can-thue" />
-      </div>
       <RentRequestCreateForm
         categories={categories}
         provinces={provinces}

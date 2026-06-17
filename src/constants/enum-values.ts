@@ -7,6 +7,7 @@ import type {
   PropertyPriority,
   PublishSource,
   PublishStatus,
+  PriceUnit,
   PurchaseType,
   UserRole,
 } from "@/types/enums";
@@ -32,6 +33,13 @@ export const PUBLISH_SOURCE_VALUES = [
   "FREE_QUOTA",
   "PAID_PACKAGE",
 ] as const satisfies readonly PublishSource[];
+
+export const PRICE_UNIT_VALUES = [
+  "MILLION",
+  "BILLION",
+  "HUNDRED_THOUSAND_PER_M2",
+  "MILLION_PER_M2",
+] as const satisfies readonly PriceUnit[];
 
 export const PUBLISH_STATUS_VALUES = [
   "DRAFT",

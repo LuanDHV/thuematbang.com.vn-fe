@@ -4,6 +4,7 @@ import {
   CATEGORY_TYPE_VALUES,
   LEAD_STATUS_VALUES,
   PAGE_VALUES,
+  PRICE_UNIT_VALUES,
   PUBLISH_STATUS_VALUES,
 } from "@/constants/enum-values";
 
@@ -114,7 +115,9 @@ export const projectFormSchema = z.object({
   longitude: optionalNumberSchema,
   latitude: optionalNumberSchema,
   area: requiredNumberSchema,
-  price: requiredNumberSchema,
+  priceAmount: requiredNumberSchema,
+  priceUnit: z.enum(PRICE_UNIT_VALUES),
+  price: optionalNumberSchema,
   content: optionalTextSchema,
   status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
 });

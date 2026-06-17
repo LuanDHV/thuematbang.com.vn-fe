@@ -9,6 +9,7 @@ import { ListingCreateSuccessDialog } from "@/components/listing-form/ListingCre
 import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
+import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
@@ -52,6 +53,8 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
   title: "",
   slug: "",
   categoryId: undefined,
+  budgetAmount: undefined,
+  budgetUnit: "MILLION",
   budget: undefined,
   desiredArea: undefined,
   bedrooms: undefined,
@@ -159,7 +162,8 @@ export function RentRequestCreateForm({
     appendString(payload, "title", values.title);
     appendString(payload, "slug", buildListingSlug(values.title));
     appendNumber(payload, "categoryId", values.categoryId);
-    appendNumber(payload, "budget", values.budget);
+    appendNumber(payload, "budgetAmount", values.budgetAmount);
+    appendString(payload, "budgetUnit", values.budgetUnit);
     appendNumber(payload, "desiredArea", values.desiredArea);
     appendNumber(payload, "bedrooms", values.bedrooms);
     appendNumber(payload, "bathrooms", values.bathrooms);
@@ -245,17 +249,20 @@ export function RentRequestCreateForm({
           options={categoryOptions}
         />
 
+        <ListingPriceField
+          name="budget"
+          amountName="budgetAmount"
+          unitName="budgetUnit"
+          label="Ngân sách"
+          required
+          placeholder="Nhập ngân sách"
+          inputMode="numeric"
+          min={0}
+          step="1"
+          format="currency"
+        />
+
         <div className="grid gap-4 md:grid-cols-2">
-          <ListingNumberField
-            name="budget"
-            label="Ngân sách"
-            required
-            placeholder="Nhập ngân sách"
-            inputMode="numeric"
-            min={0}
-            step="1"
-            format="currency"
-          />
           <ListingNumberField
             name="desiredArea"
             label="Diện tích mong muốn"
@@ -266,7 +273,24 @@ export function RentRequestCreateForm({
             step="0.1"
             format="area"
           />
+
+          <ListingSelectField
+            name="desiredDirection"
+            label="Hướng mong muốn"
+            placeholder="Chọn hướng"
+            options={directionOptions}
+            allowEmptySelection
+          />
         </div>
+
+        <ListingLocationField
+          provinceName="desiredProvinceId"
+          wardName="desiredWardId"
+          provinces={provinces}
+          labelProvince="Khu vực mong muốn"
+          labelWard="Phường/xã mong muốn"
+          requiredProvince
+        />
 
         <div className="grid gap-4 md:grid-cols-3">
           <ListingNumberField
@@ -294,23 +318,6 @@ export function RentRequestCreateForm({
             step="1"
           />
         </div>
-
-        <ListingSelectField
-          name="desiredDirection"
-          label="Hướng mong muốn"
-          placeholder="Chọn hướng"
-          options={directionOptions}
-          allowEmptySelection
-        />
-
-        <ListingLocationField
-          provinceName="desiredProvinceId"
-          wardName="desiredWardId"
-          provinces={provinces}
-          labelProvince="Khu vực mong muốn"
-          labelWard="Phường/xã mong muốn"
-          requiredProvince
-        />
 
         {showAdminOnly ? (
           <ListingRichTextField

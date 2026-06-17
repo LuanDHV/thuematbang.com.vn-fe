@@ -1,9 +1,4 @@
 import { buildListingSlug } from "@/lib/listing/listing-slug";
-import {
-  PROPERTY_DIRECTION_VALUES,
-  PUBLISH_STATUS_VALUES,
-} from "@/constants/enum-values";
-import type { PropertyDirection, PublishStatus } from "@/types/enums";
 
 export function toPositiveId(id: string | number) {
   const parsedId = typeof id === "number" ? id : Number(id);
@@ -60,28 +55,6 @@ export function normalizeListingSlug(formData: FormData) {
   formData.set("slug", nextSlug);
 }
 
-export function normalizePropertyDirection(
-  value: FormDataEntryValue | null,
-): PropertyDirection | null {
-  const normalizedValue = String(value ?? "").trim();
-  if (!normalizedValue) return null;
-
-  return PROPERTY_DIRECTION_VALUES.includes(normalizedValue as PropertyDirection)
-    ? (normalizedValue as PropertyDirection)
-    : null;
-}
-
-export function normalizeRentRequestStatus(
-  value: FormDataEntryValue | null,
-): PublishStatus | undefined {
-  const normalizedValue = String(value ?? "").trim();
-  if (!normalizedValue) return undefined;
-
-  return PUBLISH_STATUS_VALUES.includes(normalizedValue as PublishStatus)
-    ? (normalizedValue as PublishStatus)
-    : undefined;
-}
-
 export function normalizePropertyPayload(formData: FormData) {
   const nextFormData = cloneFormData(formData);
   normalizeListingSlug(nextFormData);
@@ -109,51 +82,18 @@ export function normalizePropertyUpdateFormData(formData: FormData) {
 export function normalizeRentRequestPayload(formData: FormData) {
   const nextFormData = cloneFormData(formData);
   normalizeListingSlug(nextFormData);
+  const budgetAmountValue = Number(nextFormData.get("budgetAmount"));
+  const budgetValue = Number(nextFormData.get("budget"));
 
-  const title = String(nextFormData.get("title") ?? "").trim();
-  const slug = String(nextFormData.get("slug") ?? "").trim();
-  const categoryId = Number(nextFormData.get("categoryId"));
-  const budget = Number(nextFormData.get("budget"));
-  const desiredArea = Number(nextFormData.get("desiredArea"));
-  const bedrooms = Number(nextFormData.get("bedrooms"));
-  const bathrooms = Number(nextFormData.get("bathrooms"));
-  const floors = Number(nextFormData.get("floors"));
-  const desiredDirection = normalizePropertyDirection(
-    nextFormData.get("desiredDirection"),
-  );
-  const desiredProvinceId = Number(nextFormData.get("desiredProvinceId"));
-  const desiredWardId = Number(nextFormData.get("desiredWardId"));
-  const contactName = String(nextFormData.get("contactName") ?? "").trim();
-  const contactPhone = String(nextFormData.get("contactPhone") ?? "").trim();
-  const requirementText = String(
-    nextFormData.get("requirementText") ?? "",
-  ).trim();
-  const userIdValue = Number(nextFormData.get("userId"));
-  const status = normalizeRentRequestStatus(nextFormData.get("status"));
-  const isMatched =
-    nextFormData.get("isMatched") === "true" ||
-    nextFormData.get("isMatched") === "on" ||
-    nextFormData.get("isMatched") === "1";
+  if (!Number.isFinite(budgetAmountValue) && Number.isFinite(budgetValue)) {
+    nextFormData.set("budgetAmount", String(budgetValue / 1_000_000));
+  }
 
-  return {
-    title,
-    slug,
-    categoryId,
-    budget,
-    desiredArea,
-    bedrooms: Number.isFinite(bedrooms) ? bedrooms : undefined,
-    bathrooms: Number.isFinite(bathrooms) ? bathrooms : undefined,
-    floors: Number.isFinite(floors) ? floors : undefined,
-    desiredDirection,
-    desiredProvinceId,
-    desiredWardId,
-    contactName,
-    contactPhone,
-    requirementText: requirementText || undefined,
-    userId: Number.isFinite(userIdValue) ? userIdValue : undefined,
-    status,
-    isMatched,
-  };
+  if (!String(nextFormData.get("budgetUnit") ?? "").trim()) {
+    nextFormData.set("budgetUnit", "MILLION");
+  }
+
+  return nextFormData;
 }
 
 export function toOptionalNumber(value: unknown) {

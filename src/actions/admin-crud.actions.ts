@@ -13,6 +13,7 @@ import { userService } from "@/services/user.service";
 import { USER_ROLE_VALUES } from "@/constants/enum-values";
 import {
   normalizeBooleanField,
+  normalizeRentRequestPayload,
   normalizeSlugField,
   toPositiveId,
 } from "@/lib/form/form-normalize";
@@ -20,8 +21,6 @@ import { refreshCrudTags } from "@/lib/server/revalidate";
 import type {
   CategoryType,
   LeadStatus,
-  PropertyDirection,
-  PublishStatus,
   UserRole,
 } from "@/types/enums";
 
@@ -275,43 +274,10 @@ export async function updateRentRequestAction(
   payload: FormData,
 ) {
   const rentRequestId = toPositiveId(id);
-  normalizeSlugField(payload, "title", "slug");
-  const userIdValue = Number(payload.get("userId"));
-  const statusValue = String(payload.get("status") ?? "").trim();
-  const isMatchedValue = String(payload.get("isMatched") ?? "").trim();
-  const result = await rentRequestService.update(rentRequestId, {
-    title: String(payload.get("title") ?? "").trim(),
-    slug: String(payload.get("slug") ?? "").trim(),
-    categoryId: Number(payload.get("categoryId")),
-    budget: Number(payload.get("budget")),
-    desiredArea: Number(payload.get("desiredArea")),
-    bedrooms: Number.isFinite(Number(payload.get("bedrooms")))
-      ? Number(payload.get("bedrooms"))
-      : undefined,
-    bathrooms: Number.isFinite(Number(payload.get("bathrooms")))
-      ? Number(payload.get("bathrooms"))
-      : undefined,
-    floors: Number.isFinite(Number(payload.get("floors")))
-      ? Number(payload.get("floors"))
-      : undefined,
-    desiredProvinceId: Number(payload.get("desiredProvinceId")),
-    desiredWardId: Number(payload.get("desiredWardId")),
-    contactName: String(payload.get("contactName") ?? "").trim(),
-    contactPhone: String(payload.get("contactPhone") ?? "").trim(),
-    requirementText:
-      String(payload.get("requirementText") ?? "").trim() || undefined,
-    userId: Number.isFinite(userIdValue) ? userIdValue : undefined,
-    status: statusValue ? (statusValue as PublishStatus) : undefined,
-    isMatched:
-      isMatchedValue === "true" ||
-      isMatchedValue === "on" ||
-      isMatchedValue === "1",
-    desiredDirection: String(payload.get("desiredDirection") ?? "").trim()
-      ? (String(
-          payload.get("desiredDirection") ?? "",
-        ).trim() as PropertyDirection)
-      : null,
-  });
+  const result = await rentRequestService.update(
+    rentRequestId,
+    normalizeRentRequestPayload(payload),
+  );
   refreshCrudTags(
     ["rent-requests", "rent-request-detail", "my-rent-requests"],
     ["/admin/quan-li-tin-can-thue", "/quan-li-tai-khoan/cau-thue"],

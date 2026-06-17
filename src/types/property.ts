@@ -10,6 +10,7 @@ import { Lead } from "./lead";
 import { Province, Ward } from "./location";
 import { PropertyImage } from "./media";
 import { User } from "./user";
+import { PriceUnit } from "./enums";
 
 export interface Property {
   id: number;
@@ -18,6 +19,8 @@ export interface Property {
   slug: string;
   categoryId: number;
   price: number;
+  priceAmount?: number | null;
+  priceUnit?: PriceUnit | null;
   isNegotiable: boolean;
   area: number;
   direction?: PropertyDirection | null;

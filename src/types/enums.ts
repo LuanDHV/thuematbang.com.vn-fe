@@ -35,3 +35,9 @@ export type PurchaseType = "PROPERTY_POST_PACKAGE" | "PROPERTY_BOOST";
 export type OrderStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELED";
 
 export type PublishSource = "FREE_QUOTA" | "PAID_PACKAGE";
+
+export type PriceUnit =
+  | "MILLION"
+  | "BILLION"
+  | "HUNDRED_THOUSAND_PER_M2"
+  | "MILLION_PER_M2";

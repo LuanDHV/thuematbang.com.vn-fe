@@ -10,6 +10,7 @@ import {
 } from "@/components/listing-form/ListingImageGalleryField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
+import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
@@ -45,6 +46,8 @@ const DEFAULT_VALUES: Partial<ProjectFormValues> = {
   longitude: undefined,
   latitude: undefined,
   area: undefined,
+  priceAmount: undefined,
+  priceUnit: "MILLION",
   price: undefined,
   content: "",
   status: "DRAFT",
@@ -152,7 +155,8 @@ export default function AdminProjectForm({
     appendNumber(payload, "longitude", values.longitude);
     appendNumber(payload, "latitude", values.latitude);
     appendNumber(payload, "area", values.area);
-    appendNumber(payload, "price", values.price);
+    appendNumber(payload, "priceAmount", values.priceAmount);
+    appendString(payload, "priceUnit", values.priceUnit);
     appendString(payload, "content", values.content);
     appendString(payload, "status", values.status);
 
@@ -215,8 +219,10 @@ export default function AdminProjectForm({
           step="0.1"
           format="area"
         />
-        <ListingNumberField
+        <ListingPriceField
           name="price"
+          amountName="priceAmount"
+          unitName="priceUnit"
           label="Giá"
           required
           inputMode="numeric"

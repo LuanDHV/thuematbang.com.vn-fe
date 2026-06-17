@@ -18,7 +18,7 @@ import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
   formatAreaValue,
   formatLocationParts,
-  formatVndAmount,
+  formatListingPrice,
 } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
 import type { PublishStatus } from "@/types/enums";
@@ -100,7 +100,12 @@ export default function AdminRentRequestsTable({
         key: "budget",
         header: "Ngân sách",
         fieldType: "text",
-        accessor: (item) => formatVndAmount(item.budget, "Đang cập nhật"),
+        accessor: (item) =>
+          formatListingPrice(item.budget, {
+            fallback: "Đang cập nhật",
+            amount: item.budgetAmount,
+            unit: item.budgetUnit,
+          }),
       },
       {
         key: "desiredArea",

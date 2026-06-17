@@ -122,6 +122,8 @@ export default function PropertyDetailContent({
               <p className="text-heading text-sm font-semibold">
                 {formatNegotiablePrice(property.price, property.isNegotiable, {
                   fallback: "Liên hệ",
+                  amount: property.priceAmount,
+                  unit: property.priceUnit,
                 })}
               </p>
             </div>

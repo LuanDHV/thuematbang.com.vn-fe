@@ -10,6 +10,7 @@ import { ListingCreateSuccessDialog } from "@/components/listing-form/ListingCre
 import { ListingImageGalleryField } from "@/components/listing-form/ListingImageGalleryField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
+import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
@@ -69,6 +70,8 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   title: "",
   slug: "",
   categoryId: undefined,
+  priceAmount: undefined,
+  priceUnit: "MILLION",
   price: undefined,
   isNegotiable: false,
   area: undefined,
@@ -222,7 +225,8 @@ export function PropertyCreateForm({
     appendString(payload, "title", values.title);
     appendString(payload, "slug", buildListingSlug(values.title));
     appendNumber(payload, "categoryId", values.categoryId);
-    appendNumber(payload, "price", values.price);
+    appendNumber(payload, "priceAmount", values.priceAmount);
+    appendString(payload, "priceUnit", values.priceUnit);
     appendBoolean(payload, "isNegotiable", Boolean(values.isNegotiable));
     appendNumber(payload, "area", values.area);
     appendNumber(payload, "bedrooms", values.bedrooms);
@@ -341,17 +345,26 @@ export function PropertyCreateForm({
           options={categoryOptions}
         />
 
+        <ListingPriceField
+          name="price"
+          amountName="priceAmount"
+          unitName="priceUnit"
+          label="Giá"
+          required
+          placeholder="Nhập giá"
+          inputMode="numeric"
+          min={0}
+          step="1"
+          format="currency"
+        />
+
+        <ListingCheckboxField
+          name="isNegotiable"
+          label="Thương lượng"
+          description="Đánh dấu nếu giá có thể trao đổi thêm"
+        />
+
         <div className="grid gap-4 md:grid-cols-2">
-          <ListingNumberField
-            name="price"
-            label="Giá"
-            required
-            placeholder="Nhập giá"
-            inputMode="numeric"
-            min={0}
-            step="1"
-            format="currency"
-          />
           <ListingNumberField
             name="area"
             label="Diện tích"
@@ -362,12 +375,25 @@ export function PropertyCreateForm({
             step="0.1"
             format="area"
           />
+          <ListingSelectField
+            name="direction"
+            label="Hướng"
+            placeholder="Chọn hướng"
+            options={directionOptions}
+            allowEmptySelection
+          />
         </div>
+        <ListingLocationField
+          provinceName="provinceId"
+          wardName="wardId"
+          provinces={provinces}
+          requiredProvince
+        />
 
-        <ListingCheckboxField
-          name="isNegotiable"
-          label="Thương lượng"
-          description="Đánh dấu nếu giá có thể trao đổi thêm"
+        <ListingTextField
+          name="addressDetail"
+          label="Địa chỉ chi tiết"
+          placeholder="Số nhà, tên tòa nhà, hẻm..."
         />
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -396,27 +422,6 @@ export function PropertyCreateForm({
             step="1"
           />
         </div>
-
-        <ListingSelectField
-          name="direction"
-          label="Hướng"
-          placeholder="Chọn hướng"
-          options={directionOptions}
-          allowEmptySelection
-        />
-
-        <ListingLocationField
-          provinceName="provinceId"
-          wardName="wardId"
-          provinces={provinces}
-          requiredProvince
-        />
-
-        <ListingTextField
-          name="addressDetail"
-          label="Địa chỉ chi tiết"
-          placeholder="Số nhà, tên tòa nhà, hẻm..."
-        />
 
         {showAdminOnly ? (
           <ListingRichTextField

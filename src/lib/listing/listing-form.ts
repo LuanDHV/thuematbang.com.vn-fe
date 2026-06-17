@@ -7,6 +7,23 @@ import type {
 import type { Property } from "@/types/property";
 import { toOptionalNumber } from "@/lib/form/form-normalize";
 
+function derivePriceAmount(
+  amount?: number | null,
+  legacyPrice?: number | null,
+) {
+  const normalizedAmount = toOptionalNumber(amount);
+  if (typeof normalizedAmount === "number") {
+    return normalizedAmount;
+  }
+
+  const normalizedLegacyPrice = toOptionalNumber(legacyPrice);
+  if (typeof normalizedLegacyPrice === "number") {
+    return normalizedLegacyPrice / 1_000_000;
+  }
+
+  return undefined;
+}
+
 export function normalizeGalleryImages(
   images?: ExistingGalleryImage[] | null,
 ): ExistingGalleryImage[] {
@@ -46,6 +63,10 @@ export function normalizePropertyCreateDefaults(
   return {
     ...defaultValues,
     categoryId: toOptionalNumber(defaultValues.categoryId),
+    priceAmount: derivePriceAmount(
+      defaultValues.priceAmount,
+      defaultValues.price,
+    ),
     price: toOptionalNumber(defaultValues.price),
     area: toOptionalNumber(defaultValues.area),
     bedrooms: toOptionalNumber(defaultValues.bedrooms),
@@ -75,6 +96,10 @@ export function normalizeProjectFormDefaults(
     longitude: toOptionalNumber(defaultValues.longitude),
     latitude: toOptionalNumber(defaultValues.latitude),
     area: toOptionalNumber(defaultValues.area),
+    priceAmount: derivePriceAmount(
+      defaultValues.priceAmount,
+      defaultValues.price,
+    ),
     price: toOptionalNumber(defaultValues.price),
   };
 }
@@ -89,6 +114,10 @@ export function normalizeRentRequestFormDefaults(
   return {
     ...defaultValues,
     categoryId: toOptionalNumber(defaultValues.categoryId),
+    budgetAmount: derivePriceAmount(
+      defaultValues.budgetAmount,
+      defaultValues.budget,
+    ),
     budget: toOptionalNumber(defaultValues.budget),
     desiredArea: toOptionalNumber(defaultValues.desiredArea),
     bedrooms: toOptionalNumber(defaultValues.bedrooms),

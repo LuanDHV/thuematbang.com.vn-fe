@@ -1,5 +1,5 @@
 import { Category } from "./category";
-import { PublishStatus } from "./enums";
+import { PriceUnit, PublishStatus } from "./enums";
 import { Province, Ward } from "./location";
 import { ProjectImage } from "./media";
 
@@ -16,6 +16,8 @@ export interface Project {
   latitude?: number | null;
   area?: number | null;
   price?: number | null;
+  priceAmount?: number | null;
+  priceUnit?: PriceUnit | null;
   content?: string | null;
   viewCount: number;
   status: PublishStatus;

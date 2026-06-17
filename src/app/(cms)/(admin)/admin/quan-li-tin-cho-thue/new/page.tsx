@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { createPropertyAction } from "@/actions/listing-create.actions";
 import { PropertyCreateForm } from "@/components/listing-form/PropertyCreateForm";
-import CmsBackLink from "@/components/cms/shared/CmsBackLink";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";
@@ -28,9 +27,6 @@ export default async function AdminPropertyCreatePage() {
 
   return (
     <section className="layout-container layout-section-sm">
-      <div className="mb-4">
-        <CmsBackLink href="/admin/quan-li-tin-cho-thue" />
-      </div>
       <PropertyCreateForm
         categories={propertyCategories}
         provinces={provinces}

@@ -1,3 +1,5 @@
+import type { PriceUnit } from "@/types/enums";
+
 const VI_LOCALE = "vi-VN";
 const DEFAULT_DAY_MONTH_YEAR_FORMAT: Intl.DateTimeFormatOptions = {
   day: "2-digit",
@@ -24,6 +26,20 @@ type RangeOptions = {
 };
 
 type NumericLike = bigint | number | string;
+
+const PRICE_UNIT_LABELS: Record<PriceUnit, string> = {
+  MILLION: "Triệu",
+  BILLION: "Tỷ",
+  HUNDRED_THOUSAND_PER_M2: "Trăm nghìn/m²",
+  MILLION_PER_M2: "Triệu/m²",
+};
+
+const LISTING_PRICE_UNIT_LABELS: Record<PriceUnit, string> = {
+  MILLION: "Triệu",
+  BILLION: "Tỷ",
+  HUNDRED_THOUSAND_PER_M2: "Trăm nghìn/m2",
+  MILLION_PER_M2: "Triệu/m2",
+};
 
 // Normalize loose backend values once so the public formatters can stay small.
 function toNumber(value?: NumericLike | null) {
@@ -119,6 +135,31 @@ function formatNumberValue(
 function formatVndNumber(value: number) {
   const formatted = formatNumberValue(value, DEFAULT_VND_NUMBER_FORMAT);
   return formatted ? `${formatted} đ` : "";
+}
+
+function formatPriceAmount(value: number) {
+  const formatted = formatNumberValue(value, { maximumFractionDigits: 2 });
+  return formatted ?? "";
+}
+
+function formatPriceAmountWithUnit(
+  amount: NumericLike | null,
+  unit: PriceUnit,
+  options?: {
+    fallback?: string;
+  },
+) {
+  const normalizedAmount = toNumber(amount);
+  if (typeof normalizedAmount !== "number") {
+    return options?.fallback ?? "";
+  }
+
+  const formattedAmount = formatPriceAmount(normalizedAmount);
+  if (!formattedAmount) {
+    return options?.fallback ?? "";
+  }
+
+  return `${formattedAmount} ${LISTING_PRICE_UNIT_LABELS[unit] ?? PRICE_UNIT_LABELS[unit]}`;
 }
 
 // Share one range formatter for both money and area display helpers.
@@ -226,10 +267,41 @@ export function formatNegotiablePrice(
   options?: {
     fallback?: string;
     negotiableLabel?: string;
+    amount?: NumericLike | null;
+    unit?: PriceUnit | null;
   },
 ) {
   if (isNegotiable) {
     return options?.negotiableLabel ?? "Thỏa thuận";
+  }
+
+  if (typeof options?.amount !== "undefined" && options?.unit) {
+    return formatPriceAmountWithUnit(options.amount, options.unit, {
+      fallback: options?.fallback,
+    });
+  }
+
+  return formatVndAmount(value, options?.fallback);
+}
+
+export function formatListingPrice(
+  value?: NumericLike | null,
+  options?: {
+    fallback?: string;
+    amount?: NumericLike | null;
+    unit?: PriceUnit | null;
+    negotiable?: boolean;
+    negotiableLabel?: string;
+  },
+) {
+  if (options?.negotiable) {
+    return options.negotiableLabel ?? "Thỏa thuận";
+  }
+
+  if (typeof options?.amount !== "undefined" && options?.unit) {
+    return formatPriceAmountWithUnit(options.amount, options.unit, {
+      fallback: options?.fallback,
+    });
   }
 
   return formatVndAmount(value, options?.fallback);

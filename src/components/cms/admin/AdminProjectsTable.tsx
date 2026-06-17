@@ -12,13 +12,9 @@ import AdminStatusBadge, {
 } from "@/components/cms/admin/AdminStatusBadge";
 import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
-import {
-  formatLocationParts,
-  formatVndAmount,
-} from "@/lib/format";
+import { formatLocationParts, formatListingPrice } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
-import type { PublishStatus } from "@/types/enums";
 import type { Project } from "@/types/project";
 import AdminEntityCell from "./AdminEntityCell";
 
@@ -97,7 +93,11 @@ export default function AdminProjectsTable({
         key: "price",
         header: "Giá",
         fieldType: "text",
-        accessor: (item) => formatVndAmount(item.price),
+        accessor: (item) =>
+          formatListingPrice(item.price, {
+            amount: item.priceAmount,
+            unit: item.priceUnit,
+          }),
       },
       {
         key: "status",
@@ -140,5 +140,3 @@ export default function AdminProjectsTable({
     />
   );
 }
-
-

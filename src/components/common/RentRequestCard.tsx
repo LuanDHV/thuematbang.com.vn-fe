@@ -8,7 +8,7 @@ import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
   formatDate,
   formatAreaValue,
-  formatVndAmount,
+  formatListingPrice,
   formatLocationParts,
   formatNumber,
 } from "@/lib/format";
@@ -84,7 +84,11 @@ export function RentRequestCard({
             </span>
           ) : null}
           <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
-            {formatVndAmount(request.budget, "Đang cập nhật")}
+            {formatListingPrice(request.budget, {
+              fallback: "Đang cập nhật",
+              amount: request.budgetAmount,
+              unit: request.budgetUnit,
+            })}
           </p>
 
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">
