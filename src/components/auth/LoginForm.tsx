@@ -74,7 +74,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden border-hairline p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+      <Card className="border-hairline overflow-hidden p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="bg-surface relative hidden md:block">
             <Image
@@ -89,7 +89,7 @@ export function LoginForm({
 
           <form
             onSubmit={onSubmit}
-            className="flex flex-col justify-center bg-surface p-8 md:p-12"
+            className="bg-surface flex flex-col justify-center p-8 md:p-12"
           >
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
@@ -118,7 +118,7 @@ export function LoginForm({
                   {...register("identifier")}
                 />
                 {errors.identifier?.message ? (
-                  <p className="text-sm text-danger">
+                  <p className="text-danger text-sm">
                     {errors.identifier.message}
                   </p>
                 ) : null}
@@ -148,7 +148,7 @@ export function LoginForm({
                   {...register("password")}
                 />
                 {errors.password?.message ? (
-                  <p className="text-sm text-danger">
+                  <p className="text-danger text-sm">
                     {errors.password.message}
                   </p>
                 ) : null}
@@ -167,14 +167,14 @@ export function LoginForm({
               </Field>
 
               {loginMutation.error ? (
-                <p className="text-center text-sm text-danger">
+                <p className="text-danger text-center text-sm">
                   Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.
                 </p>
               ) : null}
 
               {isAdminVariant ? null : (
                 <>
-                  <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary mb-1 py-2 *:data-[slot=field-separator-content]:bg-surface *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
+                  <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary *:data-[slot=field-separator-content]:bg-surface mb-1 py-2 *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
                     Hoặc
                   </FieldSeparator>
 

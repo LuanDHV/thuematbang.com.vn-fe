@@ -247,15 +247,15 @@ export function PropertyCreateForm({
       images: uploadedImages,
     };
     const payload: PropertyUpsertPayload =
-      mode === "public-create"
-        ? basePayload
-        : {
+      existingImages && existingImages.length > 0
+        ? {
             ...basePayload,
             removeImageIds: removedImageIds,
             orderedExistingImageIds: existingGalleryImages.map(
               (image) => image.id,
             ),
-          };
+          }
+        : basePayload;
 
     try {
       const createdProperty = await submitAction(payload);
