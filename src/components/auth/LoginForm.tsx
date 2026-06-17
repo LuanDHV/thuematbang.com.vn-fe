@@ -79,7 +79,7 @@ export function LoginForm({
           <div className="bg-surface relative hidden md:block">
             <Image
               src="/imgs/wallpaper-2.jpg"
-              alt="H�nh n?n dang nh?p"
+              alt="Hình nền đăng nhập"
               fill
               sizes="(min-width: 768px) 50vw, 0px"
               className="absolute inset-0 h-full w-full object-cover"
@@ -94,12 +94,12 @@ export function LoginForm({
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
                 <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
-                  {isAdminVariant ? "�ang nh?p qu?n tr?" : "Ch�o m?ng tr? l?i"}
+                  {isAdminVariant ? "Đăng nhập quản trị" : "Chào mừng trở lại"}
                 </h1>
                 <p className="text-secondary text-sm leading-7">
                   {isAdminVariant
-                    ? "Ch? t�i kho?n qu?n tr? m?i c� th? v�o khu v?c admin."
-                    : "Vui l�ng nh?p th�ng tin d? dang nh?p v�o t�i kho?n"}
+                    ? "Chỉ tài khoản quản trị mới có thể vào khu vực admin."
+                    : "Vui lòng nhập thông tin để đăng nhập vào tài khoản"}
                 </p>
               </div>
 
@@ -108,13 +108,13 @@ export function LoginForm({
                   htmlFor="identifier"
                   className="text-heading font-semibold"
                 >
-                  S�T ho?c email
+                  Số điện thoại hoặc email
                 </FieldLabel>
                 <Input
                   id="identifier"
                   type="text"
                   autoComplete="username"
-                  placeholder="S�T ho?c email"
+                  placeholder="Số điện thoại hoặc email"
                   {...register("identifier")}
                 />
                 {errors.identifier?.message ? (
@@ -130,20 +130,20 @@ export function LoginForm({
                     htmlFor="password"
                     className="text-heading font-semibold"
                   >
-                    M?t kh?u
+                    Mật khẩu
                   </FieldLabel>
                   {/*
                   <Link
                     href="/quen-mat-khau"
                     className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
                   >
-                    Qu�n m?t kh?u?
+                    Quên mật khẩu?
                   </Link>
                   */}
                 </div>
                 <PasswordInput
                   id="password"
-                  placeholder="M?t kh?u"
+                  placeholder="Mật khẩu"
                   autoComplete="current-password"
                   {...register("password")}
                 />
@@ -161,21 +161,21 @@ export function LoginForm({
                   className="h-11 w-full"
                 >
                   {isSubmitting || loginMutation.isPending
-                    ? "�ang dang nh?p..."
-                    : "�ang nh?p"}
+                    ? "Đang đăng nhập..."
+                    : "Đăng nhập"}
                 </Button>
               </Field>
 
               {loginMutation.error ? (
                 <p className="text-center text-sm text-red-500">
-                  �ang nh?p th?t b?i. Vui l�ng ki?m tra l?i th�ng tin.
+                  Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.
                 </p>
               ) : null}
 
               {isAdminVariant ? null : (
                 <>
                   <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary mb-1 py-2 *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
-                    Ho?c
+                    Hoặc
                   </FieldSeparator>
 
                   <Field>
@@ -196,18 +196,18 @@ export function LoginForm({
                             fill="currentColor"
                           />
                         </svg>
-                        �ang nh?p v?i Google
+                        Đăng nhập với Google
                       </a>
                     </Button>
                   </Field>
 
                   <div className="text-secondary mt-4 text-center text-sm">
-                    Chua c� t�i kho?n?{" "}
+                    Chưa có tài khoản?{" "}
                     <Link
                       href="/dang-ky"
                       className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
                     >
-                      �ang k�
+                      Đăng ký
                     </Link>
                   </div>
                 </>
@@ -219,4 +219,3 @@ export function LoginForm({
     </div>
   );
 }
-
