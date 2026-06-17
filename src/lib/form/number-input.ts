@@ -49,9 +49,12 @@ export function toRawNumberString(
 ) {
   if (typeof value !== "number" || Number.isNaN(value)) return "";
 
-  const maximumFractionDigits = format === "area" ? 2 : 0;
-  return value.toLocaleString("en-US", {
-    useGrouping: false,
-    maximumFractionDigits,
-  });
+  if (format === "area") {
+    return value.toLocaleString("en-US", {
+      useGrouping: false,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  return value.toString();
 }
