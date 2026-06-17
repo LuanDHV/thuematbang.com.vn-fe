@@ -136,6 +136,13 @@ export default function AdminRentRequestsTable({
         ),
       },
       {
+        key: "viewCount",
+        header: "Lượt xem",
+        fieldType: "number",
+        accessor: (item) => item.viewCount,
+        mobileHidden: true,
+      },
+      {
         key: "createdAt",
         header: "Ngày tạo",
         fieldType: "date",

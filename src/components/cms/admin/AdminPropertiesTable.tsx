@@ -136,6 +136,13 @@ export default function AdminPropertiesTable({
         ),
       },
       {
+        key: "viewCount",
+        header: "Lượt xem",
+        fieldType: "number",
+        accessor: (property) => property.viewCount,
+        mobileHidden: true,
+      },
+      {
         key: "createdAt",
         header: "Ngày tạo",
         fieldType: "date",

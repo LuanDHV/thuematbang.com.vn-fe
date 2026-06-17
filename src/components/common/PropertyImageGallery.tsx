@@ -1,7 +1,8 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 
@@ -16,29 +17,102 @@ export default function PropertyImageGallery({
 }: PropertyImageGalleryProps) {
   const safeImages = useMemo(() => images.filter(Boolean), [images]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState(0);
+  const preloadedImagesRef = useRef(new Set<string>());
+  const prefersReducedMotion = useReducedMotion();
 
   const activeImage =
     safeImages[activeIndex] || safeImages[0] || "/imgs/wallpaper-1.jpg";
 
+  useEffect(() => {
+    if (safeImages.length <= 1 || typeof window === "undefined") return;
+
+    const preload = (src: string | undefined) => {
+      if (!src || preloadedImagesRef.current.has(src)) return;
+      preloadedImagesRef.current.add(src);
+      const image = new window.Image();
+      image.src = src;
+    };
+
+    preload(safeImages[0]);
+    preload(safeImages[activeIndex + 1]);
+    preload(safeImages[activeIndex - 1]);
+  }, [activeIndex, safeImages]);
+
   const goPrev = () => {
+    setSlideDirection(-1);
     setActiveIndex((prev) => (prev === 0 ? safeImages.length - 1 : prev - 1));
   };
 
   const goNext = () => {
+    setSlideDirection(1);
     setActiveIndex((prev) => (prev === safeImages.length - 1 ? 0 : prev + 1));
   };
+
+  const goToIndex = (index: number) => {
+    if (index === activeIndex) return;
+    setSlideDirection(index > activeIndex ? 1 : -1);
+    setActiveIndex(index);
+  };
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: prefersReducedMotion ? 0 : direction > 0 ? 28 : -28,
+      opacity: 0,
+      scale: prefersReducedMotion ? 1 : 1.02,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+    },
+    exit: (direction: number) => ({
+      x: prefersReducedMotion ? 0 : direction > 0 ? -28 : 28,
+      opacity: 0,
+      scale: prefersReducedMotion ? 1 : 1.02,
+    }),
+  } as const;
 
   return (
     <div>
       <div className="relative h-64 overflow-hidden rounded-2xl bg-surface-alt lg:h-96">
         <CloudinaryImage
           src={activeImage}
-          alt={title}
+          alt=""
           fill
+          aria-hidden
           sizes="(max-width: 1024px) 100vw, 66vw"
-          cldQuality="auto:best"
-          className="object-cover"
+          cldQuality="auto:good"
+          className="pointer-events-none scale-110 object-cover blur-2xl opacity-70"
         />
+        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.2)] via-transparent to-transparent" />
+
+        <AnimatePresence initial={false} custom={slideDirection} mode="sync">
+          <motion.div
+            key={activeImage}
+            custom={slideDirection}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              duration: prefersReducedMotion ? 0 : 0.45,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute inset-0"
+          >
+            <CloudinaryImage
+              src={activeImage}
+              alt={title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 66vw"
+              cldQuality="auto:best"
+              priority={activeIndex === 0}
+              className="object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
+
         {safeImages.length > 1 ? (
           <>
             <button
@@ -69,7 +143,7 @@ export default function PropertyImageGallery({
           <button
             key={`${image}-${index}`}
             type="button"
-            onClick={() => setActiveIndex(index)}
+            onClick={() => goToIndex(index)}
             className={`relative h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded-lg ${index === activeIndex ? "ring-primary ring-2" : "ring-1 ring-hairline"}`}
             aria-label={`Xem ảnh ${index + 1}`}
           >
