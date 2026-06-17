@@ -1,9 +1,6 @@
 "use server";
 
-import {
-  normalizePropertyUpdateFormData,
-  toPositiveId,
-} from "@/lib/form/form-normalize";
+import { toPositiveId } from "@/lib/form/form-normalize";
 import { refreshCrudTags } from "@/lib/server/revalidate";
 import { propertyService } from "@/services/property.service";
 
@@ -19,13 +16,10 @@ export async function deletePropertyAction(id: string | number) {
 
 export async function updatePropertyAction(
   id: string | number,
-  formData: FormData,
+  payload: Parameters<typeof propertyService.update>[1],
 ) {
   const propertyId = toPositiveId(id);
-  const result = await propertyService.update(
-    propertyId,
-    normalizePropertyUpdateFormData(formData),
-  );
+  const result = await propertyService.update(propertyId, payload);
 
   // Update mutations should refresh both the admin list and the edit page shell.
   refreshCrudTags(["properties", "my-properties", "property-detail"], [

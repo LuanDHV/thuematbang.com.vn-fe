@@ -3,6 +3,7 @@ import "server-only";
 import { Banner } from "@/types/banner";
 import { requestServerApi } from "./shared/server-api-client";
 import { buildListPath } from "./shared/list-service";
+import { type BannerFormValues } from "@/schemas/admin-crud.schema";
 
 export type BannerListFilters = {
   q?: string;
@@ -19,7 +20,10 @@ export type BannerByPageResponse = {
   banners: Banner[];
 };
 
-export type BannerUpsertPayload = FormData;
+export type BannerUpsertPayload = BannerFormValues & {
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
+};
 
 export const bannersService = {
   getPublicByPage: async (page: string) =>
@@ -54,7 +58,10 @@ export const bannersService = {
     const response = await requestServerApi<Banner>("/banners", {
       method: "POST",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },
@@ -63,7 +70,10 @@ export const bannersService = {
     const response = await requestServerApi<Banner>(`/banners/${id}`, {
       method: "PATCH",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },

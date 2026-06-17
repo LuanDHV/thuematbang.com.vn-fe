@@ -50,6 +50,7 @@ export default async function AdminNewsEditPage({ params }: PageProps) {
         description="Cập nhật nội dung bài viết tin tức."
         submitLabel="Lưu thay đổi"
         existingImageUrl={news.imageUrl}
+        existingImagePublicId={news.imagePublicId ?? null}
         imageRequired={false}
         defaultValues={{
           categoryId: news.categoryId,

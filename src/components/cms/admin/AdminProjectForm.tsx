@@ -1,39 +1,33 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
-import {
-  ListingImageGalleryField,
-} from "@/components/listing-form/ListingImageGalleryField";
+import { ListingImageGalleryField } from "@/components/listing-form/ListingImageGalleryField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
-import {
-  appendNumber,
-  appendNumberArray,
-  appendString,
-} from "@/lib/form/form-payload";
+import { useToast } from "@/components/ui/use-toast";
+import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
 import {
   normalizeGalleryImages,
   normalizeProjectFormDefaults,
 } from "@/lib/listing/listing-form";
-import { buildListingSlug } from "@/lib/listing/listing-slug";
-import { useToast } from "@/components/ui/use-toast";
-import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
-import {
-  projectFormSchema,
-  type ProjectFormValues,
-} from "@/schemas/admin-crud.schema";
 import type { ExistingGalleryImage } from "@/types/gallery";
 import type { Category } from "@/types/category";
 import type { Project } from "@/types/project";
 import type { Province } from "@/types/location";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
+import {
+  projectFormSchema,
+  type ProjectFormValues,
+} from "@/schemas/admin-crud.schema";
 
 const DEFAULT_VALUES: Partial<ProjectFormValues> = {
   name: "",
@@ -55,10 +49,16 @@ const DEFAULT_VALUES: Partial<ProjectFormValues> = {
 
 const EMPTY_EXISTING_IMAGES: ExistingGalleryImage[] = [];
 
+type ProjectUpsertPayload = ProjectFormValues & {
+  removeImageIds?: number[];
+  orderedExistingImageIds?: number[];
+  images?: UploadedCloudinaryImage[];
+};
+
 type AdminProjectFormProps = {
   categories: Category[];
   provinces: Province[];
-  submitAction: (payload: FormData) => Promise<Project>;
+  submitAction: (payload: ProjectUpsertPayload) => Promise<Project>;
   title: string;
   description: string;
   submitLabel: string;
@@ -80,11 +80,16 @@ export default function AdminProjectForm({
 }: AdminProjectFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
-  const [galleryImages, setGalleryImages] = useState<ExistingGalleryImage[]>(
-    normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+  const [existingGalleryImages, setExistingGalleryImages] = useState<
+    ExistingGalleryImage[]
+  >(() => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
+  const [uploadedImages, setUploadedImages] = useState<UploadedCloudinaryImage[]>(
+    [],
   );
+  const [galleryBusy, setGalleryBusy] = useState(false);
+  const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
+
   const stableExistingImages = useMemo(
     () => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
     [existingImages],
@@ -112,7 +117,9 @@ export default function AdminProjectForm({
 
   useEffect(() => {
     form.reset(resolvedDefaults);
-  }, [form, resolvedDefaults]);
+    setExistingGalleryImages(normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
+    setUploadedImages([]);
+  }, [existingImages, form, resolvedDefaults]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(nameValue ?? ""));
@@ -134,47 +141,39 @@ export default function AdminProjectForm({
     [categories],
   );
 
-
   const handleSubmit: SubmitHandler<ProjectFormValues> = async (values) => {
     setSubmitError(null);
     setSuccessMessage(null);
 
-    if (requireImages && files.length + galleryImages.length < 1) {
+    if (galleryBusy) {
+      setSubmitError("Vui lòng đợi ảnh tải xong trước khi lưu.");
+      return;
+    }
+
+    if (requireImages && existingGalleryImages.length + uploadedImages.length < 1) {
       setSubmitError("Vui lòng tải lên ít nhất một ảnh cho dự án.");
       return;
     }
 
-    const payload = new FormData();
-    appendString(payload, "name", values.name);
-    appendString(payload, "slug", buildListingSlug(values.name));
-    appendNumber(payload, "categoryId", values.categoryId);
-    appendString(payload, "developer", values.developer);
-    appendNumber(payload, "provinceId", values.provinceId);
-    appendNumber(payload, "wardId", values.wardId);
-    appendString(payload, "addressDetail", values.addressDetail);
-    appendNumber(payload, "longitude", values.longitude);
-    appendNumber(payload, "latitude", values.latitude);
-    appendNumber(payload, "area", values.area);
-    appendNumber(payload, "priceAmount", values.priceAmount);
-    appendString(payload, "priceUnit", values.priceUnit);
-    appendString(payload, "content", values.content);
-    appendString(payload, "status", values.status);
-
     const removedImageIds = stableExistingImages
       .filter(
         (image) =>
-          !galleryImages.some((currentImage) => currentImage.id === image.id),
+          !existingGalleryImages.some((currentImage) => currentImage.id === image.id),
       )
       .map((image) => image.id);
 
-    appendNumberArray(
-      payload,
-      "orderedExistingImageIds",
-      galleryImages.map((image) => image.id),
-    );
-    appendNumberArray(payload, "removeImageIds", removedImageIds);
-
-    files.forEach((file) => payload.append("images", file));
+    const basePayload = {
+      ...values,
+      slug: buildListingSlug(values.name),
+      images: uploadedImages,
+    };
+    const payload: ProjectUpsertPayload = existingImages
+      ? {
+          ...basePayload,
+          removeImageIds: removedImageIds,
+          orderedExistingImageIds: existingGalleryImages.map((image) => image.id),
+        }
+      : basePayload;
 
     try {
       await submitAction(payload);
@@ -184,6 +183,8 @@ export default function AdminProjectForm({
         variant: "success",
       });
       setSuccessMessage("Đã lưu dự án thành công.");
+      setUploadedImages([]);
+      setExistingGalleryImages(normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Không thể lưu dự án.",
@@ -235,9 +236,7 @@ export default function AdminProjectForm({
         wardName="wardId"
         provinces={provinces}
         requiredProvince
-        requiredWard
       />
-
       <ListingTextField name="addressDetail" label="Địa chỉ chi tiết" />
       <div className="grid gap-4 md:grid-cols-2">
         <ListingNumberField
@@ -253,7 +252,6 @@ export default function AdminProjectForm({
           step="0.000001"
         />
       </div>
-
       <ListingRichTextField
         name="content"
         label="Nội dung"
@@ -264,16 +262,20 @@ export default function AdminProjectForm({
         label="Trạng thái"
         options={PUBLISH_STATUS_OPTIONS}
       />
+
       <ListingImageGalleryField
-        files={files}
-        onFilesChange={setFiles}
-        existingImages={galleryImages}
-        onExistingImagesChange={setGalleryImages}
+        images={uploadedImages}
+        onImagesChange={setUploadedImages}
+        existingImages={existingGalleryImages}
+        onExistingImagesChange={setExistingGalleryImages}
         onErrorChange={(error) => {
           setSubmitError(error);
         }}
+        onBusyChange={setGalleryBusy}
         maxFiles={25}
         maxFileSizeBytes={2 * 1024 * 1024}
+        resourceType="projects"
+        draftId={draftId}
       />
 
       {successMessage ? (
@@ -284,4 +286,3 @@ export default function AdminProjectForm({
     </ListingCreateFormShell>
   );
 }
-

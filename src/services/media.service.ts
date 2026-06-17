@@ -2,39 +2,37 @@ import "server-only";
 
 import { requestServerApi } from "./shared/server-api-client";
 
-export type UploadMediaPayload = {
-  file: File;
-  resourceType: string;
-  resourceId?: number;
-};
-
-export type UploadMediaResponse = {
-  url: string;
-  publicId: string;
-  width?: number;
-  height?: number;
+export type CloudinaryUploadSignature = {
+  cloudName: string;
+  apiKey: string;
+  folder: string;
+  timestamp: number;
+  signature: string;
+  uploadUrl: string;
 };
 
 export type DeleteMediaPayload = {
   publicId: string;
 };
 
-function buildUploadFormData(payload: UploadMediaPayload) {
-  const formData = new FormData();
-  formData.append("file", payload.file);
-  formData.append("resourceType", payload.resourceType);
-  if (typeof payload.resourceId === "number") {
-    formData.append("resourceId", String(payload.resourceId));
-  }
-  return formData;
+export type CreateCloudinaryUploadSignaturePayload = {
+  resourceType: string;
+  draftId: string;
+};
+
+function buildSignatureRequestBody(payload: CreateCloudinaryUploadSignaturePayload) {
+  return JSON.stringify(payload);
 }
 
 export const mediaService = {
-  uploadImage: async (payload: UploadMediaPayload) => {
-    const response = await requestServerApi<UploadMediaResponse>("/media/upload", {
+  createUploadSignature: async (payload: CreateCloudinaryUploadSignaturePayload) => {
+    const response = await requestServerApi<CloudinaryUploadSignature>("/media/signature", {
       method: "POST",
       auth: "required",
-      body: buildUploadFormData(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: buildSignatureRequestBody(payload),
     });
     return response.data;
   },

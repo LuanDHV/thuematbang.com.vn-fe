@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEventHandler } from "react";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Trash2, Upload } from "lucide-react";
@@ -12,90 +12,170 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
+import {
+  deleteCloudinaryImages,
+  uploadCloudinaryImagesSettled,
+} from "@/lib/cloudinary-upload";
 import { cn } from "@/lib/utils";
+import type { CloudinaryUploadResourceType, UploadedCloudinaryImage } from "@/types/cloudinary";
 import type { ExistingGalleryImage } from "@/types/gallery";
 
 type ListingImageGalleryFieldProps = {
-  files: File[];
-  onFilesChange: (files: File[]) => void;
+  images: UploadedCloudinaryImage[];
+  onImagesChange: (images: UploadedCloudinaryImage[]) => void;
   existingImages: ExistingGalleryImage[];
   onExistingImagesChange: (images: ExistingGalleryImage[]) => void;
   onErrorChange?: (error: string | null) => void;
+  onBusyChange?: (busy: boolean) => void;
   label?: string;
   description?: string;
   error?: string | null;
   required?: boolean;
   maxFiles?: number;
   maxFileSizeBytes?: number;
+  concurrency?: number;
+  resourceType: CloudinaryUploadResourceType;
+  draftId: string;
   className?: string;
 };
 
 const DEFAULT_MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+]);
 
-function isOversized(file: File, maxFileSizeBytes: number) {
-  return file.size > maxFileSizeBytes;
+function getFileError(file: File, maxFileSizeBytes: number) {
+  const maxFileSizeInMb = Math.floor(maxFileSizeBytes / 1024 / 1024);
+
+  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    return "Định dạng ảnh không hợp lệ. Vui lòng chọn JPEG, JPG, PNG hoặc WEBP.";
+  }
+
+  if (file.size > maxFileSizeBytes) {
+    return `Ảnh vượt quá ${maxFileSizeInMb}MB.`;
+  }
+
+  return null;
 }
 
 export function ListingImageGalleryField({
-  files,
-  onFilesChange,
+  images,
+  onImagesChange,
   existingImages,
   onExistingImagesChange,
   onErrorChange,
+  onBusyChange,
   label = "Hình ảnh",
   description = "Quản lý ảnh cũ và tải thêm ảnh mới.",
   error,
   required = false,
   maxFiles = 25,
   maxFileSizeBytes = DEFAULT_MAX_FILE_SIZE_BYTES,
+  concurrency = 4,
+  resourceType,
+  draftId,
   className,
 }: ListingImageGalleryFieldProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const previewUrls = useMemo(
-    () => files.map((file) => URL.createObjectURL(file)),
-    [files],
-  );
+  const currentImagesRef = useRef<UploadedCloudinaryImage[]>(images);
+  const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    currentImagesRef.current = images;
+  }, [images]);
+
+  useEffect(() => {
+    onBusyChange?.(isUploading);
+  }, [isUploading, onBusyChange]);
 
   useEffect(() => {
     return () => {
-      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      const publicIds = currentImagesRef.current
+        .map((image) => image.imagePublicId)
+        .filter((publicId): publicId is string => Boolean(publicId));
+
+      if (publicIds.length > 0) {
+        void deleteCloudinaryImages(publicIds);
+      }
     };
-  }, [previewUrls]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleFilesChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleFilesChange: ChangeEventHandler<HTMLInputElement> = async (
+    event,
+  ) => {
     const selectedFiles = Array.from(event.target.files ?? []);
-    if (!selectedFiles.length) return;
-
-    const availableSlots = Math.max(maxFiles - existingImages.length - files.length, 0);
-    const oversizedFiles = selectedFiles.filter((file) =>
-      isOversized(file, maxFileSizeBytes),
-    );
-    const validFiles = selectedFiles.filter(
-      (file) => !isOversized(file, maxFileSizeBytes),
-    );
-    const acceptedFiles = validFiles.slice(0, availableSlots);
-    const nextFiles = [...files, ...acceptedFiles];
-    const hasOverflow = validFiles.length > acceptedFiles.length;
-    const maxFileSizeInMb = Math.floor(maxFileSizeBytes / 1024 / 1024);
-
-    if (oversizedFiles.length > 0 && hasOverflow) {
-      onErrorChange?.(
-        `Chỉ được chọn tối đa ${maxFiles} ảnh và mỗi ảnh không vượt quá ${maxFileSizeInMb}MB.`,
-      );
-    } else if (oversizedFiles.length > 0) {
-      onErrorChange?.(
-        `Kích thước ảnh không được vượt quá ${maxFileSizeInMb}MB.`,
-      );
-    } else if (hasOverflow) {
-      onErrorChange?.(`Chỉ được chọn tối đa ${maxFiles} ảnh.`);
-    } else {
-      onErrorChange?.(null);
+    if (!selectedFiles.length || isUploading) {
+      return;
     }
 
-    onFilesChange(nextFiles);
+    const remainingSlots = Math.max(
+      maxFiles - existingImages.length - images.length,
+      0,
+    );
+    const oversizedFiles = selectedFiles.filter(
+      (file) => getFileError(file, maxFileSizeBytes) !== null,
+    );
+    const validFiles = selectedFiles.filter(
+      (file) => getFileError(file, maxFileSizeBytes) === null,
+    );
+    const acceptedFiles = validFiles.slice(0, remainingSlots);
 
-    if (inputRef.current) {
-      inputRef.current.value = "";
+    if (!acceptedFiles.length) {
+      if (oversizedFiles.length > 0) {
+        onErrorChange?.("Ảnh vượt quá dung lượng cho phép.");
+      } else {
+        onErrorChange?.(`Chỉ được chọn tối đa ${maxFiles} ảnh.`);
+      }
+      return;
+    }
+
+    setIsUploading(true);
+    onErrorChange?.(null);
+
+    try {
+      const settledResults = await uploadCloudinaryImagesSettled(acceptedFiles, {
+        resourceType,
+        draftId,
+        concurrency,
+      });
+
+      const nextImages = [...images];
+      let successCount = 0;
+      let failureCount = 0;
+
+      settledResults.forEach((result) => {
+        if (result.status === "fulfilled") {
+          nextImages.push(result.value);
+          successCount += 1;
+        } else {
+          failureCount += 1;
+        }
+      });
+
+      onImagesChange(nextImages);
+
+      if (failureCount > 0) {
+        onErrorChange?.(
+          successCount > 0
+            ? `${failureCount} ảnh không thể tải lên.`
+            : "Không thể tải ảnh lên.",
+        );
+      } else {
+        onErrorChange?.(null);
+      }
+    } catch (error) {
+      onErrorChange?.(
+        error instanceof Error ? error.message : "Không thể tải ảnh lên.",
+      );
+    } finally {
+      setIsUploading(false);
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
     }
   };
 
@@ -116,6 +196,16 @@ export function ListingImageGalleryField({
     onErrorChange?.(null);
   };
 
+  const handleRemoveUploaded = async (index: number) => {
+    const image = images[index];
+    if (image?.imagePublicId) {
+      await deleteCloudinaryImages([image.imagePublicId]);
+    }
+
+    onImagesChange(images.filter((_, current) => current !== index));
+    onErrorChange?.(null);
+  };
+
   return (
     <Field className={cn("flex flex-col gap-2", className)}>
       <FieldLabel
@@ -133,10 +223,11 @@ export function ListingImageGalleryField({
             <Upload className="size-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-body text-sm font-medium">Chọn ảnh từ máy tính</p>
+            <p className="text-body text-sm font-medium">
+              {isUploading ? "Đang tải ảnh lên..." : "Chọn ảnh từ máy tính"}
+            </p>
             <p className="text-secondary text-xs">
-              Đã có {existingImages.length} ảnh cũ và {files.length} ảnh mới.
-              Tối đa {maxFiles} ảnh.
+              Đã có {existingImages.length} ảnh cũ và {images.length} ảnh mới. Tối đa {maxFiles} ảnh.
             </p>
           </div>
         </div>
@@ -145,7 +236,7 @@ export function ListingImageGalleryField({
           ref={inputRef}
           id="listing-gallery-images"
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
           multiple
           className="hidden"
           onChange={handleFilesChange}
@@ -174,9 +265,7 @@ export function ListingImageGalleryField({
                     <p className="text-body truncate text-sm font-medium">
                       Ảnh #{image.id}
                     </p>
-                    <p className="text-secondary text-xs">
-                      Vị trí {index + 1}
-                    </p>
+                    <p className="text-secondary text-xs">Vị trí {index + 1}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     <Button
@@ -213,18 +302,18 @@ export function ListingImageGalleryField({
         </div>
       ) : null}
 
-      {files.length > 0 ? (
+      {images.length > 0 ? (
         <div className="space-y-2">
           <p className="text-heading text-sm font-semibold">Ảnh mới</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {files.map((file, index) => (
+            {images.map((image, index) => (
               <div
-                key={`${file.name}-${index}`}
+                key={image.imagePublicId ?? index}
                 className="surface-card overflow-hidden p-3"
               >
                 <Image
-                  src={previewUrls[index]}
-                  alt={file.name}
+                  src={image.imageUrl}
+                  alt={image.imagePublicId ?? "Ảnh mới"}
                   width={640}
                   height={360}
                   unoptimized
@@ -233,20 +322,16 @@ export function ListingImageGalleryField({
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="text-body truncate text-sm font-medium">
-                      {file.name}
+                      {image.imagePublicId?.split("/").pop() ?? "Ảnh mới"}
                     </p>
-                    <p className="text-secondary text-xs">
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB
-                    </p>
+                    <p className="text-secondary text-xs">Vị trí {index + 1}</p>
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    onClick={() => {
-                      onFilesChange(files.filter((_, current) => current !== index));
-                      onErrorChange?.(null);
-                    }}
+                    disabled={isUploading}
+                    onClick={() => void handleRemoveUploaded(index)}
                   >
                     <Trash2 className="size-4" />
                   </Button>
@@ -261,4 +346,3 @@ export function ListingImageGalleryField({
     </Field>
   );
 }
-

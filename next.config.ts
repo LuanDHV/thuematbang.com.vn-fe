@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
-      // Give server actions enough headroom for a 2MB file plus multipart overhead.
-      bodySizeLimit: "3mb",
+      // Image uploads now bypass Server Actions, so keep the body guard tight.
+      bodySizeLimit: "2mb",
     },
   },
   images: {

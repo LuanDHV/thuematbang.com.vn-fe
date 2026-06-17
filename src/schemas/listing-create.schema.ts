@@ -149,8 +149,6 @@ export const propertyCreateFormSchema = z.object({
   status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
   isFeatured: z.boolean().default(false).optional(),
   userId: optionalIntegerSchema,
-  removeImageIds: z.array(z.number().int().nonnegative()).optional(),
-  orderedExistingImageIds: z.array(z.number().int().nonnegative()).optional(),
 });
 
 export const rentRequestCreateFormSchema = z.object({

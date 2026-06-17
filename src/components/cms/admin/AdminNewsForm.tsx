@@ -1,26 +1,26 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
+import { ListingImageField } from "@/components/listing-form/ListingImageField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
-import { appendBoolean, appendString } from "@/lib/form/form-payload";
-import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { useToast } from "@/components/ui/use-toast";
 import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
+import { buildListingSlug } from "@/lib/listing/listing-slug";
+import type { Category } from "@/types/category";
+import type { News } from "@/types/news";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import {
   newsFormSchema,
   type NewsFormValues,
 } from "@/schemas/admin-crud.schema";
-import type { Category } from "@/types/category";
-import type { News } from "@/types/news";
 
 const DEFAULT_VALUES: Partial<NewsFormValues> = {
   categoryId: undefined,
@@ -32,14 +32,20 @@ const DEFAULT_VALUES: Partial<NewsFormValues> = {
   isFeatured: false,
 };
 
+type NewsUpsertPayload = NewsFormValues & {
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
+};
+
 type AdminNewsFormProps = {
   categories: Category[];
-  submitAction: (payload: FormData) => Promise<News>;
+  submitAction: (payload: NewsUpsertPayload) => Promise<News>;
   title: string;
   description: string;
   submitLabel: string;
   defaultValues?: Partial<NewsFormValues>;
   existingImageUrl?: string | null;
+  existingImagePublicId?: string | null;
   imageRequired?: boolean;
 };
 
@@ -51,14 +57,21 @@ export default function AdminNewsForm({
   submitLabel,
   defaultValues,
   existingImageUrl,
+  existingImagePublicId,
   imageRequired = true,
 }: AdminNewsFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    existingImageUrl ?? null,
+  const [image, setImage] = useState<UploadedCloudinaryImage | null>(
+    existingImageUrl
+      ? {
+          imageUrl: existingImageUrl,
+          imagePublicId: existingImagePublicId ?? null,
+        }
+      : null,
   );
+  const [imageBusy, setImageBusy] = useState(false);
+  const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
 
   const resolvedDefaults = useMemo(
@@ -84,9 +97,15 @@ export default function AdminNewsForm({
     form.reset(resolvedDefaults);
     setSubmitError(null);
     setSuccessMessage(null);
-    setImageFile(null);
-    setImagePreview(existingImageUrl ?? null);
-  }, [existingImageUrl, form, resolvedDefaults]);
+    setImage(
+      existingImageUrl
+        ? {
+            imageUrl: existingImageUrl,
+            imagePublicId: existingImagePublicId ?? null,
+          }
+        : null,
+    );
+  }, [existingImagePublicId, existingImageUrl, form, resolvedDefaults]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
@@ -95,13 +114,6 @@ export default function AdminNewsForm({
       shouldValidate: true,
     });
   }, [form, titleValue]);
-
-  useEffect(() => {
-    if (!imageFile) return;
-    const objectUrl = URL.createObjectURL(imageFile);
-    setImagePreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [imageFile]);
 
   const categoryOptions = useMemo(
     () =>
@@ -112,34 +124,34 @@ export default function AdminNewsForm({
     [categories],
   );
 
-
   const handleSubmit: SubmitHandler<NewsFormValues> = async (values) => {
     setSubmitError(null);
     setSuccessMessage(null);
 
-    if (imageRequired && !existingImageUrl && !imageFile) {
+    if (imageBusy) {
+      setSubmitError("Vui lòng đợi ảnh tải xong trước khi lưu.");
+      return;
+    }
+
+    if (imageRequired && !image) {
       setSubmitError("Vui lòng chọn ảnh đại diện cho bài viết.");
       return;
     }
 
-    const payload = new FormData();
-    appendString(payload, "categoryId", String(values.categoryId));
-    appendString(payload, "title", values.title);
-    appendString(payload, "slug", buildListingSlug(values.title));
-    appendString(payload, "summary", values.summary);
-    appendString(payload, "content", values.content);
-    appendString(payload, "status", values.status);
-    appendBoolean(payload, "isFeatured", values.isFeatured);
-    if (imageFile) payload.set("image", imageFile);
-
     try {
-      await submitAction(payload);
+      await submitAction({
+        ...values,
+        slug: buildListingSlug(values.title),
+        imageUrl: image ? image.imageUrl : null,
+        imagePublicId: image ? image.imagePublicId : null,
+      });
       toast({
         title: "Đã lưu tin tức",
         description: "Bài viết đã được cập nhật thành công.",
         variant: "success",
       });
       setSuccessMessage("Đã lưu tin tức thành công.");
+      setImage(null);
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Không thể lưu tin tức.",
@@ -166,30 +178,19 @@ export default function AdminNewsForm({
       <ListingTextField name="title" label="Tiêu đề" required />
       <ListingTextField name="slug" label="Slug" required readOnly />
 
-      <div className="space-y-2">
-        <label className="text-heading text-sm font-semibold" htmlFor="news-image">
-          Ảnh đại diện {imageRequired ? <span className="text-destructive">*</span> : null}
-        </label>
-        <input
-          id="news-image"
-          type="file"
-          accept="image/*"
-          className="block w-full rounded-xl border border-black/8 bg-white px-3 py-2 text-sm"
-          onChange={(event) => setImageFile(event.target.files?.[0] ?? null)}
-        />
-        {imagePreview ? (
-          <div className="overflow-hidden rounded-xl border border-black/8">
-            <Image
-              src={imagePreview}
-              alt="News preview"
-              width={960}
-              height={540}
-              unoptimized
-              className="h-40 w-full object-cover"
-            />
-          </div>
-        ) : null}
-      </div>
+      <ListingImageField
+        value={image}
+        onChange={setImage}
+        initialImagePublicId={existingImagePublicId}
+        resourceType="news"
+        draftId={draftId}
+        onBusyChange={setImageBusy}
+        onErrorChange={setSubmitError}
+        error={submitError}
+        label="Ảnh đại diện"
+        description="Ảnh sẽ được upload trực tiếp lên Cloudinary."
+        required={imageRequired}
+      />
 
       <ListingTextareaField name="summary" label="Tóm tắt" rows={4} />
       <ListingRichTextField
@@ -212,4 +213,3 @@ export default function AdminNewsForm({
     </ListingCreateFormShell>
   );
 }
-

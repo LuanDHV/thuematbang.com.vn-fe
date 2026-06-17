@@ -30,7 +30,17 @@ export type NewsGetAllParams = {
   limit?: number;
 };
 
-export type NewsUpsertPayload = FormData;
+export type NewsUpsertPayload = {
+  categoryId: number;
+  title: string;
+  slug: string;
+  summary?: string;
+  content?: string;
+  status?: PublishStatus | null;
+  isFeatured?: boolean;
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
+};
 
 export const newsService = {
   getAll: async (params: NewsGetAllParams = {}) => {
@@ -101,7 +111,10 @@ export const newsService = {
     const response = await requestServerApi<News>("/news", {
       method: "POST",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },
@@ -110,7 +123,10 @@ export const newsService = {
     const response = await requestServerApi<News>(`/news/${id}`, {
       method: "PATCH",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },

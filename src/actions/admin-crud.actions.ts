@@ -12,9 +12,7 @@ import { propertyService } from "@/services/property.service";
 import { userService } from "@/services/user.service";
 import { USER_ROLE_VALUES } from "@/constants/enum-values";
 import {
-  normalizeBooleanField,
   normalizeRentRequestPayload,
-  normalizeSlugField,
   toPositiveId,
 } from "@/lib/form/form-normalize";
 import { refreshCrudTags } from "@/lib/server/revalidate";
@@ -23,6 +21,9 @@ import type {
   LeadStatus,
   UserRole,
 } from "@/types/enums";
+import type { BannerUpsertPayload } from "@/services/banners.service";
+import type { NewsUpsertPayload } from "@/services/news.service";
+import type { ProjectUpsertPayload } from "@/services/project.service";
 
 // Category
 export async function createCategoryAction(payload: {
@@ -67,20 +68,18 @@ export async function deleteCategoryAction(id: string | number) {
 }
 
 // Banner
-export async function createBannerAction(formData: FormData) {
-  normalizeBooleanField(formData, "isActive");
-  const result = await bannersService.create(formData);
+export async function createBannerAction(payload: BannerUpsertPayload) {
+  const result = await bannersService.create(payload);
   refreshCrudTags(["banners"], ["/admin/quan-li-banners"]);
   return result;
 }
 
 export async function updateBannerAction(
   id: string | number,
-  formData: FormData,
+  payload: BannerUpsertPayload,
 ) {
   const bannerId = toPositiveId(id);
-  normalizeBooleanField(formData, "isActive");
-  const result = await bannersService.update(bannerId, formData);
+  const result = await bannersService.update(bannerId, payload);
   refreshCrudTags(["banners", "banner-detail"], ["/admin/quan-li-banners"]);
   return result;
 }
@@ -201,22 +200,18 @@ export async function deleteLeadAction(id: string | number) {
 }
 
 // News
-export async function createNewsAction(formData: FormData) {
-  normalizeBooleanField(formData, "isFeatured");
-  normalizeSlugField(formData, "title", "slug");
-  const result = await newsService.create(formData);
+export async function createNewsAction(payload: NewsUpsertPayload) {
+  const result = await newsService.create(payload);
   refreshCrudTags(["news"], ["/admin/quan-li-tin-tuc", "/tin-tuc"]);
   return result;
 }
 
 export async function updateNewsAction(
   id: string | number,
-  formData: FormData,
+  payload: NewsUpsertPayload,
 ) {
   const newsId = toPositiveId(id);
-  normalizeBooleanField(formData, "isFeatured");
-  normalizeSlugField(formData, "title", "slug");
-  const result = await newsService.update(newsId, formData);
+  const result = await newsService.update(newsId, payload);
   refreshCrudTags(
     ["news", "news-detail"],
     ["/admin/quan-li-tin-tuc", "/tin-tuc"],
@@ -235,22 +230,18 @@ export async function deleteNewsAction(id: string | number) {
 }
 
 // Project
-export async function createProjectAction(formData: FormData) {
-  normalizeBooleanField(formData, "isFeatured");
-  normalizeSlugField(formData, "name", "slug");
-  const result = await projectService.create(formData);
+export async function createProjectAction(payload: ProjectUpsertPayload) {
+  const result = await projectService.create(payload);
   refreshCrudTags(["projects"], ["/admin/quan-li-du-an", "/du-an"]);
   return result;
 }
 
 export async function updateProjectAction(
   id: string | number,
-  formData: FormData,
+  payload: ProjectUpsertPayload,
 ) {
   const projectId = toPositiveId(id);
-  normalizeBooleanField(formData, "isFeatured");
-  normalizeSlugField(formData, "name", "slug");
-  const result = await projectService.update(projectId, formData);
+  const result = await projectService.update(projectId, payload);
   refreshCrudTags(
     ["projects", "project-detail"],
     ["/admin/quan-li-du-an", "/du-an"],

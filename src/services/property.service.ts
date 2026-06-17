@@ -7,6 +7,7 @@ import {
   PublishSource,
   PublishStatus,
 } from "@/types/enums";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
@@ -69,8 +70,46 @@ export type PropertyMineParams = {
   limit?: number;
 };
 
-export type UpdatePropertyPayload = FormData;
-export type CreatePropertyPayload = FormData;
+export type PropertyUpsertPayload = {
+  title: string;
+  slug: string;
+  categoryId?: number;
+  priceAmount?: number;
+  priceUnit?: string;
+  price?: number;
+  isNegotiable?: boolean;
+  area?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  floors?: number;
+  direction?: PropertyDirection | null;
+  provinceId?: number;
+  wardId?: number;
+  contactName: string;
+  contactPhone: string;
+  addressDetail?: string;
+  longitude?: number;
+  latitude?: number;
+  content?: string;
+  priorityStatus?: PropertyPriority | null;
+  publishSource?: PublishSource | null;
+  isBoosted?: boolean;
+  boostCount?: number;
+  status?: PublishStatus | null;
+  isFeatured?: boolean;
+  userId?: number;
+  images?: UploadedCloudinaryImage[];
+};
+
+export type PropertyCreatePayload = Omit<
+  PropertyUpsertPayload,
+  "removeImageIds" | "orderedExistingImageIds"
+>;
+
+export type PropertyUpdatePayload = PropertyUpsertPayload & {
+  removeImageIds?: number[];
+  orderedExistingImageIds?: number[];
+};
 
 export const propertyService = {
   // Fetch one paginated property list with the filter contract used across public and CMS pages.
@@ -123,11 +162,14 @@ export const propertyService = {
   },
 
   // Create one property through the authenticated CMS mutation contract.
-  create: async (payload: CreatePropertyPayload) => {
+  create: async (payload: PropertyCreatePayload) => {
     const response = await requestServerApi<Property>("/properties", {
       method: "POST",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },
@@ -144,11 +186,14 @@ export const propertyService = {
     }),
 
   // Update one property through the authenticated CMS mutation contract.
-  update: async (id: number, payload: UpdatePropertyPayload) => {
+  update: async (id: number, payload: PropertyUpdatePayload) => {
     const response = await requestServerApi<Property>(`/properties/${id}`, {
       method: "PATCH",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },

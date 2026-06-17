@@ -11,10 +11,10 @@ import { ListingImageGalleryField } from "@/components/listing-form/ListingImage
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
+import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
-import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import {
@@ -26,20 +26,15 @@ import {
   MAX_IMAGE_FILE_COUNT,
   MAX_IMAGE_FILE_SIZE_BYTES,
 } from "@/constants/upload";
-import {
-  appendBoolean,
-  appendNumber,
-  appendNumberArray,
-  appendString,
-} from "@/lib/form/form-payload";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
 import {
   normalizeGalleryImages,
   normalizePropertyCreateDefaults,
 } from "@/lib/listing/listing-form";
 import type { Category } from "@/types/category";
-import type { Province } from "@/types/location";
 import type { ExistingGalleryImage } from "@/types/gallery";
+import type { Province } from "@/types/location";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import type { Property } from "@/types/property";
 import {
   propertyCreateFormSchema,
@@ -51,12 +46,16 @@ type PropertyCreateFormMode =
   | "admin-edit-full"
   | "user-edit-limited";
 
-const EMPTY_EXISTING_IMAGES: ExistingGalleryImage[] = [];
+type PropertyUpsertPayload = PropertyCreateFormValues & {
+  removeImageIds?: number[];
+  orderedExistingImageIds?: number[];
+  images?: UploadedCloudinaryImage[];
+};
 
 type PropertyCreateFormProps = {
   categories: Category[];
   provinces: Province[];
-  submitAction: (payload: FormData) => Promise<Property>;
+  submitAction: (payload: PropertyUpsertPayload) => Promise<Property>;
   title: string;
   description: string;
   submitLabel: string;
@@ -65,6 +64,8 @@ type PropertyCreateFormProps = {
   existingImages?: ExistingGalleryImage[];
   showSuccessDialog?: boolean;
 };
+
+const EMPTY_EXISTING_IMAGES: ExistingGalleryImage[] = [];
 
 const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   title: "",
@@ -94,13 +95,7 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   status: "PUBLISHED",
   isFeatured: false,
   userId: undefined,
-  removeImageIds: [],
-  orderedExistingImageIds: [],
 };
-
-function isOversizedImage(file: File) {
-  return file.size > MAX_IMAGE_FILE_SIZE_BYTES;
-}
 
 function getVisibleModeFields(mode: PropertyCreateFormMode) {
   return {
@@ -121,17 +116,17 @@ export function PropertyCreateForm({
   showSuccessDialog = true,
 }: PropertyCreateFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const stableExistingImages = useMemo(
-    () => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
-    [existingImages],
-  );
-  const [images, setImages] = useState<File[]>([]);
+  const [imagesError, setImagesError] = useState<string | null>(null);
   const [existingGalleryImages, setExistingGalleryImages] = useState<
     ExistingGalleryImage[]
-  >(() => stableExistingImages);
-  const [imagesError, setImagesError] = useState<string | null>(null);
+  >(() => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
+  const [uploadedImages, setUploadedImages] = useState<
+    UploadedCloudinaryImage[]
+  >([]);
+  const [galleryBusy, setGalleryBusy] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
+  const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
 
   const resolvedDefaults = useMemo(
@@ -172,7 +167,11 @@ export function PropertyCreateForm({
 
   useEffect(() => {
     form.reset(normalizedDefaults);
-  }, [form, normalizedDefaults]);
+    setUploadedImages([]);
+    setExistingGalleryImages(
+      normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+    );
+  }, [existingImages, form, normalizedDefaults]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
@@ -210,48 +209,21 @@ export function PropertyCreateForm({
     setSuccessOpen(false);
     setCreatedSlug(null);
 
-    const totalImageCount = existingGalleryImages.length + images.length;
+    const totalImageCount =
+      existingGalleryImages.length + uploadedImages.length;
     if (mode === "public-create" && totalImageCount < 1) {
       setImagesError("Vui lòng chọn ít nhất 1 ảnh cho tin đăng.");
       return;
     }
 
-    if (images.some(isOversizedImage)) {
-      setImagesError("Kích thước ảnh không được vượt quá 2MB.");
+    if (galleryBusy) {
+      setImagesError("Vui lòng đợi ảnh tải xong trước khi lưu.");
       return;
     }
 
-    const payload = new FormData();
-    appendString(payload, "title", values.title);
-    appendString(payload, "slug", buildListingSlug(values.title));
-    appendNumber(payload, "categoryId", values.categoryId);
-    appendNumber(payload, "priceAmount", values.priceAmount);
-    appendString(payload, "priceUnit", values.priceUnit);
-    appendBoolean(payload, "isNegotiable", Boolean(values.isNegotiable));
-    appendNumber(payload, "area", values.area);
-    appendNumber(payload, "bedrooms", values.bedrooms);
-    appendNumber(payload, "bathrooms", values.bathrooms);
-    appendNumber(payload, "floors", values.floors);
-    appendString(payload, "direction", values.direction);
-    appendNumber(payload, "provinceId", values.provinceId);
-    appendNumber(payload, "wardId", values.wardId);
-    appendString(payload, "contactName", values.contactName);
-    appendString(payload, "contactPhone", values.contactPhone);
-    appendString(payload, "addressDetail", values.addressDetail);
-    appendString(payload, "content", values.content);
-
-    if (showAdminOnly) {
-      appendString(payload, "priorityStatus", values.priorityStatus);
-      appendString(payload, "publishSource", values.publishSource);
-      appendBoolean(payload, "isBoosted", Boolean(values.isBoosted));
-      appendNumber(payload, "boostCount", values.boostCount);
-      appendString(payload, "status", values.status);
-      appendBoolean(payload, "isFeatured", Boolean(values.isFeatured));
-      appendNumber(payload, "longitude", values.longitude);
-      appendNumber(payload, "latitude", values.latitude);
-    }
-
-    const removedImageIds = stableExistingImages
+    const removedImageIds = normalizeGalleryImages(
+      existingImages ?? EMPTY_EXISTING_IMAGES,
+    )
       .filter(
         (image) =>
           !existingGalleryImages.some(
@@ -260,21 +232,38 @@ export function PropertyCreateForm({
       )
       .map((image) => image.id);
 
-    appendNumberArray(
-      payload,
-      "orderedExistingImageIds",
-      existingGalleryImages.map((image) => image.id),
-    );
-    appendNumberArray(payload, "removeImageIds", removedImageIds);
-
-    images.forEach((image) => payload.append("images", image));
+    const basePayload = {
+      ...values,
+      slug: buildListingSlug(values.title),
+      priorityStatus: showAdminOnly ? values.priorityStatus : undefined,
+      publishSource: showAdminOnly ? values.publishSource : undefined,
+      isBoosted: showAdminOnly ? Boolean(values.isBoosted) : undefined,
+      boostCount: showAdminOnly ? values.boostCount : undefined,
+      status: showAdminOnly ? values.status : undefined,
+      isFeatured: showAdminOnly ? Boolean(values.isFeatured) : undefined,
+      longitude: showAdminOnly ? values.longitude : undefined,
+      latitude: showAdminOnly ? values.latitude : undefined,
+      userId: values.userId,
+      images: uploadedImages,
+    };
+    const payload: PropertyUpsertPayload =
+      mode === "public-create"
+        ? basePayload
+        : {
+            ...basePayload,
+            removeImageIds: removedImageIds,
+            orderedExistingImageIds: existingGalleryImages.map(
+              (image) => image.id,
+            ),
+          };
 
     try {
       const createdProperty = await submitAction(payload);
       form.reset(normalizedDefaults);
-      // Keep enum defaults normalized after successful submit/reset.
-      setImages([]);
-      setExistingGalleryImages(stableExistingImages);
+      setUploadedImages([]);
+      setExistingGalleryImages(
+        normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+      );
 
       if (showSuccessDialog) {
         setCreatedSlug(createdProperty.slug);
@@ -288,9 +277,7 @@ export function PropertyCreateForm({
       }
     } catch (error) {
       setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Không thể lưu tin đăng. Vui lòng thử lại.",
+        error instanceof Error ? error.message : "Không thể lưu tin đăng.",
       );
     }
   };
@@ -490,21 +477,24 @@ export function PropertyCreateForm({
         ) : null}
 
         <ListingImageGalleryField
-          files={images}
-          onFilesChange={setImages}
+          images={uploadedImages}
+          onImagesChange={setUploadedImages}
           existingImages={existingGalleryImages}
           onExistingImagesChange={setExistingGalleryImages}
           label="Hình ảnh"
           description={
             mode === "public-create"
-              ? "Tải lên ít nhất 1 ảnh. Có thể chọn nhiều ảnh cùng lúc."
+              ? "Tải lên ít nhất 1 ảnh. Ảnh sẽ được upload trực tiếp lên Cloudinary."
               : "Quản lý ảnh cũ và tải thêm ảnh mới."
           }
           required={mode === "public-create"}
           error={imagesError}
           onErrorChange={setImagesError}
+          onBusyChange={setGalleryBusy}
           maxFiles={MAX_IMAGE_FILE_COUNT}
           maxFileSizeBytes={MAX_IMAGE_FILE_SIZE_BYTES}
+          resourceType="properties"
+          draftId={draftId}
         />
       </ListingCreateFormShell>
 

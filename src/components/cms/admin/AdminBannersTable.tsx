@@ -167,6 +167,7 @@ export default function AdminBannersTable({
         description="Quản lý banner hiển thị trên website."
         submitLabel={editingBanner ? "Cập nhật" : "Tạo mới"}
         existingImageUrl={editingBanner?.imageUrl}
+        existingImagePublicId={editingBanner?.imagePublicId ?? null}
         defaultValues={
           editingBanner
             ? {
@@ -181,18 +182,7 @@ export default function AdminBannersTable({
                 isActive: true,
               }
         }
-        onSubmit={async (values, imageFile) => {
-          const payload = new FormData();
-          payload.set("title", values.title);
-          if (values.targetLink) payload.set("targetLink", values.targetLink);
-          if (values.page) payload.set("page", values.page);
-          payload.set("position", values.position);
-          if (typeof values.sortOrder === "number") {
-            payload.set("sortOrder", String(values.sortOrder));
-          }
-          payload.set("isActive", values.isActive ? "true" : "false");
-          if (imageFile) payload.set("image", imageFile);
-
+        onSubmit={async (payload) => {
           if (editingBanner) {
             return updateBannerAction(editingBanner.id, payload);
           }

@@ -2,6 +2,7 @@ import "server-only";
 
 import { Project } from "@/types/project";
 import { PublishStatus } from "@/types/enums";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
@@ -36,7 +37,34 @@ export type ProjectGetAllParams = {
   limit?: number;
 };
 
-export type ProjectUpsertPayload = FormData;
+export type ProjectUpsertPayload = {
+  name: string;
+  slug: string;
+  categoryId?: number;
+  developer?: string;
+  provinceId?: number;
+  wardId?: number;
+  addressDetail?: string;
+  longitude?: number;
+  latitude?: number;
+  area?: number;
+  priceAmount?: number;
+  priceUnit?: string;
+  price?: number;
+  content?: string;
+  status?: PublishStatus | null;
+  images?: UploadedCloudinaryImage[];
+};
+
+export type ProjectCreatePayload = Omit<
+  ProjectUpsertPayload,
+  "removeImageIds" | "orderedExistingImageIds"
+>;
+
+export type ProjectUpdatePayload = ProjectUpsertPayload & {
+  removeImageIds?: number[];
+  orderedExistingImageIds?: number[];
+};
 
 export const projectService = {
   getAll: async (params: ProjectGetAllParams = {}) => {
@@ -103,20 +131,26 @@ export const projectService = {
     return response.data;
   },
 
-  create: async (payload: ProjectUpsertPayload) => {
+  create: async (payload: ProjectCreatePayload) => {
     const response = await requestServerApi<Project>("/projects", {
       method: "POST",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },
 
-  update: async (id: number, payload: ProjectUpsertPayload) => {
+  update: async (id: number, payload: ProjectUpdatePayload) => {
     const response = await requestServerApi<Project>(`/projects/${id}`, {
       method: "PATCH",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },

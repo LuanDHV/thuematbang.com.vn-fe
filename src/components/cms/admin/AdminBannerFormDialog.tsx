@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { BANNER_POSITION_OPTIONS, PAGE_OPTIONS } from "@/constants/enum-options";
-import Image from "next/image";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import AdminCrudDialog from "@/components/cms/admin/AdminCrudDialog";
 import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
+import { ListingImageField } from "@/components/listing-form/ListingImageField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
@@ -17,6 +17,7 @@ import {
   type BannerFormValues,
 } from "@/schemas/admin-crud.schema";
 import type { Banner } from "@/types/banner";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 
 const DEFAULT_VALUES: BannerFormValues = {
   title: "",
@@ -27,18 +28,21 @@ const DEFAULT_VALUES: BannerFormValues = {
   isActive: true,
 };
 
+type BannerUpsertPayload = BannerFormValues & {
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
+};
+
 type BannerFormDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (
-    values: BannerFormValues,
-    imageFile?: File | null,
-  ) => Promise<Banner>;
+  onSubmit: (values: BannerUpsertPayload) => Promise<Banner>;
   title: string;
   description?: string;
   submitLabel: string;
   defaultValues?: Partial<BannerFormValues>;
   existingImageUrl?: string | null;
+  existingImagePublicId?: string | null;
   imageRequired?: boolean;
 };
 
@@ -51,14 +55,21 @@ export default function BannerFormDialog({
   submitLabel,
   defaultValues,
   existingImageUrl,
+  existingImagePublicId,
   imageRequired = true,
 }: BannerFormDialogProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    existingImageUrl ?? null,
+  const [image, setImage] = useState<UploadedCloudinaryImage | null>(
+    existingImageUrl
+      ? {
+          imageUrl: existingImageUrl,
+          imagePublicId: existingImagePublicId ?? null,
+        }
+      : null,
   );
+  const [imageBusy, setImageBusy] = useState(false);
+  const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
 
   const resolvedDefaults = useMemo(
@@ -80,30 +91,39 @@ export default function BannerFormDialog({
     form.reset(resolvedDefaults);
     setSubmitError(null);
     setIsSubmitting(false);
-    setImageFile(null);
-    setImagePreview(existingImageUrl ?? null);
-  }, [existingImageUrl, form, open, resolvedDefaults]);
-
-  useEffect(() => {
-    if (!imageFile) return;
-    const objectUrl = URL.createObjectURL(imageFile);
-    setImagePreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [imageFile]);
+    setImage(
+      existingImageUrl
+        ? {
+            imageUrl: existingImageUrl,
+            imagePublicId: existingImagePublicId ?? null,
+          }
+        : null,
+    );
+  }, [existingImagePublicId, existingImageUrl, form, open, resolvedDefaults]);
 
   const handleSubmit: SubmitHandler<BannerFormValues> = async (values) => {
     setSubmitError(null);
     setIsSubmitting(true);
     try {
-      if (imageRequired && !imageFile && !existingImageUrl) {
+      if (imageRequired && !image) {
         throw new Error("Vui lòng chọn ảnh banner.");
       }
-      await onSubmit(values, imageFile);
+
+      if (imageBusy) {
+        throw new Error("Vui lòng đợi ảnh tải xong trước khi lưu.");
+      }
+
+      await onSubmit({
+        ...values,
+        imageUrl: image ? image.imageUrl : null,
+        imagePublicId: image ? image.imagePublicId : null,
+      });
       toast({
         title: "Đã lưu banner",
         description: `Banner ${values.title} đã được lưu thành công.`,
         variant: "success",
       });
+      setImage(null);
       onOpenChange(false);
     } catch (error) {
       setSubmitError(
@@ -133,33 +153,19 @@ export default function BannerFormDialog({
         label="Vị trí"
         options={BANNER_POSITION_OPTIONS}
       />
-      <div className="space-y-2">
-        <label
-          className="text-heading text-sm font-semibold"
-          htmlFor="banner-image"
-        >
-          Ảnh banner <span className="text-destructive">*</span>
-        </label>
-        <input
-          id="banner-image"
-          type="file"
-          accept="image/*"
-          className="block w-full rounded-xl border border-black/8 bg-white px-3 py-2 text-sm"
-          onChange={(event) => setImageFile(event.target.files?.[0] ?? null)}
-        />
-        {imagePreview ? (
-          <div className="overflow-hidden rounded-xl border border-black/8">
-            <Image
-              src={imagePreview}
-              alt="Banner preview"
-              width={960}
-              height={540}
-              unoptimized
-              className="h-40 w-full object-cover"
-            />
-          </div>
-        ) : null}
-      </div>
+      <ListingImageField
+        value={image}
+        onChange={setImage}
+        initialImagePublicId={existingImagePublicId}
+        resourceType="banners"
+        draftId={draftId}
+        onBusyChange={setImageBusy}
+        onErrorChange={setSubmitError}
+        error={submitError}
+        label="Ảnh banner"
+        description="Ảnh sẽ được upload trực tiếp lên Cloudinary."
+        required={imageRequired}
+      />
       <ListingTextField name="targetLink" label="Target link" />
       <ListingNumberField name="sortOrder" label="Thứ tự" min={0} step="1" />
       <ListingCheckboxField name="isActive" label="Đang bật" />
