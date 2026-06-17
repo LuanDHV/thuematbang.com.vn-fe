@@ -11,31 +11,49 @@
   --color-footer: var(--footer);
   --color-footer-heading: var(--footer-heading);
   --color-footer-body: var(--footer-body);
+  --color-footer-border: var(--footer-border);
   --color-heading: var(--heading);
   --color-body: var(--body);
   --color-secondary: var(--secondary);
   --color-muted: var(--muted);
   --color-hairline: var(--hairline);
   --color-hairline-strong: var(--hairline-strong);
+  --color-surface-alt: var(--surface-alt);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-danger: var(--danger);
 
-  --font-sans: var(--font-be-vietnam-pro), system-ui, sans-serif;
+  --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
 }
 
 :root {
   /* Client/global semantic colors */
   --primary: #f7aa1b;
+  --accent-soft: #fff4dc;
   --app: #f8f6f2;
+  --surface-alt: #fbfaf7;
   --subtle: #f0ede7;
   --surface: #ffffff;
   --footer: #26231f;
   --footer-heading: #f5f0e8;
   --footer-body: #c8bfb2;
+  --footer-border: rgba(245, 240, 232, 0.12);
   --heading: #18160f;
   --body: #302d26;
   --secondary: #6e6a62;
   --muted: #a8a49e;
   --hairline: #3d200a18;
   --hairline-strong: #3d200a28;
+  --border-subtle: rgba(61, 32, 10, 0.08);
+  --border-strong: rgba(61, 32, 10, 0.18);
+  --success: #168f57;
+  --warning: #b76b00;
+  --info: #1678a7;
+  --danger: #c53b2d;
 }
 
 ::selection {
@@ -117,22 +135,22 @@ textarea {
 
 .surface-card {
   background-color: var(--surface);
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--border-subtle);
   border-radius: 1rem;
-  @apply shadow-md;
+  box-shadow: 0 14px 36px rgba(26, 18, 8, 0.08);
 }
 
 .surface-panel {
   background-color: var(--surface);
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--border-subtle);
   border-radius: 1.25rem;
-  @apply shadow-sm;
+  box-shadow: 0 10px 26px rgba(26, 18, 8, 0.06);
 }
 
 .surface-float {
   background-color: var(--surface);
-  border: 1px solid var(--hairline);
-  @apply shadow-lg;
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 22px 56px rgba(26, 18, 8, 0.12);
   backdrop-filter: blur(18px);
 }
 

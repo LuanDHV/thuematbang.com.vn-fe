@@ -22,15 +22,15 @@ const VARIANT_CLASSES: Record<
   }
 > = {
   header: {
-    wrapper: "h-11 w-[10.5rem] sm:w-[11.5rem]",
+    wrapper: "h-11 w-[10.75rem] sm:w-[11.75rem]",
     image: "object-contain",
   },
   footer: {
-    wrapper: "h-20 w-[18rem] sm:h-24 sm:w-[20rem]",
+    wrapper: "h-20 w-[17.5rem] sm:h-24 sm:w-[19.5rem]",
     image: "object-contain",
   },
   auth: {
-    wrapper: "h-10 w-[10.5rem] md:h-12 md:w-[11.5rem]",
+    wrapper: "h-10 w-[10.75rem] md:h-12 md:w-[11.75rem]",
     image: "object-contain",
   },
 };
@@ -53,7 +53,7 @@ export default function BrandLogo({
         alt={alt}
         fill
         priority={priority}
-        className="object-cover"
+        className={cn("object-contain", styles.image)}
       />
     </div>
   );

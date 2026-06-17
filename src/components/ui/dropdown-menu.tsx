@@ -34,7 +34,7 @@ function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-52 overflow-hidden rounded-2xl border bg-white/96 p-1.5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl",
+          "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-52 overflow-hidden rounded-2xl border bg-surface/96 p-1.5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl",
           className,
         )}
         {...props}
@@ -150,7 +150,7 @@ function DropdownMenuSubContent({
     <DropdownMenuPrimitive.SubContent
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 min-w-52 overflow-hidden rounded-2xl border bg-white/96 p-1.5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl",
+        "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 min-w-52 overflow-hidden rounded-2xl border bg-surface/96 p-1.5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl",
         className,
       )}
       {...props}

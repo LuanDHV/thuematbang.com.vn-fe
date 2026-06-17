@@ -143,7 +143,7 @@ export default function NewsListingClient({
               </div>
             ) : sourceNews.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="text-gray-500">Không có bài viết nào</p>
+                <p className="text-secondary">Không có bài viết nào</p>
               </div>
             ) : null}
           </div>
@@ -171,7 +171,7 @@ export default function NewsListingClient({
               </h2>
 
               {mostViewedNews.length > 0 ? (
-                <div className="mt-3 grid divide-y divide-gray-100">
+                <div className="mt-3 grid divide-y divide-hairline">
                   {mostViewedNews.map((newsItem) => (
                     <Link
                       key={newsItem.id}
@@ -183,7 +183,7 @@ export default function NewsListingClient({
                   ))}
                 </div>
               ) : (
-                <p className="mt-3 text-sm text-gray-500">Không có bài viết</p>
+                <p className="mt-3 text-sm text-secondary">Không có bài viết</p>
               )}
             </section>
           </div>

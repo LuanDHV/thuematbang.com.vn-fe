@@ -30,10 +30,11 @@ const features = [
 
 export default function IntroduceSection() {
   return (
-    <section className="to-primary/10 relative h-auto w-full overflow-hidden bg-linear-to-b from-white px-4 py-12 lg:flex lg:min-h-screen lg:items-center">
+    <section className="to-primary/10 relative w-full overflow-hidden bg-linear-to-b from-white px-4 py-12 lg:py-16">
       <div className="layout-container w-full">
         <Title
-          title="Giới thiệu"
+          eyebrow="Giới thiệu"
+          title="Nền tảng kết nối mặt bằng đáng tin cậy"
           description="Chúng tôi là nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. Với hệ thống danh mục đa dạng và dịch vụ chuyên nghiệp, chúng tôi cam kết tạo ra trải nghiệm tốt nhất cho khách hàng."
         />
 
@@ -43,7 +44,7 @@ export default function IntroduceSection() {
               key={index}
               className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
             >
-              <div className="group hover:shadow-primary/20 relative flex min-h-64 cursor-pointer flex-col items-center rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+              <div className="group hover:shadow-primary/20 relative flex min-h-64 cursor-pointer flex-col items-center rounded-xl border border-hairline bg-surface p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
                 <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
                   {feature.icon}
                 </div>
@@ -63,7 +64,7 @@ export default function IntroduceSection() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
+              className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-xl border border-hairline bg-surface p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
             >
               <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
                 {feature.icon}

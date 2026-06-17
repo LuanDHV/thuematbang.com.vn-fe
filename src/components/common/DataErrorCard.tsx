@@ -20,7 +20,7 @@ export default function DataErrorCard({
 
   return (
     <div className="surface-card rounded-2xl p-6 text-center">
-      <div className="surface-subtle text-primary mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full">
+      <div className="bg-accent-soft text-primary mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full">
         <AlertTriangle size={20} />
       </div>
       <h3 className="text-heading text-lg font-semibold">{title}</h3>

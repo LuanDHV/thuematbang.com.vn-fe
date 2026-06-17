@@ -87,7 +87,7 @@ export default function PropertyDetailContent({
       <section>
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">
+          <h2 className="text-heading text-xl font-semibold">
             Thông tin mô tả
           </h2>
         </div>
@@ -107,7 +107,7 @@ export default function PropertyDetailContent({
       <section>
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">
+          <h2 className="text-heading text-xl font-semibold">
             Thông tin chi tiết
           </h2>
         </div>
@@ -174,7 +174,7 @@ export default function PropertyDetailContent({
       <section>
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-xl font-semibold text-gray-800">
+          <h2 className="text-heading text-xl font-semibold">
             Xem trên bản đồ
           </h2>
         </div>
@@ -185,7 +185,7 @@ export default function PropertyDetailContent({
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="h-80 w-full rounded-2xl border border-black/6 shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
+            className="h-80 w-full rounded-2xl border border-hairline shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
           />
         ) : (
           <div className="surface-card text-secondary rounded-2xl p-4 text-sm">
@@ -199,7 +199,7 @@ export default function PropertyDetailContent({
         <div>
           <div className="mb-3 flex items-center gap-3">
             <span className="bg-primary h-6 w-1 rounded-full" />
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-heading text-xl font-semibold">
               Bất động sản dành cho bạn
             </h2>
           </div>
@@ -218,7 +218,7 @@ export default function PropertyDetailContent({
         <div>
           <div className="mb-3 flex items-center gap-3">
             <span className="bg-primary h-6 w-1 rounded-full" />
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-heading text-xl font-semibold">
               Bất động sản đã xem
             </h2>
           </div>

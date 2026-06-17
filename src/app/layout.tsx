@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import "@fontsource/be-vietnam-pro/400.css";
+import "@fontsource/be-vietnam-pro/500.css";
+import "@fontsource/be-vietnam-pro/600.css";
+import "@fontsource/be-vietnam-pro/700.css";
 import "./globals.css";
 import { isProductionAppEnv } from "@/lib/app-env";
 import { siteConfig } from "@/lib/metadata";
 import AppProviders from "@/components/providers/AppProviders";
 
 const isProduction = isProductionAppEnv();
-
-const beVietnamPro = Be_Vietnam_Pro({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-  variable: "--font-be-vietnam-pro",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -68,11 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="vi"
-      suppressHydrationWarning
-      className={`${beVietnamPro.variable} h-full antialiased`}
-    >
+    <html lang="vi" suppressHydrationWarning className="h-full antialiased">
       <body className="bg-app text-body min-h-screen">
         <AppProviders>{children}</AppProviders>
       </body>

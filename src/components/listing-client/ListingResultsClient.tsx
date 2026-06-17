@@ -77,10 +77,10 @@ export default function ListingResultsClient({
       <div className="flex flex-col gap-10">
         {!hasItems ? (
           <section className="p-8 text-center">
-            <h3 className="text-lg font-semibold text-gray-700">
+            <h3 className="text-heading text-lg font-semibold">
               Không có bất động sản phù hợp
             </h3>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="text-secondary mt-2 text-sm">
               Hãy điều chỉnh bộ lọc khác.
             </p>
           </section>

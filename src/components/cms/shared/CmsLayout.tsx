@@ -26,7 +26,7 @@ export default function CmsLayout({ sidebar, children }: CmsLayoutProps) {
       </aside>
 
       <main className="min-w-0 flex-1 pl-18 lg:pl-0">
-        <div className="p-4 md:p-5">{children}</div>
+        <div className="p-3 md:p-6 lg:p-8">{children}</div>
       </main>
     </section>
   );

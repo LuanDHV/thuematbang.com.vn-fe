@@ -15,10 +15,10 @@ export default function NewsCard({ news, category }: NewsCardProps) {
   return (
     <Link
       href={`/tin-tuc/${news.slug}`}
-      className="group flex flex-row items-stretch overflow-hidden rounded-2xl border border-[rgba(61,32,10,0.12)] bg-white shadow-[0_2px_10px_rgba(61,32,10,0.06)] transition-[transform,box-shadow] duration-260 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(61,32,10,0.11)]"
+      className="group flex flex-row items-stretch overflow-hidden rounded-2xl border border-hairline bg-surface shadow-[0_2px_10px_rgba(61,32,10,0.06)] transition-[transform,box-shadow] duration-260 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(61,32,10,0.11)]"
     >
       {/* Thumbnail */}
-      <div className="relative w-[38%] shrink-0 overflow-hidden bg-white">
+      <div className="relative w-[38%] shrink-0 overflow-hidden bg-surface-alt">
         <CloudinaryImage
           src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
           alt={news.title}
@@ -52,7 +52,7 @@ export default function NewsCard({ news, category }: NewsCardProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-dashed border-[rgba(61,32,10,0.12)] pt-2">
+        <div className="flex items-center justify-between border-t border-dashed border-hairline pt-2">
           <span className="text-secondary flex items-center gap-1.5 text-xs">
             <Calendar size={14} strokeWidth={2} className="text-primary" />
             {formatDate(news.createdAt)}

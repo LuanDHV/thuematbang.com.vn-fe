@@ -61,7 +61,7 @@ export default function PageFaq({
           <AccordionItem
             key={faq.id}
             value={faq.id}
-            className="border-b border-black/6 px-6 last:border-b-0"
+            className="border-b border-hairline px-6 last:border-b-0"
           >
             <AccordionTrigger className="text-heading hover:text-primary cursor-pointer py-5 text-left font-semibold transition-colors hover:no-underline">
               {faq.question}

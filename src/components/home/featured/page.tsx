@@ -8,9 +8,10 @@ import { Property } from "@/types";
 
 export default async function FeaturedSection() {
   return (
-    <section className="w-full px-4 py-12 lg:flex lg:min-h-screen lg:items-center">
+    <section className="layout-section-sm w-full px-4">
       <div className="layout-container w-full">
         <Title
+          eyebrow="Nổi bật"
           title="Bất động sản nổi bật"
           description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."
         />
@@ -28,7 +29,7 @@ export default async function FeaturedSection() {
 
             if (isEmpty) {
               return (
-                <div className="surface-card mt-12 flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-black/8 px-6 py-10 text-center">
+                <div className="surface-card mt-12 flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-hairline px-6 py-10 text-center">
                   <p className="text-body text-base font-medium">
                     Bất động sản nổi bật sẽ sớm được cập nhật
                   </p>

@@ -36,7 +36,7 @@ function CardFooter({
   viewCount: number;
 }) {
   return (
-    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
+    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-hairline pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
         <Calendar size={14} />
         {formatDate(createdAt)}
@@ -63,7 +63,7 @@ export function ProjectCard({ project }: { project: Project }) {
       className="surface-card interactive-lift group block overflow-hidden rounded-2xl"
     >
       <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
-        <div className="bg-subtle relative h-56 overflow-hidden">
+        <div className="bg-surface-alt relative h-56 overflow-hidden">
           <CloudinaryImage
             src={thumbnailImageUrl}
             alt={project.name}
@@ -72,10 +72,10 @@ export function ProjectCard({ project }: { project: Project }) {
             cldQuality="auto:best"
             className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.70)] via-[rgba(28,20,12,0.20)] to-transparent" />
 
           <div className="absolute right-3 bottom-3 left-3 z-20">
-            <h3 className="mt-2 line-clamp-2 text-2xl leading-snug font-medium text-white">
+            <h3 className="mt-2 line-clamp-2 text-xl leading-snug font-semibold text-white md:text-2xl">
               {project.name}
             </h3>
           </div>

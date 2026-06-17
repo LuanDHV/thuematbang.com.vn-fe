@@ -147,7 +147,7 @@ export default function ChangePasswordForm() {
               <PasswordInput
                 id="currentPassword"
                 autoComplete="current-password"
-                className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
+                className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-surface px-3 text-sm shadow-none focus-visible:ring-2"
                 {...form.register("currentPassword")}
               />
               {form.formState.errors.currentPassword?.message ? (
@@ -163,7 +163,7 @@ export default function ChangePasswordForm() {
             <PasswordInput
               id="newPassword"
               autoComplete="new-password"
-              className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
+              className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-surface px-3 text-sm shadow-none focus-visible:ring-2"
               {...form.register("newPassword")}
             />
             {form.formState.errors.newPassword?.message ? (
@@ -178,7 +178,7 @@ export default function ChangePasswordForm() {
             <PasswordInput
               id="confirmPassword"
               autoComplete="new-password"
-              className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2"
+              className="text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-surface px-3 text-sm shadow-none focus-visible:ring-2"
               {...form.register("confirmPassword")}
             />
             {form.formState.errors.confirmPassword?.message ? (

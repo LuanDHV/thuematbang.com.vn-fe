@@ -10,10 +10,11 @@ export default async function NewsSection() {
   const newsFetch = newsService.getAll({ limit: 4 });
 
   return (
-    <section className="layout-section w-full lg:flex lg:min-h-screen lg:items-center">
+    <section className="layout-section-sm w-full">
       <div className="layout-container w-full">
         <div className="mb-16 text-center">
           <Title
+            eyebrow="Cập nhật"
             title="Tin tức"
             description="Tổng hợp tin tức, kiến thức và xu hướng bất động sản mới nhất."
           />
@@ -29,7 +30,7 @@ export default async function NewsSection() {
 
             if (isEmpty) {
               return (
-                <div className="surface-card mt-12 flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-black/8 px-6 py-10 text-center">
+                <div className="surface-card mt-12 flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-hairline px-6 py-10 text-center">
                   <p className="text-body text-base font-medium">
                     Tin tức sẽ sớm được cập nhật
                   </p>

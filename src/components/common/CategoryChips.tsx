@@ -33,8 +33,8 @@ export function CategoryChips({
               onClick={() => onChange(item.value)}
               className={`focus-visible:ring-primary/35 relative inline-flex cursor-pointer snap-start items-center gap-1.5 rounded-xl border px-4 py-2 text-sm font-medium transition-all duration-200 ease-out focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none ${
                 isActive
-                  ? "bg-primary text-white"
-                  : "text-body hover:border-primary hover:text-heading border-[rgba(61,32,10,0.14)] bg-white"
+                  ? "border-primary bg-primary text-white"
+                  : "border-hairline-strong text-body hover:border-primary hover:bg-accent-soft hover:text-heading bg-surface"
               } `}
             >
               {item.label}

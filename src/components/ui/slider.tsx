@@ -21,8 +21,8 @@ function Slider({
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-subtle">
         <SliderPrimitive.Range className="bg-primary absolute h-full" />
       </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="border-primary focus-visible:ring-primary/15 block h-5 w-5 cursor-pointer rounded-full border-2 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-colors outline-none focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50" />
-      <SliderPrimitive.Thumb className="border-primary focus-visible:ring-primary/15 block h-5 w-5 cursor-pointer rounded-full border-2 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-colors outline-none focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50" />
+      <SliderPrimitive.Thumb className="border-primary focus-visible:ring-primary/15 block h-5 w-5 cursor-pointer rounded-full border-2 bg-surface shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-colors outline-none focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50" />
+      <SliderPrimitive.Thumb className="border-primary focus-visible:ring-primary/15 block h-5 w-5 cursor-pointer rounded-full border-2 bg-surface shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-colors outline-none focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50" />
     </SliderPrimitive.Root>
   );
 }

@@ -2,11 +2,7 @@
 
 import { useFormContext } from "react-hook-form";
 
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 
 type ListingCheckboxFieldProps = {
@@ -33,12 +29,12 @@ export function ListingCheckboxField({
 
   return (
     <Field className={cn("flex cursor-pointer flex-col gap-2", className)}>
-      <div className="rounded-xl border border-black/8 bg-white px-4 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+      <div className="rounded-xl border border-hairline bg-surface px-4 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
         <label htmlFor={name} className="flex cursor-pointer items-start gap-3">
           <input
             id={name}
             type="checkbox"
-            className="accent-primary text-primary focus:ring-primary/12 mt-1 h-4 w-4 shrink-0 rounded border-black/20 shadow-sm focus:ring-4"
+            className="accent-primary text-primary focus:ring-primary/12 mt-1 h-4 w-4 shrink-0 rounded border-hairline-strong shadow-sm focus:ring-4"
             {...register(name)}
           />
           <div className="flex flex-1 flex-col gap-1">
@@ -58,4 +54,3 @@ export function ListingCheckboxField({
     </Field>
   );
 }
-

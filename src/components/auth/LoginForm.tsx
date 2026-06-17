@@ -74,7 +74,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden border-black/6 p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+      <Card className="overflow-hidden border-hairline p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="bg-surface relative hidden md:block">
             <Image
@@ -84,12 +84,12 @@ export function LoginForm({
               sizes="(min-width: 768px) 50vw, 0px"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/38 via-black/10 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.38)] via-[rgba(28,20,12,0.10)] to-transparent" />
           </div>
 
           <form
             onSubmit={onSubmit}
-            className="flex flex-col justify-center bg-white p-8 md:p-12"
+            className="flex flex-col justify-center bg-surface p-8 md:p-12"
           >
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
@@ -118,7 +118,7 @@ export function LoginForm({
                   {...register("identifier")}
                 />
                 {errors.identifier?.message ? (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-danger">
                     {errors.identifier.message}
                   </p>
                 ) : null}
@@ -148,7 +148,7 @@ export function LoginForm({
                   {...register("password")}
                 />
                 {errors.password?.message ? (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-danger">
                     {errors.password.message}
                   </p>
                 ) : null}
@@ -167,14 +167,14 @@ export function LoginForm({
               </Field>
 
               {loginMutation.error ? (
-                <p className="text-center text-sm text-red-500">
+                <p className="text-center text-sm text-danger">
                   Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.
                 </p>
               ) : null}
 
               {isAdminVariant ? null : (
                 <>
-                  <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary mb-1 py-2 *:data-[slot=field-separator-content]:bg-white *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
+                  <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary mb-1 py-2 *:data-[slot=field-separator-content]:bg-surface *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
                     Hoặc
                   </FieldSeparator>
 

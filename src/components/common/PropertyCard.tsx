@@ -73,7 +73,7 @@ function getTierTone(priorityStatus?: string | null): CardTone {
 
 function CardFooter({ property }: { property: Property }) {
   return (
-    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
+    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-hairline pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
         <Calendar size={14} />
         {formatDate(property.createdAt)}
@@ -91,8 +91,8 @@ function TierBadge({ tone }: { tone: CardTone }) {
     tone === "PREMIUM"
       ? "bg-primary text-white"
       : tone === "STANDARD"
-        ? "bg-white/90 text-body"
-        : "bg-white/80 text-secondary";
+        ? "bg-surface/92 text-body"
+        : "bg-subtle text-secondary";
   const iconSize = 14;
 
   return (
@@ -113,7 +113,7 @@ function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
 
   return (
     <div
-      className={`absolute top-3 right-3 z-30 rounded-lg bg-black/52 font-semibold text-white ${badgeSizeClass}`}
+      className={`absolute top-3 right-3 z-30 rounded-lg bg-[rgba(28,20,12,0.58)] font-semibold text-white ${badgeSizeClass}`}
     >
       <span className="inline-flex items-center gap-1">
         <Images size={iconSize} />
@@ -132,15 +132,15 @@ function OverlayTitle({
 }) {
   const titleClass =
     tone === "PREMIUM"
-      ? "text-2xl"
+      ? "text-xl md:text-2xl"
       : tone === "STANDARD"
-        ? "text-xl "
-        : "text-lg";
+        ? "text-lg md:text-xl"
+        : "text-base md:text-lg";
 
   return (
     <div className="absolute right-3 bottom-3 left-3 z-20">
       <h3
-        className={`line-clamp-2 leading-snug font-medium text-white ${titleClass}`}
+        className={`line-clamp-2 leading-snug font-semibold text-white ${titleClass}`}
       >
         {property.title}
       </h3>
@@ -169,7 +169,7 @@ function FeaturedCard({ property }: { property: Property }) {
           className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/62 via-black/18 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.62)] via-[rgba(28,20,12,0.18)] to-transparent" />
         <OverlayTitle property={property} tone={tone} />
       </div>
 
@@ -247,7 +247,7 @@ function PremiumCard({ property }: { property: Property }) {
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.24)] to-transparent" />
         <TierBadge tone="PREMIUM" />
         <ImageCountBadge count={realImageCount} tone="PREMIUM" />
         <OverlayTitle property={property} tone="PREMIUM" />
@@ -304,7 +304,7 @@ function StandardCard({ property }: { property: Property }) {
           ))}
         </div>
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.24)] to-transparent" />
         <TierBadge tone="STANDARD" />
         <ImageCountBadge count={realImageCount} tone="STANDARD" />
         <OverlayTitle property={property} tone="STANDARD" />
@@ -335,7 +335,7 @@ function FreeCard({ property }: { property: Property }) {
           className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/22 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.22)] to-transparent" />
         <TierBadge tone="FREE" />
         <OverlayTitle property={property} tone="FREE" />
       </div>

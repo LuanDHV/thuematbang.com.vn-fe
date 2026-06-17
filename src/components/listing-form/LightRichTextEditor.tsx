@@ -107,7 +107,7 @@ export function LightRichTextEditor({
 
   if (!editor) {
     return (
-      <div className={cn("rounded-xl border border-black/8 bg-white", className)}>
+      <div className={cn("rounded-xl border border-hairline bg-surface", className)}>
         <div className="px-4 py-3 text-sm text-secondary">
           Đang khởi tạo trình soạn thảo...
         </div>
@@ -124,8 +124,8 @@ export function LightRichTextEditor({
   };
 
   return (
-    <div className={cn("overflow-hidden rounded-xl border border-black/8 bg-white", className)}>
-      <div className="flex flex-wrap items-center gap-2 border-b border-black/8 p-2">
+    <div className={cn("overflow-hidden rounded-xl border border-hairline bg-surface", className)}>
+      <div className="flex flex-wrap items-center gap-2 border-b border-hairline p-2">
         <ToolbarButton
           title="Đậm"
           active={editor.isActive("bold")}
@@ -194,8 +194,6 @@ export function LightRichTextEditor({
       </div>
 
       <EditorContent editor={editor} className="min-h-48" />
-
     </div>
   );
 }
-

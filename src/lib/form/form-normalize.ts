@@ -18,65 +18,12 @@ export function cloneFormData(formData: FormData) {
   return nextFormData;
 }
 
-export function normalizeBooleanLike(value: FormDataEntryValue | null) {
-  return value === "true" || value === "on" || value === "1";
-}
-
-export function normalizeBooleanField(formData: FormData, fieldName: string) {
-  const values = formData.getAll(fieldName);
-  if (!values.length) return;
-
-  const normalized = values.some((value) => {
-    if (typeof value !== "string") return false;
-    const lowered = value.toLowerCase().trim();
-    return lowered === "true" || lowered === "on" || lowered === "1";
-  });
-
-  formData.set(fieldName, normalized ? "true" : "false");
-}
-
-export function normalizeSlugField(
-  formData: FormData,
-  sourceField: string,
-  targetField: string,
-) {
-  const sourceValue = String(formData.get(sourceField) ?? "").trim();
-  const currentSlug = String(formData.get(targetField) ?? "").trim();
-  if (currentSlug) return;
-
-  formData.set(targetField, sourceValue);
-}
-
 export function normalizeListingSlug(formData: FormData) {
   const title = String(formData.get("title") ?? "");
   const currentSlug = String(formData.get("slug") ?? "");
   const nextSlug = buildListingSlug(currentSlug || title);
 
   formData.set("slug", nextSlug);
-}
-
-export function normalizePropertyPayload(formData: FormData) {
-  const nextFormData = cloneFormData(formData);
-  normalizeListingSlug(nextFormData);
-  const booleanFields = [
-    "isNegotiable",
-    "isBoosted",
-    "isFeatured",
-  ] as const;
-
-  for (const fieldName of booleanFields) {
-    const isTrue = normalizeBooleanLike(nextFormData.get(fieldName));
-    nextFormData.set(fieldName, isTrue ? "true" : "false");
-  }
-
-  return nextFormData;
-}
-
-export function normalizePropertyUpdateFormData(formData: FormData) {
-  normalizeBooleanField(formData, "isNegotiable");
-  normalizeBooleanField(formData, "isBoosted");
-  normalizeBooleanField(formData, "isFeatured");
-  return formData;
 }
 
 export function normalizeRentRequestPayload(formData: FormData) {

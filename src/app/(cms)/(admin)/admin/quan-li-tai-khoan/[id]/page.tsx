@@ -56,7 +56,7 @@ export default async function AdminUserRolePage({ params }: PageProps) {
                   id="role"
                   name="role"
                   defaultValue={user.role}
-                  className="text-body focus-visible:ring-primary/12 focus-visible:border-primary/25 h-11 w-full rounded-lg border border-black/8 bg-white px-3.5 py-2 text-sm transition-all outline-none focus-visible:ring-4"
+                  className="text-body h-11 w-full rounded-lg border border-hairline-strong bg-surface px-3.5 py-2 text-sm transition-all outline-none focus-visible:border-primary/25 focus-visible:ring-4 focus-visible:ring-primary/12"
                 >
                   {USER_ROLE_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>

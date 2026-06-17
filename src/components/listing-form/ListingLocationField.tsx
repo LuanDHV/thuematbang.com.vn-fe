@@ -5,7 +5,12 @@ import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 
 import { getProvinceWardsAction } from "@/actions/location.actions";
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -23,7 +28,6 @@ type ListingLocationFieldProps = {
   labelWard?: string;
   description?: string;
   requiredProvince?: boolean;
-  requiredWard?: boolean;
 };
 
 export function ListingLocationField({
@@ -34,7 +38,6 @@ export function ListingLocationField({
   labelWard = "Phường/xã",
   description,
   requiredProvince = false,
-  requiredWard = false,
 }: ListingLocationFieldProps) {
   const {
     control,
@@ -96,9 +99,14 @@ export function ListingLocationField({
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Field className="flex flex-col gap-2">
-        <FieldLabel htmlFor={provinceName} className="text-heading font-semibold">
+        <FieldLabel
+          htmlFor={provinceName}
+          className="text-heading font-semibold"
+        >
           <span>{labelProvince}</span>
-          {requiredProvince ? <span className="ml-1 text-red-500">*</span> : null}
+          {requiredProvince ? (
+            <span className="ml-1 text-red-500">*</span>
+          ) : null}
         </FieldLabel>
         <Controller
           control={control}
@@ -127,7 +135,6 @@ export function ListingLocationField({
       <Field className="flex flex-col gap-2">
         <FieldLabel htmlFor={wardName} className="text-heading font-semibold">
           <span>{labelWard}</span>
-          {requiredWard ? <span className="ml-1 text-red-500">*</span> : null}
         </FieldLabel>
         <Controller
           control={control}
@@ -159,7 +166,9 @@ export function ListingLocationField({
             </Select>
           )}
         />
-        {description ? <FieldDescription>{description}</FieldDescription> : null}
+        {description ? (
+          <FieldDescription>{description}</FieldDescription>
+        ) : null}
         <FieldError>{wardError?.message as string | undefined}</FieldError>
       </Field>
     </div>

@@ -222,7 +222,7 @@ export function RentRequestCreateForm({
             name="contactPhone"
             label="Số điện thoại"
             required
-            placeholder="0901234567"
+            placeholder="Nhập SĐT"
             autoComplete="tel"
             type="tel"
             inputMode="tel"

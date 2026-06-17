@@ -187,7 +187,7 @@ export function ListingFilterDrawer({
           } ${
             activeCount > 0
               ? "border-primary text-primary bg-primary/5"
-              : "text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary border-black/8 bg-white"
+              : "text-secondary hover:border-primary/20 hover:bg-accent-soft hover:text-primary border-hairline bg-surface"
           }`}
         >
           <Filter size={14} />
@@ -200,8 +200,8 @@ export function ListingFilterDrawer({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border border-black/6 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
-        <DialogHeader className="from-primary/10 border-b border-black/6 bg-linear-to-b via-white to-white p-5">
+      <DialogContent className="flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border border-hairline bg-surface p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+        <DialogHeader className="from-primary/10 border-b border-hairline bg-linear-to-b via-surface to-surface p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao
           </DialogTitle>
@@ -213,7 +213,7 @@ export function ListingFilterDrawer({
             value={demandTab}
             onValueChange={(v) => setDemandTab(v as DemandTab)}
           >
-            <TabsList className="mt-4 flex h-12 w-full items-stretch rounded-xl border border-black/6 bg-white p-1">
+            <TabsList className="mt-4 flex h-12 w-full items-stretch rounded-xl border border-hairline bg-surface p-1">
               <TabsTrigger
                 value="cho-thue"
                 className="data-[state=active]:bg-primary h-full flex-1 rounded-lg px-4 text-base font-semibold data-[state=active]:text-white"
@@ -230,7 +230,7 @@ export function ListingFilterDrawer({
           </Tabs>
         </DialogHeader>
 
-        <div className="flex min-h-0 flex-1 flex-col bg-white">
+        <div className="flex min-h-0 flex-1 flex-col bg-surface">
           <div className="via-app/60 min-h-0 flex-1 overflow-y-auto bg-linear-to-b from-white to-white px-4">
             {detailTab !== "main" ? (
               <Button
@@ -287,7 +287,7 @@ export function ListingFilterDrawer({
             ) : null}
           </div>
 
-          <div className="flex items-center justify-between gap-2 border-t border-black/6 bg-white/95 p-4 backdrop-blur supports-backdrop-filter:bg-white/75">
+          <div className="flex items-center justify-between gap-2 border-t border-hairline bg-surface/95 p-4 backdrop-blur supports-backdrop-filter:bg-surface/75">
             <Button
               variant="outline"
               onClick={handleReset}

@@ -54,7 +54,7 @@ export default function PosterContactCard({
 
       <div className="mt-4 flex items-center gap-3">
         {avatarUrl ? (
-          <div className="relative h-12 w-12 overflow-hidden rounded-full ring-1 ring-black/5">
+          <div className="relative h-12 w-12 overflow-hidden rounded-full ring-1 ring-hairline">
             <CloudinaryImage
               src={avatarUrl}
               alt={fullName || "Người đăng"}
@@ -65,7 +65,7 @@ export default function PosterContactCard({
             />
           </div>
         ) : (
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-sm font-bold text-primary">
             {getInitials(fullName)}
           </div>
         )}
@@ -97,4 +97,3 @@ export default function PosterContactCard({
     </section>
   );
 }
-

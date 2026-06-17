@@ -30,7 +30,7 @@ export default function PropertyDetailSidebar({
         />
       </div>
 
-      <section className="surface-card hidden rounded-2xl border p-5 lg:block">
+      <section className="surface-card hidden rounded-2xl border border-hairline p-5 lg:block">
         <h3 className="text-heading text-base font-medium">
           <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
           Gợi ý theo khu vực
@@ -38,7 +38,7 @@ export default function PropertyDetailSidebar({
 
         {relatedCategoryProvinceLinks.length > 0 ? (
           <div className="mt-3">
-            <div className="grid divide-y divide-black/6">
+            <div className="grid divide-y divide-hairline">
               {relatedCategoryProvinceLinks.map((item) => (
                 <Link
                   href={item.href}

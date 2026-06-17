@@ -231,7 +231,7 @@ export function renderFieldContent<TData>({
       const alt = field.altAccessor?.(row) ?? field.header;
 
       return (
-        <div className="bg-subtle inline-flex overflow-hidden rounded-xl border border-black/6 p-1">
+        <div className="bg-subtle inline-flex overflow-hidden rounded-xl border border-hairline p-1">
           <Image
             src={value}
             alt={alt}

@@ -48,7 +48,7 @@ export default function RentRequestDetailContent({
     <div className="surface-card flex w-full flex-col gap-6 p-5 lg:gap-8">
       <div className="flex flex-col gap-6 lg:gap-8">
         <section>
-          <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100">
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface-alt">
             <CloudinaryImage
               src={RENT_REQUEST_COVER_IMAGE}
               alt={rentRequest.title}
@@ -89,7 +89,7 @@ export default function RentRequestDetailContent({
         <section>
           <div className="mb-3 flex items-center gap-3">
             <span className="bg-primary h-6 w-1 rounded-full" />
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-heading text-xl font-semibold">
               Thông tin mô tả
             </h2>
           </div>
@@ -101,7 +101,7 @@ export default function RentRequestDetailContent({
         <section>
           <div className="mb-3 flex items-center gap-3">
             <span className="bg-primary h-6 w-1 rounded-full" />
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-heading text-xl font-semibold">
               Thông tin chi tiết
             </h2>
           </div>
@@ -170,7 +170,7 @@ export default function RentRequestDetailContent({
         <div>
           <div className="mb-3 flex items-center gap-3">
             <span className="bg-primary h-6 w-1 rounded-full" />
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-heading text-xl font-semibold">
               Bất động sản đã xem
             </h2>
           </div>
