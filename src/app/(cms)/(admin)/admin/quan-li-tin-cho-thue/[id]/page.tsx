@@ -74,7 +74,7 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
           floors: property.floors ?? undefined,
           direction: property.direction ?? null,
           provinceId: property.provinceId,
-          wardId: property.wardId,
+          wardId: property.wardId ?? undefined,
           contactName: property.contactName,
           contactPhone: property.contactPhone,
           addressDetail: property.addressDetail ?? "",

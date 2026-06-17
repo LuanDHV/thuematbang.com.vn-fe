@@ -10,7 +10,7 @@ export interface RentRequest {
   slug: string;
   categoryId: number;
   desiredProvinceId: number;
-  desiredWardId: number;
+  desiredWardId: number | null;
   budget: number;
   desiredArea: number;
   bedrooms?: number | null;

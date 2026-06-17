@@ -12,6 +12,7 @@ import { ListingNumberField } from "@/components/listing-form/ListingNumberField
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
+import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
@@ -147,7 +148,9 @@ export function RentRequestCreateForm({
 
   const { showAdminOnly } = getVisibleModeFields(mode);
 
-  const onSubmit: SubmitHandler<RentRequestCreateFormValues> = async (values) => {
+  const onSubmit: SubmitHandler<RentRequestCreateFormValues> = async (
+    values,
+  ) => {
     setSubmitError(null);
     setSuccessOpen(false);
     setCreatedSlug(null);
@@ -307,29 +310,37 @@ export function RentRequestCreateForm({
           labelProvince="Khu vực mong muốn"
           labelWard="Phường/xã mong muốn"
           requiredProvince
-          requiredWard
-        />
-
-        <ListingRichTextField
-          name="requirementText"
-          label="Mô tả thêm"
-          placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
         />
 
         {showAdminOnly ? (
+          <ListingRichTextField
+            name="requirementText"
+            label="Mô tả thêm"
+            placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
+          />
+        ) : (
+          <ListingTextareaField
+            name="requirementText"
+            label="Mô tả thêm"
+            placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
+            rows={8}
+          />
+        )}
+
+        {showAdminOnly ? (
           <div className="grid gap-4 md:grid-cols-2">
-          <ListingSelectField
-            name="status"
-            label="Trạng thái"
-            options={RENT_REQUEST_STATUS_OPTIONS}
-          />
-          <ListingCheckboxField
-            name="isMatched"
-            label="Đã khớp nhu cầu"
-            description="Bật khi nhu cầu này đã được match với tin phù hợp."
-          />
-        </div>
-      ) : null}
+            <ListingSelectField
+              name="status"
+              label="Trạng thái"
+              options={RENT_REQUEST_STATUS_OPTIONS}
+            />
+            <ListingCheckboxField
+              name="isMatched"
+              label="Đã khớp nhu cầu"
+              description="Bật khi nhu cầu này đã được match với tin phù hợp."
+            />
+          </div>
+        ) : null}
       </ListingCreateFormShell>
 
       {showSuccessDialog ? (

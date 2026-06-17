@@ -29,7 +29,7 @@ export interface Property {
   isBoosted: boolean;
   boostCount: number;
   provinceId: number;
-  wardId: number;
+  wardId: number | null;
   addressDetail?: string | null;
   longitude?: number | null;
   latitude?: number | null;

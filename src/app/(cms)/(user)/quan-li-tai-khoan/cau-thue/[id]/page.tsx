@@ -67,7 +67,7 @@ export default async function UserRentRequestEditPage({ params }: PageProps) {
           floors: rentRequest.floors ?? undefined,
           desiredDirection: rentRequest.desiredDirection ?? null,
           desiredProvinceId: rentRequest.desiredProvinceId,
-          desiredWardId: rentRequest.desiredWardId,
+          desiredWardId: rentRequest.desiredWardId ?? undefined,
           contactName: rentRequest.contactName,
           contactPhone: rentRequest.contactPhone,
           requirementText: rentRequest.requirementText ?? "",

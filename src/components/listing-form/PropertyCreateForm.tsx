@@ -7,13 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
 import { ListingCreateSuccessDialog } from "@/components/listing-form/ListingCreateSuccessDialog";
-import {
-  ListingImageGalleryField,
-} from "@/components/listing-form/ListingImageGalleryField";
+import { ListingImageGalleryField } from "@/components/listing-form/ListingImageGalleryField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
+import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
@@ -124,8 +123,9 @@ export function PropertyCreateForm({
     [existingImages],
   );
   const [images, setImages] = useState<File[]>([]);
-  const [existingGalleryImages, setExistingGalleryImages] =
-    useState<ExistingGalleryImage[]>(stableExistingImages);
+  const [existingGalleryImages, setExistingGalleryImages] = useState<
+    ExistingGalleryImage[]
+  >(() => stableExistingImages);
   const [imagesError, setImagesError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
@@ -180,10 +180,6 @@ export function PropertyCreateForm({
       });
     }
   }, [form, slugValue, titleValue]);
-
-  useEffect(() => {
-    setExistingGalleryImages(stableExistingImages);
-  }, [stableExistingImages]);
 
   const categoryOptions = useMemo(
     () =>
@@ -414,7 +410,6 @@ export function PropertyCreateForm({
           wardName="wardId"
           provinces={provinces}
           requiredProvince
-          requiredWard
         />
 
         <ListingTextField
@@ -423,11 +418,20 @@ export function PropertyCreateForm({
           placeholder="Số nhà, tên tòa nhà, hẻm..."
         />
 
-        <ListingRichTextField
-          name="content"
-          label="Mô tả thêm"
-          placeholder="Mô tả chi tiết về tin đăng..."
-        />
+        {showAdminOnly ? (
+          <ListingRichTextField
+            name="content"
+            label="Mô tả thêm"
+            placeholder="Mô tả chi tiết về tin đăng..."
+          />
+        ) : (
+          <ListingTextareaField
+            name="content"
+            label="Mô tả thêm"
+            placeholder="Mô tả chi tiết về tin đăng..."
+            rows={8}
+          />
+        )}
 
         {showAdminOnly ? (
           <>

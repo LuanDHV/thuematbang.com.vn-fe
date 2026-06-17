@@ -66,7 +66,7 @@ export type CreateRentRequestPayload = {
   floors?: number;
   desiredDirection?: PropertyDirection | null;
   desiredProvinceId: number;
-  desiredWardId: number;
+  desiredWardId?: number | null;
   contactName: string;
   contactPhone: string;
   requirementText?: string;

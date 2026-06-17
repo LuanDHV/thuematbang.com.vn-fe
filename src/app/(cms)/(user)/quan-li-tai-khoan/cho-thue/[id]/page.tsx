@@ -70,7 +70,7 @@ export default async function UserPropertyEditPage({ params }: PageProps) {
           floors: property.floors ?? undefined,
           direction: property.direction ?? null,
           provinceId: property.provinceId,
-          wardId: property.wardId,
+          wardId: property.wardId ?? undefined,
           contactName: property.contactName,
           contactPhone: property.contactPhone,
           addressDetail: property.addressDetail ?? "",

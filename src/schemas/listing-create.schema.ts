@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 import {
   PROPERTY_DIRECTION_VALUES,
@@ -122,12 +122,7 @@ export const propertyCreateFormSchema = z.object({
     positiveMessage: "Vui lòng chọn tỉnh/thành",
     integer: true,
   }),
-  wardId: requiredNumberSchema({
-    requiredMessage: "Vui lòng chọn phường/xã",
-    invalidMessage: "Khu vực không hợp lệ",
-    positiveMessage: "Vui lòng chọn phường/xã",
-    integer: true,
-  }),
+  wardId: optionalIntegerSchema,
   contactName: z
     .string()
     .trim()
@@ -191,12 +186,7 @@ export const rentRequestCreateFormSchema = z.object({
     positiveMessage: "Vui lòng chọn tỉnh/thành",
     integer: true,
   }),
-  desiredWardId: requiredNumberSchema({
-    requiredMessage: "Vui lòng chọn phường/xã",
-    invalidMessage: "Khu vực không hợp lệ",
-    positiveMessage: "Vui lòng chọn phường/xã",
-    integer: true,
-  }),
+  desiredWardId: optionalIntegerSchema,
   contactName: z
     .string()
     .trim()
@@ -219,3 +209,4 @@ export type PropertyCreateFormValues = z.infer<
 export type RentRequestCreateFormValues = z.infer<
   typeof rentRequestCreateFormSchema
 >;
+
