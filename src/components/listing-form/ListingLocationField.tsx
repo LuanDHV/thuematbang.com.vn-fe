@@ -11,13 +11,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import type { Province } from "@/types/location";
 
 type ListingLocationFieldProps = {
@@ -112,21 +106,14 @@ export function ListingLocationField({
           control={control}
           name={provinceName}
           render={({ field }) => (
-            <Select
+            <SearchableSelect
+              id={provinceName}
               value={field.value ? String(field.value) : ""}
               onValueChange={field.onChange}
-            >
-              <SelectTrigger id={provinceName}>
-                <SelectValue placeholder="Chọn tỉnh/thành" />
-              </SelectTrigger>
-              <SelectContent>
-                {provinceOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              options={provinceOptions}
+              placeholder="Chọn tỉnh/thành"
+              searchPlaceholder="Tìm tỉnh/thành..."
+            />
           )}
         />
         <FieldError>{provinceError?.message as string | undefined}</FieldError>
@@ -140,30 +127,23 @@ export function ListingLocationField({
           control={control}
           name={wardName}
           render={({ field }) => (
-            <Select
+            <SearchableSelect
+              id={wardName}
               value={field.value ? String(field.value) : ""}
               onValueChange={field.onChange}
+              options={wardOptions}
+              placeholder={
+                provinceIdNumber
+                  ? isFetching
+                    ? "Đang tải phường/xã..."
+                    : "Chọn phường/xã"
+                  : "Chọn tỉnh/thành trước"
+              }
+              searchPlaceholder="Tìm phường/xã..."
+              allowClear
+              emptyLabel="Không chọn phường/xã"
               disabled={!provinceIdNumber || isFetching}
-            >
-              <SelectTrigger id={wardName}>
-                <SelectValue
-                  placeholder={
-                    provinceIdNumber
-                      ? isFetching
-                        ? "Đang tải phường/xã..."
-                        : "Chọn phường/xã"
-                      : "Chọn tỉnh/thành trước"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {wardOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
           )}
         />
         {description ? (

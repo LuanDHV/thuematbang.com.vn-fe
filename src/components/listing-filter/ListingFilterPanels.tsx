@@ -1,13 +1,7 @@
 "use client";
 
 import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import {
   Building2,
   ChevronRight,
@@ -346,13 +340,20 @@ export function LocationDetailTab({
 }: DetailTabSharedProps & {
   provinceWardMap: ProvinceWardMap;
 }) {
-  const wards = current.province
-    ? Object.keys(provinceWardMap[current.province] ?? {})
+  const provinceOptions = Object.keys(provinceWardMap).map((province) => ({
+    value: province,
+    label: province,
+  }));
+  const wardOptions = current.province
+    ? Object.keys(provinceWardMap[current.province] ?? {}).map((ward) => ({
+        value: ward,
+        label: ward,
+      }))
     : [];
 
   return (
     <div className="flex flex-col gap-3">
-      <Select
+      <SearchableSelect
         value={current.province}
         onValueChange={(valueItem) =>
           updateCurrent((prev) => ({
@@ -361,41 +362,25 @@ export function LocationDetailTab({
             ward: "",
           }))
         }
-      >
-          <SelectTrigger className="h-11 cursor-pointer rounded-xl border border-hairline">
-          <SelectValue placeholder="Chọn tỉnh / thành phố" />
-        </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-80 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {Object.keys(provinceWardMap).map((province) => (
-            <SelectItem
-              key={province}
-              value={province}
-              className="cursor-pointer"
-            >
-              {province}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        options={provinceOptions}
+        placeholder="Chọn tỉnh / thành phố"
+        searchPlaceholder="Tìm tỉnh / thành phố..."
+        allowClear
+        emptyLabel="Tất cả tỉnh / thành phố"
+      />
 
-      <Select
+      <SearchableSelect
         value={current.ward}
         onValueChange={(valueItem) =>
           updateCurrent((prev) => ({ ...prev, ward: valueItem }))
         }
+        options={wardOptions}
+        placeholder="Chọn phường / xã"
+        searchPlaceholder="Tìm phường / xã..."
+        allowClear
+        emptyLabel="Tất cả phường / xã"
         disabled={!current.province}
-      >
-          <SelectTrigger className="h-11 cursor-pointer rounded-xl border border-hairline">
-          <SelectValue placeholder="Chọn phường / xã" />
-        </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-80 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {wards.map((ward) => (
-            <SelectItem key={ward} value={ward} className="cursor-pointer">
-              {ward}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      />
     </div>
   );
 }
