@@ -76,7 +76,7 @@ export const PRICE_UNIT_OPTIONS: EnumOption<PriceUnit>[] = PRICE_UNIT_VALUES.map
     const labels: Record<PriceUnit, string> = {
       MILLION: "Triệu",
       BILLION: "Tỷ",
-      HUNDRED_THOUSAND_PER_M2: "Trăm nghìn/m²",
+      THOUSAND_PER_M2: "Nghìn/m²",
       MILLION_PER_M2: "Triệu/m²",
     };
 

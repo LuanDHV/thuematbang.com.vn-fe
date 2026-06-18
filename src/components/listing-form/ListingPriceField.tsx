@@ -23,8 +23,8 @@ import { cn } from "@/lib/utils";
 const LISTING_PRICE_UNIT_OPTIONS = [
   { value: "MILLION", label: "Triệu" },
   { value: "BILLION", label: "Tỷ" },
-  { value: "HUNDRED_THOUSAND_PER_M2", label: "Trăm nghìn/m2" },
-  { value: "MILLION_PER_M2", label: "Triệu/m2" },
+  { value: "THOUSAND_PER_M2", label: "Nghìn/m²" },
+  { value: "MILLION_PER_M2", label: "Triệu/m²" },
 ] as const;
 
 type ListingPriceFieldProps = {

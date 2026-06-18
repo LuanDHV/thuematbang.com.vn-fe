@@ -37,7 +37,7 @@ export const PUBLISH_SOURCE_VALUES = [
 export const PRICE_UNIT_VALUES = [
   "MILLION",
   "BILLION",
-  "HUNDRED_THOUSAND_PER_M2",
+  "THOUSAND_PER_M2",
   "MILLION_PER_M2",
 ] as const satisfies readonly PriceUnit[];
 

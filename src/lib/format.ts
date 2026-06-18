@@ -30,15 +30,15 @@ type NumericLike = bigint | number | string;
 const PRICE_UNIT_LABELS: Record<PriceUnit, string> = {
   MILLION: "Triệu",
   BILLION: "Tỷ",
-  HUNDRED_THOUSAND_PER_M2: "Trăm nghìn/m²",
+  THOUSAND_PER_M2: "Nghìn/m²",
   MILLION_PER_M2: "Triệu/m²",
 };
 
 const LISTING_PRICE_UNIT_LABELS: Record<PriceUnit, string> = {
   MILLION: "Triệu",
   BILLION: "Tỷ",
-  HUNDRED_THOUSAND_PER_M2: "Trăm nghìn/m2",
-  MILLION_PER_M2: "Triệu/m2",
+  THOUSAND_PER_M2: "Nghìn/m²",
+  MILLION_PER_M2: "Triệu/m²",
 };
 
 // Normalize loose backend values once so the public formatters can stay small.
@@ -359,7 +359,8 @@ export function formatLocationParts(
   fallback = "Chưa cập nhật",
 ) {
   const normalized = parts.filter(
-    (part): part is string => typeof part === "string" && part.trim().length > 0,
+    (part): part is string =>
+      typeof part === "string" && part.trim().length > 0,
   );
 
   return normalized.length > 0
