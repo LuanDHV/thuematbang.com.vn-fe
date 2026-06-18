@@ -19,7 +19,7 @@ const categories = [
   { name: "Mặt Bằng", icon: <Store size={44} strokeWidth={1.2} /> },
 
   {
-    name: "Kho Xưởng, Khu công nghiệp",
+    name: "Kho xưởng, khu công nghiệp",
     icon: <Factory size={44} strokeWidth={1.2} />,
   },
   { name: "Căn hộ, chung cư", icon: <Building2 size={44} strokeWidth={1.2} /> },
@@ -41,7 +41,7 @@ export default function ProjectSection() {
           <Title
             eyebrow="Danh mục"
             title="Danh mục bất động sản"
-            description="Khám phá các nhóm bất động sản theo nhu cầu sử dụng, từ văn phòng, mặt bằng bán lẻ đến kho xưởng và nhà ở."
+            description="Khám phá các nhóm bất động sản theo nhu cầu sử dụng, từ văn phòng, mặt bằng bán lẻ đến kho xưởng, khu công nghiệp và nhà ở."
           />
         </div>
 

@@ -55,7 +55,7 @@ export function PropertyTypeDetailTab({
   return (
     <div className="flex flex-col gap-2">
       <label className="hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5">
-        <span className="text-sm text-heading">Tất cả loại mặt bằng</span>
+        <span className="text-sm text-heading">Tất cả loại bất động sản</span>
         <input
           type="checkbox"
           name="property-type-single"

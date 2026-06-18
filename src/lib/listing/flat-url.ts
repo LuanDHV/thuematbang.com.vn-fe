@@ -37,31 +37,15 @@ const BEDROOM_TOKEN_SUFFIX = "pn";
 const BATHROOM_TOKEN_SUFFIX = "pt";
 const DIRECTION_TOKEN_PREFIX = "huong-";
 
-const CATEGORY_SLUG_TO_TOKEN = new Map<string, string>([
-  ["van-phong", "van-phong"],
-  ["mat-bang", "mat-bang"],
-  ["kho-xuong", "kho-xuong"],
-  ["khu-cong-nghiep", "khu-cong-nghiep"],
-  ["can-ho-chung-cu", "can-ho-chung-cu"],
-  ["trung-tam-thuong-mai", "trung-tam-thuong-mai"],
-  ["nha-tro-phong-tro", "nha-tro-phong-tro"],
-]);
-const CATEGORY_TOKEN_TO_SLUG = new Map(
-  Array.from(CATEGORY_SLUG_TO_TOKEN.entries()).map(([slug, token]) => [
-    token,
-    slug,
-  ]),
-);
-CATEGORY_TOKEN_TO_SLUG.set("mat-bang", "mat-bang");
-const CATEGORY_SLUG_TO_LABEL = new Map<string, string>([
+const PROPERTY_CATEGORY_SLUG_TO_LABEL = new Map<string, string>([
   ["van-phong", "Văn Phòng"],
   ["mat-bang", "Mặt Bằng"],
-  ["kho-xuong", "Kho Xưởng"],
-  ["khu-cong-nghiep", "Khu Công Nghiệp"],
+  ["kho-xuong-khu-cong-nghiep", "Kho xưởng, khu công nghiệp"],
   ["can-ho-chung-cu", "Căn Hộ, Chung Cư"],
   ["trung-tam-thuong-mai", "Trung Tâm Thương Mại"],
   ["nha-tro-phong-tro", "Nhà Trọ, Phòng Trọ"],
 ]);
+const PROPERTY_CATEGORY_SLUGS = new Set(PROPERTY_CATEGORY_SLUG_TO_LABEL.keys());
 
 // Token builders must stay lightweight because both listing routes and suggestion
 // navigation depend on the same slug contract.
@@ -401,7 +385,7 @@ function buildCanonicalListingBlock1(
       const slug =
         findCategorySlugByName(propertyTypeName, context?.propertyCategories) ??
         compactSlugToken(propertyTypeName);
-      parts.push(CATEGORY_SLUG_TO_TOKEN.get(slug) ?? slug);
+      parts.push(slug);
     }
   } else if (value.categorySlug) {
     parts.push(value.categorySlug);
@@ -493,8 +477,9 @@ export function extractPropertyFilterRouteParts(
 
   return {
     categorySlug:
-      (CATEGORY_TOKEN_TO_SLUG.get(parsed.categorySlug ?? "") ??
-        parsed.categorySlug) || undefined,
+      parsed.categorySlug && PROPERTY_CATEGORY_SLUGS.has(parsed.categorySlug)
+        ? parsed.categorySlug
+        : undefined,
     provinceSlug: parsed.provinceSlug,
     wardSlug: parsed.wardSlug,
   };
@@ -632,11 +617,10 @@ export function parsePropertyFilterSlug(
   }
 
   const typeSlug = locationParsed.categorySlug ?? pending;
-  const normalizedTypeSlug = CATEGORY_TOKEN_TO_SLUG.get(typeSlug) ?? typeSlug;
+  const normalizedTypeSlug = compactSlugToken(typeSlug);
   const typeName =
     findCategoryNameBySlug(normalizedTypeSlug, context?.propertyCategories) ??
-    CATEGORY_SLUG_TO_LABEL.get(normalizedTypeSlug) ??
-    humanizeSlugToken(normalizedTypeSlug);
+    PROPERTY_CATEGORY_SLUG_TO_LABEL.get(normalizedTypeSlug);
 
   if (typeName) {
     initial.propertyTypes = [typeName];
@@ -651,7 +635,7 @@ export function isLikelyPropertyFilterSlug(rawSlug?: string) {
   if (rawSlug.includes("/")) return true;
 
   const [block1, block2] = splitListingSlugBlocks(rawSlug);
-  if (CATEGORY_TOKEN_TO_SLUG.has(block1 ?? "")) return true;
+  if (PROPERTY_CATEGORY_SLUGS.has(block1 ?? "")) return true;
 
   const tokenPrefixes = [
     PRICE_TOKEN_PREFIX,

@@ -23,8 +23,7 @@ export const DIRECTION_OPTIONS = PROPERTY_DIRECTION_OPTIONS.map((option) => ({
 export const mockFilterPropertyTypes = [
   "Văn phòng",
   "Mặt bằng",
-  "Kho xưởng",
-  "Khu công nghiệp",
+  "Kho xưởng, khu công nghiệp",
   "Căn hộ, chung cư",
   "Trung tâm thương mại",
   "Nhà trọ, phòng trọ",
