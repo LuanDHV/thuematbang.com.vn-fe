@@ -76,25 +76,8 @@ export default function AdminProjectForm({
   submitLabel,
   defaultValues,
   existingImages,
-  requireImages = true,
+  requireImages = false,
 }: AdminProjectFormProps) {
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [existingGalleryImages, setExistingGalleryImages] = useState<
-    ExistingGalleryImage[]
-  >(() => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
-  const [uploadedImages, setUploadedImages] = useState<
-    UploadedCloudinaryImage[]
-  >([]);
-  const [galleryBusy, setGalleryBusy] = useState(false);
-  const [draftId] = useState(() => crypto.randomUUID());
-  const { toast } = useToast();
-
-  const stableExistingImages = useMemo(
-    () => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
-    [existingImages],
-  );
-
   const resolvedDefaults = useMemo(
     () =>
       ({
@@ -103,6 +86,64 @@ export default function AdminProjectForm({
       }) as ProjectFormValues,
     [defaultValues],
   );
+
+  const normalizedExistingImages = useMemo(
+    () => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+    [existingImages],
+  );
+
+  const formStateKey = useMemo(() => {
+    const defaultsKey = JSON.stringify(resolvedDefaults);
+    const imagesKey = normalizedExistingImages
+      .map((image) => `${image.id}:${image.sortOrder}:${image.imageUrl}`)
+      .join("|");
+
+    return `${defaultsKey}::${imagesKey}`;
+  }, [normalizedExistingImages, resolvedDefaults]);
+
+  return (
+    <AdminProjectFormContent
+      key={formStateKey}
+      categories={categories}
+      provinces={provinces}
+      submitAction={submitAction}
+      title={title}
+      description={description}
+      submitLabel={submitLabel}
+      resolvedDefaults={resolvedDefaults}
+      initialExistingGalleryImages={normalizedExistingImages}
+      requireImages={requireImages}
+    />
+  );
+}
+
+type AdminProjectFormContentProps = AdminProjectFormProps & {
+  resolvedDefaults: ProjectFormValues;
+  initialExistingGalleryImages: ExistingGalleryImage[];
+};
+
+function AdminProjectFormContent({
+  categories,
+  provinces,
+  submitAction,
+  title,
+  description,
+  submitLabel,
+  resolvedDefaults,
+  initialExistingGalleryImages,
+  requireImages = false,
+}: AdminProjectFormContentProps) {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [existingGalleryImages, setExistingGalleryImages] = useState<
+    ExistingGalleryImage[]
+  >(() => initialExistingGalleryImages);
+  const [uploadedImages, setUploadedImages] = useState<
+    UploadedCloudinaryImage[]
+  >([]);
+  const [galleryBusy, setGalleryBusy] = useState(false);
+  const [draftId] = useState(() => crypto.randomUUID());
+  const { toast } = useToast();
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema) as never,
@@ -114,14 +155,6 @@ export default function AdminProjectForm({
     control: form.control,
     name: "name",
   });
-
-  useEffect(() => {
-    form.reset(resolvedDefaults);
-    setExistingGalleryImages(
-      normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
-    );
-    setUploadedImages([]);
-  }, [existingImages, form, resolvedDefaults]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(nameValue ?? ""));
@@ -160,7 +193,7 @@ export default function AdminProjectForm({
       return;
     }
 
-    const removedImageIds = stableExistingImages
+    const removedImageIds = initialExistingGalleryImages
       .filter(
         (image) =>
           !existingGalleryImages.some(
@@ -174,15 +207,17 @@ export default function AdminProjectForm({
       slug: buildListingSlug(values.name),
       images: uploadedImages,
     };
-    const payload: ProjectUpsertPayload = existingImages
-      ? {
-          ...basePayload,
-          removeImageIds: removedImageIds,
-          orderedExistingImageIds: existingGalleryImages.map(
-            (image) => image.id,
-          ),
-        }
-      : basePayload;
+    const payload: ProjectUpsertPayload =
+      removedImageIds.length > 0 ||
+      existingGalleryImages.length !== initialExistingGalleryImages.length
+        ? {
+            ...basePayload,
+            removeImageIds: removedImageIds,
+            orderedExistingImageIds: existingGalleryImages.map(
+              (image) => image.id,
+            ),
+          }
+        : basePayload;
 
     try {
       await submitAction(payload);
@@ -193,9 +228,7 @@ export default function AdminProjectForm({
       });
       setSuccessMessage("Đã lưu dự án thành công.");
       setUploadedImages([]);
-      setExistingGalleryImages(
-        normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
-      );
+      setExistingGalleryImages(initialExistingGalleryImages);
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Không thể lưu dự án.",

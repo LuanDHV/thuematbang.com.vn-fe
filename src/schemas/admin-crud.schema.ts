@@ -110,7 +110,7 @@ export const projectFormSchema = z.object({
   }, z.number().int().positive()),
   developer: optionalTextSchema,
   provinceId: requiredIntegerSchema,
-  wardId: requiredIntegerSchema,
+  wardId: optionalIntegerSchema,
   addressDetail: optionalTextSchema,
   longitude: optionalNumberSchema,
   latitude: optionalNumberSchema,

@@ -115,20 +115,6 @@ export function PropertyCreateForm({
   existingImages,
   showSuccessDialog = true,
 }: PropertyCreateFormProps) {
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [imagesError, setImagesError] = useState<string | null>(null);
-  const [existingGalleryImages, setExistingGalleryImages] = useState<
-    ExistingGalleryImage[]
-  >(() => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
-  const [uploadedImages, setUploadedImages] = useState<
-    UploadedCloudinaryImage[]
-  >([]);
-  const [galleryBusy, setGalleryBusy] = useState(false);
-  const [successOpen, setSuccessOpen] = useState(false);
-  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
-  const [draftId] = useState(() => crypto.randomUUID());
-  const { toast } = useToast();
-
   const resolvedDefaults = useMemo(
     () =>
       ({
@@ -150,6 +136,68 @@ export function PropertyCreateForm({
     [resolvedDefaults],
   );
 
+  const normalizedExistingImages = useMemo(
+    () => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+    [existingImages],
+  );
+
+  const formStateKey = useMemo(() => {
+    const defaultsKey = JSON.stringify(normalizedDefaults);
+    const imagesKey = normalizedExistingImages
+      .map((image) => `${image.id}:${image.sortOrder}:${image.imageUrl}`)
+      .join("|");
+
+    return `${defaultsKey}::${imagesKey}`;
+  }, [normalizedDefaults, normalizedExistingImages]);
+
+  return (
+    <PropertyCreateFormContent
+      key={formStateKey}
+      categories={categories}
+      provinces={provinces}
+      submitAction={submitAction}
+      title={title}
+      description={description}
+      submitLabel={submitLabel}
+      normalizedDefaults={normalizedDefaults}
+      initialExistingGalleryImages={normalizedExistingImages}
+      mode={mode}
+      showSuccessDialog={showSuccessDialog}
+    />
+  );
+}
+
+type PropertyCreateFormContentProps = PropertyCreateFormProps & {
+  normalizedDefaults: PropertyCreateFormValues;
+  initialExistingGalleryImages: ExistingGalleryImage[];
+};
+
+function PropertyCreateFormContent({
+  categories,
+  provinces,
+  submitAction,
+  title,
+  description,
+  submitLabel,
+  normalizedDefaults,
+  initialExistingGalleryImages,
+  mode = "public-create",
+  showSuccessDialog = true,
+}: PropertyCreateFormContentProps) {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [imagesError, setImagesError] = useState<string | null>(null);
+  const [existingGalleryImages, setExistingGalleryImages] = useState<
+    ExistingGalleryImage[]
+  >(() => initialExistingGalleryImages);
+  const [uploadedImages, setUploadedImages] = useState<
+    UploadedCloudinaryImage[]
+  >([]);
+  const [galleryBusy, setGalleryBusy] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
+  const [draftId] = useState(() => crypto.randomUUID());
+  const { toast } = useToast();
+
   const form = useForm<PropertyCreateFormValues>({
     resolver: zodResolver(propertyCreateFormSchema) as never,
     defaultValues: normalizedDefaults,
@@ -164,14 +212,6 @@ export function PropertyCreateForm({
     control: form.control,
     name: "slug",
   });
-
-  useEffect(() => {
-    form.reset(normalizedDefaults);
-    setUploadedImages([]);
-    setExistingGalleryImages(
-      normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
-    );
-  }, [existingImages, form, normalizedDefaults]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
@@ -221,9 +261,7 @@ export function PropertyCreateForm({
       return;
     }
 
-    const removedImageIds = normalizeGalleryImages(
-      existingImages ?? EMPTY_EXISTING_IMAGES,
-    )
+    const removedImageIds = initialExistingGalleryImages
       .filter(
         (image) =>
           !existingGalleryImages.some(
@@ -247,7 +285,7 @@ export function PropertyCreateForm({
       images: uploadedImages,
     };
     const payload: PropertyUpsertPayload =
-      existingImages && existingImages.length > 0
+      initialExistingGalleryImages.length > 0
         ? {
             ...basePayload,
             removeImageIds: removedImageIds,
@@ -261,9 +299,7 @@ export function PropertyCreateForm({
       const createdProperty = await submitAction(payload);
       form.reset(normalizedDefaults);
       setUploadedImages([]);
-      setExistingGalleryImages(
-        normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
-      );
+      setExistingGalleryImages(initialExistingGalleryImages);
 
       if (showSuccessDialog) {
         setCreatedSlug(createdProperty.slug);
