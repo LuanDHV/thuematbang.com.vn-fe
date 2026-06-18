@@ -55,6 +55,7 @@ export default async function AdminProjectEditPage({ params }: PageProps) {
         description="Cập nhật dữ liệu dự án trong CMS."
         submitLabel="Lưu thay đổi"
         requireImages={false}
+        resourceId={project.id}
         existingImages={
           project.images?.map((image) => ({
             id: image.id,

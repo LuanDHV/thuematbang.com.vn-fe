@@ -6,6 +6,7 @@ import { mediaService } from "@/services/media.service";
 export async function requestCloudinaryUploadSignatureAction(payload: {
   resourceType: string;
   draftId: string;
+  resourceId?: number | string;
 }) {
   const parsedPayload = cloudinaryUploadSignatureSchema.parse(payload);
   return mediaService.createUploadSignature(parsedPayload);

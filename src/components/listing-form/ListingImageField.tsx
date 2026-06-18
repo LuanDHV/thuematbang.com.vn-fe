@@ -34,6 +34,7 @@ type ListingImageFieldProps = {
   maxFileSizeBytes?: number;
   resourceType: CloudinaryUploadResourceType;
   draftId: string;
+  resourceId?: number | string;
   initialImagePublicId?: string | null;
   className?: string;
 };
@@ -72,6 +73,7 @@ export function ListingImageField({
   maxFileSizeBytes = DEFAULT_MAX_FILE_SIZE_BYTES,
   resourceType,
   draftId,
+  resourceId,
   initialImagePublicId = null,
   className,
 }: ListingImageFieldProps) {
@@ -109,7 +111,6 @@ export function ListingImageField({
         void deleteCloudinaryImages([currentValue.imagePublicId]);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFilesChange: ChangeEventHandler<HTMLInputElement> = async (
@@ -139,7 +140,7 @@ export function ListingImageField({
     try {
       const uploadedImage = await uploadCloudinaryImage(
         file,
-        { resourceType, draftId },
+        { resourceType, draftId, resourceId },
         setUploadProgress,
       );
 

@@ -52,6 +52,7 @@ export default async function AdminNewsEditPage({ params }: PageProps) {
         existingImageUrl={news.imageUrl}
         existingImagePublicId={news.imagePublicId ?? null}
         imageRequired={false}
+        resourceId={news.id}
         defaultValues={{
           categoryId: news.categoryId,
           title: news.title,

@@ -168,6 +168,7 @@ export default function AdminBannersTable({
         submitLabel={editingBanner ? "Cập nhật" : "Tạo mới"}
         existingImageUrl={editingBanner?.imageUrl}
         existingImagePublicId={editingBanner?.imagePublicId ?? null}
+        resourceId={editingBanner?.id}
         defaultValues={
           editingBanner
             ? {

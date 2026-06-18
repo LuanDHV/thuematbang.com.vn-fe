@@ -65,6 +65,7 @@ type AdminProjectFormProps = {
   defaultValues?: Partial<ProjectFormValues>;
   existingImages?: ExistingGalleryImage[];
   requireImages?: boolean;
+  resourceId?: number | string;
 };
 
 export default function AdminProjectForm({
@@ -77,6 +78,7 @@ export default function AdminProjectForm({
   defaultValues,
   existingImages,
   requireImages = false,
+  resourceId,
 }: AdminProjectFormProps) {
   const resolvedDefaults = useMemo(
     () =>
@@ -113,6 +115,7 @@ export default function AdminProjectForm({
       resolvedDefaults={resolvedDefaults}
       initialExistingGalleryImages={normalizedExistingImages}
       requireImages={requireImages}
+      resourceId={resourceId}
     />
   );
 }
@@ -132,6 +135,7 @@ function AdminProjectFormContent({
   resolvedDefaults,
   initialExistingGalleryImages,
   requireImages = false,
+  resourceId,
 }: AdminProjectFormContentProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -322,6 +326,7 @@ function AdminProjectFormContent({
         maxFileSizeBytes={2 * 1024 * 1024}
         resourceType="projects"
         draftId={draftId}
+        resourceId={resourceId}
       />
 
       {successMessage ? (

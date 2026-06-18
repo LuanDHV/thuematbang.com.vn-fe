@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BANNER_POSITION_OPTIONS, PAGE_OPTIONS } from "@/constants/enum-options";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,6 +44,12 @@ type BannerFormDialogProps = {
   existingImageUrl?: string | null;
   existingImagePublicId?: string | null;
   imageRequired?: boolean;
+  resourceId?: number | string;
+};
+
+type BannerFormDialogContentProps = BannerFormDialogProps & {
+  resolvedDefaults: BannerFormValues;
+  initialImage: UploadedCloudinaryImage | null;
 };
 
 export default function BannerFormDialog({
@@ -57,21 +63,8 @@ export default function BannerFormDialog({
   existingImageUrl,
   existingImagePublicId,
   imageRequired = true,
+  resourceId,
 }: BannerFormDialogProps) {
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [image, setImage] = useState<UploadedCloudinaryImage | null>(
-    existingImageUrl
-      ? {
-          imageUrl: existingImageUrl,
-          imagePublicId: existingImagePublicId ?? null,
-        }
-      : null,
-  );
-  const [imageBusy, setImageBusy] = useState(false);
-  const [draftId] = useState(() => crypto.randomUUID());
-  const { toast } = useToast();
-
   const resolvedDefaults = useMemo(
     () => ({
       ...DEFAULT_VALUES,
@@ -80,26 +73,73 @@ export default function BannerFormDialog({
     [defaultValues],
   );
 
-  const form = useForm<BannerFormValues>({
-    resolver: zodResolver(bannerFormSchema) as never,
-    defaultValues: resolvedDefaults,
-    mode: "onSubmit",
-  });
-
-  useEffect(() => {
-    if (!open) return;
-    form.reset(resolvedDefaults);
-    setSubmitError(null);
-    setIsSubmitting(false);
-    setImage(
+  const initialImage = useMemo<UploadedCloudinaryImage | null>(
+    () =>
       existingImageUrl
         ? {
             imageUrl: existingImageUrl,
             imagePublicId: existingImagePublicId ?? null,
           }
         : null,
-    );
-  }, [existingImagePublicId, existingImageUrl, form, open, resolvedDefaults]);
+    [existingImagePublicId, existingImageUrl],
+  );
+
+  const formStateKey = useMemo(
+    () =>
+      [
+        String(open),
+        JSON.stringify(resolvedDefaults),
+        initialImage?.imagePublicId ?? "null",
+        initialImage?.imageUrl ?? "null",
+        String(imageRequired),
+        String(resourceId ?? "create"),
+      ].join("::"),
+    [imageRequired, initialImage, open, resolvedDefaults, resourceId],
+  );
+
+  return (
+    <BannerFormDialogContent
+      key={formStateKey}
+      open={open}
+      onOpenChange={onOpenChange}
+      onSubmit={onSubmit}
+      title={title}
+      description={description}
+      submitLabel={submitLabel}
+      imageRequired={imageRequired}
+      resourceId={resourceId}
+      resolvedDefaults={resolvedDefaults}
+      initialImage={initialImage}
+    />
+  );
+}
+
+function BannerFormDialogContent({
+  open,
+  onOpenChange,
+  onSubmit,
+  title,
+  description,
+  submitLabel,
+  imageRequired = true,
+  resourceId,
+  resolvedDefaults,
+  initialImage,
+}: BannerFormDialogContentProps) {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [image, setImage] = useState<UploadedCloudinaryImage | null>(
+    () => initialImage,
+  );
+  const [imageBusy, setImageBusy] = useState(false);
+  const [draftId] = useState(() => crypto.randomUUID());
+  const { toast } = useToast();
+
+  const form = useForm<BannerFormValues>({
+    resolver: zodResolver(bannerFormSchema) as never,
+    defaultValues: resolvedDefaults,
+    mode: "onSubmit",
+  });
 
   const handleSubmit: SubmitHandler<BannerFormValues> = async (values) => {
     setSubmitError(null);
@@ -156,9 +196,10 @@ export default function BannerFormDialog({
       <ListingImageField
         value={image}
         onChange={setImage}
-        initialImagePublicId={existingImagePublicId}
+        initialImagePublicId={initialImage?.imagePublicId ?? null}
         resourceType="banners"
         draftId={draftId}
+        resourceId={resourceId}
         onBusyChange={setImageBusy}
         onErrorChange={setSubmitError}
         error={submitError}

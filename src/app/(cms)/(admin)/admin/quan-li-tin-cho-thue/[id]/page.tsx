@@ -57,6 +57,7 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
         submitLabel="Lưu thay đổi"
         mode="admin-edit-full"
         showSuccessDialog={false}
+        resourceId={property.id}
         existingImages={mapPropertyImagesToGalleryImages(property.images)}
         defaultValues={{
           title: property.title,

@@ -62,6 +62,7 @@ type PropertyCreateFormProps = {
   defaultValues?: Partial<PropertyCreateFormValues>;
   mode?: PropertyCreateFormMode;
   existingImages?: ExistingGalleryImage[];
+  resourceId?: number | string;
   showSuccessDialog?: boolean;
 };
 
@@ -113,6 +114,7 @@ export function PropertyCreateForm({
   defaultValues,
   mode = "public-create",
   existingImages,
+  resourceId,
   showSuccessDialog = true,
 }: PropertyCreateFormProps) {
   const resolvedDefaults = useMemo(
@@ -161,6 +163,7 @@ export function PropertyCreateForm({
       submitLabel={submitLabel}
       normalizedDefaults={normalizedDefaults}
       initialExistingGalleryImages={normalizedExistingImages}
+      resourceId={resourceId}
       mode={mode}
       showSuccessDialog={showSuccessDialog}
     />
@@ -181,6 +184,7 @@ function PropertyCreateFormContent({
   submitLabel,
   normalizedDefaults,
   initialExistingGalleryImages,
+  resourceId,
   mode = "public-create",
   showSuccessDialog = true,
 }: PropertyCreateFormContentProps) {
@@ -528,6 +532,7 @@ function PropertyCreateFormContent({
           maxFileSizeBytes={MAX_IMAGE_FILE_SIZE_BYTES}
           resourceType="properties"
           draftId={draftId}
+          resourceId={resourceId}
         />
       </ListingCreateFormShell>
 

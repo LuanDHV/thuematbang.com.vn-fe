@@ -17,7 +17,10 @@ import {
   uploadCloudinaryImagesSettled,
 } from "@/lib/cloudinary-upload";
 import { cn } from "@/lib/utils";
-import type { CloudinaryUploadResourceType, UploadedCloudinaryImage } from "@/types/cloudinary";
+import type {
+  CloudinaryUploadResourceType,
+  UploadedCloudinaryImage,
+} from "@/types/cloudinary";
 import type { ExistingGalleryImage } from "@/types/gallery";
 
 type ListingImageGalleryFieldProps = {
@@ -36,6 +39,7 @@ type ListingImageGalleryFieldProps = {
   concurrency?: number;
   resourceType: CloudinaryUploadResourceType;
   draftId: string;
+  resourceId?: number | string;
   className?: string;
 };
 
@@ -74,9 +78,10 @@ export function ListingImageGalleryField({
   required = false,
   maxFiles = 25,
   maxFileSizeBytes = DEFAULT_MAX_FILE_SIZE_BYTES,
-  concurrency = 4,
+  concurrency = 5,
   resourceType,
   draftId,
+  resourceId,
   className,
 }: ListingImageGalleryFieldProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -101,7 +106,6 @@ export function ListingImageGalleryField({
         void deleteCloudinaryImages(publicIds);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFilesChange: ChangeEventHandler<HTMLInputElement> = async (
@@ -137,11 +141,15 @@ export function ListingImageGalleryField({
     onErrorChange?.(null);
 
     try {
-      const settledResults = await uploadCloudinaryImagesSettled(acceptedFiles, {
-        resourceType,
-        draftId,
-        concurrency,
-      });
+      const settledResults = await uploadCloudinaryImagesSettled(
+        acceptedFiles,
+        {
+          resourceType,
+          draftId,
+          resourceId,
+          concurrency,
+        },
+      );
 
       const nextImages = [...images];
       let successCount = 0;
@@ -227,7 +235,8 @@ export function ListingImageGalleryField({
               {isUploading ? "Đang tải ảnh lên..." : "Chọn ảnh từ máy tính"}
             </p>
             <p className="text-secondary text-xs">
-              Đã có {existingImages.length} ảnh cũ và {images.length} ảnh mới. Tối đa {maxFiles} ảnh.
+              Đã có {existingImages.length} ảnh cũ và {images.length} ảnh mới.
+              Tối đa {maxFiles} ảnh.
             </p>
           </div>
         </div>
@@ -248,10 +257,7 @@ export function ListingImageGalleryField({
           <p className="text-heading text-sm font-semibold">Ảnh hiện có</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {existingImages.map((image, index) => (
-              <div
-                key={image.id}
-                className="surface-card overflow-hidden p-3"
-              >
+              <div key={image.id} className="surface-card overflow-hidden p-3">
                 <Image
                   src={image.imageUrl}
                   alt={`Ảnh ${image.id}`}

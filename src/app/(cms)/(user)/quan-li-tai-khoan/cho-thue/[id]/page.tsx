@@ -57,6 +57,7 @@ export default async function UserPropertyEditPage({ params }: PageProps) {
         submitLabel="Lưu thay đổi"
         mode="user-edit-limited"
         showSuccessDialog={false}
+        resourceId={property.id}
         existingImages={mapPropertyImagesToGalleryImages(property.images)}
         defaultValues={{
           title: property.title,

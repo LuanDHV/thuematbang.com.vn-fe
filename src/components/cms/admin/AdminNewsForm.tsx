@@ -12,8 +12,8 @@ import { ListingSelectField } from "@/components/listing-form/ListingSelectField
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { useToast } from "@/components/ui/use-toast";
-import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
+import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
 import type { Category } from "@/types/category";
 import type { News } from "@/types/news";
 import type { UploadedCloudinaryImage } from "@/types/cloudinary";
@@ -47,6 +47,12 @@ type AdminNewsFormProps = {
   existingImageUrl?: string | null;
   existingImagePublicId?: string | null;
   imageRequired?: boolean;
+  resourceId?: number | string;
+};
+
+type AdminNewsFormContentProps = AdminNewsFormProps & {
+  resolvedDefaults: NewsFormValues;
+  initialImage: UploadedCloudinaryImage | null;
 };
 
 export default function AdminNewsForm({
@@ -59,28 +65,75 @@ export default function AdminNewsForm({
   existingImageUrl,
   existingImagePublicId,
   imageRequired = true,
+  resourceId,
 }: AdminNewsFormProps) {
+  const resolvedDefaults = useMemo(
+    () =>
+      ({
+        ...DEFAULT_VALUES,
+        ...defaultValues,
+      }) as NewsFormValues,
+    [defaultValues],
+  );
+
+  const initialImage = useMemo<UploadedCloudinaryImage | null>(
+    () =>
+      existingImageUrl
+        ? {
+            imageUrl: existingImageUrl,
+            imagePublicId: existingImagePublicId ?? null,
+          }
+        : null,
+    [existingImagePublicId, existingImageUrl],
+  );
+
+  const formStateKey = useMemo(
+    () =>
+      [
+        JSON.stringify(resolvedDefaults),
+        initialImage?.imagePublicId ?? "null",
+        initialImage?.imageUrl ?? "null",
+        String(imageRequired),
+        String(resourceId ?? "create"),
+      ].join("::"),
+    [imageRequired, initialImage, resolvedDefaults, resourceId],
+  );
+
+  return (
+    <AdminNewsFormContent
+      key={formStateKey}
+      categories={categories}
+      submitAction={submitAction}
+      title={title}
+      description={description}
+      submitLabel={submitLabel}
+      imageRequired={imageRequired}
+      resourceId={resourceId}
+      resolvedDefaults={resolvedDefaults}
+      initialImage={initialImage}
+    />
+  );
+}
+
+function AdminNewsFormContent({
+  categories,
+  submitAction,
+  title,
+  description,
+  submitLabel,
+  imageRequired = true,
+  resourceId,
+  resolvedDefaults,
+  initialImage,
+}: AdminNewsFormContentProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [image, setImage] = useState<UploadedCloudinaryImage | null>(
-    existingImageUrl
-      ? {
-          imageUrl: existingImageUrl,
-          imagePublicId: existingImagePublicId ?? null,
-        }
-      : null,
+    () => initialImage,
   );
   const [imageBusy, setImageBusy] = useState(false);
   const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
-
-  const resolvedDefaults = useMemo(
-    () => ({
-      ...DEFAULT_VALUES,
-      ...defaultValues,
-    }),
-    [defaultValues],
-  );
 
   const form = useForm<NewsFormValues>({
     resolver: zodResolver(newsFormSchema) as never,
@@ -94,25 +147,14 @@ export default function AdminNewsForm({
   });
 
   useEffect(() => {
-    form.reset(resolvedDefaults);
-    setSubmitError(null);
-    setSuccessMessage(null);
-    setImage(
-      existingImageUrl
-        ? {
-            imageUrl: existingImageUrl,
-            imagePublicId: existingImagePublicId ?? null,
-          }
-        : null,
-    );
-  }, [existingImagePublicId, existingImageUrl, form, resolvedDefaults]);
-
-  useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
-    form.setValue("slug", nextSlug, {
-      shouldDirty: false,
-      shouldValidate: true,
-    });
+    const currentSlug = String(form.getValues("slug") ?? "");
+    if (nextSlug !== currentSlug) {
+      form.setValue("slug", nextSlug, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
   }, [form, titleValue]);
 
   const categoryOptions = useMemo(
@@ -181,9 +223,10 @@ export default function AdminNewsForm({
       <ListingImageField
         value={image}
         onChange={setImage}
-        initialImagePublicId={existingImagePublicId}
+        initialImagePublicId={initialImage?.imagePublicId ?? null}
         resourceType="news"
         draftId={draftId}
+        resourceId={resourceId}
         onBusyChange={setImageBusy}
         onErrorChange={setSubmitError}
         error={submitError}

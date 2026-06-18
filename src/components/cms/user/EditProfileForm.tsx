@@ -1,6 +1,6 @@
 "use client";
 
-import { type ComponentProps, useEffect, useMemo, useState } from "react";
+import { type ComponentProps, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Phone, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -61,42 +61,64 @@ const PROFILE_FIELDS: ProfileFieldConfig[] = [
   },
 ] as const;
 
+type EditProfileFormContentProps = {
+  authUser: NonNullable<ReturnType<typeof useAuthMe>["data"]>;
+  defaultValues: EditProfileFormValues;
+  initialAvatar: UploadedCloudinaryImage | null;
+};
+
 export default function EditProfileForm() {
   const { data: authUser } = useAuthMe();
+
+  if (!authUser) return null;
+
+  const defaultValues: EditProfileFormValues = {
+    fullName: authUser.fullName || "",
+    phone: authUser.phone || "",
+    email: authUser.email || "",
+  };
+
+  const initialAvatar = authUser.avatarUrl
+    ? {
+        imageUrl: authUser.avatarUrl,
+        imagePublicId: authUser.avatarPublicId ?? null,
+      }
+    : null;
+
+  const formStateKey = [
+    authUser.id,
+    JSON.stringify(defaultValues),
+    initialAvatar?.imagePublicId ?? "null",
+    initialAvatar?.imageUrl ?? "null",
+  ].join("::");
+
+  return (
+    <EditProfileFormContent
+      key={formStateKey}
+      authUser={authUser}
+      defaultValues={defaultValues}
+      initialAvatar={initialAvatar}
+    />
+  );
+}
+
+function EditProfileFormContent({
+  authUser,
+  defaultValues,
+  initialAvatar,
+}: EditProfileFormContentProps) {
   const updateMutation = useUpdateMyProfileMutation();
-  const [avatar, setAvatar] = useState<UploadedCloudinaryImage | null>(null);
+  const [avatar, setAvatar] = useState<UploadedCloudinaryImage | null>(
+    () => initialAvatar,
+  );
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
   const [draftId] = useState(() => crypto.randomUUID());
-
-  const defaultValues = useMemo<EditProfileFormValues>(
-    () => ({
-      fullName: authUser?.fullName || "",
-      phone: authUser?.phone || "",
-      email: authUser?.email || "",
-    }),
-    [authUser],
-  );
 
   const form = useForm<EditProfileFormValues>({
     resolver: zodResolver(editProfileSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    form.reset(defaultValues);
-    setAvatar(
-      authUser?.avatarUrl
-        ? {
-            imageUrl: authUser.avatarUrl,
-            imagePublicId: authUser.avatarPublicId ?? null,
-          }
-        : null,
-    );
-    setAvatarError(null);
-  }, [authUser?.avatarPublicId, authUser?.avatarUrl, defaultValues, form]);
-
-  if (!authUser) return null;
 
   const onSubmit = form.handleSubmit(async (values) => {
     if (avatarError || avatarBusy) return;
@@ -118,9 +140,10 @@ export default function EditProfileForm() {
           <ListingImageField
             value={avatar}
             onChange={setAvatar}
-            initialImagePublicId={authUser.avatarPublicId}
+            initialImagePublicId={initialAvatar?.imagePublicId ?? null}
             resourceType="users"
             draftId={draftId}
+            resourceId={authUser.id}
             onBusyChange={setAvatarBusy}
             onErrorChange={setAvatarError}
             error={avatarError}
