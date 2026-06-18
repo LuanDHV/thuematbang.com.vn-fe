@@ -91,7 +91,7 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   priorityStatus: "FREE",
   publishSource: "FREE_QUOTA",
   isBoosted: false,
-  boostCount: undefined,
+  boostCount: 0,
   status: "PUBLISHED",
   isFeatured: false,
   userId: undefined,
@@ -345,11 +345,7 @@ export function PropertyCreateForm({
           format="currency"
         />
 
-        <ListingCheckboxField
-          name="isNegotiable"
-          label="Thương lượng"
-          description="Đánh dấu nếu giá có thể trao đổi thêm"
-        />
+        <ListingCheckboxField name="isNegotiable" label="Thương lượng" />
 
         <div className="grid gap-4 md:grid-cols-2">
           <ListingNumberField
@@ -410,6 +406,21 @@ export function PropertyCreateForm({
           />
         </div>
 
+        <div className="grid gap-4 md:grid-cols-2">
+          <ListingNumberField
+            name="longitude"
+            label="Kinh độ"
+            inputMode="decimal"
+            step="0.000001"
+          />
+          <ListingNumberField
+            name="latitude"
+            label="Vĩ độ"
+            inputMode="decimal"
+            step="0.000001"
+          />
+        </div>
+
         {showAdminOnly ? (
           <ListingRichTextField
             name="content"
@@ -441,7 +452,12 @@ export function PropertyCreateForm({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <ListingCheckboxField name="isBoosted" label="Đã boost" />
+              <ListingSelectField
+                name="status"
+                label="Trạng thái"
+                options={PUBLISH_STATUS_OPTIONS}
+              />
+
               <ListingNumberField
                 name="boostCount"
                 label="Số lần boost"
@@ -451,27 +467,8 @@ export function PropertyCreateForm({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <ListingSelectField
-                name="status"
-                label="Trạng thái"
-                options={PUBLISH_STATUS_OPTIONS}
-              />
               <ListingCheckboxField name="isFeatured" label="Nổi bật" />
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <ListingNumberField
-                name="longitude"
-                label="Kinh độ"
-                inputMode="decimal"
-                step="0.000001"
-              />
-              <ListingNumberField
-                name="latitude"
-                label="Vĩ độ"
-                inputMode="decimal"
-                step="0.000001"
-              />
+              <ListingCheckboxField name="isBoosted" label="Đã boost" />
             </div>
           </>
         ) : null}

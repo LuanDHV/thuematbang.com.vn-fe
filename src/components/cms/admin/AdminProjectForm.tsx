@@ -44,7 +44,7 @@ const DEFAULT_VALUES: Partial<ProjectFormValues> = {
   priceUnit: "MILLION",
   price: undefined,
   content: "",
-  status: "DRAFT",
+  status: "PUBLISHED",
 };
 
 const EMPTY_EXISTING_IMAGES: ExistingGalleryImage[] = [];
@@ -83,9 +83,9 @@ export default function AdminProjectForm({
   const [existingGalleryImages, setExistingGalleryImages] = useState<
     ExistingGalleryImage[]
   >(() => normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
-  const [uploadedImages, setUploadedImages] = useState<UploadedCloudinaryImage[]>(
-    [],
-  );
+  const [uploadedImages, setUploadedImages] = useState<
+    UploadedCloudinaryImage[]
+  >([]);
   const [galleryBusy, setGalleryBusy] = useState(false);
   const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
@@ -117,7 +117,9 @@ export default function AdminProjectForm({
 
   useEffect(() => {
     form.reset(resolvedDefaults);
-    setExistingGalleryImages(normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
+    setExistingGalleryImages(
+      normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+    );
     setUploadedImages([]);
   }, [existingImages, form, resolvedDefaults]);
 
@@ -150,7 +152,10 @@ export default function AdminProjectForm({
       return;
     }
 
-    if (requireImages && existingGalleryImages.length + uploadedImages.length < 1) {
+    if (
+      requireImages &&
+      existingGalleryImages.length + uploadedImages.length < 1
+    ) {
       setSubmitError("Vui lòng tải lên ít nhất một ảnh cho dự án.");
       return;
     }
@@ -158,7 +163,9 @@ export default function AdminProjectForm({
     const removedImageIds = stableExistingImages
       .filter(
         (image) =>
-          !existingGalleryImages.some((currentImage) => currentImage.id === image.id),
+          !existingGalleryImages.some(
+            (currentImage) => currentImage.id === image.id,
+          ),
       )
       .map((image) => image.id);
 
@@ -171,7 +178,9 @@ export default function AdminProjectForm({
       ? {
           ...basePayload,
           removeImageIds: removedImageIds,
-          orderedExistingImageIds: existingGalleryImages.map((image) => image.id),
+          orderedExistingImageIds: existingGalleryImages.map(
+            (image) => image.id,
+          ),
         }
       : basePayload;
 
@@ -184,7 +193,9 @@ export default function AdminProjectForm({
       });
       setSuccessMessage("Đã lưu dự án thành công.");
       setUploadedImages([]);
-      setExistingGalleryImages(normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES));
+      setExistingGalleryImages(
+        normalizeGalleryImages(existingImages ?? EMPTY_EXISTING_IMAGES),
+      );
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Không thể lưu dự án.",
@@ -211,26 +222,26 @@ export default function AdminProjectForm({
         options={categoryOptions}
       />
       <ListingTextField name="developer" label="Chủ đầu tư" />
-      <div className="grid gap-4 md:grid-cols-2">
-        <ListingNumberField
-          name="area"
-          label="Diện tích"
-          required
-          inputMode="decimal"
-          step="0.1"
-          format="area"
-        />
-        <ListingPriceField
-          name="price"
-          amountName="priceAmount"
-          unitName="priceUnit"
-          label="Giá"
-          required
-          inputMode="numeric"
-          step="1"
-          format="currency"
-        />
-      </div>
+      <ListingPriceField
+        name="price"
+        amountName="priceAmount"
+        unitName="priceUnit"
+        label="Giá"
+        required
+        inputMode="numeric"
+        step="1"
+        format="currency"
+      />
+
+      <ListingNumberField
+        name="area"
+        label="Diện tích"
+        required
+        inputMode="decimal"
+        step="0.1"
+        format="area"
+      />
+
       <ListingLocationField
         provinceName="provinceId"
         wardName="wardId"
@@ -252,15 +263,17 @@ export default function AdminProjectForm({
           step="0.000001"
         />
       </div>
-      <ListingRichTextField
-        name="content"
-        label="Nội dung"
-        placeholder="Nhập nội dung dự án..."
-      />
+
       <ListingSelectField
         name="status"
         label="Trạng thái"
         options={PUBLISH_STATUS_OPTIONS}
+      />
+
+      <ListingRichTextField
+        name="content"
+        label="Nội dung"
+        placeholder="Nhập nội dung dự án..."
       />
 
       <ListingImageGalleryField

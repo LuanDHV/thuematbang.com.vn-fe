@@ -320,6 +320,17 @@ export function RentRequestCreateForm({
         </div>
 
         {showAdminOnly ? (
+          <div className="grid items-end gap-4 md:grid-cols-2">
+            <ListingSelectField
+              name="status"
+              label="Trạng thái"
+              options={RENT_REQUEST_STATUS_OPTIONS}
+            />
+            <ListingCheckboxField name="isMatched" label="Đã khớp nhu cầu" />
+          </div>
+        ) : null}
+
+        {showAdminOnly ? (
           <ListingRichTextField
             name="requirementText"
             label="Mô tả thêm"
@@ -333,21 +344,6 @@ export function RentRequestCreateForm({
             rows={8}
           />
         )}
-
-        {showAdminOnly ? (
-          <div className="grid gap-4 md:grid-cols-2">
-            <ListingSelectField
-              name="status"
-              label="Trạng thái"
-              options={RENT_REQUEST_STATUS_OPTIONS}
-            />
-            <ListingCheckboxField
-              name="isMatched"
-              label="Đã khớp nhu cầu"
-              description="Bật khi nhu cầu này đã được match với tin phù hợp."
-            />
-          </div>
-        ) : null}
       </ListingCreateFormShell>
 
       {showSuccessDialog ? (

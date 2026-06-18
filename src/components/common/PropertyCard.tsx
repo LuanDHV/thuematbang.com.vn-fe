@@ -35,29 +35,20 @@ function resolvePropertyHref(property: Property) {
 }
 
 function getSortedPropertyImageUrls(property: Property) {
-  return (
+  const sortedImages =
     property.images
       ?.slice()
       .sort((left, right) => left.sortOrder - right.sortOrder)
       .map((image) => image.imageUrl)
-      .filter(Boolean) ?? []
+      .filter(Boolean) ?? [];
+
+  return sortedImages.filter(
+    (url, index, array) => array.indexOf(url) === index,
   );
 }
 
 function getPropertyThumbnailUrl(property: Property) {
   return getSortedPropertyImageUrls(property)[0] || DEFAULT_PROPERTY_IMAGE;
-}
-
-function getPropertyGalleryImages(property: Property) {
-  const images = getSortedPropertyImageUrls(property);
-  const fallbackImage = images[0] || getPropertyThumbnailUrl(property);
-  const normalizedImages = images.length > 0 ? [...images] : [fallbackImage];
-
-  while (normalizedImages.length < 4) {
-    normalizedImages.push(fallbackImage);
-  }
-
-  return normalizedImages.slice(0, 4);
 }
 
 function getTierTone(priorityStatus?: string | null): CardTone {
@@ -186,11 +177,19 @@ function FeaturedCard({ property }: { property: Property }) {
 
 function PremiumCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
-  const imagesList = getPropertyGalleryImages(property);
-  const realImageCount = Math.max(
-    1,
-    getSortedPropertyImageUrls(property).length,
-  );
+  const imagesList = getSortedPropertyImageUrls(property);
+  const realImageCount = imagesList.length;
+  const heroImage = imagesList[0] || fallbackImage;
+  const sideImages = imagesList.slice(1, 4);
+  const hasSideGallery = sideImages.length > 0;
+  const sideLayout =
+    sideImages.length >= 3
+      ? "stacked"
+      : sideImages.length === 2
+        ? "split"
+        : sideImages.length === 1
+          ? "single"
+          : "none";
 
   return (
     <article
@@ -198,10 +197,10 @@ function PremiumCard({ property }: { property: Property }) {
     >
       <div className="bg-subtle relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
-          className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
+          className={`relative h-full overflow-hidden ${hasSideGallery ? "w-2/3" : "w-full"}`}
         >
           <CloudinaryImage
-            src={imagesList[0]}
+            src={heroImage}
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
@@ -210,40 +209,78 @@ function PremiumCard({ property }: { property: Property }) {
           />
         </div>
 
-        {imagesList.length > 1 ? (
+        {hasSideGallery ? (
           <div className="flex w-1/3 flex-col gap-0.5">
-            <div className="relative h-1/2 w-full overflow-hidden">
-              <CloudinaryImage
-                src={imagesList[1] || fallbackImage}
-                alt={`${property.title} - ảnh 2`}
-                fill
-                sizes="(max-width: 768px) 40vw, 20vw"
-                className="object-cover"
-                cldQuality="auto:best"
-              />
-            </div>
-            <div className="flex h-1/2 w-full gap-0.5">
-              <div className="relative h-full w-1/2 overflow-hidden">
+            {sideLayout === "single" ? (
+              <div className="relative h-full w-full overflow-hidden">
                 <CloudinaryImage
-                  src={imagesList[2] || fallbackImage}
-                  alt={`${property.title} - ảnh 3`}
+                  src={sideImages[0] || fallbackImage}
+                  alt={`${property.title} - ảnh 2`}
                   fill
-                  sizes="(max-width: 768px) 30vw, 15vw"
+                  sizes="(max-width: 768px) 40vw, 20vw"
                   className="object-cover"
                   cldQuality="auto:best"
                 />
               </div>
-              <div className="relative h-full w-1/2 overflow-hidden">
-                <CloudinaryImage
-                  src={imagesList[3] || fallbackImage}
-                  alt={`${property.title} - ảnh 4`}
-                  fill
-                  sizes="(max-width: 768px) 30vw, 15vw"
-                  className="object-cover"
-                  cldQuality="auto:best"
-                />
-              </div>
-            </div>
+            ) : sideLayout === "split" ? (
+              <>
+                <div className="relative h-1/2 w-full overflow-hidden">
+                  <CloudinaryImage
+                    src={sideImages[0] || fallbackImage}
+                    alt={`${property.title} - ảnh 2`}
+                    fill
+                    sizes="(max-width: 768px) 40vw, 20vw"
+                    className="object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+                <div className="relative h-1/2 w-full overflow-hidden">
+                  <CloudinaryImage
+                    src={sideImages[1] || fallbackImage}
+                    alt={`${property.title} - ảnh 3`}
+                    fill
+                    sizes="(max-width: 768px) 40vw, 20vw"
+                    className="object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="relative h-1/2 w-full overflow-hidden">
+                  <CloudinaryImage
+                    src={sideImages[0] || fallbackImage}
+                    alt={`${property.title} - ảnh 2`}
+                    fill
+                    sizes="(max-width: 768px) 40vw, 20vw"
+                    className="object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+                <div className="flex h-1/2 w-full gap-0.5">
+                  <div className="relative h-full w-1/2 overflow-hidden">
+                    <CloudinaryImage
+                      src={sideImages[1] || fallbackImage}
+                      alt={`${property.title} - ảnh 3`}
+                      fill
+                      sizes="(max-width: 768px) 30vw, 15vw"
+                      className="object-cover"
+                      cldQuality="auto:best"
+                    />
+                  </div>
+                  <div className="relative h-full w-1/2 overflow-hidden">
+                    <CloudinaryImage
+                      src={sideImages[2] || fallbackImage}
+                      alt={`${property.title} - ảnh 4`}
+                      fill
+                      sizes="(max-width: 768px) 30vw, 15vw"
+                      className="object-cover"
+                      cldQuality="auto:best"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ) : null}
 
@@ -261,23 +298,20 @@ function PremiumCard({ property }: { property: Property }) {
 
 function StandardCard({ property }: { property: Property }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
-  const imagesList = getPropertyGalleryImages(property);
-  const realImageCount = Math.max(
-    1,
-    getSortedPropertyImageUrls(property).length,
-  );
-
-  const rightThumbs = [
-    imagesList[1] || fallbackImage,
-    imagesList[2] || fallbackImage,
-  ];
+  const imagesList = getSortedPropertyImageUrls(property);
+  const realImageCount = imagesList.length;
+  const heroImage = imagesList[0] || fallbackImage;
+  const sideImages = imagesList.slice(1, 3);
+  const hasSideGallery = sideImages.length > 0;
 
   return (
     <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden">
-        <div className="relative w-2/3 overflow-hidden">
+        <div
+          className={`relative overflow-hidden ${hasSideGallery ? "w-2/3" : "w-full"}`}
+        >
           <CloudinaryImage
-            src={imagesList[0]}
+            src={heroImage}
             alt={property.title || "Bất động sản"}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
@@ -286,23 +320,38 @@ function StandardCard({ property }: { property: Property }) {
           />
         </div>
 
-        <div className="flex w-1/3 flex-col gap-0.5">
-          {rightThumbs.map((src, index) => (
-            <div
-              key={`${property.id}-right-thumb-${index}`}
-              className="relative h-1/2 overflow-hidden"
-            >
-              <CloudinaryImage
-                src={src}
-                alt={`${property.title} - ảnh phụ ${index + 1}`}
-                fill
-                sizes="(max-width: 768px) 30vw, 15vw"
-                className="object-cover"
-                cldQuality="auto:best"
-              />
-            </div>
-          ))}
-        </div>
+        {hasSideGallery ? (
+          <div className="flex w-1/3 flex-col gap-0.5">
+            {sideImages.length === 1 ? (
+              <div className="relative h-full overflow-hidden">
+                <CloudinaryImage
+                  src={sideImages[0] || fallbackImage}
+                  alt={`${property.title} - ảnh phụ 1`}
+                  fill
+                  sizes="(max-width: 768px) 30vw, 15vw"
+                  className="object-cover"
+                  cldQuality="auto:best"
+                />
+              </div>
+            ) : (
+              sideImages.map((src, index) => (
+                <div
+                  key={`${property.id}-right-thumb-${index}`}
+                  className="relative h-1/2 overflow-hidden"
+                >
+                  <CloudinaryImage
+                    src={src || fallbackImage}
+                    alt={`${property.title} - ảnh phụ ${index + 1}`}
+                    fill
+                    sizes="(max-width: 768px) 30vw, 15vw"
+                    className="object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        ) : null}
 
         <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.24)] to-transparent" />
         <TierBadge tone="STANDARD" />
@@ -498,4 +547,3 @@ export function PropertyCard({
     </Link>
   );
 }
-
