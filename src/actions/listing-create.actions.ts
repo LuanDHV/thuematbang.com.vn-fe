@@ -1,9 +1,11 @@
 "use server";
 
 import { refreshCrudTags } from "@/lib/server/revalidate";
-import { normalizeRentRequestPayload } from "@/lib/form/form-normalize";
 import { propertyService } from "@/services/property.service";
-import { rentRequestService } from "@/services/rent-request.service";
+import {
+  rentRequestService,
+  type RentRequestUpsertPayload,
+} from "@/services/rent-request.service";
 
 export async function createPropertyAction(payload: Parameters<typeof propertyService.create>[0]) {
   const result = await propertyService.create(payload);
@@ -21,10 +23,10 @@ export async function createPropertyAction(payload: Parameters<typeof propertySe
   return result;
 }
 
-export async function createRentRequestAction(formData: FormData) {
-  const result = await rentRequestService.create(
-    normalizeRentRequestPayload(formData),
-  );
+export async function createRentRequestAction(
+  payload: RentRequestUpsertPayload,
+) {
+  const result = await rentRequestService.create(payload);
 
   refreshCrudTags(
     ["rent-requests", "my-rent-requests"],

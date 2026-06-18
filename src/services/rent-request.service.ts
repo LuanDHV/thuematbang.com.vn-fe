@@ -54,6 +54,28 @@ export type RentRequestMineParams = {
   limit?: number;
 };
 
+export type RentRequestUpsertPayload = {
+  title: string;
+  slug: string;
+  categoryId: number;
+  budgetAmount: number;
+  budgetUnit: string;
+  budget?: number;
+  desiredArea: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  floors?: number;
+  desiredDirection?: PropertyDirection | null;
+  desiredProvinceId: number;
+  desiredWardId?: number;
+  contactName: string;
+  contactPhone: string;
+  requirementText?: string;
+  userId?: number;
+  status?: PublishStatus | null;
+  isMatched?: boolean;
+};
+
 export const rentRequestService = {
   // Fetch one paginated rent-request list with the filter contract used by listings and CMS.
   getAll: async (params: RentRequestGetAllParams = {}) =>
@@ -120,23 +142,29 @@ export const rentRequestService = {
   },
 
   // Create one rent request through the authenticated CMS mutation contract.
-  create: async (payload: FormData) => {
+  create: async (payload: RentRequestUpsertPayload) => {
     const response = await requestServerApi<RentRequest>("/rent-requests", {
       method: "POST",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },
 
   // Update one rent request through the authenticated CMS mutation contract.
-  update: async (id: number, payload: FormData) => {
+  update: async (id: number, payload: RentRequestUpsertPayload) => {
     const response = await requestServerApi<RentRequest>(
       `/rent-requests/${id}`,
       {
         method: "PATCH",
         auth: "required",
-        body: payload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       },
     );
     return response.data;

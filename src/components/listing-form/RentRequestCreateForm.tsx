@@ -17,11 +17,6 @@ import { ListingTextareaField } from "@/components/listing-form/ListingTextareaF
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
-import {
-  appendBoolean,
-  appendNumber,
-  appendString,
-} from "@/lib/form/form-payload";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { normalizeRentRequestFormDefaults } from "@/lib/listing/listing-form";
 import type { Category } from "@/types/category";
@@ -31,6 +26,7 @@ import {
   rentRequestCreateFormSchema,
   type RentRequestCreateFormValues,
 } from "@/schemas/listing-create.schema";
+import type { RentRequestUpsertPayload } from "@/services/rent-request.service";
 
 type RentRequestCreateFormMode =
   | "public-create"
@@ -40,7 +36,7 @@ type RentRequestCreateFormMode =
 type RentRequestCreateFormProps = {
   categories: Category[];
   provinces: Province[];
-  submitAction: (payload: FormData) => Promise<RentRequest>;
+  submitAction: (payload: RentRequestUpsertPayload) => Promise<RentRequest>;
   title: string;
   description: string;
   submitLabel: string;
@@ -158,24 +154,10 @@ export function RentRequestCreateForm({
     setSuccessOpen(false);
     setCreatedSlug(null);
 
-    const payload = new FormData();
-    appendString(payload, "title", values.title);
-    appendString(payload, "slug", buildListingSlug(values.title));
-    appendNumber(payload, "categoryId", values.categoryId);
-    appendNumber(payload, "budgetAmount", values.budgetAmount);
-    appendString(payload, "budgetUnit", values.budgetUnit);
-    appendNumber(payload, "desiredArea", values.desiredArea);
-    appendNumber(payload, "bedrooms", values.bedrooms);
-    appendNumber(payload, "bathrooms", values.bathrooms);
-    appendNumber(payload, "floors", values.floors);
-    appendString(payload, "desiredDirection", values.desiredDirection);
-    appendNumber(payload, "desiredProvinceId", values.desiredProvinceId);
-    appendNumber(payload, "desiredWardId", values.desiredWardId);
-    appendString(payload, "contactName", values.contactName);
-    appendString(payload, "contactPhone", values.contactPhone);
-    appendString(payload, "requirementText", values.requirementText);
-    appendString(payload, "status", values.status);
-    appendBoolean(payload, "isMatched", values.isMatched);
+    const payload: RentRequestUpsertPayload = {
+      ...values,
+      slug: buildListingSlug(values.title),
+    };
 
     try {
       const createdRentRequest = await submitAction(payload);

@@ -18,6 +18,9 @@ export default function PropertyImageGallery({
   const safeImages = useMemo(() => images.filter(Boolean), [images]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState(0);
+  const [activeImageOrientation, setActiveImageOrientation] = useState<
+    "portrait" | "landscape" | "square" | null
+  >(null);
   const preloadedImagesRef = useRef(new Set<string>());
   const prefersReducedMotion = useReducedMotion();
 
@@ -38,6 +41,44 @@ export default function PropertyImageGallery({
     preload(safeImages[activeIndex + 1]);
     preload(safeImages[activeIndex - 1]);
   }, [activeIndex, safeImages]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    let cancelled = false;
+    const image = new window.Image();
+
+    image.onload = () => {
+      if (cancelled) return;
+
+      const width = image.naturalWidth || image.width;
+      const height = image.naturalHeight || image.height;
+
+      if (!width || !height) {
+        setActiveImageOrientation(null);
+        return;
+      }
+
+      if (Math.abs(width - height) <= 24) {
+        setActiveImageOrientation("square");
+        return;
+      }
+
+      setActiveImageOrientation(width < height ? "portrait" : "landscape");
+    };
+
+    image.onerror = () => {
+      if (!cancelled) {
+        setActiveImageOrientation(null);
+      }
+    };
+
+    image.src = activeImage;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeImage]);
 
   const goPrev = () => {
     setSlideDirection(-1);
@@ -73,6 +114,12 @@ export default function PropertyImageGallery({
     }),
   } as const;
 
+  const isPortraitImage = activeImageOrientation === "portrait";
+  const activeImageCrop = isPortraitImage ? "fit" : "fill";
+  const activeImageClassName = isPortraitImage
+    ? "object-contain"
+    : "object-cover";
+
   return (
     <div>
       <div className="relative h-64 overflow-hidden rounded-2xl bg-surface-alt lg:h-96">
@@ -107,8 +154,9 @@ export default function PropertyImageGallery({
               fill
               sizes="(max-width: 1024px) 100vw, 66vw"
               cldQuality="auto:best"
+              crop={activeImageCrop}
               priority={activeIndex === 0}
-              className="object-cover"
+              className={activeImageClassName}
             />
           </motion.div>
         </AnimatePresence>

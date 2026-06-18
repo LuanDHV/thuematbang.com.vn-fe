@@ -11,10 +11,7 @@ import { seoContentService } from "@/services/seo-content.service";
 import { propertyService } from "@/services/property.service";
 import { userService } from "@/services/user.service";
 import { USER_ROLE_VALUES } from "@/constants/enum-values";
-import {
-  normalizeRentRequestPayload,
-  toPositiveId,
-} from "@/lib/form/form-normalize";
+import { toPositiveId } from "@/lib/form/form-normalize";
 import { refreshCrudTags } from "@/lib/server/revalidate";
 import type {
   CategoryType,
@@ -24,6 +21,7 @@ import type {
 import type { BannerUpsertPayload } from "@/services/banners.service";
 import type { NewsUpsertPayload } from "@/services/news.service";
 import type { ProjectUpsertPayload } from "@/services/project.service";
+import type { RentRequestUpsertPayload } from "@/services/rent-request.service";
 
 // Category
 export async function createCategoryAction(payload: {
@@ -262,13 +260,10 @@ export async function deleteProjectAction(id: string | number) {
 // Rent request
 export async function updateRentRequestAction(
   id: string | number,
-  payload: FormData,
+  payload: RentRequestUpsertPayload,
 ) {
   const rentRequestId = toPositiveId(id);
-  const result = await rentRequestService.update(
-    rentRequestId,
-    normalizeRentRequestPayload(payload),
-  );
+  const result = await rentRequestService.update(rentRequestId, payload);
   refreshCrudTags(
     ["rent-requests", "rent-request-detail", "my-rent-requests"],
     ["/admin/quan-li-tin-can-thue", "/quan-li-tai-khoan/cau-thue"],
