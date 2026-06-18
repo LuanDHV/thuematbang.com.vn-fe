@@ -98,16 +98,8 @@ export const propertyCreateFormSchema = z.object({
     positiveMessage: "Vui lòng chọn danh mục",
     integer: true,
   }),
-  priceAmount: requiredNumberSchema({
-    requiredMessage: "Vui lòng nhập giá",
-    invalidMessage: "Giá không hợp lệ",
-    positiveMessage: "Vui lòng nhập giá hợp lệ",
-    max: Number.MAX_SAFE_INTEGER,
-    maxMessage: "Giá không hợp lệ",
-  }),
-  priceUnit: z.enum(PRICE_UNIT_VALUES, {
-    message: "Vui lòng chọn đơn vị giá",
-  }),
+  priceAmount: optionalNumberSchema,
+  priceUnit: z.enum(PRICE_UNIT_VALUES).optional(),
   price: optionalNumberSchema,
   isNegotiable: z.boolean().default(false),
   area: requiredNumberSchema({
@@ -149,6 +141,48 @@ export const propertyCreateFormSchema = z.object({
   status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
   isFeatured: z.boolean().default(false).optional(),
   userId: optionalIntegerSchema,
+}).superRefine((value, ctx) => {
+  if (value.isNegotiable) {
+    return;
+  }
+
+  const hasCanonicalPrice = typeof value.price === "number";
+  const hasPriceAmount = typeof value.priceAmount === "number";
+
+  if (!hasCanonicalPrice && !hasPriceAmount) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["priceAmount"],
+      message: "Vui lòng nhập giá",
+    });
+  }
+
+  const priceAmount = value.priceAmount;
+  const price = value.price;
+
+  if (typeof priceAmount === "number" && priceAmount <= 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["priceAmount"],
+      message: "Vui lòng nhập giá hợp lệ",
+    });
+  }
+
+  if (typeof priceAmount === "number" && !value.priceUnit) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["priceUnit"],
+      message: "Vui lòng chọn đơn vị giá",
+    });
+  }
+
+  if (typeof price === "number" && price <= 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["price"],
+      message: "Vui lòng nhập giá hợp lệ",
+    });
+  }
 });
 
 export const rentRequestCreateFormSchema = z.object({

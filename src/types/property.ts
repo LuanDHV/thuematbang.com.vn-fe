@@ -18,7 +18,7 @@ export interface Property {
   title: string;
   slug: string;
   categoryId: number;
-  price: number;
+  price?: number | null;
   priceAmount?: number | null;
   priceUnit?: PriceUnit | null;
   isNegotiable: boolean;

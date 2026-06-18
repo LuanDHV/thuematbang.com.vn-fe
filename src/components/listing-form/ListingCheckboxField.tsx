@@ -41,7 +41,10 @@ export function ListingCheckboxField({
             {...register(name)}
           />
           <div className="flex flex-1 flex-col gap-1">
-            <FieldLabel htmlFor={name} className="border-0 p-0 tracking-normal">
+            <FieldLabel
+              htmlFor={name}
+              className="cursor-pointer border-0 p-0 tracking-normal"
+            >
               <span>{label}</span>
               {required ? <span className="text-destructive">*</span> : null}
             </FieldLabel>

@@ -76,7 +76,7 @@ export type PropertyUpsertPayload = {
   categoryId?: number;
   priceAmount?: number;
   priceUnit?: string;
-  price?: number;
+  price?: number | null;
   isNegotiable?: boolean;
   area?: number;
   bedrooms?: number;

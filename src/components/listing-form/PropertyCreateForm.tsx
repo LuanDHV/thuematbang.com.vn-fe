@@ -216,6 +216,10 @@ function PropertyCreateFormContent({
     control: form.control,
     name: "slug",
   });
+  const isNegotiableValue = useWatch({
+    control: form.control,
+    name: "isNegotiable",
+  });
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
@@ -372,19 +376,24 @@ function PropertyCreateFormContent({
           options={categoryOptions}
         />
 
-        <ListingPriceField
-          name="price"
-          amountName="priceAmount"
-          unitName="priceUnit"
-          label="Giá"
-          required
-          placeholder="Nhập giá"
-          inputMode="numeric"
-          min={0}
-          step="1"
-          format="currency"
-        />
-
+        {isNegotiableValue ? (
+          <div className="border-hairline bg-surface text-secondary rounded-xl border px-4 py-3 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+            Tin đăng được đánh dấu là thương lượng.
+          </div>
+        ) : (
+          <ListingPriceField
+            name="price"
+            amountName="priceAmount"
+            unitName="priceUnit"
+            label="Giá"
+            required
+            placeholder="Nhập giá"
+            inputMode="numeric"
+            min={0}
+            step="1"
+            format="currency"
+          />
+        )}
         <ListingCheckboxField name="isNegotiable" label="Thương lượng" />
 
         <div className="grid gap-4 md:grid-cols-2">
