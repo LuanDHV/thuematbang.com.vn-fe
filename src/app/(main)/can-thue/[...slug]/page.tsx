@@ -180,7 +180,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           aside={
             <RentRequestDetailSidebar
               contactName={rentRequest.contactName}
-              contactPhone={rentRequest.contactPhone}
               isLoggedIn={isLoggedIn}
               latestWantedProperties={latestWantedRequests}
             />
