@@ -230,8 +230,7 @@ function AdminNewsFormContent({
         onBusyChange={setImageBusy}
         onErrorChange={setSubmitError}
         error={submitError}
-        label="Ảnh đại diện"
-        description="Ảnh sẽ được upload trực tiếp lên Cloudinary."
+        label="Ảnh Thumbnail"
         required={imageRequired}
       />
 

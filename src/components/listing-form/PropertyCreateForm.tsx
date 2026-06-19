@@ -530,7 +530,7 @@ function PropertyCreateFormContent({
           label="Hình ảnh"
           description={
             mode === "public-create"
-              ? "Tải lên ít nhất 1 ảnh. Ảnh sẽ được upload trực tiếp lên Cloudinary."
+              ? "Tải lên ít nhất 1 ảnh."
               : "Quản lý ảnh cũ và tải thêm ảnh mới."
           }
           required={mode === "public-create"}

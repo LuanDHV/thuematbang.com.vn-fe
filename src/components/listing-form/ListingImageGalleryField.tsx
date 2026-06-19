@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEventHandler } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, CloudUpload, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -260,7 +260,7 @@ export function ListingImageGalleryField({
       <label className="surface-card hover:border-primary/25 hover:bg-primary/4 flex cursor-pointer flex-col gap-4 border-dashed p-4 transition-colors">
         <div className="flex items-center gap-3">
           <div className="border-border-subtle text-primary flex size-11 items-center justify-center rounded-full border">
-            <Upload className="size-5" />
+            <CloudUpload className="size-5" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-body text-sm font-medium">

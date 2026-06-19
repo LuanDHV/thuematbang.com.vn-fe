@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useState } from "react";
 
 import {
-  createBannerAction,
   deleteBannerAction,
   updateBannerAction,
 } from "@/actions/admin-crud.actions";
@@ -46,7 +45,6 @@ export default function AdminBannersTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [createOpen, setCreateOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const { toast } = useToast();
   const handlePageChange = createPaginationChangeHandler(
@@ -136,12 +134,9 @@ export default function AdminBannersTable({
   const toolbarConfig = toolbar
     ? {
         ...toolbar,
-        onActionClick: toolbar.actionLabel
-          ? () => {
-              setEditingBanner(null);
-              setCreateOpen(true);
-            }
-          : toolbar.onActionClick,
+        actionHref: toolbar.actionLabel
+          ? "/admin/quan-li-banners/new"
+          : toolbar.actionHref,
       }
     : toolbar;
 
@@ -158,14 +153,13 @@ export default function AdminBannersTable({
       />
 
       <BannerFormDialog
-        open={createOpen || Boolean(editingBanner)}
+        open={Boolean(editingBanner)}
         onOpenChange={(open) => {
-          setCreateOpen(open);
           if (!open) setEditingBanner(null);
         }}
-        title={editingBanner ? "Chỉnh sửa banner" : "Tạo banner"}
+        title="Chỉnh sửa banner"
         description="Quản lý banner hiển thị trên website."
-        submitLabel={editingBanner ? "Cập nhật" : "Tạo mới"}
+        submitLabel="Cập nhật"
         existingImageUrl={editingBanner?.imageUrl}
         existingImagePublicId={editingBanner?.imagePublicId ?? null}
         resourceId={editingBanner?.id}
@@ -179,16 +173,14 @@ export default function AdminBannersTable({
                 sortOrder: editingBanner.sortOrder,
                 isActive: editingBanner.isActive,
               }
-            : {
-                isActive: true,
-              }
+            : undefined
         }
         onSubmit={async (payload) => {
-          if (editingBanner) {
-            return updateBannerAction(editingBanner.id, payload);
+          if (!editingBanner) {
+            throw new Error("Không có banner để cập nhật.");
           }
 
-          return createBannerAction(payload);
+          return updateBannerAction(editingBanner.id, payload);
         }}
       />
     </>
