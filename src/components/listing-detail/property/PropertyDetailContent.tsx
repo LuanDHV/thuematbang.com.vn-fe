@@ -17,6 +17,7 @@ import {
   formatNumber,
 } from "@/lib/format";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
+import { PROPERTY_PRIORITY_LABEL_MAP } from "@/constants/enum-options";
 import { Property } from "@/types/property";
 
 type PropertyDetailContentProps = {
@@ -69,7 +70,9 @@ export default function PropertyDetailContent({
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Tag size={14} className="text-primary" />
-            Loại tin đăng: {property.priorityStatus}
+            Loại tin đăng:{" "}
+            {PROPERTY_PRIORITY_LABEL_MAP[property.priorityStatus] ??
+              property.priorityStatus}
           </span>
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">

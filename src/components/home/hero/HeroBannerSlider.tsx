@@ -153,17 +153,17 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
       </div>
 
       <div className="absolute inset-0">
-        <div className="layout-container relative flex h-full flex-col items-center justify-center py-24 text-center md:py-28">
+        <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
           <h1 className="mt-6 max-w-4xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.42)] md:text-5xl lg:text-6xl">
             {title}
           </h1>
 
-          <p className="mt-5 max-w-4xl text-base leading-7 font-light text-white/85 drop-shadow-[0_6px_22px_rgba(0,0,0,0.34)] md:text-lg md:leading-8">
+          <p className="mt-4 hidden max-w-4xl text-base leading-7 font-light text-white/85 drop-shadow-[0_6px_22px_rgba(0,0,0,0.34)] sm:block md:mt-5 md:text-lg md:leading-8">
             Đăng mặt bằng, đăng nhu cầu hoặc khám phá nguồn cung và khách thuê
             đang có trên sàn.
           </p>
 
-          <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-8 flex w-full flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row">
             <Button
               asChild
               size="lg"
@@ -177,8 +177,9 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
             <Button
               asChild
+              variant="outline"
               size="lg"
-              className="text-heading hover:text-primary bg-surface/96 hover:bg-surface h-14 w-full max-w-72 rounded-xl px-8 text-base font-bold shadow-[0_18px_46px_rgba(0,0,0,0.18)] sm:w-auto sm:min-w-64"
+              className="h-14 w-full max-w-72 rounded-xl px-8 text-base font-bold shadow-[0_18px_46px_rgba(0,0,0,0.18)] sm:w-auto sm:min-w-64"
             >
               <Link href="/dang-tin/can-thue">
                 <ClipboardList className="size-5" />

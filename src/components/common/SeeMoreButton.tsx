@@ -35,10 +35,12 @@ export default function SeeMoreButton({
     );
   }
 
+  const resolvedHref = href!;
+
   return (
     <div className="mt-12 text-center">
       <Button asChild size="lg" className={CTA_CLASS_NAME}>
-        <Link href={`${href}`}>
+        <Link href={resolvedHref.startsWith("/") ? resolvedHref : `/${resolvedHref}`}>
           Xem thêm
         </Link>
       </Button>

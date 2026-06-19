@@ -1,4 +1,6 @@
-﻿"use client";
+"use client";
+
+import Link from "next/link";
 
 import Title from "@/components/common/Title";
 import HomeCarousel from "@/components/home/HomeCarousel";
@@ -28,6 +30,26 @@ const features = [
   },
 ];
 
+function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
+  return (
+    <Link
+      href="/gioi-thieu"
+      className="group hover:shadow-primary/20 relative flex min-h-64 flex-col items-center rounded-xl border border-hairline bg-surface p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl"
+    >
+      <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
+        {feature.icon}
+      </div>
+      <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
+        {feature.title}
+      </h3>
+      <p className="text-secondary text-sm leading-relaxed font-light">
+        {feature.description}
+      </p>
+      <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-lg transition-all duration-300 group-hover:w-full" />
+    </Link>
+  );
+}
+
 export default function IntroduceSection() {
   return (
     <section className="to-primary/10 relative w-full overflow-hidden bg-linear-to-b from-white px-4 py-12 lg:py-16">
@@ -44,39 +66,14 @@ export default function IntroduceSection() {
               key={index}
               className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
             >
-              <div className="group hover:shadow-primary/20 relative flex min-h-64 cursor-pointer flex-col items-center rounded-xl border border-hairline bg-surface p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
-                <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
-                  {feature.icon}
-                </div>
-                <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
-                  {feature.title}
-                </h3>
-                <p className="text-secondary text-sm leading-relaxed font-light">
-                  {feature.description}
-                </p>
-                <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-lg transition-all duration-300 group-hover:w-full"></div>
-              </div>
+              <FeatureCard feature={feature} />
             </div>
           ))}
         </HomeCarousel>
 
         <div className="mt-8 hidden grid-cols-1 gap-5 lg:grid lg:grid-cols-4">
           {features.map((feature, index) => (
-            <div
-              key={index}
-              className="group hover:shadow-primary/20 relative flex flex-col items-center rounded-xl border border-hairline bg-surface p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-2 hover:cursor-pointer hover:shadow-xl"
-            >
-              <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
-                {feature.icon}
-              </div>
-              <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
-                {feature.title}
-              </h3>
-              <p className="text-secondary text-sm leading-relaxed font-light">
-                {feature.description}
-              </p>
-              <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-lg transition-all duration-300 group-hover:w-full"></div>
-            </div>
+            <FeatureCard key={index} feature={feature} />
           ))}
         </div>
       </div>

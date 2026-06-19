@@ -454,20 +454,22 @@ function PropertyCreateFormContent({
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <ListingNumberField
-            name="longitude"
-            label="Kinh độ"
-            inputMode="decimal"
-            step="0.000001"
-          />
-          <ListingNumberField
-            name="latitude"
-            label="Vĩ độ"
-            inputMode="decimal"
-            step="0.000001"
-          />
-        </div>
+        {showAdminOnly ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            <ListingNumberField
+              name="longitude"
+              label="Kinh độ"
+              inputMode="decimal"
+              step="0.000001"
+            />
+            <ListingNumberField
+              name="latitude"
+              label="Vĩ độ"
+              inputMode="decimal"
+              step="0.000001"
+            />
+          </div>
+        ) : null}
 
         <ListingRichTextField
           name="content"

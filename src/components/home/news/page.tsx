@@ -68,7 +68,7 @@ export default async function NewsSection() {
                 </div>
 
                 <div className="mt-16">
-                  <SeeMoreButton href="tin-tuc" />
+                  <SeeMoreButton href="/tin-tuc" />
                 </div>
               </>
             );

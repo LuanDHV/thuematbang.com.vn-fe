@@ -6,6 +6,7 @@ import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
+import DetailMobileCtaBar from "@/components/listing-detail/DetailMobileCtaBar";
 import PropertyDetailContent from "@/components/listing-detail/property/PropertyDetailContent";
 import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
 import {
@@ -200,7 +201,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       : [];
 
     return (
-      <article className="layout-container layout-section-sm">
+      <article className="layout-container layout-section-sm pb-28 lg:pb-0">
         <DynamicBreadcrumb
           items={[
             { label: "Trang chủ", href: "/" },
@@ -227,6 +228,16 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
               relatedCategoryProvinceLinks={relatedCategoryProvinceLinks}
             />
           }
+        />
+        <DetailMobileCtaBar
+          contactHref="#detail-contact-card"
+          contactLabel="Liên hệ"
+          phoneHref={
+            isLoggedIn && property.contactPhone
+              ? `tel:${property.contactPhone.replace(/\s+/g, "")}`
+              : "/dang-nhap"
+          }
+          phoneLabel={isLoggedIn ? "Gọi ngay" : "Xem SĐT"}
         />
       </article>
     );
