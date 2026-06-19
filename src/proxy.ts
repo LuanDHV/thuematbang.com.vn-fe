@@ -7,11 +7,11 @@ import {
   applyAuthCookies,
   clearAuthCookies,
 } from "@/lib/server/auth-cookies";
+import { resolveLegacyRedirect } from "@/lib/legacy-redirects";
 
 const LOGIN_ROUTE = "/dang-nhap";
 const ADMIN_LOGIN_ROUTE = "/dang-nhap-admin";
 const ADMIN_ROOT = "/admin";
-const LEGACY_ADMIN_ROOT = "/cms/admin";
 
 function isSafeInternalPath(value: string | null): value is string {
   return Boolean(value && value.startsWith("/") && !value.startsWith("//"));
@@ -20,13 +20,17 @@ function isSafeInternalPath(value: string | null): value is string {
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  if (pathname.startsWith(LEGACY_ADMIN_ROOT)) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = pathname.replace(LEGACY_ADMIN_ROOT, ADMIN_ROOT);
-    return NextResponse.redirect(redirectUrl);
+  const legacyRedirect = resolveLegacyRedirect(pathname);
+  if (legacyRedirect && legacyRedirect.target !== pathname) {
+    const redirectUrl = new URL(legacyRedirect.target, request.url);
+    redirectUrl.search = search;
+    return NextResponse.redirect(redirectUrl, 301);
   }
 
-  if (pathname === ADMIN_LOGIN_ROUTE || pathname.startsWith(`${ADMIN_LOGIN_ROUTE}/`)) {
+  if (
+    pathname === ADMIN_LOGIN_ROUTE ||
+    pathname.startsWith(`${ADMIN_LOGIN_ROUTE}/`)
+  ) {
     const authState = await resolveAdminAuthState(
       request.cookies.get(ACCESS_TOKEN_COOKIE)?.value,
       request.cookies.get(REFRESH_TOKEN_COOKIE)?.value,
@@ -86,5 +90,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/quan-li-tai-khoan/:path*", "/admin/:path*", "/dang-nhap-admin", "/cms/admin/:path*"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)"],
 };
