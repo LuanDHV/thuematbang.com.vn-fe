@@ -67,7 +67,7 @@ export function ListingImageField({
   onErrorChange,
   onBusyChange,
   label = "Hình ảnh",
-  description = "Tải lên ít nhất 1 ảnh. Ảnh sẽ được upload trực tiếp lên Cloudinary.",
+  description = "Tải lên ít nhất 1 ảnh.",
   error,
   required = false,
   maxFileSizeBytes = DEFAULT_MAX_FILE_SIZE_BYTES,
@@ -204,16 +204,34 @@ export function ListingImageField({
 
       <label className="surface-card hover:border-primary/25 hover:bg-primary/4 flex cursor-pointer flex-col gap-4 border-dashed p-4 transition-colors">
         <div className="flex items-center gap-3">
-          <div className="bg-subtle text-primary flex size-11 items-center justify-center rounded-full">
+          <div className="border-border-subtle text-primary flex size-11 items-center justify-center rounded-full">
             <Upload className="size-5" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-body text-sm font-medium">
-              {isUploading ? "Đang tải ảnh lên..." : "Chọn ảnh từ máy tính"}
+              {isUploading ? "Đang tải ảnh lên..." : "Tải ảnh lên"}
             </p>
             <p className="text-secondary text-xs">
-              Định dạng JPEG, JPG, PNG hoặc WEBP. Tối đa 2MB.
+              Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP.
+              <br />
+              Tối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB.
             </p>
+            {isUploading ? (
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-secondary">Đang upload...</span>
+                  <span className="text-primary font-medium">
+                    {uploadProgress}%
+                  </span>
+                </div>
+                <div className="bg-subtle h-1.5 overflow-hidden rounded-full">
+                  <div
+                    className="bg-primary h-full rounded-full transition-[width] duration-300 ease-out"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -235,7 +253,7 @@ export function ListingImageField({
             width={960}
             height={540}
             unoptimized
-            className="mb-3 h-40 w-full rounded-lg object-cover"
+            className="mb-3 h-80 w-full rounded-lg object-contain"
           />
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
@@ -244,11 +262,6 @@ export function ListingImageField({
                   ? value.imagePublicId.split("/").pop()
                   : "Ảnh đã chọn"}
               </p>
-              {isUploading ? (
-                <p className="text-secondary text-xs">
-                  Đang tải lên {uploadProgress}%
-                </p>
-              ) : null}
             </div>
             <Button
               type="button"

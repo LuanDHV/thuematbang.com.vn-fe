@@ -1,6 +1,7 @@
 "use client";
 
-import { type ComponentProps, useState } from "react";
+import { type ComponentProps, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Phone, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -69,32 +70,30 @@ type EditProfileFormContentProps = {
 
 export default function EditProfileForm() {
   const { data: authUser } = useAuthMe();
+  const defaultValues = useMemo<EditProfileFormValues>(
+    () => ({
+      fullName: authUser?.fullName || "",
+      phone: authUser?.phone || "",
+      email: authUser?.email || "",
+    }),
+    [authUser?.email, authUser?.fullName, authUser?.phone],
+  );
+
+  const initialAvatar = useMemo<UploadedCloudinaryImage | null>(
+    () =>
+      authUser?.avatarUrl
+        ? {
+            imageUrl: authUser?.avatarUrl ?? "",
+            imagePublicId: authUser?.avatarPublicId ?? null,
+          }
+        : null,
+    [authUser?.avatarPublicId, authUser?.avatarUrl],
+  );
 
   if (!authUser) return null;
 
-  const defaultValues: EditProfileFormValues = {
-    fullName: authUser.fullName || "",
-    phone: authUser.phone || "",
-    email: authUser.email || "",
-  };
-
-  const initialAvatar = authUser.avatarUrl
-    ? {
-        imageUrl: authUser.avatarUrl,
-        imagePublicId: authUser.avatarPublicId ?? null,
-      }
-    : null;
-
-  const formStateKey = [
-    authUser.id,
-    JSON.stringify(defaultValues),
-    initialAvatar?.imagePublicId ?? "null",
-    initialAvatar?.imageUrl ?? "null",
-  ].join("::");
-
   return (
     <EditProfileFormContent
-      key={formStateKey}
       authUser={authUser}
       defaultValues={defaultValues}
       initialAvatar={initialAvatar}
@@ -107,6 +106,7 @@ function EditProfileFormContent({
   defaultValues,
   initialAvatar,
 }: EditProfileFormContentProps) {
+  const router = useRouter();
   const updateMutation = useUpdateMyProfileMutation();
   const [avatar, setAvatar] = useState<UploadedCloudinaryImage | null>(
     () => initialAvatar,
@@ -120,6 +120,10 @@ function EditProfileFormContent({
     defaultValues,
   });
 
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
+
   const onSubmit = form.handleSubmit(async (values) => {
     if (avatarError || avatarBusy) return;
 
@@ -130,7 +134,7 @@ function EditProfileFormContent({
       avatarUrl: avatar ? avatar.imageUrl : null,
       avatarPublicId: avatar ? avatar.imagePublicId : null,
     });
-    setAvatar(null);
+    router.refresh();
   });
 
   return (
@@ -148,7 +152,7 @@ function EditProfileFormContent({
             onErrorChange={setAvatarError}
             error={avatarError}
             label="Ảnh đại diện"
-            description="Định dạng jpeg, jpg, png, webp. Tối đa 2MB."
+            description="Chọn ảnh đại diện mới cho tài khoản của bạn."
             required={false}
           />
 

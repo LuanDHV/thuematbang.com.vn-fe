@@ -51,6 +51,20 @@ const ALLOWED_IMAGE_TYPES = new Set([
   "image/webp",
 ]);
 
+function getOverallUploadProgress(
+  totalFiles: number,
+  progressByIndex: Map<number, number>,
+) {
+  if (totalFiles <= 0) return 0;
+
+  let progressSum = 0;
+  for (let index = 0; index < totalFiles; index += 1) {
+    progressSum += progressByIndex.get(index) ?? 0;
+  }
+
+  return Math.min(100, Math.round(progressSum / totalFiles));
+}
+
 function getFileError(file: File, maxFileSizeBytes: number) {
   const maxFileSizeInMb = Math.floor(maxFileSizeBytes / 1024 / 1024);
 
@@ -73,7 +87,7 @@ export function ListingImageGalleryField({
   onErrorChange,
   onBusyChange,
   label = "Hình ảnh",
-  description = "Quản lý ảnh cũ và tải thêm ảnh mới.",
+  description = "Tải lên ít nhất một ảnh.",
   error,
   required = false,
   maxFiles = 25,
@@ -86,7 +100,10 @@ export function ListingImageGalleryField({
 }: ListingImageGalleryFieldProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const currentImagesRef = useRef<UploadedCloudinaryImage[]>(images);
+  const uploadProgressRef = useRef<Map<number, number>>(new Map());
+  const uploadFileCountRef = useRef(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     currentImagesRef.current = images;
@@ -138,6 +155,9 @@ export function ListingImageGalleryField({
     }
 
     setIsUploading(true);
+    uploadProgressRef.current.clear();
+    uploadFileCountRef.current = acceptedFiles.length;
+    setUploadProgress(0);
     onErrorChange?.(null);
 
     try {
@@ -148,6 +168,15 @@ export function ListingImageGalleryField({
           draftId,
           resourceId,
           concurrency,
+        },
+        (index, progress) => {
+          uploadProgressRef.current.set(index, progress);
+          setUploadProgress(
+            getOverallUploadProgress(
+              uploadFileCountRef.current,
+              uploadProgressRef.current,
+            ),
+          );
         },
       );
 
@@ -181,6 +210,9 @@ export function ListingImageGalleryField({
       );
     } finally {
       setIsUploading(false);
+      uploadProgressRef.current.clear();
+      uploadFileCountRef.current = 0;
+      setUploadProgress(0);
       if (inputRef.current) {
         inputRef.current.value = "";
       }
@@ -227,17 +259,35 @@ export function ListingImageGalleryField({
 
       <label className="surface-card hover:border-primary/25 hover:bg-primary/4 flex cursor-pointer flex-col gap-4 border-dashed p-4 transition-colors">
         <div className="flex items-center gap-3">
-          <div className="bg-subtle text-primary flex size-11 items-center justify-center rounded-full">
+          <div className="border-border-subtle text-primary flex size-11 items-center justify-center rounded-full border">
             <Upload className="size-5" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-body text-sm font-medium">
-              {isUploading ? "Đang tải ảnh lên..." : "Chọn ảnh từ máy tính"}
+              {isUploading ? "Đang tải ảnh lên..." : "Tải ảnh lên"}
             </p>
             <p className="text-secondary text-xs">
-              Đã có {existingImages.length} ảnh cũ và {images.length} ảnh mới.
-              Tối đa {maxFiles} ảnh.
+              Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP.
+              <br />
+              Tối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB.
             </p>
+
+            {isUploading ? (
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-secondary">Đang upload...</span>
+                  <span className="text-primary font-medium">
+                    {uploadProgress}%
+                  </span>
+                </div>
+                <div className="bg-subtle h-1.5 overflow-hidden rounded-full">
+                  <div
+                    className="bg-primary h-full rounded-full transition-[width] duration-300 ease-out"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
 
