@@ -108,9 +108,7 @@ function EditProfileFormContent({
 }: EditProfileFormContentProps) {
   const router = useRouter();
   const updateMutation = useUpdateMyProfileMutation();
-  const [avatar, setAvatar] = useState<UploadedCloudinaryImage | null>(
-    () => initialAvatar,
-  );
+  const [avatar, setAvatar] = useState<UploadedCloudinaryImage | null>(null);
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
   const [draftId] = useState(() => crypto.randomUUID());
@@ -126,13 +124,14 @@ function EditProfileFormContent({
 
   const onSubmit = form.handleSubmit(async (values) => {
     if (avatarError || avatarBusy) return;
+    const nextAvatar = avatar ?? initialAvatar;
 
     await updateMutation.mutateAsync({
       fullName: values.fullName,
       phone: values.phone,
       email: values.email,
-      avatarUrl: avatar ? avatar.imageUrl : null,
-      avatarPublicId: avatar ? avatar.imagePublicId : null,
+      avatarUrl: nextAvatar ? nextAvatar.imageUrl : null,
+      avatarPublicId: nextAvatar ? nextAvatar.imagePublicId : null,
     });
     router.refresh();
   });
