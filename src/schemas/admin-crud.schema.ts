@@ -210,15 +210,12 @@ export const projectFormSchema = z.object({
     invalidMessage: "Diện tích không hợp lệ",
     nonnegativeMessage: "Vui lòng nhập diện tích hợp lệ",
   }),
-  priceAmount: requiredNumberSchema({
-    requiredMessage: "Vui lòng nhập giá",
-    invalidMessage: "Giá không hợp lệ",
-    nonnegativeMessage: "Vui lòng nhập giá hợp lệ",
-  }),
+  priceAmount: optionalNumberSchema,
   priceUnit: z.enum(PRICE_UNIT_VALUES, {
     message: "Vui lòng chọn đơn vị giá",
-  }),
+  }).optional(),
   price: optionalNumberSchema,
+  isNegotiable: z.boolean().default(false),
   content: optionalTextSchema,
   status: z
     .enum(PUBLISH_STATUS_VALUES, {
@@ -226,6 +223,32 @@ export const projectFormSchema = z.object({
     })
     .nullable()
     .optional(),
+}).superRefine((value, ctx) => {
+  if (value.isNegotiable) {
+    return;
+  }
+
+  if (typeof value.priceAmount !== "number") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["priceAmount"],
+      message: "Vui lòng nhập giá",
+    });
+  } else if (value.priceAmount < 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["priceAmount"],
+      message: "Vui lòng nhập giá hợp lệ",
+    });
+  }
+
+  if (!value.priceUnit) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["priceUnit"],
+      message: "Vui lòng chọn đơn vị giá",
+    });
+  }
 });
 
 export type CategoryFormValues = z.infer<typeof categoryFormSchema>;

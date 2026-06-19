@@ -77,6 +77,7 @@ export default async function AdminProjectEditPage({ params }: PageProps) {
           area: project.area ?? undefined,
           priceAmount: project.priceAmount ?? undefined,
           priceUnit: project.priceUnit ?? "MILLION",
+          isNegotiable: project.isNegotiable,
           content: project.content ?? "",
           status: project.status,
         }}

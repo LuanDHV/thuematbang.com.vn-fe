@@ -51,6 +51,7 @@ export type ProjectUpsertPayload = {
   priceAmount?: number;
   priceUnit?: string;
   price?: number;
+  isNegotiable?: boolean;
   content?: string;
   status?: PublishStatus | null;
   images?: UploadedCloudinaryImage[];

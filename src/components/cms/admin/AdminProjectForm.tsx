@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
 import { ListingImageGalleryField } from "@/components/listing-form/ListingImageGalleryField";
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
@@ -43,6 +44,7 @@ const DEFAULT_VALUES: Partial<ProjectFormValues> = {
   priceAmount: undefined,
   priceUnit: "MILLION",
   price: undefined,
+  isNegotiable: false,
   content: "",
   status: "PUBLISHED",
 };
@@ -159,6 +161,10 @@ function AdminProjectFormContent({
     control: form.control,
     name: "name",
   });
+  const isNegotiableValue = useWatch({
+    control: form.control,
+    name: "isNegotiable",
+  });
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(nameValue ?? ""));
@@ -209,6 +215,9 @@ function AdminProjectFormContent({
     const basePayload = {
       ...values,
       slug: buildListingSlug(values.name),
+      priceAmount: values.isNegotiable ? undefined : values.priceAmount,
+      priceUnit: values.isNegotiable ? undefined : values.priceUnit,
+      price: values.isNegotiable ? undefined : values.price,
       images: uploadedImages,
     };
     const payload: ProjectUpsertPayload =
@@ -259,16 +268,23 @@ function AdminProjectFormContent({
         options={categoryOptions}
       />
       <ListingTextField name="developer" label="Chủ đầu tư" />
-      <ListingPriceField
-        name="price"
-        amountName="priceAmount"
-        unitName="priceUnit"
-        label="Giá"
-        required
-        inputMode="numeric"
-        step="1"
-        format="currency"
-      />
+      {isNegotiableValue ? (
+        <div className="border-hairline bg-surface text-secondary rounded-xl border px-4 py-3 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+          Dự án được đánh dấu là thương lượng.
+        </div>
+      ) : (
+        <ListingPriceField
+          name="price"
+          amountName="priceAmount"
+          unitName="priceUnit"
+          label="Giá"
+          required
+          inputMode="numeric"
+          step="1"
+          format="currency"
+        />
+      )}
+      <ListingCheckboxField name="isNegotiable" label="Thương lượng" />
 
       <ListingNumberField
         name="area"

@@ -18,6 +18,7 @@ export interface Project {
   price?: number | null;
   priceAmount?: number | null;
   priceUnit?: PriceUnit | null;
+  isNegotiable: boolean;
   content?: string | null;
   viewCount: number;
   status: PublishStatus;

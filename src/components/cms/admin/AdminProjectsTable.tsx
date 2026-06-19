@@ -12,7 +12,7 @@ import AdminStatusBadge, {
 } from "@/components/cms/admin/AdminStatusBadge";
 import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
-import { formatLocationParts, formatListingPrice } from "@/lib/format";
+import { formatLocationParts, formatNegotiablePrice } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
 import type { Project } from "@/types/project";
@@ -94,7 +94,7 @@ export default function AdminProjectsTable({
         header: "Giá",
         fieldType: "text",
         accessor: (item) =>
-          formatListingPrice(item.price, {
+          formatNegotiablePrice(item.price, item.isNegotiable, {
             amount: item.priceAmount,
             unit: item.priceUnit,
           }),

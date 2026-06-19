@@ -11,7 +11,7 @@ import {
   formatAreaValue,
   formatDate,
   formatNumber,
-  formatListingPrice,
+  formatNegotiablePrice,
 } from "@/lib/format";
 import { Project } from "@/types/project";
 
@@ -86,7 +86,7 @@ export default function ProjectDetailContent({
             <div>
               <p className="text-secondary text-xs tracking-wide uppercase">Tổng mức đầu tư</p>
               <p className="text-heading text-sm font-semibold">
-                {formatListingPrice(project.price, {
+                {formatNegotiablePrice(project.price, project.isNegotiable, {
                   fallback: "Liên hệ",
                   amount: project.priceAmount,
                   unit: project.priceUnit,

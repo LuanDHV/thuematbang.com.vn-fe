@@ -9,7 +9,7 @@ import {
   formatDate,
   formatLocationParts,
   formatNumber,
-  formatListingPrice,
+  formatNegotiablePrice,
 } from "@/lib/format";
 import { Project } from "@/types/project";
 
@@ -88,7 +88,7 @@ export function ProjectCard({ project }: { project: Project }) {
             </span>
           ) : null}
           <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
-            {formatListingPrice(project.price, {
+            {formatNegotiablePrice(project.price, project.isNegotiable, {
               fallback: "Liên hệ",
               amount: project.priceAmount,
               unit: project.priceUnit,

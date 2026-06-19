@@ -101,6 +101,7 @@ export function normalizeProjectFormDefaults(
       defaultValues.price,
     ),
     price: toOptionalNumber(defaultValues.price),
+    isNegotiable: Boolean(defaultValues.isNegotiable),
   };
 }
 
