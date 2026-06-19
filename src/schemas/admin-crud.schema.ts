@@ -32,94 +32,200 @@ const optionalNumberSchema = z.preprocess((value) => {
   return Number.isFinite(numericValue) ? numericValue : undefined;
 }, z.number().optional());
 
-const requiredIntegerSchema = z.preprocess((value) => {
-  if (value === "" || value === null || value === undefined) {
-    return undefined;
-  }
-  const numericValue = Number(value);
-  return Number.isFinite(numericValue) ? numericValue : undefined;
-}, z.number().int().positive());
+function requiredIntegerSchema({
+  requiredMessage,
+  invalidMessage,
+  positiveMessage,
+}: {
+  requiredMessage: string;
+  invalidMessage: string;
+  positiveMessage: string;
+}) {
+  return z.preprocess(
+    (value) => {
+      if (value === "" || value === null || value === undefined) {
+        return undefined;
+      }
+      const numericValue = Number(value);
+      return Number.isFinite(numericValue) ? numericValue : value;
+    },
+    z
+      .number({ error: requiredMessage })
+      .int(invalidMessage)
+      .positive(positiveMessage),
+  );
+}
 
-const requiredNumberSchema = z.preprocess((value) => {
-  if (value === "" || value === null || value === undefined) {
-    return undefined;
-  }
-  const numericValue = Number(value);
-  return Number.isFinite(numericValue) ? numericValue : undefined;
-}, z.number().nonnegative());
+function requiredNumberSchema({
+  requiredMessage,
+  invalidMessage,
+  nonnegativeMessage,
+}: {
+  requiredMessage: string;
+  invalidMessage: string;
+  nonnegativeMessage: string;
+}) {
+  return z.preprocess(
+    (value) => {
+      if (value === "" || value === null || value === undefined) {
+        return undefined;
+      }
+      const numericValue = Number(value);
+      return Number.isFinite(numericValue) ? numericValue : value;
+    },
+    z
+      .number({ error: requiredMessage })
+      .nonnegative(nonnegativeMessage ?? invalidMessage),
+  );
+}
 
 export const categoryFormSchema = z.object({
-  type: z.enum(CATEGORY_TYPE_VALUES),
-  name: z.string().trim().min(2).max(255),
+  type: z.enum(CATEGORY_TYPE_VALUES, {
+    message: "Vui lòng chọn loại danh mục",
+  }),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập tên danh mục hợp lệ")
+    .max(255, "Tên danh mục không vượt quá 255 ký tự"),
   slug: slugSchema,
   priority: optionalIntegerSchema,
   isActive: z.boolean().default(true),
 });
 
 export const bannerFormSchema = z.object({
-  title: z.string().trim().min(2).max(255),
+  title: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập tiêu đề hợp lệ")
+    .max(255, "Tiêu đề không vượt quá 255 ký tự"),
   targetLink: optionalTextSchema,
-  page: z.enum(PAGE_VALUES).optional(),
-  position: z.string().trim().min(1).max(120),
+  page: z
+    .enum(PAGE_VALUES, {
+      message: "Vui lòng chọn trang",
+    })
+    .optional(),
+  position: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng nhập vị trí banner")
+    .max(120, "Vị trí banner không vượt quá 120 ký tự"),
   sortOrder: optionalIntegerSchema,
   isActive: z.boolean().default(true),
 });
 
 export const faqFormSchema = z.object({
-  page: z.enum(PAGE_VALUES),
-  question: z.string().trim().min(2).max(1000),
-  answer: z.string().trim().min(2).max(10_000),
+  page: z.enum(PAGE_VALUES, {
+    message: "Vui lòng chọn trang",
+  }),
+  question: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập câu hỏi hợp lệ")
+    .max(1000, "Câu hỏi không vượt quá 1000 ký tự"),
+  answer: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập câu trả lời hợp lệ")
+    .max(10_000, "Câu trả lời không vượt quá 10000 ký tự"),
   sortOrder: optionalIntegerSchema,
 });
 
 export const seoContentFormSchema = z.object({
-  page: z.enum(PAGE_VALUES),
+  page: z.enum(PAGE_VALUES, {
+    message: "Vui lòng chọn trang",
+  }),
   seoContent: optionalTextSchema,
 });
 
 export const leadFormSchema = z.object({
-  fullName: z.string().trim().min(2).max(255),
-  phone: z.string().trim().min(9).max(20),
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập họ và tên hợp lệ")
+    .max(255, "Họ và tên không vượt quá 255 ký tự"),
+  phone: z
+    .string()
+    .trim()
+    .min(9, "Vui lòng nhập số điện thoại hợp lệ")
+    .max(20, "Số điện thoại không vượt quá 20 ký tự"),
   message: optionalTextSchema,
-  status: z.enum(LEAD_STATUS_VALUES).nullable().optional(),
+  status: z
+    .enum(LEAD_STATUS_VALUES, {
+      message: "Vui lòng chọn trạng thái",
+    })
+    .nullable()
+    .optional(),
   userId: optionalIntegerSchema,
   propertyId: optionalIntegerSchema,
 });
 
 export const newsFormSchema = z.object({
-  categoryId: z.preprocess((value) => {
-    if (value === "" || value === null || value === undefined) return undefined;
-    const numericValue = Number(value);
-    return Number.isFinite(numericValue) ? numericValue : value;
-  }, z.number().int().positive()),
-  title: z.string().trim().min(2).max(255),
+  categoryId: requiredIntegerSchema({
+    requiredMessage: "Vui lòng chọn danh mục",
+    invalidMessage: "Danh mục không hợp lệ",
+    positiveMessage: "Vui lòng chọn danh mục",
+  }),
+  title: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập tiêu đề hợp lệ")
+    .max(255, "Tiêu đề không vượt quá 255 ký tự"),
   slug: slugSchema,
   summary: optionalTextSchema,
   content: optionalTextSchema,
-  status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
+  status: z
+    .enum(PUBLISH_STATUS_VALUES, {
+      message: "Vui lòng chọn trạng thái",
+    })
+    .nullable()
+    .optional(),
   isFeatured: z.boolean().default(false).optional(),
 });
 
 export const projectFormSchema = z.object({
-  name: z.string().trim().min(2).max(255),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập tên dự án hợp lệ")
+    .max(255, "Tên dự án không vượt quá 255 ký tự"),
   slug: slugSchema,
-  categoryId: z.preprocess((value) => {
-    if (value === "" || value === null || value === undefined) return undefined;
-    const numericValue = Number(value);
-    return Number.isFinite(numericValue) ? numericValue : value;
-  }, z.number().int().positive()),
+  categoryId: requiredIntegerSchema({
+    requiredMessage: "Vui lòng chọn danh mục",
+    invalidMessage: "Danh mục không hợp lệ",
+    positiveMessage: "Vui lòng chọn danh mục",
+  }),
   developer: optionalTextSchema,
-  provinceId: requiredIntegerSchema,
+  provinceId: requiredIntegerSchema({
+    requiredMessage: "Vui lòng chọn tỉnh/thành",
+    invalidMessage: "Khu vực không hợp lệ",
+    positiveMessage: "Vui lòng chọn tỉnh/thành",
+  }),
   wardId: optionalIntegerSchema,
   addressDetail: optionalTextSchema,
   longitude: optionalNumberSchema,
   latitude: optionalNumberSchema,
-  area: requiredNumberSchema,
-  priceAmount: requiredNumberSchema,
-  priceUnit: z.enum(PRICE_UNIT_VALUES),
+  area: requiredNumberSchema({
+    requiredMessage: "Vui lòng nhập diện tích",
+    invalidMessage: "Diện tích không hợp lệ",
+    nonnegativeMessage: "Vui lòng nhập diện tích hợp lệ",
+  }),
+  priceAmount: requiredNumberSchema({
+    requiredMessage: "Vui lòng nhập giá",
+    invalidMessage: "Giá không hợp lệ",
+    nonnegativeMessage: "Vui lòng nhập giá hợp lệ",
+  }),
+  priceUnit: z.enum(PRICE_UNIT_VALUES, {
+    message: "Vui lòng chọn đơn vị giá",
+  }),
   price: optionalNumberSchema,
   content: optionalTextSchema,
-  status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
+  status: z
+    .enum(PUBLISH_STATUS_VALUES, {
+      message: "Vui lòng chọn trạng thái",
+    })
+    .nullable()
+    .optional(),
 });
 
 export type CategoryFormValues = z.infer<typeof categoryFormSchema>;
