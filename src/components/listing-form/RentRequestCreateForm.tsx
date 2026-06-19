@@ -13,7 +13,6 @@ import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
-import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
@@ -312,20 +311,11 @@ export function RentRequestCreateForm({
           </div>
         ) : null}
 
-        {showAdminOnly ? (
-          <ListingRichTextField
-            name="requirementText"
-            label="Mô tả thêm"
-            placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
-          />
-        ) : (
-          <ListingTextareaField
-            name="requirementText"
-            label="Mô tả thêm"
-            placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
-            rows={8}
-          />
-        )}
+        <ListingRichTextField
+          name="requirementText"
+          label="Mô tả thêm"
+          placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
+        />
       </ListingCreateFormShell>
 
       {showSuccessDialog ? (

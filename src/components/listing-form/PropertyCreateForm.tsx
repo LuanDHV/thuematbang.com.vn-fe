@@ -14,7 +14,6 @@ import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
-import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import {
@@ -470,20 +469,11 @@ function PropertyCreateFormContent({
           />
         </div>
 
-        {showAdminOnly ? (
-          <ListingRichTextField
-            name="content"
-            label="Mô tả thêm"
-            placeholder="Mô tả chi tiết về tin đăng..."
-          />
-        ) : (
-          <ListingTextareaField
-            name="content"
-            label="Mô tả thêm"
-            placeholder="Mô tả chi tiết về tin đăng..."
-            rows={8}
-          />
-        )}
+        <ListingRichTextField
+          name="content"
+          label="Mô tả thêm"
+          placeholder="Mô tả chi tiết về tin đăng..."
+        />
 
         {showAdminOnly ? (
           <>
