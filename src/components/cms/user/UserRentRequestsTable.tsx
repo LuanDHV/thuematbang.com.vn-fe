@@ -9,7 +9,7 @@ import { Copy, ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 import AdminStatusBadge, {
   type AdminBadgeTone,
 } from "@/components/cms/admin/AdminStatusBadge";
-import { TablePaginationFooter } from "@/components/common/Pagination";
+import { Pagination, TablePaginationFooter } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -49,6 +49,85 @@ const statusToneMap: Record<PublishStatus, AdminBadgeTone> = {
 
 function getPublicPath(item: RentRequest) {
   return `/can-thue/${item.slug}`;
+}
+
+function RentRequestMobileCard({
+  item,
+  copied,
+  onCopy,
+}: {
+  item: RentRequest;
+  copied: boolean;
+  onCopy: (item: RentRequest) => void;
+}) {
+  return (
+    <article className="surface-card space-y-4 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-1">
+          <Link
+            href={getPublicPath(item)}
+            target="_blank"
+            rel="noreferrer"
+            className="text-heading hover:text-primary line-clamp-2 text-sm font-semibold transition-colors"
+          >
+            {item.title}
+          </Link>
+          <p className="text-secondary truncate text-xs">{item.slug}</p>
+        </div>
+
+        <RentRequestActions item={item} copied={copied} onCopy={onCopy} />
+      </div>
+
+      <div className="grid gap-3 text-sm sm:grid-cols-2">
+        <div className="space-y-1">
+          <p className="text-secondary text-xs font-medium">Danh mục</p>
+          <p className="text-body">
+            {item.category?.name || "Chưa có danh mục"}
+          </p>
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-secondary text-xs font-medium">Khu vực</p>
+          <p className="text-body">
+            {formatLocationParts([
+              item.desiredWard?.name,
+              item.desiredProvince?.name,
+            ])}
+          </p>
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-secondary text-xs font-medium">Ngân sách</p>
+          <p className="text-body">
+            {formatListingPrice(item.budget, {
+              fallback: "Đang cập nhật",
+              amount: item.budgetAmount,
+              unit: item.budgetUnit,
+            })}
+          </p>
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-secondary text-xs font-medium">Diện tích</p>
+          <p className="text-body">{formatAreaValue(item.desiredArea)}</p>
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-secondary text-xs font-medium">Ngày tạo</p>
+          <p className="text-body">{formatDateDisplay(item.createdAt)}</p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <AdminStatusBadge tone={statusToneMap[item.status]}>
+          {PUBLISH_STATUS_LABEL_MAP[item.status]}
+        </AdminStatusBadge>
+        <AdminStatusBadge tone={item.isMatched ? "success" : "muted"}>
+          {item.isMatched ? "Đã khớp" : "Chưa khớp"}
+        </AdminStatusBadge>
+      </div>
+    </article>
+  );
 }
 
 function RentRequestActions({
@@ -126,7 +205,8 @@ export default function UserRentRequestsTable({
         </h2>
       </div>
 
-      <Table>
+      <div className="hidden md:block">
+        <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[30%]">Nhu cầu</TableHead>
@@ -217,14 +297,53 @@ export default function UserRentRequestsTable({
               </TableCell>
             </TableRow>
           )}
-        </TableBody>
-        <TablePaginationFooter
-          page={currentPage}
-          totalPages={totalPages}
-          onChange={handlePageChange}
-          colSpan={8}
-        />
-      </Table>
+          </TableBody>
+          <TablePaginationFooter
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={handlePageChange}
+            colSpan={9}
+          />
+        </Table>
+      </div>
+
+      <div className="space-y-3 p-3 md:hidden">
+        {items.length > 0 ? (
+          items.map((item) => {
+            const isCopied = copiedSlug === item.slug;
+
+            return (
+              <RentRequestMobileCard
+                key={item.id}
+                item={item}
+                copied={isCopied}
+                onCopy={handleCopy}
+              />
+            );
+          })
+        ) : (
+          <div className="surface-card px-4">
+            <div className="space-y-2 py-14 text-center">
+              <p className="text-heading text-base font-semibold">
+                Không có dữ liệu
+              </p>
+              <p className="text-secondary text-sm">
+                Endpoint `/me/rent-requests` chưa trả về bản ghi nào.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {totalPages > 1 ? (
+          <div className="pt-2">
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={handlePageChange}
+            />
+          </div>
+        ) : null}
+      </div>
     </section>
   );
 }
