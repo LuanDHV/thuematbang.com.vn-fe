@@ -10,8 +10,8 @@ import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxF
 import { ListingLocationField } from "@/components/listing-form/ListingLocationField";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
-import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
+import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
@@ -311,7 +311,7 @@ export function RentRequestCreateForm({
           </div>
         ) : null}
 
-        <ListingRichTextField
+        <ListingTextareaField
           name="requirementText"
           label="Mô tả thêm"
           placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
