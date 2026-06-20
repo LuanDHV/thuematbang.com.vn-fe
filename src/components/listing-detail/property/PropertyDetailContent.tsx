@@ -91,26 +91,6 @@ export default function PropertyDetailContent({
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-heading text-xl font-semibold">
-            Thông tin mô tả
-          </h2>
-        </div>
-        {property.content ? (
-          <div
-            className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: property.content }}
-          />
-        ) : (
-          <p className="text-secondary text-sm">
-            Đang cập nhật thông tin mô tả.
-          </p>
-        )}
-      </section>
-
-      <section>
-        <div className="mb-3 flex items-center gap-3">
-          <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-heading text-xl font-semibold">
             Thông tin chi tiết
           </h2>
         </div>
@@ -178,6 +158,26 @@ export default function PropertyDetailContent({
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
           <h2 className="text-heading text-xl font-semibold">
+            Thông tin mô tả
+          </h2>
+        </div>
+        {property.content ? (
+          <div
+            className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: property.content }}
+          />
+        ) : (
+          <p className="text-secondary text-sm">
+            Đang cập nhật thông tin mô tả.
+          </p>
+        )}
+      </section>
+
+      <section>
+        <div className="mb-3 flex items-center gap-3">
+          <span className="bg-primary h-6 w-1 rounded-full" />
+          <h2 className="text-heading text-xl font-semibold">
             Xem trên bản đồ
           </h2>
         </div>
@@ -188,7 +188,7 @@ export default function PropertyDetailContent({
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="h-80 w-full rounded-2xl border border-hairline shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
+            className="border-hairline h-80 w-full rounded-2xl border shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
           />
         ) : (
           <div className="surface-card text-secondary rounded-2xl p-4 text-sm">
@@ -239,4 +239,3 @@ export default function PropertyDetailContent({
     </div>
   );
 }
-

@@ -286,7 +286,7 @@ export default function UserPropertiesTable({
                       Không có dữ liệu
                     </p>
                     <p className="text-secondary text-sm">
-                      Endpoint `/me/properties` chưa trả về bản ghi nào.
+                      Chưa có bản ghi nào.
                     </p>
                   </div>
                 </TableCell>
@@ -322,9 +322,7 @@ export default function UserPropertiesTable({
               <p className="text-heading text-base font-semibold">
                 Không có dữ liệu
               </p>
-              <p className="text-secondary text-sm">
-                Endpoint `/me/properties` chưa trả về bản ghi nào.
-              </p>
+              <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
             </div>
           </div>
         )}

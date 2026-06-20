@@ -74,7 +74,7 @@ export default function ProjectSection() {
           ))}
         </HomeCarousel>
 
-        <div className="hidden grid-cols-2 gap-5 lg:grid lg:grid-cols-3 xl:grid-cols-6">
+        <div className="hidden grid-cols-2 gap-5 md:grid md:grid-cols-3 xl:grid-cols-6">
           {categories.map((category, index) => (
             <CategoryCard key={index} category={category} />
           ))}

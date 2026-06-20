@@ -40,7 +40,7 @@ export default async function NewsSection() {
 
             return (
               <>
-                <div className="space-y-5 lg:hidden">
+                <div className="space-y-5 md:hidden">
                   {featuredNews ? (
                     <FeaturedNewsCard news={featuredNews} />
                   ) : null}
@@ -52,7 +52,7 @@ export default async function NewsSection() {
                   </div>
                 </div>
 
-                <div className="hidden grid-cols-1 items-stretch gap-5 lg:grid lg:grid-cols-2 lg:gap-8">
+                <div className="hidden grid-cols-1 items-stretch gap-5 md:grid md:grid-cols-2 md:gap-8">
                   {featuredNews ? (
                     <FeaturedNewsCard
                       news={featuredNews}

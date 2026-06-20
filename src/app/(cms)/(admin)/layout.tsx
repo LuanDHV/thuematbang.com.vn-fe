@@ -20,7 +20,10 @@ export default async function AdminLayout({
   }
 
   return (
-    <CmsLayout sidebar={<AdminSidebar user={authUser} />}>
+    <CmsLayout
+      sidebar={<AdminSidebar user={authUser} />}
+      mobileSidebar={<AdminSidebar user={authUser} forceExpanded />}
+    >
       {children}
     </CmsLayout>
   );

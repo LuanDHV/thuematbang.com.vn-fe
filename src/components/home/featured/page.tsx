@@ -43,14 +43,14 @@ export default async function FeaturedSection() {
                   {featuredProperties.map((item) => (
                     <div
                       key={item.id}
-                      className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
+                      className="min-w-0 flex-[0_0_88%] pl-3"
                     >
                       <PropertyCard property={item} variant="featured" />
                     </div>
                   ))}
                 </HomeCarousel>
 
-                <div className="mt-12 hidden grid-cols-1 gap-4 lg:grid lg:grid-cols-3 xl:grid-cols-4">
+                <div className="mt-12 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
                   {featuredProperties.map((item) => (
                     <PropertyCard
                       key={item.id}

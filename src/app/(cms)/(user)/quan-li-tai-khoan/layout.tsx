@@ -17,7 +17,10 @@ export default async function UserManagementLayout({
   }
 
   return (
-    <CmsLayout sidebar={<UserSidebar user={authUser} />}>
+    <CmsLayout
+      sidebar={<UserSidebar user={authUser} />}
+      mobileSidebar={<UserSidebar user={authUser} forceExpanded />}
+    >
       {children}
     </CmsLayout>
   );

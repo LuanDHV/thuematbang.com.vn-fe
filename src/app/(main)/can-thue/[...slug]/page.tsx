@@ -6,7 +6,6 @@ import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
-import DetailMobileCtaBar from "@/components/listing-detail/DetailMobileCtaBar";
 import RentRequestDetailContent from "@/components/listing-detail/rent-request/RentRequestDetailContent";
 import RentRequestDetailSidebar from "@/components/listing-detail/rent-request/RentRequestDetailSidebar";
 import {
@@ -160,7 +159,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       .slice(0, 10);
 
     return (
-      <article className="layout-container layout-section-sm pb-28 lg:pb-0">
+      <article className="layout-container layout-section-sm ">
         <DynamicBreadcrumb
           className="mb-6"
           items={[
@@ -185,12 +184,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
               latestWantedProperties={latestWantedRequests}
             />
           }
-        />
-        <DetailMobileCtaBar
-          contactHref="#detail-contact-card"
-          contactLabel="Liên hệ"
-          phoneHref={isLoggedIn ? "tel:09686880818" : "/dang-nhap"}
-          phoneLabel={isLoggedIn ? "Gọi ngay" : "Xem SĐT"}
         />
       </article>
     );

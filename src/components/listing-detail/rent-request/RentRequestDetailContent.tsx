@@ -48,7 +48,7 @@ export default function RentRequestDetailContent({
     <div className="surface-card flex w-full flex-col gap-6 p-5 lg:gap-8">
       <div className="flex flex-col gap-6 lg:gap-8">
         <section>
-          <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface-alt">
+          <div className="bg-surface-alt relative aspect-video w-full overflow-hidden rounded-2xl">
             <CloudinaryImage
               src={RENT_REQUEST_COVER_IMAGE}
               alt={rentRequest.title}
@@ -79,23 +79,11 @@ export default function RentRequestDetailContent({
               Ngày đăng: {formatDate(rentRequest.createdAt)}
             </span>
 
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Eye size={14} className="text-primary" />
-            Lượt xem: {formatNumber(rentRequest.viewCount, { fallback: "0" })}
-          </span>
-        </div>
-      </section>
-
-        <section>
-          <div className="mb-3 flex items-center gap-3">
-            <span className="bg-primary h-6 w-1 rounded-full" />
-            <h2 className="text-heading text-xl font-semibold">
-              Thông tin mô tả
-            </h2>
+            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Eye size={14} className="text-primary" />
+              Lượt xem: {formatNumber(rentRequest.viewCount, { fallback: "0" })}
+            </span>
           </div>
-          <p className="text-body whitespace-pre-line">
-            {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
-          </p>
         </section>
 
         <section>
@@ -157,12 +145,26 @@ export default function RentRequestDetailContent({
                     Hướng
                   </p>
                   <p className="text-heading text-sm font-semibold">
-                    {getDirectionLabel(rentRequest.desiredDirection?.toString())}
+                    {getDirectionLabel(
+                      rentRequest.desiredDirection?.toString(),
+                    )}
                   </p>
                 </div>
               </div>
             ) : null}
           </div>
+        </section>
+
+        <section>
+          <div className="mb-3 flex items-center gap-3">
+            <span className="bg-primary h-6 w-1 rounded-full" />
+            <h2 className="text-heading text-xl font-semibold">
+              Thông tin mô tả
+            </h2>
+          </div>
+          <p className="text-body whitespace-pre-line">
+            {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
+          </p>
         </section>
       </div>
 
@@ -188,4 +190,3 @@ export default function RentRequestDetailContent({
     </div>
   );
 }
-

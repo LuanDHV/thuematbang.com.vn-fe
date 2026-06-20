@@ -12,8 +12,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SheetClose } from "@/components/ui/sheet";
 import { useLogoutMutation } from "@/hooks/use-auth";
-import { buildCmsHomeNavItem, type CmsNavItem } from "@/lib/navigation/cms-navigation";
+import {
+  buildCmsHomeNavItem,
+  type CmsNavItem,
+} from "@/lib/navigation/cms-navigation";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store";
 import type { User } from "@/types";
@@ -22,6 +26,7 @@ type CmsSidebarProps = {
   user: User;
   items: CmsNavItem[];
   className?: string;
+  forceExpanded?: boolean;
 };
 
 function getInitials(name?: string | null) {
@@ -61,6 +66,7 @@ export default function CmsSidebar({
   user,
   items,
   className,
+  forceExpanded = false,
 }: CmsSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -74,8 +80,10 @@ export default function CmsSidebar({
   const initials = getInitials(user.fullName);
   const [isDesktopViewport, setIsDesktopViewport] = useState(false);
 
-  const desktopExpanded = !isCmsSidebarCollapsed;
-  const railMode = !isDesktopViewport || isCmsSidebarCollapsed;
+  const desktopExpanded = forceExpanded || !isCmsSidebarCollapsed;
+  const railMode = forceExpanded
+    ? false
+    : !isDesktopViewport || isCmsSidebarCollapsed;
   const accountLabel = user.fullName || "Người dùng";
   const accountDescription = user.email || user.role;
   const accountTooltip = `${accountLabel}${
@@ -225,11 +233,68 @@ export default function CmsSidebar({
           </div>
         </div>
 
-        <div className="border-hairline border-b p-3 lg:hidden">
-          <div className="flex justify-center">
-            <TooltipWrap enabled={true} label={accountTooltip}>
-              {accountRailButton}
-            </TooltipWrap>
+        <div
+          className={cn(
+            "border-hairline border-b p-3",
+            forceExpanded ? "" : "lg:hidden",
+          )}
+        >
+          <div
+            className={cn(
+              "flex",
+              desktopExpanded
+                ? "items-center justify-between"
+                : "justify-center",
+            )}
+          >
+            {desktopExpanded ? (
+              <div className="flex items-center gap-3">
+                {avatar}
+                <div className="min-w-0">
+                  <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">
+                    {user.role}
+                  </p>
+                  <p className="text-heading truncate text-sm font-semibold">
+                    {accountLabel}
+                  </p>
+                  {user.email ? (
+                    <p className="text-secondary truncate text-xs">
+                      {user.email}
+                    </p>
+                  ) : (
+                    <p className="text-secondary text-xs">
+                      Bảng điều hướng quản trị
+                    </p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <TooltipWrap enabled={true} label={accountTooltip}>
+                {accountRailButton}
+              </TooltipWrap>
+            )}
+
+            {!forceExpanded ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="rounded-xl"
+                onClick={toggleCmsSidebarCollapsed}
+                aria-label={
+                  desktopExpanded
+                    ? "Thu gọn thanh điều hướng CMS"
+                    : "Mở rộng thanh điều hướng CMS"
+                }
+                aria-pressed={desktopExpanded}
+              >
+                {desktopExpanded ? (
+                  <ChevronLeft className="size-4" />
+                ) : (
+                  <ChevronRight className="size-4" />
+                )}
+              </Button>
+            ) : null}
           </div>
         </div>
 
@@ -246,8 +311,11 @@ export default function CmsSidebar({
                 aria-label={railMode ? item.label : undefined}
                 className={cn(
                   "group focus-visible:ring-primary/20 flex rounded-xl border-l-2 py-2.5 transition-colors focus-visible:ring-2 focus-visible:outline-none",
-                  "justify-center px-0",
-                  desktopExpanded &&
+                  forceExpanded
+                    ? "items-center justify-start gap-3 px-3"
+                    : "justify-center px-0",
+                  !forceExpanded &&
+                    desktopExpanded &&
                     "lg:items-center lg:justify-start lg:gap-3 lg:px-3",
                   isActive
                     ? "border-l-primary bg-primary/5"
@@ -256,7 +324,7 @@ export default function CmsSidebar({
               >
                 <Icon
                   className={cn(
-                    "size-[1.1rem] lg:size-4",
+                    "size-[1.1rem] shrink-0 lg:size-4",
                     isActive
                       ? "text-primary"
                       : "text-secondary group-hover:text-heading",
@@ -264,9 +332,10 @@ export default function CmsSidebar({
                 />
                 <span
                   className={cn(
-                    "sr-only text-sm",
+                    "text-sm",
                     isActive ? "text-heading font-semibold" : "text-body",
-                    desktopExpanded && "lg:not-sr-only",
+                    !forceExpanded && !desktopExpanded && "sr-only",
+                    !forceExpanded && desktopExpanded && "lg:not-sr-only",
                   )}
                 >
                   {item.label}
@@ -280,43 +349,62 @@ export default function CmsSidebar({
                 enabled={railMode}
                 label={item.label}
               >
-                {navLink}
+                {forceExpanded ? (
+                  <SheetClose asChild>{navLink}</SheetClose>
+                ) : (
+                  navLink
+                )}
               </TooltipWrap>
             );
           })}
         </nav>
 
         <div className="border-hairline mt-auto border-t p-3">
-          <div className="hidden lg:block">
-            {desktopExpanded ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                className="w-full justify-start rounded-xl px-4"
-                onClick={handleLogout}
-                disabled={logoutMutation.isPending}
-              >
-                <LogOut className="size-4" />
-                {logoutLabel}
-              </Button>
-            ) : (
-              <div className="flex justify-center">
+          {forceExpanded ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full justify-start rounded-xl px-4"
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
+            >
+              <LogOut className="size-4" />
+              {logoutLabel}
+            </Button>
+          ) : (
+            <>
+              <div className="hidden lg:block">
+                {desktopExpanded ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    className="w-full justify-start rounded-xl px-4"
+                    onClick={handleLogout}
+                    disabled={logoutMutation.isPending}
+                  >
+                    <LogOut className="size-4" />
+                    {logoutLabel}
+                  </Button>
+                ) : (
+                  <div className="flex justify-center">
+                    <TooltipWrap enabled={true} label={logoutLabel}>
+                      {logoutRailButton}
+                    </TooltipWrap>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-center lg:hidden">
                 <TooltipWrap enabled={true} label={logoutLabel}>
                   {logoutRailButton}
                 </TooltipWrap>
               </div>
-            )}
-          </div>
-
-          <div className="flex justify-center lg:hidden">
-            <TooltipWrap enabled={true} label={logoutLabel}>
-              {logoutRailButton}
-            </TooltipWrap>
-          </div>
+            </>
+          )}
         </div>
       </aside>
     </TooltipProvider>
   );
 }
-

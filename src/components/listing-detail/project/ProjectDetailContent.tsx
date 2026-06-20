@@ -60,31 +60,18 @@ export default function ProjectDetailContent({
       <section>
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-heading text-xl font-semibold">Thông tin mô tả</h2>
-        </div>
-
-        {project.content ? (
-          <div
-            className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: project.content }}
-          />
-        ) : (
-          <p className="text-secondary text-sm">Nội dung dự án đang được cập nhật.</p>
-        )}
-      </section>
-
-      <section>
-        <div className="mb-3 flex items-center gap-3">
-          <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-heading text-xl font-semibold">Thông tin chi tiết</h2>
+          <h2 className="text-heading text-xl font-semibold">
+            Thông tin chi tiết
+          </h2>
         </div>
 
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
           <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
             <Landmark className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-secondary text-xs tracking-wide uppercase">Tổng mức đầu tư</p>
+              <p className="text-secondary text-xs tracking-wide uppercase">
+                Tổng mức đầu tư
+              </p>
               <p className="text-heading text-sm font-semibold">
                 {formatNegotiablePrice(project.price, project.isNegotiable, {
                   fallback: "Liên hệ",
@@ -98,7 +85,9 @@ export default function ProjectDetailContent({
           <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
             <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-secondary text-xs tracking-wide uppercase">Quy mô</p>
+              <p className="text-secondary text-xs tracking-wide uppercase">
+                Quy mô
+              </p>
               <p className="text-heading text-sm font-semibold">
                 {formatAreaValue(project.area)}
               </p>
@@ -108,7 +97,9 @@ export default function ProjectDetailContent({
           <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
             <Building2 className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
-              <p className="text-secondary text-xs tracking-wide uppercase">Chủ đầu tư</p>
+              <p className="text-secondary text-xs tracking-wide uppercase">
+                Chủ đầu tư
+              </p>
               <p className="text-heading text-sm font-semibold">
                 {project.developer || "Đang cập nhật"}
               </p>
@@ -120,7 +111,30 @@ export default function ProjectDetailContent({
       <section>
         <div className="mb-3 flex items-center gap-3">
           <span className="bg-primary h-6 w-1 rounded-full" />
-          <h2 className="text-heading text-xl font-semibold">Xem trên bản đồ</h2>
+          <h2 className="text-heading text-xl font-semibold">
+            Thông tin mô tả
+          </h2>
+        </div>
+
+        {project.content ? (
+          <div
+            className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: project.content }}
+          />
+        ) : (
+          <p className="text-secondary text-sm">
+            Nội dung dự án đang được cập nhật.
+          </p>
+        )}
+      </section>
+
+      <section>
+        <div className="mb-3 flex items-center gap-3">
+          <span className="bg-primary h-6 w-1 rounded-full" />
+          <h2 className="text-heading text-xl font-semibold">
+            Xem trên bản đồ
+          </h2>
         </div>
 
         {mapSrc ? (
@@ -129,7 +143,7 @@ export default function ProjectDetailContent({
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="h-80 w-full rounded-2xl border border-hairline shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
+            className="border-hairline h-80 w-full rounded-2xl border shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
           />
         ) : (
           <div className="surface-card text-secondary rounded-2xl p-4 text-sm">
@@ -140,4 +154,3 @@ export default function ProjectDetailContent({
     </div>
   );
 }
-

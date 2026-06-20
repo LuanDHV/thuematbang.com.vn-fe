@@ -6,13 +6,18 @@ import type { User as UserType } from "@/types";
 
 type UserSidebarProps = {
   user: UserType;
+  forceExpanded?: boolean;
 };
 
-export default function UserSidebar({ user }: UserSidebarProps) {
+export default function UserSidebar({
+  user,
+  forceExpanded,
+}: UserSidebarProps) {
   return (
     <CmsSidebar
       user={user}
       items={buildUserCmsNavItems(user.hasPassword ?? true)}
+      forceExpanded={forceExpanded}
     />
   );
 }

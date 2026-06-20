@@ -71,7 +71,7 @@ export default function IntroduceSection() {
           ))}
         </HomeCarousel>
 
-        <div className="mt-8 hidden grid-cols-1 gap-5 lg:grid lg:grid-cols-4">
+        <div className="mt-8 hidden grid-cols-1 gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
           {features.map((feature, index) => (
             <FeatureCard key={index} feature={feature} />
           ))}
