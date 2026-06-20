@@ -239,6 +239,11 @@ function AdminNewsFormContent({
         name="content"
         label="Nội dung"
         placeholder="Nhập nội dung bài viết..."
+        imageUpload={{
+          resourceType: "news",
+          draftId,
+          resourceId,
+        }}
       />
       <ListingSelectField
         name="status"

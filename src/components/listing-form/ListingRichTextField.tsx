@@ -4,12 +4,18 @@ import { Controller, useFormContext } from "react-hook-form";
 
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { LightRichTextEditor } from "./LightRichTextEditor";
+import type { CloudinaryUploadResourceType } from "@/types/cloudinary";
 
 type ListingRichTextFieldProps = {
   name: string;
   label: string;
   description?: string;
   placeholder?: string;
+  imageUpload?: {
+    resourceType: CloudinaryUploadResourceType;
+    draftId: string;
+    resourceId?: number | string;
+  };
 };
 
 export function ListingRichTextField({
@@ -17,6 +23,7 @@ export function ListingRichTextField({
   label,
   description,
   placeholder,
+  imageUpload,
 }: ListingRichTextFieldProps) {
   const {
     control,
@@ -38,6 +45,7 @@ export function ListingRichTextField({
             value={String(field.value ?? "")}
             onChange={field.onChange}
             placeholder={placeholder}
+            imageUpload={imageUpload}
           />
         )}
       />
