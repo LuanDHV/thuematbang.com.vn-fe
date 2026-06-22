@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import PageStructuredData from "@/components/common/PageStructuredData";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
+import Title from "@/components/common/Title";
 import SafeFetch from "@/components/common/SafeFetch";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
@@ -40,6 +41,15 @@ export default async function ChoThuePage() {
           }),
         ]}
       />
+      <section className="layout-container layout-section-sm pb-0">
+        <Title
+          eyebrow="Cho thuê"
+          title="Cho thuê mặt bằng"
+          description="Tổng hợp mặt bằng cho thuê mới nhất trên toàn quốc."
+          align="left"
+          level={1}
+        />
+      </section>
       <SafeFetch
         fetcher={propertyService.getAll({
           limit: 24,

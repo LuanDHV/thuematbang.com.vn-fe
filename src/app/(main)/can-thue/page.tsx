@@ -4,6 +4,7 @@ import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import PageStructuredData from "@/components/common/PageStructuredData";
+import Title from "@/components/common/Title";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
@@ -40,6 +41,15 @@ export default async function CanThuePage() {
           }),
         ]}
       />
+      <section className="layout-container layout-section-sm pb-0">
+        <Title
+          eyebrow="Cần thuê"
+          title="Cần thuê bất động sản"
+          description="Tổng hợp nhu cầu cần thuê bất động sản mới nhất."
+          align="left"
+          level={1}
+        />
+      </section>
       <SafeFetch
         fetcher={rentRequestService.getAll({
           limit: 24,
