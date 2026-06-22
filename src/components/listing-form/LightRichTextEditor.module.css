@@ -57,7 +57,9 @@
   border-bottom: 1px solid var(--border-subtle);
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
+  z-index: 2;
 }
 
 .wrapper :global(.ck.ck-toolbar) {
@@ -124,6 +126,7 @@
 .wrapper :global(.ck.ck-dropdown__panel) {
   border-color: var(--border-subtle);
   box-shadow: 0 16px 40px rgba(26, 18, 8, 0.12);
+  z-index: 10;
 }
 
 :global(.ck.ck-form.ck-link-form) {
