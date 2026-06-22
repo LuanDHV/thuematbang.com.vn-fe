@@ -16,7 +16,8 @@ type HeroBannerSliderProps = {
 
 const FALLBACK_BANNER: Banner = {
   id: 0,
-  title: "Sàn kết nối mặt bằng cho thuê và nhu cầu cần thuê",
+  title:
+    "Sàn kết nối bất động sản cho thuê số 1 Việt Nam nơi đáp ứng mọi nhu cầu thuê và cho thuê",
   imageUrl: "/imgs/wallpaper-3.jpg",
   imagePublicId: null,
   targetLink: null,
@@ -106,8 +107,6 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
     return () => window.clearInterval(interval);
   }, [emblaApi, slides.length]);
 
-  const title = slides[selectedIndex]?.title || FALLBACK_BANNER.title;
-
   return (
     <div className="absolute inset-0">
       <div className="absolute inset-0">
@@ -123,11 +122,12 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                   <CloudinaryImage
                     src={slide.imageUrl}
                     alt={slide.title}
-                    fill
+                    width={1600}
+                    height={900}
                     priority={slide.id === slides[0]?.id}
                     sizes="100vw"
                     cldQuality="auto:best"
-                    className="object-cover object-center"
+                    className="h-full w-full object-cover object-center"
                   />
                   <div className="absolute inset-0 bg-[rgba(28,20,12,0.18)]" />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(28,20,12,0.08),rgba(28,20,12,0.48))]" />
@@ -154,14 +154,9 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
-          <h1 className="mt-6 max-w-4xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.42)] md:text-5xl lg:text-6xl">
-            {title}
+          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.42)] md:text-5xl lg:text-6xl">
+            Sàn kết nối bất động sản nơi đáp ứng mọi nhu cầu thuê và cho thuê
           </h1>
-
-          <p className="mt-4 hidden max-w-4xl text-base leading-7 font-light text-white/85 drop-shadow-[0_6px_22px_rgba(0,0,0,0.34)] sm:block md:mt-5 md:text-lg md:leading-8">
-            Đăng mặt bằng, đăng nhu cầu hoặc khám phá nguồn cung và khách thuê
-            đang có trên sàn.
-          </p>
 
           <div className="mt-8 flex w-full flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row">
             <Button

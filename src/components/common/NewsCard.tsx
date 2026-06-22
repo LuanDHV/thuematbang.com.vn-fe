@@ -9,9 +9,14 @@ import { formatDate } from "@/lib/format";
 interface NewsCardProps {
   news: News;
   category?: string | null;
+  priority?: boolean;
 }
 
-export default function NewsCard({ news, category }: NewsCardProps) {
+export default function NewsCard({
+  news,
+  category,
+  priority = false,
+}: NewsCardProps) {
   return (
     <Link
       href={`/tin-tuc/${news.slug}`}
@@ -22,9 +27,11 @@ export default function NewsCard({ news, category }: NewsCardProps) {
         <CloudinaryImage
           src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
           alt={news.title}
-          fill
+          width={960}
+          height={720}
           sizes="(max-width: 768px) 40vw, 20vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          priority={priority}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
         />
       </div>
 

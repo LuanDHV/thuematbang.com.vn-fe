@@ -8,18 +8,34 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import JsonLd from "@/components/common/JsonLd";
 import type { BreadcrumbItem as Item } from "@/lib/listing/flat-url";
+import {
+  breadcrumbItemsFromAppBreadcrumb,
+  buildBreadcrumbListSchema,
+} from "@/lib/seo";
 
 type Props = {
   items: Item[];
   className?: string;
+  canonicalUrl?: string;
 };
 
-export default function DynamicBreadcrumb({ items, className }: Props) {
+export default function DynamicBreadcrumb({
+  items,
+  className,
+  canonicalUrl,
+}: Props) {
   if (!items.length) return null;
 
   return (
     <div className="mb-4">
+      <JsonLd
+        data={buildBreadcrumbListSchema(
+          breadcrumbItemsFromAppBreadcrumb(items),
+          canonicalUrl,
+        )}
+      />
       <Breadcrumb className={className}>
         <BreadcrumbList>
           {items.map((item, index) => {

@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import { buildNewsCategoryBreadcrumbs } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildWebPageSchema } from "@/lib/seo";
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Tin tức",
-  description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
+  description:
+    "Tổng hợp tin tức, phân tích và kiến thức bất động sản mới nhất.",
   pathname: "/tin-tuc",
 });
 
@@ -20,20 +23,36 @@ export default async function TinTucPage() {
   const categories = await categoryService.getNewsCategories();
 
   return (
-    <SafeFetch
-      fetcher={newsService.getAll({
-        limit: 8,
-      })}
-      debugLabel="News Response"
-    >
-      {(response) => (
-        <NewsListingClient
-          newsList={response.data ?? []}
-          categories={categories}
-          breadcrumbItems={buildNewsCategoryBreadcrumbs(undefined, categories)}
-          paginationMeta={response.meta}
-        />
-      )}
-    </SafeFetch>
+    <>
+      <PageStructuredData
+        schemas={[
+          buildWebPageSchema({
+            title: "Tin tức",
+            description:
+              "Tổng hợp tin tức, phân tích và kiến thức bất động sản mới nhất.",
+            url: "/tin-tuc",
+            schemaType: "CollectionPage",
+          }),
+        ]}
+      />
+      <SafeFetch
+        fetcher={newsService.getAll({
+          limit: 8,
+        })}
+        debugLabel="News Response"
+      >
+        {(response) => (
+          <NewsListingClient
+            newsList={response.data ?? []}
+            categories={categories}
+            breadcrumbItems={buildNewsCategoryBreadcrumbs(
+              undefined,
+              categories,
+            )}
+            paginationMeta={response.meta}
+          />
+        )}
+      </SafeFetch>
+    </>
   );
 }

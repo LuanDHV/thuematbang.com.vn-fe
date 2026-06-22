@@ -1,15 +1,6 @@
 "use client";
 
-import CloudinaryImage from "@/components/common/CloudinaryImage";
-import {
-  formatAreaValue,
-  formatDate,
-  formatLocationParts,
-  formatNegotiablePrice,
-  formatNumber,
-} from "@/lib/format";
-import type { PropertyPriority } from "@/types";
-import { Property } from "@/types/property";
+import Link from "next/link";
 import {
   Bath,
   Bed,
@@ -21,7 +12,17 @@ import {
   Maximize,
   Star,
 } from "lucide-react";
-import Link from "next/link";
+
+import CloudinaryImage from "@/components/common/CloudinaryImage";
+import {
+  formatAreaValue,
+  formatDate,
+  formatLocationParts,
+  formatNegotiablePrice,
+  formatNumber,
+} from "@/lib/format";
+import type { PropertyPriority } from "@/types";
+import { Property } from "@/types/property";
 
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
 const CARD_HOVER_CLASSES =
@@ -64,7 +65,7 @@ function getTierTone(priorityStatus?: string | null): CardTone {
 
 function CardFooter({ property }: { property: Property }) {
   return (
-    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-hairline pt-3 text-xs">
+    <div className="text-secondary border-hairline mt-auto grid grid-cols-2 gap-2 border-t border-dashed pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
         <Calendar size={14} />
         {formatDate(property.createdAt)}
@@ -145,7 +146,13 @@ function CardHoverBar() {
   );
 }
 
-function FeaturedCard({ property }: { property: Property }) {
+function FeaturedCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const tone = getTierTone(property.priorityStatus);
 
   return (
@@ -155,9 +162,11 @@ function FeaturedCard({ property }: { property: Property }) {
         <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
           alt={property.title || "Bất động sản"}
-          fill
+          width={1200}
+          height={800}
+          priority={priority}
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
         <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.62)] via-[rgba(28,20,12,0.18)] to-transparent" />
@@ -175,7 +184,13 @@ function FeaturedCard({ property }: { property: Property }) {
   );
 }
 
-function PremiumCard({ property }: { property: Property }) {
+function PremiumCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const fallbackImage = getPropertyThumbnailUrl(property);
   const imagesList = getSortedPropertyImageUrls(property);
   const realImageCount = imagesList.length;
@@ -202,9 +217,11 @@ function PremiumCard({ property }: { property: Property }) {
           <CloudinaryImage
             src={heroImage}
             alt={property.title || "Bất động sản"}
-            fill
+            width={1200}
+            height={800}
+            priority={priority}
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             cldQuality="auto:best"
           />
         </div>
@@ -216,9 +233,10 @@ function PremiumCard({ property }: { property: Property }) {
                 <CloudinaryImage
                   src={sideImages[0] || fallbackImage}
                   alt={`${property.title} - ảnh 2`}
-                  fill
+                  width={800}
+                  height={600}
                   sizes="(max-width: 768px) 40vw, 20vw"
-                  className="object-cover"
+                  className="h-full w-full object-cover"
                   cldQuality="auto:best"
                 />
               </div>
@@ -228,9 +246,10 @@ function PremiumCard({ property }: { property: Property }) {
                   <CloudinaryImage
                     src={sideImages[0] || fallbackImage}
                     alt={`${property.title} - ảnh 2`}
-                    fill
+                    width={800}
+                    height={600}
                     sizes="(max-width: 768px) 40vw, 20vw"
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                     cldQuality="auto:best"
                   />
                 </div>
@@ -238,9 +257,10 @@ function PremiumCard({ property }: { property: Property }) {
                   <CloudinaryImage
                     src={sideImages[1] || fallbackImage}
                     alt={`${property.title} - ảnh 3`}
-                    fill
+                    width={800}
+                    height={600}
                     sizes="(max-width: 768px) 40vw, 20vw"
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                     cldQuality="auto:best"
                   />
                 </div>
@@ -251,9 +271,10 @@ function PremiumCard({ property }: { property: Property }) {
                   <CloudinaryImage
                     src={sideImages[0] || fallbackImage}
                     alt={`${property.title} - ảnh 2`}
-                    fill
+                    width={800}
+                    height={600}
                     sizes="(max-width: 768px) 40vw, 20vw"
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                     cldQuality="auto:best"
                   />
                 </div>
@@ -262,9 +283,10 @@ function PremiumCard({ property }: { property: Property }) {
                     <CloudinaryImage
                       src={sideImages[1] || fallbackImage}
                       alt={`${property.title} - ảnh 3`}
-                      fill
+                      width={800}
+                      height={600}
                       sizes="(max-width: 768px) 30vw, 15vw"
-                      className="object-cover"
+                      className="h-full w-full object-cover"
                       cldQuality="auto:best"
                     />
                   </div>
@@ -272,9 +294,10 @@ function PremiumCard({ property }: { property: Property }) {
                     <CloudinaryImage
                       src={sideImages[2] || fallbackImage}
                       alt={`${property.title} - ảnh 4`}
-                      fill
+                      width={800}
+                      height={600}
                       sizes="(max-width: 768px) 30vw, 15vw"
-                      className="object-cover"
+                      className="h-full w-full object-cover"
                       cldQuality="auto:best"
                     />
                   </div>
@@ -296,7 +319,13 @@ function PremiumCard({ property }: { property: Property }) {
   );
 }
 
-function StandardCard({ property }: { property: Property }) {
+function StandardCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const fallbackImage = getPropertyThumbnailUrl(property);
   const imagesList = getSortedPropertyImageUrls(property);
   const realImageCount = imagesList.length;
@@ -313,9 +342,11 @@ function StandardCard({ property }: { property: Property }) {
           <CloudinaryImage
             src={heroImage}
             alt={property.title || "Bất động sản"}
-            fill
+            width={1200}
+            height={800}
+            priority={priority}
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             cldQuality="auto:best"
           />
         </div>
@@ -327,9 +358,10 @@ function StandardCard({ property }: { property: Property }) {
                 <CloudinaryImage
                   src={sideImages[0] || fallbackImage}
                   alt={`${property.title} - ảnh phụ 1`}
-                  fill
+                  width={800}
+                  height={600}
                   sizes="(max-width: 768px) 30vw, 15vw"
-                  className="object-cover"
+                  className="h-full w-full object-cover"
                   cldQuality="auto:best"
                 />
               </div>
@@ -342,9 +374,10 @@ function StandardCard({ property }: { property: Property }) {
                   <CloudinaryImage
                     src={src || fallbackImage}
                     alt={`${property.title} - ảnh phụ ${index + 1}`}
-                    fill
+                    width={800}
+                    height={600}
                     sizes="(max-width: 768px) 30vw, 15vw"
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                     cldQuality="auto:best"
                   />
                 </div>
@@ -370,7 +403,13 @@ function StandardCard({ property }: { property: Property }) {
   );
 }
 
-function FreeCard({ property }: { property: Property }) {
+function FreeCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const image = getPropertyThumbnailUrl(property);
 
   return (
@@ -379,9 +418,11 @@ function FreeCard({ property }: { property: Property }) {
         <CloudinaryImage
           src={image}
           alt={property.title || "Bất động sản"}
-          fill
+          width={1200}
+          height={800}
+          priority={priority}
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
         <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.22)] to-transparent" />
@@ -516,27 +557,29 @@ function CardBody({
 export function PropertyCard({
   property,
   variant = "tier",
+  priority = false,
 }: {
   property: Property;
   variant?: "featured" | "tier";
+  priority?: boolean;
 }) {
   const href = resolvePropertyHref(property);
 
   let content: React.ReactNode;
 
   if (variant === "featured") {
-    content = <FeaturedCard property={property} />;
+    content = <FeaturedCard property={property} priority={priority} />;
   } else {
     const tier = (property.priorityStatus ?? "FREE") as PropertyPriority;
     switch (tier) {
       case "PREMIUM":
-        content = <PremiumCard property={property} />;
+        content = <PremiumCard property={property} priority={priority} />;
         break;
       case "STANDARD":
-        content = <StandardCard property={property} />;
+        content = <StandardCard property={property} priority={priority} />;
         break;
       default:
-        content = <FreeCard property={property} />;
+        content = <FreeCard property={property} priority={priority} />;
         break;
     }
   }

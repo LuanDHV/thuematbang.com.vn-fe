@@ -21,7 +21,9 @@ export default function CloudinaryImage({
   ...props
 }: CloudinaryImageProps) {
   const publicId = getCloudinaryPublicId(src);
-  const { alt, ...rest } = props;
+  const { alt, title, loading, priority, ...rest } = props;
+  const resolvedTitle = title ?? alt ?? "";
+  const resolvedLoading = loading ?? (priority ? "eager" : "lazy");
 
   if (isCloudinaryImageUrl(src) && publicId) {
     return (
@@ -33,10 +35,20 @@ export default function CloudinaryImage({
         format={format}
         dpr="auto"
         alt={alt ?? ""}
+        title={resolvedTitle}
+        loading={resolvedLoading}
         {...rest}
       />
     );
   }
 
-  return <Image src={src} alt={alt ?? ""} {...rest} />;
+  return (
+    <Image
+      src={src}
+      alt={alt ?? ""}
+      title={resolvedTitle}
+      loading={resolvedLoading}
+      {...rest}
+    />
+  );
 }

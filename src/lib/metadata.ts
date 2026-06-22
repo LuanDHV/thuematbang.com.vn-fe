@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
-
-export const siteConfig = {
-  name: "Thuematbang.com.vn",
-  url: "https://thuematbang.com.vn",
-  description: "Kênh thông tin về cho thuê bất động sản số 1 Việt Nam",
-  defaultImage: "/imgs/wallpaper-1.jpg",
-};
+import { siteConfig } from "@/lib/site-config";
+import { buildMetaDescription } from "@/lib/seo";
 
 type CreateMetadataOptions = {
   title: string;
@@ -24,10 +19,20 @@ export function createPageMetadata({
   type = "website",
   noIndex = false,
 }: CreateMetadataOptions): Metadata {
+  const normalizedDescription = description
+    ? buildMetaDescription([description], description)
+    : undefined;
+  const normalizedImage = image
+    ? new URL(image, siteConfig.url).toString()
+    : undefined;
+  const canonicalUrl = pathname
+    ? new URL(pathname, siteConfig.url).toString()
+    : undefined;
+
   return {
     title,
-    description,
-    alternates: pathname ? { canonical: pathname } : undefined,
+    description: normalizedDescription,
+    alternates: canonicalUrl ? { canonical: canonicalUrl } : undefined,
     robots: noIndex
       ? {
           index: false,
@@ -39,12 +44,12 @@ export function createPageMetadata({
       locale: "vi_VN",
       siteName: siteConfig.name,
       title,
-      description,
-      url: pathname,
-      images: image
+      description: normalizedDescription,
+      url: canonicalUrl,
+      images: normalizedImage
         ? [
             {
-              url: image,
+              url: normalizedImage,
               width: 1200,
               height: 630,
               alt: title,
@@ -55,8 +60,8 @@ export function createPageMetadata({
     twitter: {
       card: "summary_large_image",
       title,
-      description,
-      images: image ? [image] : undefined,
+      description: normalizedDescription,
+      images: normalizedImage ? [normalizedImage] : undefined,
     },
   };
 }

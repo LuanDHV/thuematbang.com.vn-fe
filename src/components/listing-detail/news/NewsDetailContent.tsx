@@ -15,9 +15,10 @@ export default function NewsDetailContent({ news }: NewsDetailContentProps) {
           <CloudinaryImage
             src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
             alt={news.title}
-            fill
+            width={1600}
+            height={900}
             sizes="(max-width: 1024px) 100vw, 66vw"
-            className="object-cover"
+            className="h-full w-full object-cover"
             priority
           />
         </div>

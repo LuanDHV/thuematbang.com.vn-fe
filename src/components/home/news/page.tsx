@@ -42,12 +42,16 @@ export default async function NewsSection() {
               <>
                 <div className="space-y-5 md:hidden">
                   {featuredNews ? (
-                    <FeaturedNewsCard news={featuredNews} />
+                    <FeaturedNewsCard news={featuredNews} priority />
                   ) : null}
 
                   <div className="grid grid-cols-1 gap-5">
-                    {sideNews.map((newsItem) => (
-                      <NewsCard key={newsItem.id} news={newsItem} />
+                    {sideNews.map((newsItem, index) => (
+                      <NewsCard
+                        key={newsItem.id}
+                        news={newsItem}
+                        priority={index === 0}
+                      />
                     ))}
                   </div>
                 </div>
@@ -57,12 +61,17 @@ export default async function NewsSection() {
                     <FeaturedNewsCard
                       news={featuredNews}
                       className="aspect-auto h-full min-h-136"
+                      priority
                     />
                   ) : null}
 
                   <div className="grid grid-cols-1 gap-5">
-                    {sideNews.map((newsItem) => (
-                      <NewsCard key={newsItem.id} news={newsItem} />
+                    {sideNews.map((newsItem, index) => (
+                      <NewsCard
+                        key={newsItem.id}
+                        news={newsItem}
+                        priority={index === 0}
+                      />
                     ))}
                   </div>
                 </div>

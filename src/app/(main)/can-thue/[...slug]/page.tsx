@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
@@ -15,6 +16,7 @@ import {
   parsePropertyFilterSlug,
 } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
 import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
@@ -92,9 +94,19 @@ export async function generateMetadata({
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
   if (rentRequest) {
+    const locationText = [
+      rentRequest.desiredWard?.name,
+      rentRequest.desiredProvince?.name,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
     return createPageMetadata({
       title: rentRequest.title,
-      description: rentRequest.requirementText || "Chi tiết nhu cầu cần thuê.",
+      description: buildMetaDescription(
+        [rentRequest.requirementText, locationText],
+        "Chi tiết nhu cầu cần thuê.",
+      ),
       pathname: `/can-thue/${rentRequest.slug}`,
       image: RENT_REQUEST_COVER_IMAGE,
       type: "article",
@@ -113,6 +125,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
   const { rawSlug, page } = parseListingPagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
+
   const [seoRes, faqRes] = await Promise.all([
     seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
     faqService
@@ -159,7 +172,22 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       .slice(0, 10);
 
     return (
-      <article className="layout-container layout-section-sm ">
+      <article className="layout-container layout-section-sm">
+        <PageStructuredData
+          schemas={[
+            buildWebPageSchema({
+              title: rentRequest.title,
+              description: buildMetaDescription(
+                [rentRequest.requirementText, locationText],
+                "Chi tiết nhu cầu cần thuê.",
+              ),
+              url: `/can-thue/${rentRequest.slug}`,
+              image: RENT_REQUEST_COVER_IMAGE,
+              datePublished: rentRequest.createdAt,
+              dateModified: rentRequest.updatedAt,
+            }),
+          ]}
+        />
         <DynamicBreadcrumb
           className="mb-6"
           items={[
@@ -204,6 +232,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       });
 
   const paginationBasePath = rawSlug ? `/can-thue/${rawSlug}` : "/can-thue";
+
   return (
     <>
       <SafeFetch

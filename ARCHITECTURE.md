@@ -113,6 +113,68 @@ User account pages live under:
 
 They use the CMS grouping and user-specific layout composition rather than the public site shell.
 
+## 5. SEO, Metadata, and Structured Data
+
+Public SEO behavior is page-driven, but the implementation should stay layered.
+
+### Metadata ownership
+
+- `src/app/layout.tsx` owns the root metadata defaults, global Open Graph/Twitter defaults, and site-wide robots policy
+- `src/app/(main)/layout.tsx` should stay focused on the public shell and should not try to render page-specific schema
+- page-level `generateMetadata()` functions own record-aware metadata such as dynamic `title`, `description`, canonical URLs, and open graph images
+
+### Schema.org placement
+
+To keep JSON-LD maintainable:
+
+- root layout should only own site-wide schema that does not depend on the current page record, such as `Organization` and `WebSite`
+- `(main)` layout should remain a shell only; it is not the right place for detail-specific schema
+- page components should own content-aware schema such as `BreadcrumbList`, `FAQPage`, `NewsArticle`, and detail-level `WebPage`
+- helper components should render JSON-LD so pages pass data objects, not raw `<script>` tags
+
+Recommended schema mapping:
+
+- homepage: `WebSite` + `Organization`
+- listing pages: `WebPage` or `CollectionPage` plus `BreadcrumbList`
+- property detail pages: `WebPage` plus `BreadcrumbList`
+- rent request detail pages: `WebPage` plus `BreadcrumbList`
+- project detail pages: `WebPage` plus `BreadcrumbList`
+- news detail pages: `WebPage` plus `NewsArticle` and `BreadcrumbList`
+- FAQ-enabled pages: `FAQPage` in addition to the page-specific schema
+
+### Shared SEO helpers
+
+Shared helpers should be preferred for:
+
+- JSON-LD serialization and escaping
+- absolute URL normalization
+- breadcrumb schema building
+- FAQ schema building
+- article/webpage schema building
+- SEO description truncation and HTML stripping
+
+This keeps schema logic close to the data source while avoiding repeated manual script blocks in every page.
+
+### Public SEO content
+
+`faqs` and `seo-contents` are public-page enrichment sources, not admin-only presentation details.
+
+- `faqs` owns reusable question/answer content for public pages
+- `seo-contents` owns HTML content rendered at the bottom of public pages
+- the frontend should treat both as public SEO inputs and keep their rendering in sync with the route they enrich
+- when these modules change, verify page-level FAQ rendering, SEO content blocks, and structured data together
+
+### Sitemap contract
+
+The frontend `app/sitemap.ts` fetches public API data directly to build sitemap entries.
+
+Rules:
+
+- keep public detail `slug` values stable so canonical URLs and sitemap URLs remain valid
+- keep list endpoints paginated and filterable so sitemap generation can loop through all pages from the API
+- keep useful timestamps on public payloads, especially `createdAt` and `updatedAt`, so sitemap `lastModified` can stay current
+- keep relation data that helps the frontend build context, such as category, location, image URLs, and summary/content fields
+
 ## 5. Component Layers
 
 ```text

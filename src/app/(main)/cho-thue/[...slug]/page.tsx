@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
@@ -16,6 +17,7 @@ import {
   parsePropertyFilterSlug,
 } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
 import { Property } from "@/types/property";
@@ -37,7 +39,7 @@ function buildLocationContextFromProperties(
       properties
         .filter((item) => item.province?.name && item.province?.slug)
         .map((item) => [item.province!.slug, item.province!]),
-  ).values(),
+    ).values(),
   ).map((province) => ({
     id: province.id,
     name: province.name,
@@ -49,7 +51,7 @@ function buildLocationContextFromProperties(
       properties
         .filter((item) => item.ward?.name && item.ward?.slug)
         .map((item) => [item.ward!.slug, item.ward!]),
-  ).values(),
+    ).values(),
   ).map((ward) => ({
     name: ward.name,
     slug: ward.slug,
@@ -101,9 +103,18 @@ export async function generateMetadata({
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
   if (property) {
-    const propertyDescription =
-      property.content?.replace(/<[^>]+>/g, "").trim() ||
-      "Chi tiết tin đăng cho thuê.";
+    const locationText = [
+      property.addressDetail,
+      property.ward?.name,
+      property.province?.name,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const propertyDescription = buildMetaDescription(
+      [property.content, locationText, property.category?.name],
+      "Chi tiết tin đăng cho thuê.",
+    );
 
     const image = extractPropertyImages(property)[0];
 
@@ -128,10 +139,14 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   const { rawSlug, page } = parseListingPagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
+
   const [seoRes, faqRes] = await Promise.all([
     seoContentService.getByPage("cho-thue").catch(() => ({ data: null })),
-    faqService.getByPage("cho-thue").catch(() => ({ data: { page: "cho-thue", faqs: [] } })),
+    faqService
+      .getByPage("cho-thue")
+      .catch(() => ({ data: { page: "cho-thue", faqs: [] } })),
   ]);
+
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
   if (property) {
@@ -187,7 +202,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
               item.category?.name,
           )
           .map((item) => ({
-            label: `${item.category?.name} khu vực ${property.province?.name}`,
+            label: `${item.category?.name} khu vuc ${property.province?.name}`,
             href: buildPropertyFilterPathFromRouteParts("/cho-thue", {
               categorySlug: item.category?.slug,
               provinceSlug,
@@ -200,7 +215,22 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       : [];
 
     return (
-      <article className="layout-container layout-section-sm ">
+      <article className="layout-container layout-section-sm">
+        <PageStructuredData
+          schemas={[
+            buildWebPageSchema({
+              title: property.title,
+              description: buildMetaDescription(
+                [property.content, locationText, property.category?.name],
+                "Chi tiết tin đăng cho thuê.",
+              ),
+              url: `/cho-thue/${property.slug}`,
+              image: galleryImages[0],
+              datePublished: property.createdAt,
+              dateModified: property.updatedAt,
+            }),
+          ]}
+        />
         <DynamicBreadcrumb
           items={[
             { label: "Trang chủ", href: "/" },
@@ -247,6 +277,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       });
 
   const paginationBasePath = rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue";
+
   return (
     <>
       <SafeFetch fetcher={listFetcher} debugLabel="Properties Dynamic Response">

@@ -10,11 +10,13 @@ import { cn } from "@/lib/utils";
 interface FeaturedNewsCardProps {
   news: News;
   className?: string;
+  priority?: boolean;
 }
 
 export default function FeaturedNewsCard({
   news,
   className,
+  priority = false,
 }: FeaturedNewsCardProps) {
   return (
     <Link
@@ -27,9 +29,11 @@ export default function FeaturedNewsCard({
       <CloudinaryImage
         src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
         alt={news.title}
-        fill
+        width={1200}
+        height={900}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+        priority={priority}
+        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
       />
 
       <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.82)] via-[rgba(28,20,12,0.45)] to-[rgba(28,20,12,0.05)]" />

@@ -5,25 +5,23 @@ import "@fontsource/be-vietnam-pro/600.css";
 import "@fontsource/be-vietnam-pro/700.css";
 import "./globals.css";
 import { isProductionAppEnv } from "@/lib/app-env";
-import { siteConfig } from "@/lib/metadata";
+import { siteConfig } from "@/lib/site-config";
 import AppProviders from "@/components/providers/AppProviders";
+import PageStructuredData from "@/components/common/PageStructuredData";
+import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo";
 
 const isProduction = isProductionAppEnv();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.description,
-    template: "%s | Thuematbang.com.vn",
+    default: siteConfig.titleSuffix,
+    template: `%s | ${siteConfig.titleSuffix}`,
   },
   description: siteConfig.description,
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    url: "/",
     siteName: siteConfig.name,
     title: siteConfig.name,
     description: siteConfig.description,
@@ -66,6 +64,9 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning className="h-full antialiased">
       <body className="bg-app text-body min-h-screen">
+        <PageStructuredData
+          schemas={[buildWebSiteSchema(), buildOrganizationSchema()]}
+        />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

@@ -126,11 +126,12 @@ export default function PropertyImageGallery({
         <CloudinaryImage
           src={activeImage}
           alt=""
-          fill
+          width={1200}
+          height={800}
           aria-hidden
           sizes="(max-width: 1024px) 100vw, 66vw"
           cldQuality="auto:good"
-          className="pointer-events-none scale-110 object-cover blur-2xl opacity-70"
+          className="pointer-events-none h-full w-full scale-110 object-cover blur-2xl opacity-70"
         />
         <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.2)] via-transparent to-transparent" />
 
@@ -151,12 +152,13 @@ export default function PropertyImageGallery({
             <CloudinaryImage
               src={activeImage}
               alt={title}
-              fill
+              width={1200}
+              height={800}
               sizes="(max-width: 1024px) 100vw, 66vw"
               cldQuality="auto:best"
               crop={activeImageCrop}
               priority={activeIndex === 0}
-              className={activeImageClassName}
+              className={`h-full w-full ${activeImageClassName}`}
             />
           </motion.div>
         </AnimatePresence>
@@ -198,10 +200,11 @@ export default function PropertyImageGallery({
             <CloudinaryImage
               src={image}
               alt={`${title} - ảnh ${index + 1}`}
-              fill
+              width={240}
+              height={160}
               sizes="96px"
               cldQuality="auto:good"
-              className="object-cover"
+              className="h-full w-full object-cover"
             />
           </button>
         ))}

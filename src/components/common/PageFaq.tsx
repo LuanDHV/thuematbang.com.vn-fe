@@ -4,6 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import JsonLd from "@/components/common/JsonLd";
+import { buildFaqPageSchema } from "@/lib/seo";
 import type { FaqByPageResponse } from "@/types/faq";
 
 type FaqItem = {
@@ -18,11 +20,7 @@ type PageFaqProps = {
   faqData?: FaqByPageResponse | null;
 };
 
-export default function PageFaq({
-  title,
-  description,
-  faqData,
-}: PageFaqProps) {
+export default function PageFaq({ title, description, faqData }: PageFaqProps) {
   const items: FaqItem[] =
     faqData?.faqs?.map((item) => ({
       id: String(item.id),
@@ -37,6 +35,15 @@ export default function PageFaq({
 
   return (
     <section className="layout-container layout-section-sm">
+      <JsonLd
+        data={buildFaqPageSchema(
+          items.map((item) => ({
+            question: item.question,
+            answer: item.answer,
+          })),
+        )}
+      />
+
       {normalizedTitle || normalizedDescription ? (
         <div className="mb-10 text-center">
           {normalizedTitle ? (
@@ -61,7 +68,7 @@ export default function PageFaq({
           <AccordionItem
             key={faq.id}
             value={faq.id}
-            className="border-b border-hairline px-6 last:border-b-0"
+            className="border-hairline border-b px-6 last:border-b-0"
           >
             <AccordionTrigger className="text-heading hover:text-primary cursor-pointer py-5 text-left font-semibold transition-colors hover:no-underline">
               {faq.question}

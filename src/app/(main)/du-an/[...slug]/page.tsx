@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
 import ProjectDetailContent from "@/components/listing-detail/project/ProjectDetailContent";
@@ -13,6 +14,7 @@ import {
   parseProjectCategoryFromSlug,
 } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { Project } from "@/types/project";
 import { categoryService } from "@/services/category.service";
 import { projectService } from "@/services/project.service";
@@ -78,7 +80,10 @@ export async function generateMetadata({
   if (project) {
     return createPageMetadata({
       title: project.name,
-      description: project.addressDetail || "Chi tiết dự án bất động sản.",
+      description: buildMetaDescription(
+        [project.content, project.addressDetail, project.category?.name],
+        "Chi tiết dự án bất động sản.",
+      ),
       pathname: `/du-an/${project.slug}`,
       image: extractProjectImages(project)[0],
       type: "article",
@@ -125,6 +130,25 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
 
     return (
       <article className="layout-container layout-section-sm">
+        <PageStructuredData
+          schemas={[
+            buildWebPageSchema({
+              title: project.name,
+              description: buildMetaDescription(
+                [
+                  project.content,
+                  project.addressDetail,
+                  project.category?.name,
+                ],
+                "Chi tiết dự án bất động sản.",
+              ),
+              url: `/du-an/${project.slug}`,
+              image: galleryImages[0],
+              datePublished: project.createdAt,
+              dateModified: project.updatedAt,
+            }),
+          ]}
+        />
         <DynamicBreadcrumb
           className="mb-6"
           items={[
