@@ -14,7 +14,7 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function DangNhapPage() {
   return (
-    <div className="to-primary/10 flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-white p-6 md:p-10">
+    <div className="bg-app flex min-h-dvh flex-col items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-lg md:max-w-5xl">
         <Link
           href="/"

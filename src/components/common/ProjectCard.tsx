@@ -15,7 +15,7 @@ import { Project } from "@/types/project";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(26,18,8,0.13)]";
+  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-float)]";
 
 function getProjectThumbnailUrl(project: Project) {
   const sortedImages =
@@ -36,7 +36,7 @@ function CardFooter({
   viewCount: number;
 }) {
   return (
-    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-hairline pt-3 text-xs">
+    <div className="text-secondary border-hairline mt-auto grid grid-cols-2 gap-2 border-t border-dashed pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
         <Calendar size={14} />
         {formatDate(createdAt)}
@@ -73,7 +73,7 @@ export function ProjectCard({ project }: { project: Project }) {
             cldQuality="auto:best"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.70)] via-[rgba(28,20,12,0.20)] to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
 
           <div className="absolute right-3 bottom-3 left-3 z-20">
             <h3 className="mt-2 line-clamp-2 text-xl leading-snug font-semibold text-white md:text-2xl">
@@ -132,4 +132,3 @@ export function ProjectCard({ project }: { project: Project }) {
     </Link>
   );
 }
-

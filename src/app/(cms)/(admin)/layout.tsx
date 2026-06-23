@@ -20,11 +20,13 @@ export default async function AdminLayout({
   }
 
   return (
-    <CmsLayout
-      sidebar={<AdminSidebar user={authUser} />}
-      mobileSidebar={<AdminSidebar user={authUser} forceExpanded />}
-    >
-      {children}
-    </CmsLayout>
+    <div data-theme="admin" className="bg-app text-body min-h-dvh">
+      <CmsLayout
+        sidebar={<AdminSidebar user={authUser} />}
+        mobileSidebar={<AdminSidebar user={authUser} forceExpanded />}
+      >
+        {children}
+      </CmsLayout>
+    </div>
   );
 }

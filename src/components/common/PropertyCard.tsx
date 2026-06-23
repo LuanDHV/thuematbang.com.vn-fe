@@ -26,7 +26,7 @@ import { Property } from "@/types/property";
 
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(26,18,8,0.13)]";
+  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-float)]";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
@@ -105,7 +105,7 @@ function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
 
   return (
     <div
-      className={`absolute top-3 right-3 z-30 rounded-lg bg-[rgba(28,20,12,0.58)] font-semibold text-white ${badgeSizeClass}`}
+      className={`absolute top-3 right-3 z-30 rounded-lg bg-[var(--overlay-strong)] font-semibold text-white ${badgeSizeClass}`}
     >
       <span className="inline-flex items-center gap-1">
         <Images size={iconSize} />
@@ -169,7 +169,7 @@ function FeaturedCard({
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.62)] via-[rgba(28,20,12,0.18)] to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
         <OverlayTitle property={property} tone={tone} />
       </div>
 
@@ -307,7 +307,7 @@ function PremiumCard({
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.24)] to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
         <TierBadge tone="PREMIUM" />
         <ImageCountBadge count={realImageCount} tone="PREMIUM" />
         <OverlayTitle property={property} tone="PREMIUM" />
@@ -386,7 +386,7 @@ function StandardCard({
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.24)] to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
         <TierBadge tone="STANDARD" />
         <ImageCountBadge count={realImageCount} tone="STANDARD" />
         <OverlayTitle property={property} tone="STANDARD" />
@@ -425,7 +425,7 @@ function FreeCard({
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.72)] via-[rgba(28,20,12,0.22)] to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
         <TierBadge tone="FREE" />
         <OverlayTitle property={property} tone="FREE" />
       </div>

@@ -34,7 +34,7 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
   return (
     <Link
       href="/gioi-thieu"
-      className="group hover:shadow-primary/20 relative flex min-h-64 flex-col items-center rounded-xl border border-hairline bg-surface p-5 text-center shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl"
+      className="group hover:shadow-primary/20 border-hairline bg-surface relative flex min-h-64 flex-col items-center rounded-xl border p-5 text-center shadow-(--shadow-card) transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-(--shadow-float)"
     >
       <div className="bg-primary/5 group-hover:bg-primary/10 mb-6 rounded-full p-4 transition-colors duration-300">
         {feature.icon}
@@ -52,7 +52,7 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
 
 export default function IntroduceSection() {
   return (
-    <section className="to-primary/10 relative w-full overflow-hidden bg-linear-to-b from-white px-4 py-12 lg:py-16">
+    <section className="to-primary/10 from-app relative w-full overflow-hidden bg-linear-to-b px-4 py-12 lg:py-16">
       <div className="layout-container w-full">
         <Title
           eyebrow="Giới thiệu"

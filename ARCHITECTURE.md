@@ -104,6 +104,14 @@ src/app/
 - resolves auth on the server
 - redirects non-admin users away
 - mounts the shared CMS shell with admin navigation
+- scopes the subtree with `data-theme="admin"` so admin surfaces use the neutral admin palette
+
+### Admin auth shell
+
+`src/app/(auth)/dang-nhap-admin/page.tsx`
+
+- uses the same admin theme scope as the admin CMS subtree
+- keeps login-specific flow and redirect handling separate from public auth
 
 ### User CMS shell
 
@@ -112,6 +120,7 @@ User account pages live under:
 - `src/app/(cms)/(user)/quan-li-tai-khoan`
 
 They use the CMS grouping and user-specific layout composition rather than the public site shell.
+- they must continue inheriting the public theme and must not opt into `data-theme="admin"`
 
 ## 5. SEO, Metadata, and Structured Data
 

@@ -51,10 +51,49 @@
   --hairline-strong: #3d200a28;
   --border-subtle: rgba(61, 32, 10, 0.08);
   --border-strong: rgba(61, 32, 10, 0.18);
+  --shadow-card: 0 18px 40px rgba(26, 18, 8, 0.08);
+  --shadow-panel: 0 12px 28px rgba(26, 18, 8, 0.06);
+  --shadow-float: 0 26px 60px rgba(26, 18, 8, 0.12);
+  --overlay-soft: rgba(28, 20, 12, 0.1);
+  --overlay-strong: rgba(28, 20, 12, 0.48);
+  --overlay-hero: rgba(28, 20, 12, 0.34);
+  --overlay-glow: rgba(247, 170, 27, 0.12);
   --success: #168f57;
   --warning: #b76b00;
   --info: #1678a7;
   --danger: #c53b2d;
+}
+
+[data-theme="admin"] {
+  --primary: #4d463d;
+  --accent-soft: #ede8e1;
+  --app: #f4f1eb;
+  --surface-alt: #faf8f4;
+  --subtle: #ece6de;
+  --surface: #ffffff;
+  --footer: #1f1d1a;
+  --footer-heading: #f4f1ec;
+  --footer-body: #bdb5aa;
+  --footer-border: rgba(244, 241, 236, 0.12);
+  --heading: #171411;
+  --body: #2f2b25;
+  --secondary: #68625b;
+  --muted: #a0988f;
+  --hairline: rgba(57, 49, 40, 0.1);
+  --hairline-strong: rgba(57, 49, 40, 0.18);
+  --border-subtle: rgba(57, 49, 40, 0.08);
+  --border-strong: rgba(57, 49, 40, 0.16);
+  --shadow-card: 0 18px 40px rgba(33, 31, 27, 0.08);
+  --shadow-panel: 0 12px 28px rgba(33, 31, 27, 0.06);
+  --shadow-float: 0 26px 60px rgba(33, 31, 27, 0.12);
+  --overlay-soft: rgba(24, 23, 21, 0.08);
+  --overlay-strong: rgba(24, 23, 21, 0.44);
+  --overlay-hero: rgba(24, 23, 21, 0.28);
+  --overlay-glow: rgba(92, 84, 74, 0.12);
+  --success: #2f7a56;
+  --warning: #9f6c1d;
+  --info: #466f8b;
+  --danger: #a24a41;
 }
 
 ::selection {
@@ -90,10 +129,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   color: var(--color-body);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
+  background: var(--color-app);
 }
 
 /* Force CMS HTML content to always use app font */
@@ -138,20 +178,20 @@ textarea {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
   border-radius: 1rem;
-  box-shadow: 0 14px 36px rgba(26, 18, 8, 0.08);
+  box-shadow: var(--shadow-card);
 }
 
 .surface-panel {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
   border-radius: 1.25rem;
-  box-shadow: 0 10px 26px rgba(26, 18, 8, 0.06);
+  box-shadow: var(--shadow-panel);
 }
 
 .surface-float {
   background-color: var(--surface);
   border: 1px solid var(--border-strong);
-  box-shadow: 0 22px 56px rgba(26, 18, 8, 0.12);
+  box-shadow: var(--shadow-float);
   backdrop-filter: blur(18px);
 }
 

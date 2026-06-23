@@ -3,11 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store";
 
@@ -28,8 +24,8 @@ export default function CmsLayout({
   const [isMobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   return (
-    <section className="bg-app min-h-screen">
-      <div className="border-hairline bg-surface sticky top-0 z-40 flex h-14 items-center justify-between border-b px-3 lg:hidden">
+    <section className="bg-app min-h-dvh">
+      <div className="border-hairline bg-surface sticky top-0 z-40 flex h-14 items-center justify-between border-b px-3 backdrop-blur-xl lg:hidden">
         <Sheet open={isMobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon-lg" aria-label="Mở menu CMS">
@@ -49,7 +45,7 @@ export default function CmsLayout({
       <div className="lg:flex">
         <aside
           className={cn(
-            "border-hairline bg-surface hidden inset-y-0 left-0 z-30 w-18 border-r lg:sticky lg:top-0 lg:block lg:h-screen lg:shrink-0",
+            "border-hairline bg-surface inset-y-0 left-0 z-30 hidden w-18 border-r lg:sticky lg:top-0 lg:block lg:h-dvh lg:shrink-0",
             isCmsSidebarCollapsed ? "lg:w-22" : "lg:w-[18rem]",
           )}
         >
@@ -63,4 +59,3 @@ export default function CmsLayout({
     </section>
   );
 }
-

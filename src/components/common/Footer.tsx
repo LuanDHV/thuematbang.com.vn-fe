@@ -24,7 +24,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-footer text-footer-body mt-auto w-full border-t border-black/6">
+    <footer className="bg-footer text-footer-body border-footer-border mt-auto w-full border-t">
       <div className="layout-container py-10 md:py-12">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
           <div className="flex flex-col gap-8">
@@ -94,7 +94,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-black/6">
+      <div className="border-footer-border border-t">
         <div className="layout-container py-4">
           <div className="text-footer-body text-center text-xs font-semibold tracking-[0.18em] uppercase">
             Copyright © 2026 Thuematbang

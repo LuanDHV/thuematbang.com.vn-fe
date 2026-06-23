@@ -269,7 +269,7 @@ function AdminProjectFormContent({
       />
       <ListingTextField name="developer" label="Chủ đầu tư" />
       {isNegotiableValue ? (
-        <div className="border-hairline bg-surface text-secondary rounded-xl border px-4 py-3 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+        <div className="border-hairline bg-surface text-secondary rounded-xl border px-4 py-3 text-sm shadow-[var(--shadow-card)]">
           Dự án được đánh dấu là thương lượng.
         </div>
       ) : (

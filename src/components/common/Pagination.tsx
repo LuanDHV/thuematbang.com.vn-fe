@@ -34,9 +34,9 @@ function PaginationControls({
         disabled={page === 1}
         className={cn(
           "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
-          "text-secondary border-hairline bg-surface shadow-[0_10px_24px_rgba(15,23,42,0.06)]",
+          "text-secondary border-hairline bg-surface shadow-(--shadow-card)",
           "hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
-          "disabled:hover:text-secondary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-hairline disabled:hover:bg-surface",
+          "disabled:hover:text-secondary disabled:hover:border-hairline disabled:hover:bg-surface disabled:cursor-not-allowed disabled:opacity-40",
         )}
       >
         ←
@@ -63,8 +63,8 @@ function PaginationControls({
             className={cn(
               "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
               active
-                ? "border-primary bg-primary text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)]"
-                : "text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary border-hairline bg-surface shadow-[0_10px_24px_rgba(15,23,42,0.06)]",
+                ? "border-primary bg-primary text-white shadow-(--shadow-card)"
+                : "text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary border-hairline bg-surface shadow-(--shadow-card)",
             )}
           >
             {p}
@@ -78,9 +78,9 @@ function PaginationControls({
         disabled={page === totalPages}
         className={cn(
           "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
-          "text-secondary border-hairline bg-surface shadow-[0_10px_24px_rgba(15,23,42,0.06)]",
+          "text-secondary border-hairline bg-surface shadow-(--shadow-card)",
           "hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
-          "disabled:hover:text-secondary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-hairline disabled:hover:bg-surface",
+          "disabled:hover:text-secondary disabled:hover:border-hairline disabled:hover:bg-surface disabled:cursor-not-allowed disabled:opacity-40",
         )}
       >
         →
@@ -102,7 +102,11 @@ export function Pagination({
 
   return (
     <div className="flex items-center justify-center gap-2 pt-8">
-      <PaginationControls page={page} totalPages={totalPages} onChange={onChange} />
+      <PaginationControls
+        page={page}
+        totalPages={totalPages}
+        onChange={onChange}
+      />
     </div>
   );
 }
@@ -124,7 +128,11 @@ export function TablePaginationFooter({
     <TableFooter>
       <TableRow>
         <TableCell colSpan={colSpan} className="bg-surface px-4 py-4 md:px-5">
-          <PaginationControls page={page} totalPages={totalPages} onChange={onChange} />
+          <PaginationControls
+            page={page}
+            totalPages={totalPages}
+            onChange={onChange}
+          />
         </TableCell>
       </TableRow>
     </TableFooter>

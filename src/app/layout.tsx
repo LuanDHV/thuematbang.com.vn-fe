@@ -63,7 +63,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" suppressHydrationWarning className="h-full antialiased">
-      <body className="bg-app text-body min-h-screen">
+      <body className="bg-app text-body min-h-dvh">
         <PageStructuredData
           schemas={[buildWebSiteSchema(), buildOrganizationSchema()]}
         />

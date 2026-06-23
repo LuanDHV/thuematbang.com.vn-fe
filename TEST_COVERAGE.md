@@ -34,6 +34,9 @@ npm run test:e2e
 | `src/components/common/Pagination.tsx` | No | Yes | No | Click navigation and disabled state |
 | `src/components/common/PasswordInput.tsx` | No | Yes | No | Visibility toggle behavior |
 | `src/app/(auth)/dang-nhap/page.tsx` | No | No | Yes | Playwright smoke for auth page shell |
+| `src/app/(auth)/dang-nhap-admin/page.tsx` | No | No | Yes | Admin auth theme boundary smoke |
+| `src/app/(cms)/(admin)/layout.tsx` | No | No | Yes | Admin subtree theme boundary smoke |
+| `src/app/(cms)/(user)/quan-li-tai-khoan/layout.tsx` | No | No | Yes | User CMS theme inheritance smoke |
 
 ## What Still Needs Coverage
 
@@ -44,6 +47,7 @@ The current baseline is intentionally small and meant to prove the stack first.
 - CMS admin/user screens
 - richer route-handler and cookie flows
 - broader Playwright journeys for create and admin guards
+- theme boundary checks for public vs admin vs CMS user layouts
 
 ## Maintenance Rule
 

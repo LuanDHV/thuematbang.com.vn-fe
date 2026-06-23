@@ -22,7 +22,7 @@ export default function FeaturedNewsCard({
     <Link
       href={`/tin-tuc/${news.slug}`}
       className={cn(
-        "interactive-lift group relative block aspect-4/3 overflow-hidden rounded-2xl border border-hairline",
+        "interactive-lift group border-hairline relative block aspect-4/3 overflow-hidden rounded-2xl border",
         className,
       )}
     >
@@ -36,7 +36,7 @@ export default function FeaturedNewsCard({
         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
       />
 
-      <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.82)] via-[rgba(28,20,12,0.45)] to-[rgba(28,20,12,0.05)]" />
+      <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
       <div className="absolute inset-0 bg-radial-[ellipse_at_top] from-white/10 via-transparent to-transparent opacity-80" />
 
       <div className="absolute inset-x-0 bottom-0 z-10 space-y-3 p-4 md:p-5">

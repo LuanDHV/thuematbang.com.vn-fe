@@ -273,6 +273,9 @@ From `src/components/cms/shared/CmsLayout.tsx`:
 - avoid squeezing CMS content into public-page width rules
 - keep table and dashboard screens full-width
 - constrain form-only CMS screens to a shared centered form shell
+- admin surfaces must live inside `[data-theme="admin"]` and use the neutral admin palette defined in `globals.css`
+- `src/app/(auth)/dang-nhap-admin` also belongs to the admin theme scope
+- CMS user pages under `src/app/(cms)/(user)/quan-li-tai-khoan/**` must continue inheriting the public theme, not the admin theme
 
 ## 11. Component Language
 

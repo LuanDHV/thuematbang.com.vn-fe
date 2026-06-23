@@ -22,7 +22,7 @@ export default function NotFound() {
   }, [secondsLeft]);
 
   return (
-    <section className="bg-app relative isolate flex min-h-screen items-center overflow-hidden">
+    <section className="bg-app relative isolate flex min-h-dvh items-center overflow-hidden">
       <div className="bg-primary/12 absolute top-16 left-1/2 h-56 w-56 translate-x-[-140%] rounded-full blur-3xl" />
       <div className="bg-primary/18 absolute right-1/2 bottom-8 h-72 w-72 translate-x-[130%] rounded-full blur-3xl" />
 

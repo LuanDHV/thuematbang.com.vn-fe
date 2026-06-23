@@ -47,7 +47,7 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 border-b border-black/6 bg-white backdrop-blur-xl">
+    <header className="bg-surface/90 border-hairline fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-xl">
       <nav className="layout-container flex h-16 items-center justify-center">
         <div className="relative flex w-full items-center justify-between gap-6">
           <div className="flex flex-1 lg:flex-none" />
@@ -95,10 +95,10 @@ export default function Header() {
                         width={36}
                         height={36}
                         cldQuality="auto:best"
-                        className="size-9 rounded-full object-cover ring-1 ring-black/5"
+                        className="ring-hairline size-9 rounded-full object-cover ring-1"
                       />
                     ) : (
-                      <span className="text-secondary flex size-9 items-center justify-center rounded-full bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+                      <span className="text-secondary bg-surface flex size-9 items-center justify-center rounded-full shadow-(--shadow-panel)">
                         <User className="size-5" />
                       </span>
                     )}
@@ -169,7 +169,7 @@ export default function Header() {
                         </Link>
                       ))}
                     </div>
-                    <div className="border-t border-black/6 pt-4" />
+                    <div className="border-hairline border-t pt-4" />
                     <div className="flex flex-col gap-2">
                       {authUser ? (
                         <div className="flex flex-col gap-2">

@@ -74,7 +74,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="border-hairline overflow-hidden p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+      <Card className="surface-panel overflow-hidden p-0 shadow-(--shadow-float)">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="bg-surface relative hidden md:block">
             <Image
@@ -85,7 +85,7 @@ export function LoginForm({
               loading="eager"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.38)] via-[rgba(28,20,12,0.10)] to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
           </div>
 
           <form
@@ -94,7 +94,7 @@ export function LoginForm({
           >
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
-                <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
+                <h1 className="text-heading text-2xl font-semibold tracking-[-0.04em]">
                   {isAdminVariant ? "Đăng nhập quản trị" : "Chào mừng trở lại"}
                 </h1>
                 <p className="text-secondary text-sm leading-7">
