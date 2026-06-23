@@ -82,6 +82,7 @@ export function LoginForm({
               alt="Hình nền đăng nhập"
               fill
               sizes="(min-width: 768px) 50vw, 0px"
+              loading="eager"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-linear-to-t from-[rgba(28,20,12,0.38)] via-[rgba(28,20,12,0.10)] to-transparent" />

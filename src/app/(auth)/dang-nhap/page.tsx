@@ -25,6 +25,8 @@ export default function DangNhapPage() {
             alt="Thuematbang.com.vn"
             width={160}
             height={80}
+            priority
+            loading="eager"
             className="h-14 w-28 object-contain md:h-20 md:w-40"
           />
         </Link>
