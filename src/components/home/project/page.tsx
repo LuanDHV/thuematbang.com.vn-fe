@@ -53,9 +53,9 @@ function CategoryCard({ category }: { category: (typeof categories)[number] }) {
 
 export default function ProjectSection() {
   return (
-    <section className="to-primary/10 from-app w-full bg-linear-to-b px-4 py-12 lg:py-16">
+    <section className="to-primary/10 from-app w-full bg-linear-to-b px-4 py-10 lg:py-14">
       <div className="layout-container w-full">
-        <div className="mb-12">
+        <div className="mb-8">
           <Title
             eyebrow="Danh mục"
             title="Danh mục bất động sản"
@@ -74,7 +74,7 @@ export default function ProjectSection() {
           ))}
         </HomeCarousel>
 
-        <div className="hidden grid-cols-2 gap-5 md:grid md:grid-cols-3 xl:grid-cols-6">
+        <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-3 xl:grid-cols-6">
           {categories.map((category, index) => (
             <CategoryCard key={index} category={category} />
           ))}

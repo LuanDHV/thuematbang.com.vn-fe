@@ -34,7 +34,7 @@ export default function PageFaq({ title, description, faqData }: PageFaqProps) {
   const normalizedDescription = description?.trim() ?? "";
 
   return (
-    <section className="layout-container layout-section-sm">
+    <section className="layout-container pt-6 pb-8 md:pt-8 md:pb-10">
       <JsonLd
         data={buildFaqPageSchema(
           items.map((item) => ({
@@ -45,25 +45,21 @@ export default function PageFaq({ title, description, faqData }: PageFaqProps) {
       />
 
       {normalizedTitle || normalizedDescription ? (
-        <div className="mb-10 text-center">
+        <div className="section-intro-tight text-center">
           {normalizedTitle ? (
-            <h2 className="text-heading text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
+            <h2 className="text-heading text-2xl font-semibold tracking-[-0.03em] sm:text-3xl">
               {normalizedTitle}
             </h2>
           ) : null}
           {normalizedDescription ? (
-            <p className="text-secondary mt-4 text-base leading-8 md:text-lg">
+            <p className="text-secondary mt-3 text-sm leading-7 md:text-base">
               {normalizedDescription}
             </p>
           ) : null}
         </div>
       ) : null}
 
-      <Accordion
-        type="single"
-        collapsible
-        className="surface-card w-full overflow-hidden"
-      >
+      <Accordion type="single" collapsible className="surface-editorial w-full overflow-hidden rounded-[1.75rem]">
         {items.map((faq) => (
           <AccordionItem
             key={faq.id}

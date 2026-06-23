@@ -60,9 +60,9 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/du-an/${project.slug}`}
-      className="surface-card interactive-lift group block overflow-hidden rounded-2xl"
+      className="surface-editorial interactive-lift group block overflow-hidden rounded-[1.75rem]"
     >
-      <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
+      <article className={`surface-editorial ${CARD_HOVER_CLASSES} rounded-[1.75rem]`}>
         <div className="bg-surface-alt relative h-56 overflow-hidden">
           <CloudinaryImage
             src={thumbnailImageUrl}
@@ -73,7 +73,7 @@ export function ProjectCard({ project }: { project: Project }) {
             cldQuality="auto:best"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
+          <div className="absolute inset-0 bg-[var(--editorial-scrim)]" />
 
           <div className="absolute right-3 bottom-3 left-3 z-20">
             <h3 className="mt-2 line-clamp-2 text-xl leading-snug font-semibold text-white md:text-2xl">
@@ -84,11 +84,11 @@ export function ProjectCard({ project }: { project: Project }) {
 
         <div className="flex h-full flex-1 flex-col p-5">
           {project.category?.name ? (
-            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-base font-semibold uppercase">
+            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-[0.8rem] font-semibold tracking-[0.18em] uppercase">
               {project.category.name}
             </span>
           ) : null}
-          <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
+          <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.02em] transition-colors duration-200">
             {formatNegotiablePrice(project.price, project.isNegotiable, {
               fallback: "Liên hệ",
               amount: project.priceAmount,

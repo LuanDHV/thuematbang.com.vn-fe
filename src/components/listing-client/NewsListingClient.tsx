@@ -112,12 +112,12 @@ export default function NewsListingClient({
   );
 
   return (
-    <div className="layout-container layout-section-sm h-auto">
+    <div className="layout-container pt-4 pb-0 md:pt-5 h-auto">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
 
-      <div className="my-6">
+      <div className="mt-4">
         <CategoryChips
           activeValue={selectedCategorySlug}
           onChange={handleSelectCategory}
@@ -125,7 +125,7 @@ export default function NewsListingClient({
         />
       </div>
 
-      <div className="flex flex-col gap-6 lg:flex-row">
+      <div className="mt-8 flex flex-col gap-6 lg:flex-row">
         <div className="flex w-full flex-col lg:w-4/6">
           <div className="surface-card space-y-5 p-5">
             {featuredNews ? (

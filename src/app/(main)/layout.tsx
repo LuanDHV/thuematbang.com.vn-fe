@@ -10,7 +10,7 @@ export default async function MainLayout({
   return (
     <div className="bg-app text-body flex min-h-dvh flex-col">
       <Header />
-      <main className="grow pt-16">{children}</main>
+      <main className="grow pt-18">{children}</main>
       <Footer />
       <FloatingActions />
     </div>

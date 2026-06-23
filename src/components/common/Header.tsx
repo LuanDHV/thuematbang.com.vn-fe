@@ -47,8 +47,8 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-surface/90 border-hairline fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-xl">
-      <nav className="layout-container flex h-16 items-center justify-center">
+    <header className="bg-surface/88 border-hairline fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-xl">
+      <nav className="layout-container flex h-18 items-center justify-center">
         <div className="relative flex w-full items-center justify-between gap-6">
           <div className="flex flex-1 lg:flex-none" />
 
@@ -63,7 +63,7 @@ export default function Header() {
               height={80}
               priority
               loading="eager"
-              className="h-14 w-auto object-contain"
+              className="h-12 w-auto object-contain"
             />
           </Link>
 
@@ -72,7 +72,7 @@ export default function Header() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="text-heading hover:text-primary after:bg-primary relative rounded-lg px-3 py-2 text-sm font-medium tracking-[0.06em] uppercase transition-colors after:absolute after:right-3 after:bottom-1.5 after:left-3 after:h-px after:origin-center after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
+                className="text-heading hover:text-primary after:bg-primary/80 relative rounded-full px-3.5 py-2 text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors after:absolute after:right-3.5 after:bottom-1.5 after:left-3.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
               >
                 {item.name}
               </Link>
@@ -85,7 +85,7 @@ export default function Header() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="hidden size-10 rounded-full p-0 lg:inline-flex"
+                    className="hidden size-10 rounded-full border border-transparent p-0 lg:inline-flex"
                     aria-label="Tài khoản người dùng"
                   >
                     {avatarUrl ? (

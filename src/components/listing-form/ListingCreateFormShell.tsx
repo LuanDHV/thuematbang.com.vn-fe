@@ -46,9 +46,9 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
   const { data: authUser, isLoading } = useAuthMe();
 
   if (isLoading) {
-    return (
-      <section
-        className={cn("surface-panel mx-auto w-full max-w-2xl p-5", className)}
+      return (
+        <section
+        className={cn("surface-panel mx-auto w-full max-w-4xl p-5 lg:p-6", className)}
       >
         <div className="space-y-3">
           <div className="bg-subtle h-6 w-1/3 animate-pulse rounded-full" />
@@ -62,7 +62,7 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
   if (!authUser) {
     return (
       <section
-        className={cn("surface-panel mx-auto w-full max-w-2xl p-5", className)}
+        className={cn("surface-panel mx-auto w-full max-w-4xl p-5 lg:p-6", className)}
       >
         <div className="flex flex-col gap-4 text-center md:items-center">
           <div className="space-y-2">
@@ -94,7 +94,7 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
   return (
     <FormProvider {...form}>
       <section
-        className={cn("surface-panel mx-auto w-full max-w-2xl p-5", className)}
+        className={cn("surface-panel mx-auto w-full max-w-4xl p-5 lg:p-6", className)}
       >
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <CardHeader className="px-0 pt-0">

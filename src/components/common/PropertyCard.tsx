@@ -105,7 +105,7 @@ function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
 
   return (
     <div
-      className={`absolute top-3 right-3 z-30 rounded-lg bg-[var(--overlay-strong)] font-semibold text-white ${badgeSizeClass}`}
+      className={`absolute top-3 right-3 z-30 rounded-lg bg-(--overlay-strong) font-semibold text-white ${badgeSizeClass}`}
     >
       <span className="inline-flex items-center gap-1">
         <Images size={iconSize} />
@@ -156,7 +156,9 @@ function FeaturedCard({
   const tone = getTierTone(property.priorityStatus);
 
   return (
-    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
+    <article
+      className={`surface-editorial ${CARD_HOVER_CLASSES} rounded-[1.75rem]`}
+    >
       <div className="relative h-52 overflow-hidden">
         <TierBadge tone={tone} />
         <CloudinaryImage
@@ -169,7 +171,7 @@ function FeaturedCard({
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
+        <div className="absolute inset-0 bg-(--editorial-scrim)" />
         <OverlayTitle property={property} tone={tone} />
       </div>
 
@@ -208,7 +210,7 @@ function PremiumCard({
 
   return (
     <article
-      className={`surface-card ${CARD_HOVER_CLASSES} border-primary/10 rounded-2xl`}
+      className={`surface-marketplace ${CARD_HOVER_CLASSES} border-primary/10 rounded-[1.75rem]`}
     >
       <div className="bg-subtle relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
@@ -307,7 +309,7 @@ function PremiumCard({
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
+        <div className="absolute inset-0 bg-(--editorial-scrim)" />
         <TierBadge tone="PREMIUM" />
         <ImageCountBadge count={realImageCount} tone="PREMIUM" />
         <OverlayTitle property={property} tone="PREMIUM" />
@@ -334,7 +336,9 @@ function StandardCard({
   const hasSideGallery = sideImages.length > 0;
 
   return (
-    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
+    <article
+      className={`surface-marketplace ${CARD_HOVER_CLASSES} rounded-3xl`}
+    >
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden">
         <div
           className={`relative overflow-hidden ${hasSideGallery ? "w-2/3" : "w-full"}`}
@@ -386,7 +390,7 @@ function StandardCard({
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
+        <div className="absolute inset-0 bg-(--editorial-scrim)" />
         <TierBadge tone="STANDARD" />
         <ImageCountBadge count={realImageCount} tone="STANDARD" />
         <OverlayTitle property={property} tone="STANDARD" />
@@ -413,7 +417,9 @@ function FreeCard({
   const image = getPropertyThumbnailUrl(property);
 
   return (
-    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-xl`}>
+    <article
+      className={`surface-utility ${CARD_HOVER_CLASSES} rounded-[1.25rem]`}
+    >
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage
           src={image}
@@ -425,7 +431,7 @@ function FreeCard({
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
+        <div className="absolute inset-0 bg-(--editorial-scrim)" />
         <TierBadge tone="FREE" />
         <OverlayTitle property={property} tone="FREE" />
       </div>
@@ -512,7 +518,7 @@ function CardBody({
     <div className="flex h-full flex-1 flex-col p-5">
       {property.category?.name && (
         <span
-          className={`text-primary mb-2 inline-flex w-fit items-center self-start font-semibold uppercase ${categoryBadgeSizeClass}`}
+          className={`text-primary mb-2 inline-flex w-fit items-center self-start font-semibold tracking-[0.16em] uppercase ${categoryBadgeSizeClass}`}
         >
           {property.category.name}
         </span>

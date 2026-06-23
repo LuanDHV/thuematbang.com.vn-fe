@@ -1,4 +1,4 @@
-﻿import SafeFetch from "@/components/common/SafeFetch";
+import SafeFetch from "@/components/common/SafeFetch";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import Title from "@/components/common/Title";
 import { PropertyCard } from "@/components/common/PropertyCard";
@@ -8,13 +8,16 @@ import { Property } from "@/types";
 
 export default async function FeaturedSection() {
   return (
-    <section className="layout-section-sm w-full px-4">
+    <section className="layout-section w-full px-4">
       <div className="layout-container w-full">
-        <Title
-          eyebrow="Nổi bật"
-          title="Bất động sản nổi bật"
-          description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."
-        />
+        <div className="section-intro-tight">
+          <Title
+            eyebrow="Nổi bật"
+            title="Bất động sản nổi bật"
+            description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."
+
+          />
+        </div>
 
         <SafeFetch
           fetcher={propertyService.getAll({
@@ -29,7 +32,7 @@ export default async function FeaturedSection() {
 
             if (isEmpty) {
               return (
-                <div className="surface-card mt-12 flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-hairline px-6 py-10 text-center">
+                <div className="surface-editorial mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed border-hairline px-6 py-8 text-center">
                   <p className="text-body text-base font-medium">
                     Bất động sản nổi bật sẽ sớm được cập nhật
                   </p>
@@ -39,7 +42,7 @@ export default async function FeaturedSection() {
 
             return (
               <>
-                <HomeCarousel className="mt-12 py-2">
+                <HomeCarousel className="mt-6 py-2">
                   {featuredProperties.map((item, index) => (
                     <div
                       key={item.id}
@@ -54,7 +57,7 @@ export default async function FeaturedSection() {
                   ))}
                 </HomeCarousel>
 
-                <div className="mt-12 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
+                <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
                   {featuredProperties.map((item, index) => (
                     <PropertyCard
                       key={item.id}
@@ -69,7 +72,9 @@ export default async function FeaturedSection() {
           }}
         </SafeFetch>
 
-        <SeeMoreButton href="/cho-thue" />
+        <div className="mt-8">
+          <SeeMoreButton href="/cho-thue" />
+        </div>
       </div>
     </section>
   );

@@ -55,12 +55,12 @@ export default function ProjectListingClient({
     categorySlug === "du-an" ? "/du-an" : `/du-an/${categorySlug}`;
 
   return (
-    <section className="layout-container layout-section-sm">
+    <section className="layout-container pt-4 pb-0 md:pt-5">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
 
-      <div className="my-6">
+      <div className="mt-4">
         <CategoryChips
           activeValue={selectedCategorySlug}
           onChange={handleSelectCategory}
@@ -68,7 +68,7 @@ export default function ProjectListingClient({
         />
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}

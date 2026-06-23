@@ -20,7 +20,7 @@ export default function NewsCard({
   return (
     <Link
       href={`/tin-tuc/${news.slug}`}
-      className="group border-hairline bg-surface flex flex-row items-stretch overflow-hidden rounded-2xl border shadow-(--shadow-card) transition-[transform,box-shadow] duration-260 ease-out hover:-translate-y-0.5 hover:shadow-(--shadow-float)"
+      className="surface-utility group flex flex-row items-stretch overflow-hidden rounded-[1.5rem] transition-[transform,box-shadow] duration-260 ease-out hover:-translate-y-0.5"
     >
       {/* Thumbnail */}
       <div className="bg-surface-alt relative w-[38%] shrink-0 overflow-hidden">
@@ -46,7 +46,7 @@ export default function NewsCard({
           ) : null}
 
           {/* Title */}
-          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.01em] transition-colors duration-200 md:text-base">
+          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-base">
             {news.title}
           </h3>
 

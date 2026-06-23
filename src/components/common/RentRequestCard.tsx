@@ -55,7 +55,7 @@ export function RentRequestCard({
   return (
     <Link href={`/can-thue/${request.slug}`} className="block h-full">
       <article
-        className={`surface-card ${CARD_HOVER_CLASSES} ${isFeatured ? "rounded-2xl" : "rounded-xl"}`}
+        className={`surface-utility ${CARD_HOVER_CLASSES} ${isFeatured ? "rounded-3xl" : "rounded-[1.25rem]"}`}
       >
         <div
           className={`bg-surface-alt relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
@@ -69,7 +69,7 @@ export function RentRequestCard({
             cldQuality="auto:best"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
+          <div className="absolute inset-0 bg-(--editorial-scrim)" />
 
           <div className="absolute right-3 bottom-3 left-3 z-20">
             <h3 className="mt-2 line-clamp-2 text-xl leading-snug font-semibold text-white md:text-2xl">
@@ -80,11 +80,11 @@ export function RentRequestCard({
 
         <div className="flex h-full flex-1 flex-col p-5">
           {categoryName ? (
-            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-base font-semibold uppercase">
+            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-[0.8rem] font-semibold tracking-[0.18em] uppercase">
               {categoryName}
             </span>
           ) : null}
-          <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.01em] transition-colors duration-200">
+          <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.02em] transition-colors duration-200">
             {formatListingPrice(request.budget, {
               fallback: "Đang cập nhật",
               amount: request.budgetAmount,

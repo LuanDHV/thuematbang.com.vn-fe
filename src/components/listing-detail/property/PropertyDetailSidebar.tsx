@@ -24,7 +24,7 @@ export default function PropertyDetailSidebar({
     <aside className="flex w-full flex-col gap-6">
       <div
         id="detail-contact-card"
-        className="surface-card w-full self-start p-5 scroll-mt-24 lg:sticky lg:top-18"
+        className="surface-utility w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-22"
       >
         <PosterContactCard
           fullName={contactName}
@@ -33,7 +33,7 @@ export default function PropertyDetailSidebar({
         />
       </div>
 
-      <section className="surface-card hidden rounded-2xl border border-hairline p-5 lg:block">
+      <section className="surface-utility hidden rounded-3xl p-5 lg:block">
         <h3 className="text-heading text-base font-medium">
           <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
           Gợi ý theo khu vực
@@ -41,7 +41,7 @@ export default function PropertyDetailSidebar({
 
         {relatedCategoryProvinceLinks.length > 0 ? (
           <div className="mt-3">
-            <div className="grid divide-y divide-hairline">
+            <div className="divide-hairline grid divide-y">
               {relatedCategoryProvinceLinks.map((item) => (
                 <Link
                   href={item.href}

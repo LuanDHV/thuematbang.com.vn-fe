@@ -69,14 +69,14 @@ export default function ListingResultsClient({
   );
 
   return (
-    <section className="layout-container layout-section-sm">
+    <section className="layout-container pt-6 pb-10 md:pt-8 md:pb-12">
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
 
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-8">
         {!hasItems ? (
-          <section className="p-8 text-center">
+          <section className="surface-editorial rounded-[1.75rem] p-8 text-center">
             <h3 className="text-heading text-lg font-semibold">
               Không có bất động sản phù hợp
             </h3>
@@ -118,15 +118,20 @@ export default function ListingResultsClient({
           </section>
         ) : null}
 
-        <Pagination
-          page={currentPage}
-          totalPages={totalPages}
-          onChange={(nextPage) =>
-            router.replace(buildPagedPath(paginationBasePath ?? "", nextPage), {
-              scroll: false,
-            })
-          }
-        />
+        {totalPages > 1 ? (
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={(nextPage) =>
+              router.replace(
+                buildPagedPath(paginationBasePath ?? "", nextPage),
+                {
+                  scroll: false,
+                },
+              )
+            }
+          />
+        ) : null}
       </div>
     </section>
   );

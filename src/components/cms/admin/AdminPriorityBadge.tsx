@@ -10,8 +10,8 @@ const adminPriorityBadgeVariants = cva(
     variants: {
       tone: {
         free: "border-hairline bg-subtle text-secondary",
-        standard: "border-blue-200 bg-blue-50 text-blue-700",
-        premium: "border-purple-200 bg-purple-50 text-purple-700",
+        standard: "border-transparent bg-info-soft text-info",
+        premium: "border-transparent bg-accent-soft text-admin-accent",
       },
     },
     defaultVariants: {
@@ -39,4 +39,3 @@ export default function AdminPriorityBadge({
     </span>
   );
 }
-

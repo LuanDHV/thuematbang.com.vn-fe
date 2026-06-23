@@ -50,7 +50,7 @@ export default function PropertyDetailContent({
   const hasDirection = Boolean(property.direction);
 
   return (
-    <div className="surface-card flex flex-col gap-6 p-5 lg:gap-8">
+    <div className="surface-editorial flex flex-col gap-6 p-5 lg:gap-8 lg:p-6">
       <section>
         <PropertyImageGallery title={property.title} images={galleryImages} />
       </section>
@@ -60,27 +60,27 @@ export default function PropertyDetailContent({
           {property.title}
         </h1>
 
-        <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
+        <div className="text-secondary mt-4 flex flex-wrap items-center gap-2 text-sm">
           {property.category?.name ? (
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+            <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
               <Layers size={14} className="text-primary" />
               Danh mục: {property.category.name}
             </span>
           ) : null}
 
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Tag size={14} className="text-primary" />
             Loại tin đăng:{" "}
             {PROPERTY_PRIORITY_LABEL_MAP[property.priorityStatus] ??
               property.priorityStatus}
           </span>
 
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <CalendarDays size={14} className="text-primary" />
             Ngày đăng: {formatDate(property.createdAt)}
           </span>
 
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Eye size={14} className="text-primary" />
             Lượt xem: {formatNumber(property.viewCount, { fallback: "0" })}
           </span>
@@ -163,7 +163,7 @@ export default function PropertyDetailContent({
         </div>
         {property.content ? (
           <div
-            className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
+            className="premium-prose prose prose-sm prose-p:leading-8 prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-[-0.02em] text-body max-w-none"
             suppressHydrationWarning
             dangerouslySetInnerHTML={{ __html: property.content }}
           />

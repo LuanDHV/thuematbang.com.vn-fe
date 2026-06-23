@@ -20,7 +20,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div data-theme="admin" className="bg-app text-body min-h-dvh">
+    <div data-theme="admin" className="cms-shell bg-app text-body min-h-dvh">
       <CmsLayout
         sidebar={<AdminSidebar user={authUser} />}
         mobileSidebar={<AdminSidebar user={authUser} forceExpanded />}

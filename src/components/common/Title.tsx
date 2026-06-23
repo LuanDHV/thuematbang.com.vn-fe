@@ -2,7 +2,6 @@ interface TitleProps {
   title: string;
   description?: string;
   eyebrow?: string;
-  align?: "center" | "left";
   level?: 1 | 2 | 3;
 }
 
@@ -10,35 +9,22 @@ export default function Title({
   title,
   description,
   eyebrow,
-  align = "center",
   level = 2,
 }: TitleProps) {
-  const isCentered = align === "center";
   const HeadingTag = `h${level}` as const;
 
   return (
-    <div
-      className={`mb-8 max-w-5xl ${isCentered ? "mx-auto text-center" : ""} lg:mb-12`}
-    >
+    <div className="mx-auto max-w-5xl text-center">
       {eyebrow ? (
-        <p
-          className={`text-primary mb-3 text-xs font-semibold tracking-[0.22em] uppercase ${isCentered ? "" : "text-left"}`}
-        >
+        <p className="text-primary mb-2 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">
           {eyebrow}
         </p>
       ) : null}
-      <HeadingTag
-        className={`text-heading mb-4 text-3xl font-semibold tracking-[-0.03em] md:text-5xl ${isCentered ? "" : "max-w-3xl"}`}
-      >
+      <HeadingTag className={`text-heading text-3xl font-semibold tracking-[-0.04em] md:text-5xl ${description ? "mb-4" : ""}`}>
         {title}
       </HeadingTag>
-      <div
-        className={`bg-primary/70 mb-8 h-px w-20 rounded-full ${isCentered ? "mx-auto" : ""}`}
-      />
       {description ? (
-        <p
-          className={`text-secondary max-w-2xl text-base leading-8 md:text-lg ${isCentered ? "mx-auto" : ""}`}
-        >
+        <p className="text-secondary mx-auto max-w-2xl text-[0.97rem] leading-8 md:text-[1.05rem]">
           {description}
         </p>
       ) : null}

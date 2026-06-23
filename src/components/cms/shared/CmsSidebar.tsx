@@ -159,10 +159,7 @@ export default function CmsSidebar({
   return (
     <TooltipProvider delayDuration={120}>
       <aside
-        className={cn(
-          "bg-surface flex h-full flex-col overflow-hidden",
-          className,
-        )}
+        className={cn("bg-surface flex h-full flex-col overflow-hidden", className)}
       >
         <div className="border-hairline hidden border-b p-3 lg:block">
           <div
@@ -183,7 +180,7 @@ export default function CmsSidebar({
                 <div className="flex items-center gap-3">
                   {avatar}
                   <div className="min-w-0">
-                    <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">
+                    <p className="text-secondary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
                       {user.role}
                     </p>
                     <p className="text-heading truncate text-sm font-semibold">
@@ -310,7 +307,7 @@ export default function CmsSidebar({
                 href={item.href}
                 aria-label={railMode ? item.label : undefined}
                 className={cn(
-                  "group focus-visible:ring-primary/20 flex rounded-xl border-l-2 py-2.5 transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                  "group focus-visible:ring-primary/20 flex rounded-xl border py-2.5 transition-colors focus-visible:ring-2 focus-visible:outline-none",
                   forceExpanded
                     ? "items-center justify-start gap-3 px-3"
                     : "justify-center px-0",
@@ -318,8 +315,8 @@ export default function CmsSidebar({
                     desktopExpanded &&
                     "lg:items-center lg:justify-start lg:gap-3 lg:px-3",
                   isActive
-                    ? "border-l-primary bg-primary/5"
-                    : "hover:bg-subtle border-l-transparent",
+                    ? "border-primary/14 bg-primary/6 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+                    : "border-transparent hover:bg-subtle/70",
                 )}
               >
                 <Icon

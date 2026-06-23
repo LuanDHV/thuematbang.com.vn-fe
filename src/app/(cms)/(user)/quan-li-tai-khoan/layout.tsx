@@ -17,11 +17,13 @@ export default async function UserManagementLayout({
   }
 
   return (
-    <CmsLayout
-      sidebar={<UserSidebar user={authUser} />}
-      mobileSidebar={<UserSidebar user={authUser} forceExpanded />}
-    >
-      {children}
-    </CmsLayout>
+    <div data-theme="user-cms" className="cms-shell bg-app text-body min-h-dvh">
+      <CmsLayout
+        sidebar={<UserSidebar user={authUser} />}
+        mobileSidebar={<UserSidebar user={authUser} forceExpanded />}
+      >
+        {children}
+      </CmsLayout>
+    </div>
   );
 }

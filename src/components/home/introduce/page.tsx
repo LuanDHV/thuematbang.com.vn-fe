@@ -52,7 +52,7 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
 
 export default function IntroduceSection() {
   return (
-    <section className="to-primary/10 from-app relative w-full overflow-hidden bg-linear-to-b px-4 py-12 lg:py-16">
+    <section className="to-primary/10 from-app relative w-full overflow-hidden bg-linear-to-b px-4 py-10 lg:py-14">
       <div className="layout-container w-full">
         <Title
           eyebrow="Giới thiệu"
@@ -60,7 +60,7 @@ export default function IntroduceSection() {
           description="Chúng tôi là nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. Với hệ thống danh mục đa dạng và dịch vụ chuyên nghiệp, chúng tôi cam kết tạo ra trải nghiệm tốt nhất cho khách hàng."
         />
 
-        <HomeCarousel className="mt-8" options={{ align: "center" }}>
+        <HomeCarousel className="mt-6" options={{ align: "center" }}>
           {features.map((feature, index) => (
             <div
               key={index}
@@ -71,7 +71,7 @@ export default function IntroduceSection() {
           ))}
         </HomeCarousel>
 
-        <div className="mt-8 hidden grid-cols-1 gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
           {features.map((feature, index) => (
             <FeatureCard key={index} feature={feature} />
           ))}

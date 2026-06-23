@@ -27,10 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import {
-  createColumnsFromFields,
-  renderFieldContent,
-} from "./ColumnGenerator";
+import { createColumnsFromFields, renderFieldContent } from "./ColumnGenerator";
 import type { FieldConfig } from "./ColumnGenerator";
 
 type RowId = string | number;
@@ -172,12 +169,12 @@ export default function AdminDataTable<TData>({
   };
 
   return (
-    <div className="surface-panel overflow-hidden">
-      <div className="border-hairline space-y-3 border-b px-3 py-3 md:px-4">
+    <div className="surface-panel overflow-hidden rounded-3xl shadow-none">
+      <div className="border-hairline space-y-3 border-b px-4 py-3 md:px-5">
         {toolbar ? (
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
-              <h2 className="text-heading text-sm font-semibold uppercase">
+              <h2 className="text-heading text-sm font-semibold tracking-[-0.02em]">
                 {toolbar.title}
               </h2>
             </div>
@@ -243,7 +240,7 @@ export default function AdminDataTable<TData>({
                     <TableHead
                       key={header.id}
                       className={cn(
-                        "bg-surface text-secondary sticky top-0 z-10 font-semibold",
+                        "bg-surface-alt/75 text-secondary sticky top-0 z-10 text-xs font-semibold tracking-[0.14em] uppercase",
                       )}
                     >
                       {header.isPlaceholder
@@ -263,7 +260,7 @@ export default function AdminDataTable<TData>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="hover:bg-subtle/70 cursor-default"
+                  className="hover:bg-subtle/55 cursor-default"
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (
@@ -304,7 +301,7 @@ export default function AdminDataTable<TData>({
             return (
               <article
                 key={String(rowId)}
-                className="surface-card space-y-4 p-4"
+                className="surface-card space-y-4 p-4 shadow-none"
               >
                 <div className="border-hairline space-y-3 border-b pb-4">
                   <div className="flex items-start justify-between gap-3">
@@ -377,4 +374,3 @@ export default function AdminDataTable<TData>({
     </div>
   );
 }
-
