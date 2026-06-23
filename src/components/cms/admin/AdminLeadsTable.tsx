@@ -19,7 +19,6 @@ import AdminDataTable, {
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
-import type { LeadStatus } from "@/types/enums";
 import type { Lead } from "@/types/lead";
 
 type AdminLeadsTableProps = {

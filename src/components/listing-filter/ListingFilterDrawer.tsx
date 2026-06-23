@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -181,6 +181,7 @@ export function ListingFilterDrawer({
     >
       <DialogTrigger asChild>
         <Button
+          aria-label="Mở bộ lọc nâng cao"
           variant="outline"
           className={`h-10 items-center justify-center rounded-lg border text-xs font-semibold transition-all ${
             displayedCount > 0 ? "gap-1.5 px-3" : "w-10 px-0"
@@ -200,8 +201,8 @@ export function ListingFilterDrawer({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border border-hairline bg-surface p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
-        <DialogHeader className="from-primary/10 border-b border-hairline bg-linear-to-b via-surface to-surface p-5">
+      <DialogContent className="border-hairline bg-surface flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+        <DialogHeader className="from-primary/10 border-hairline via-surface to-surface border-b bg-linear-to-b p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao
           </DialogTitle>
@@ -213,7 +214,7 @@ export function ListingFilterDrawer({
             value={demandTab}
             onValueChange={(v) => setDemandTab(v as DemandTab)}
           >
-            <TabsList className="mt-4 flex h-12 w-full items-stretch rounded-xl border border-hairline bg-surface p-1">
+            <TabsList className="border-hairline bg-surface mt-4 flex h-12 w-full items-stretch rounded-xl border p-1">
               <TabsTrigger
                 value="cho-thue"
                 className="data-[state=active]:bg-primary h-full flex-1 rounded-lg px-4 text-base font-semibold data-[state=active]:text-white"
@@ -230,7 +231,7 @@ export function ListingFilterDrawer({
           </Tabs>
         </DialogHeader>
 
-        <div className="flex min-h-0 flex-1 flex-col bg-surface">
+        <div className="bg-surface flex min-h-0 flex-1 flex-col">
           <div className="via-app/60 min-h-0 flex-1 overflow-y-auto bg-linear-to-b from-white to-white px-4">
             {detailTab !== "main" ? (
               <Button
@@ -287,7 +288,7 @@ export function ListingFilterDrawer({
             ) : null}
           </div>
 
-          <div className="flex items-center justify-between gap-2 border-t border-hairline bg-surface/95 p-4 backdrop-blur supports-backdrop-filter:bg-surface/75">
+          <div className="border-hairline bg-surface/95 supports-backdrop-filter:bg-surface/75 flex items-center justify-between gap-2 border-t p-4 backdrop-blur">
             <Button
               variant="outline"
               onClick={handleReset}

@@ -502,3 +502,30 @@ After meaningful architectural or typing changes:
 - run `npx.cmd tsc --noEmit`
 
 If UI was touched, also verify manually on desktop and mobile when feasible.
+
+## 15. Testing Governance
+
+This repository now treats test impact as part of feature completeness.
+
+- every new FE feature should be reviewed for `unit`, `integration`, and `e2e` impact
+- if a change touches render logic, form behavior, hooks, or pure helpers, update or add `Jest + RTL` coverage
+- if a change touches route behavior, auth/session flow, redirect, cookies, or browser journeys, update or add `Playwright` coverage
+- if a change touches request/response behavior, prefer `MSW`-driven component/integration tests over brittle end-to-end mocking
+- do not merge a meaningful FE feature change without checking whether `TEST_COVERAGE.md` needs an update
+
+Recommended test layout:
+
+- `tests/unit/` for pure helpers and boundary logic
+- `tests/components/` for component and integration tests
+- `tests/hooks/` for hook behavior
+- `tests/e2e/` for browser journeys
+
+When a feature is intentionally not covered by a test layer, the PR or change set should say why.
+
+## 16. Test Coverage Tracking
+
+Keep the live test matrix in `TEST_COVERAGE.md`.
+
+- update it when a feature area gains or loses test coverage
+- keep the matrix aligned with the current routes, components, hooks, and helpers
+- use it as the quick reference for what is safe to refactor and what still needs test work

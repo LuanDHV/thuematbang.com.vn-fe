@@ -304,9 +304,6 @@ function PropertyCreateFormContent({
 
     try {
       const createdProperty = await submitAction(payload);
-      form.reset(normalizedDefaults);
-      setUploadedImages([]);
-      setExistingGalleryImages(initialExistingGalleryImages);
 
       if (showSuccessDialog) {
         setCreatedSlug(createdProperty.slug);
@@ -318,6 +315,10 @@ function PropertyCreateFormContent({
           variant: "success",
         });
       }
+
+      form.reset(normalizedDefaults);
+      setUploadedImages([]);
+      setExistingGalleryImages(initialExistingGalleryImages);
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Không thể lưu tin đăng.",

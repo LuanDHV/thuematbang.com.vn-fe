@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   experimental: {
     serverActions: {
       // Image uploads now bypass Server Actions, so keep the body guard tight.
