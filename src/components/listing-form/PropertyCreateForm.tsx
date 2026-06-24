@@ -12,6 +12,7 @@ import { ListingLocationField } from "@/components/listing-form/ListingLocationF
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
+import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
@@ -472,11 +473,19 @@ function PropertyCreateFormContent({
           </div>
         ) : null}
 
-        <ListingRichTextField
-          name="content"
-          label="Mô tả thêm"
-          placeholder="Mô tả chi tiết về tin đăng..."
-        />
+        {mode === "public-create" ? (
+          <ListingTextareaField
+            name="content"
+            label="Mô tả thêm"
+            placeholder="Mô tả chi tiết về tin đăng..."
+          />
+        ) : (
+          <ListingRichTextField
+            name="content"
+            label="Mô tả thêm"
+            placeholder="Mô tả chi tiết về tin đăng..."
+          />
+        )}
 
         {showAdminOnly ? (
           <>

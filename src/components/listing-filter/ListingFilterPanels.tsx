@@ -37,8 +37,8 @@ type DetailTabSharedProps = {
 };
 
 const quickCellClass =
-  "mt-2 cursor-pointer rounded-lg border border-hairline bg-surface px-4 py-1.5 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all hover:border-primary/20 hover:bg-accent-soft hover:text-primary";
-const selectedQuickCellClass = "border-primary bg-primary/5 text-primary";
+  "mt-2 cursor-pointer rounded-lg border border-hairline bg-surface px-4 py-1.5 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all hover:border-primary/20 hover:bg-white hover:text-primary";
+const selectedQuickCellClass = "border-primary bg-white text-primary";
 
 export function PropertyTypeDetailTab({
   current,
@@ -48,7 +48,7 @@ export function PropertyTypeDetailTab({
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5">
+      <label className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white hover:text-primary">
         <span className="text-sm text-heading">Tất cả loại bất động sản</span>
         <input
           type="checkbox"
@@ -67,7 +67,7 @@ export function PropertyTypeDetailTab({
       {propertyTypeOptions.map((type) => (
         <label
           key={type}
-          className="hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5"
+          className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white hover:text-primary"
         >
           <span className="text-sm text-heading">{type}</span>
           <input
@@ -179,7 +179,7 @@ export function PriceDetailTab({
           return (
             <label
               key={option.label}
-              className={`hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white hover:text-primary ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -309,7 +309,7 @@ export function AreaDetailTab({
           return (
             <label
               key={option.label}
-              className={`hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white hover:text-primary ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -418,7 +418,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("propertyType")}
-          className="hover:border-primary/20 hover:bg-accent-soft mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-secondary">
             <Building2 className="size-5" />
@@ -433,7 +433,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("location")}
-          className="hover:border-primary/20 hover:bg-accent-soft mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-secondary">
             <MapPin className="size-5" />
@@ -450,7 +450,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("price")}
-          className="hover:border-primary/20 hover:bg-accent-soft mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-secondary">
             <CircleDollarSign className="size-5" />
@@ -465,7 +465,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("area")}
-          className="hover:border-primary/20 hover:bg-accent-soft mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-center gap-2 text-secondary">
             <Maximize className="size-5" />

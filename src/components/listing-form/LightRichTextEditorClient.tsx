@@ -34,6 +34,7 @@ type LightRichTextEditorProps = {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  insertLink?: boolean;
   imageUpload?: {
     resourceType: CloudinaryUploadResourceType;
     draftId: string;
@@ -129,9 +130,11 @@ class CloudinaryUploadAdapter implements UploadAdapter {
 
 function buildEditorConfig(
   placeholder: string,
+  insertLink: boolean,
   imageUpload: LightRichTextEditorProps["imageUpload"],
 ): EditorConfig {
   const withImageUpload = Boolean(imageUpload);
+  const withInsertLink = Boolean(insertLink);
   const toolbarItems = [
     "undo",
     "redo",
@@ -150,10 +153,7 @@ function buildEditorConfig(
     "|",
     "bulletedList",
     "numberedList",
-    "outdent",
-    "indent",
-    "|",
-    "link",
+    ...(withInsertLink ? ["|", "link"] : []),
     ...(withImageUpload ? ["imageUpload"] : []),
     "removeFormat",
   ] as const;
@@ -231,13 +231,14 @@ export default function LightRichTextEditorClient({
   value,
   onChange,
   placeholder = "Nhập nội dung...",
+  insertLink = false,
   imageUpload,
 }: LightRichTextEditorProps) {
   const [imageError, setImageError] = useState<string | null>(null);
 
   const editorConfig = useMemo(
-    () => buildEditorConfig(placeholder, imageUpload),
-    [imageUpload, placeholder],
+    () => buildEditorConfig(placeholder, insertLink, imageUpload),
+    [imageUpload, insertLink, placeholder],
   );
 
   return (

@@ -11,6 +11,7 @@ type LightRichTextEditorProps = {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  insertLink?: boolean;
   imageUpload?: {
     resourceType: CloudinaryUploadResourceType;
     draftId: string;

@@ -239,6 +239,7 @@ function AdminNewsFormContent({
         name="content"
         label="Nội dung"
         placeholder="Nhập nội dung bài viết..."
+        insertLink
         imageUpload={{
           resourceType: "news",
           draftId,

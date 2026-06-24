@@ -11,6 +11,7 @@ import { ListingLocationField } from "@/components/listing-form/ListingLocationF
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingPriceField } from "@/components/listing-form/ListingPriceField";
 import { ListingRichTextField } from "@/components/listing-form/ListingRichTextField";
+import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
@@ -311,11 +312,19 @@ export function RentRequestCreateForm({
           </div>
         ) : null}
 
-        <ListingRichTextField
-          name="requirementText"
-          label="Mô tả thêm"
-          placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
-        />
+        {mode === "public-create" ? (
+          <ListingTextareaField
+            name="requirementText"
+            label="Mô tả thêm"
+            placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
+          />
+        ) : (
+          <ListingRichTextField
+            name="requirementText"
+            label="Mô tả thêm"
+            placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
+          />
+        )}
       </ListingCreateFormShell>
 
       {showSuccessDialog ? (

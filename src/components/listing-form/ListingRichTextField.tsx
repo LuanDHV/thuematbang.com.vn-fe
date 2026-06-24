@@ -11,6 +11,7 @@ type ListingRichTextFieldProps = {
   label: string;
   description?: string;
   placeholder?: string;
+  insertLink?: boolean;
   imageUpload?: {
     resourceType: CloudinaryUploadResourceType;
     draftId: string;
@@ -23,6 +24,7 @@ export function ListingRichTextField({
   label,
   description,
   placeholder,
+  insertLink,
   imageUpload,
 }: ListingRichTextFieldProps) {
   const {
@@ -45,6 +47,7 @@ export function ListingRichTextField({
             value={String(field.value ?? "")}
             onChange={field.onChange}
             placeholder={placeholder}
+            insertLink={insertLink}
             imageUpload={imageUpload}
           />
         )}

@@ -408,8 +408,8 @@ export default function ListingFilterToolbar({
                             onClick={() => navigateToSuggestion(suggestion)}
                             className={`flex w-full items-center px-4 py-2.5 text-left transition-colors ${
                               isActive
-                                ? "bg-primary/6 text-primary"
-                                : "text-body hover:bg-primary/5"
+                                ? "bg-white text-primary"
+                                : "text-body hover:bg-white hover:text-primary"
                             }`}
                           >
                             <span className="min-w-0 flex-1 cursor-pointer truncate text-sm font-medium">

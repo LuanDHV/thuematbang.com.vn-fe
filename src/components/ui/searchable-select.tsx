@@ -148,8 +148,8 @@ export function SearchableSelect({
                 className={cn(
                   "flex w-full cursor-pointer items-center rounded-lg px-3 py-2.5 text-left text-sm transition-colors",
                   value === ""
-                    ? "bg-primary/6 text-primary"
-                    : "hover:bg-accent-soft text-body",
+                    ? "bg-white text-primary"
+                    : "hover:bg-white hover:text-primary text-body",
                 )}
               >
                 <span className="min-w-0 flex-1 truncate">{emptyLabel}</span>
@@ -170,8 +170,8 @@ export function SearchableSelect({
                       "flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-colors",
                       option.disabled && "cursor-not-allowed opacity-50",
                       isSelected
-                        ? "bg-primary/6 text-primary"
-                        : "hover:bg-accent-soft text-body",
+                        ? "bg-white text-primary"
+                        : "hover:bg-white hover:text-primary text-body",
                     )}
                   >
                     <span className="flex h-4 w-4 shrink-0 items-center justify-center">

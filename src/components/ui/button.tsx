@@ -5,12 +5,12 @@ import { Slot } from "radix-ui";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center cursor-pointer rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap text-heading transition-all outline-none select-none focus-visible:ring-4 focus-visible:ring-primary/15 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-55 aria-invalid:border-destructive aria-invalid:ring-4 aria-invalid:ring-destructive/15 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+  "group/button inline-flex shrink-0 items-center justify-center cursor-pointer duration-200 rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap text-heading transition-all outline-none select-none focus-visible:ring-4 focus-visible:ring-primary/15 disabled:pointer-events-none disabled:opacity-55 aria-invalid:border-destructive aria-invalid:ring-4 aria-invalid:ring-destructive/15 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)] hover:-translate-y-0.5 hover:brightness-[1.02]",
+          "bg-primary text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)] hover:brightness-[1.02] ",
         outline:
           "border-hairline-strong bg-surface text-heading shadow-[0_10px_24px_rgba(15,23,42,0.06)] hover:border-primary/20 hover:bg-accent-soft hover:text-primary aria-expanded:bg-accent-soft aria-expanded:text-primary",
         secondary: "bg-subtle text-heading hover:bg-surface",
@@ -64,4 +64,3 @@ function Button({
 }
 
 export { Button, buttonVariants };
-

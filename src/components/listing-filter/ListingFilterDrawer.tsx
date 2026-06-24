@@ -187,8 +187,8 @@ export function ListingFilterDrawer({
             displayedCount > 0 ? "gap-1.5 px-3" : "w-10 px-0"
           } ${
             activeCount > 0
-              ? "border-primary text-primary bg-primary/5"
-              : "text-secondary hover:border-primary/20 hover:bg-accent-soft hover:text-primary border-hairline bg-surface"
+              ? "border-primary text-primary bg-white"
+              : "text-secondary hover:border-primary/20 hover:bg-white hover:text-primary border-hairline bg-surface"
           }`}
         >
           <Filter size={14} />
@@ -237,7 +237,7 @@ export function ListingFilterDrawer({
               <Button
                 variant="ghost"
                 onClick={goMain}
-                className="text-primary hover:bg-primary/8 mb-3 h-8 rounded-lg px-2 text-xs font-medium"
+                className="text-primary hover:bg-white mb-3 h-8 rounded-lg px-2 text-xs font-medium"
               >
                 <ArrowLeft className="mr-1 size-5" />
                 Quay lại

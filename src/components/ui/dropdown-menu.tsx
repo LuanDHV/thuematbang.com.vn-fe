@@ -51,11 +51,11 @@ function DropdownMenuItem({
   inset?: boolean;
 }) {
   return (
-    <DropdownMenuPrimitive.Item
+      <DropdownMenuPrimitive.Item
       data-slot="dropdown-menu-item"
       data-inset={inset}
       className={cn(
-        "focus:bg-primary/5 focus:text-heading relative flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
+        "focus:bg-white focus:text-primary relative flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         inset && "pl-8",
         className,
       )}
@@ -130,7 +130,7 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "focus:bg-primary/5 focus:text-heading data-[state=open]:bg-primary/5 flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm outline-none",
+        "focus:bg-white focus:text-primary data-[state=open]:bg-white data-[state=open]:text-primary flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm outline-none",
         inset && "pl-8",
         className,
       )}
@@ -168,7 +168,7 @@ function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
-        "focus:bg-primary/5 focus:text-heading relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
+        "focus:bg-white focus:text-primary relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       checked={checked}
@@ -193,7 +193,7 @@ function DropdownMenuRadioItem({
     <DropdownMenuPrimitive.RadioItem
       data-slot="dropdown-menu-radio-item"
       className={cn(
-        "focus:bg-primary/5 focus:text-heading relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
+        "focus:bg-white focus:text-primary relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       {...props}

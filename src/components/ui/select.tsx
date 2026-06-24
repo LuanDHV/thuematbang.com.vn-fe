@@ -37,7 +37,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "text-body hover:border-primary/20 hover:bg-accent-soft focus:border-primary/25 focus:ring-primary/12 disabled:text-secondary flex h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-hairline-strong bg-surface px-4 text-sm font-medium shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all outline-none hover:shadow-[0_14px_28px_rgba(15,23,42,0.06)] focus:ring-4 disabled:cursor-not-allowed disabled:bg-subtle/60 disabled:opacity-100",
+        "text-body hover:border-primary/20 hover:bg-white hover:text-primary focus:border-primary/25 focus:ring-primary/12 disabled:text-secondary flex h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-hairline-strong bg-surface px-4 text-sm font-medium shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all outline-none hover:shadow-[0_14px_28px_rgba(15,23,42,0.06)] focus:ring-4 disabled:cursor-not-allowed disabled:bg-subtle/60 disabled:opacity-100",
         size === "sm" && "h-10",
         className,
       )}
@@ -106,7 +106,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "focus:bg-accent-soft focus:text-primary relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2.5 pr-2 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
+        "focus:bg-white focus:text-primary relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2.5 pr-2 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       {...props}
@@ -144,4 +144,3 @@ export {
   SelectItem,
   SelectSeparator,
 };
-

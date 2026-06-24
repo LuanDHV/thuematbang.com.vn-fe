@@ -318,8 +318,8 @@ export default function CmsSidebar({
                     desktopExpanded &&
                     "lg:items-center lg:justify-start lg:gap-3 lg:px-3",
                   isActive
-                    ? "border-primary/14 bg-primary/6 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
-                    : "hover:bg-subtle/70 border-transparent",
+                    ? "border-primary/14 bg-white shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+                    : "hover:bg-white hover:text-primary border-transparent",
                 )}
               >
                 <Icon
@@ -327,13 +327,13 @@ export default function CmsSidebar({
                     "size-[1.1rem] shrink-0 lg:size-4",
                     isActive
                       ? "text-primary"
-                      : "text-secondary group-hover:text-heading",
+                      : "text-secondary group-hover:text-primary",
                   )}
                 />
                 <span
                   className={cn(
                     "text-sm",
-                    isActive ? "text-heading font-semibold" : "text-body",
+                    isActive ? "text-primary font-semibold" : "text-body",
                     !forceExpanded && !desktopExpanded && "sr-only",
                     !forceExpanded && desktopExpanded && "lg:not-sr-only",
                   )}
