@@ -56,10 +56,9 @@ export default function ProjectListingClient({
     categorySlug === "du-an" ? "/du-an" : `/du-an/${categorySlug}`;
 
   return (
-    <section className="layout-container pt-4 pb-0 md:pt-5">
-      <div className="layout-container layout-section-sm pb-0">
-        <Title title="Dự án bất động sản" level={1} />
-      </div>
+    <section className="layout-container layout-section-sm pb-0">
+      <Title title="Dự án bất động sản" level={1} />
+
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}

@@ -11,6 +11,7 @@ import { resolvePaginationClientMeta } from "@/lib/client-side";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
 import { PaginationMeta } from "@/types/api";
+import Title from "../common/Title";
 
 const TIER_ORDER = ["PREMIUM", "STANDARD", "FREE"] as const;
 
@@ -42,6 +43,10 @@ export default function ListingResultsClient({
   paginationBasePath?: string;
 }) {
   const router = useRouter();
+  const resolvedTitle =
+    listingMode === "property"
+      ? "Bất động sản cho thuê"
+      : "Nhu cầu thuê bất động sản";
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
   const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
@@ -69,7 +74,8 @@ export default function ListingResultsClient({
   );
 
   return (
-    <section className="layout-container pt-6 pb-10 md:pt-8 md:pb-12">
+    <section className="layout-container layout-section-sm pb-0">
+      <Title title={resolvedTitle} level={1} />
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}

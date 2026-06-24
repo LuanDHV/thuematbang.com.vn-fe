@@ -154,8 +154,10 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
-          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.42)] md:text-5xl lg:text-6xl">
-            Sàn kết nối bất động sản nơi đáp ứng mọi nhu cầu thuê và cho thuê
+          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.42)] md:text-4xl lg:text-5xl">
+            Sàn Thương Mại Bất Động Sản
+            <br />
+            Kết Nối Nhu Cầu Thuê - Cho Thuê Toàn Quốc
           </h1>
 
           <div className="mt-8 flex w-full flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row">

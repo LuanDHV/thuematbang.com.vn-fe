@@ -15,9 +15,8 @@ export default async function NewsSection() {
         <div className="section-intro-tight text-center">
           <Title
             eyebrow="Cập nhật"
-            title="Tin tức"
-            description="Tổng hợp tin tức, kiến thức và xu hướng bất động sản mới nhất."
-
+            title="Cẩm nang & Xu hướng thị trường"
+            description="Tổng hợp xu hướng giá thuê, kinh nghiệm tìm mặt bằng kinh doanh cho người thuê và giải pháp tối ưu dòng tiền, vận hành cho chủ bất động sản."
           />
         </div>
 
@@ -31,7 +30,7 @@ export default async function NewsSection() {
 
             if (isEmpty) {
               return (
-                <div className="surface-editorial mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed border-hairline px-6 py-8 text-center">
+                <div className="surface-editorial border-hairline mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed px-6 py-8 text-center">
                   <p className="text-body text-base font-medium">
                     Tin tức sẽ sớm được cập nhật
                   </p>

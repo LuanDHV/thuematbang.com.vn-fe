@@ -12,10 +12,9 @@ export default async function FeaturedSection() {
       <div className="layout-container w-full">
         <div className="section-intro-tight">
           <Title
-            eyebrow="Nổi bật"
+            eyebrow="Gợi ý tốt nhất"
             title="Bất động sản nổi bật"
-            description="Khám phá những không gian sống và làm việc đẳng cấp nhất, được chúng tôi tuyển chọn kỹ lưỡng về vị trí, tiện ích và giá trị."
-
+            description="Tuyển chọn các tin đăng cho thuê giá tốt nhất từ khách hàng và doanh nghiệp được xác thực trên hệ thống."
           />
         </div>
 
@@ -32,7 +31,7 @@ export default async function FeaturedSection() {
 
             if (isEmpty) {
               return (
-                <div className="surface-editorial mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed border-hairline px-6 py-8 text-center">
+                <div className="surface-editorial border-hairline mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed px-6 py-8 text-center">
                   <p className="text-body text-base font-medium">
                     Bất động sản nổi bật sẽ sớm được cập nhật
                   </p>
@@ -44,10 +43,7 @@ export default async function FeaturedSection() {
               <>
                 <HomeCarousel className="mt-6 py-2">
                   {featuredProperties.map((item, index) => (
-                    <div
-                      key={item.id}
-                      className="min-w-0 flex-[0_0_88%] pl-3"
-                    >
+                    <div key={item.id} className="min-w-0 flex-[0_0_88%] pl-3">
                       <PropertyCard
                         property={item}
                         variant="featured"

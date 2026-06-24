@@ -9,7 +9,7 @@ export default async function HeroSection() {
   const banners = bannersResponse?.data?.banners ?? [];
 
   return (
-    <section className="relative min-h-[min(92vh,860px)] w-full overflow-hidden">
+    <section className="relative min-h-[calc(100dvh-72px)] w-full overflow-hidden">
       <HeroBannerSlider banners={banners} />
     </section>
   );

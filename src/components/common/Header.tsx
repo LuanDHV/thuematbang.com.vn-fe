@@ -49,7 +49,7 @@ export default function Header() {
   return (
     <header className="bg-surface/88 border-hairline fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-xl">
       <nav className="layout-container flex h-18 items-center justify-center">
-        <div className="relative flex w-full items-center justify-between gap-6">
+        <div className="relative flex w-full items-center justify-between">
           <div className="flex flex-1 lg:flex-none" />
 
           <Link

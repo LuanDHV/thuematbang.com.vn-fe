@@ -16,21 +16,21 @@ import {
 const categories = [
   {
     name: "Văn Phòng",
-    icon: <BriefcaseBusiness size={44} strokeWidth={1.2} />,
+    icon: <BriefcaseBusiness size={40} strokeWidth={1.2} />,
   },
-  { name: "Mặt Bằng", icon: <Store size={44} strokeWidth={1.2} /> },
+  { name: "Mặt Bằng", icon: <Store size={40} strokeWidth={1.2} /> },
   {
     name: "Kho xưởng, khu công nghiệp",
-    icon: <Factory size={44} strokeWidth={1.2} />,
+    icon: <Factory size={40} strokeWidth={1.2} />,
   },
-  { name: "Căn hộ, chung cư", icon: <Building2 size={44} strokeWidth={1.2} /> },
+  { name: "Căn hộ, chung cư", icon: <Building2 size={40} strokeWidth={1.2} /> },
   {
     name: "Trung tâm thương mại",
-    icon: <ShoppingBag size={44} strokeWidth={1.2} />,
+    icon: <ShoppingBag size={40} strokeWidth={1.2} />,
   },
   {
     name: "Nhà trọ, phòng trọ",
-    icon: <BedDouble size={44} strokeWidth={1.2} />,
+    icon: <BedDouble size={40} strokeWidth={1.2} />,
   },
 ];
 
@@ -40,10 +40,10 @@ function CategoryCard({ category }: { category: (typeof categories)[number] }) {
       href="/du-an"
       className="group hover:border-primary/50 hover:shadow-primary/10 border-hairline bg-surface hover:bg-surface flex min-h-52 flex-col items-center justify-center rounded-xl border p-4 shadow-(--shadow-card) transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-float)"
     >
-      <div className="text-primary mb-6 transition-all duration-300 group-hover:scale-110">
+      <div className="text-primary mb-4 transition-all duration-300 group-hover:scale-110">
         {category.icon}
       </div>
-      <h3 className="group-hover:text-primary text-body text-center text-base font-bold tracking-tight transition-colors duration-300 lg:text-lg">
+      <h3 className="group-hover:text-primary text-body text-center text-base font-bold tracking-tight uppercase transition-colors duration-300">
         {category.name}
       </h3>
       <div className="bg-primary mt-4 h-1 w-0 transition-all duration-300 group-hover:w-12" />
@@ -57,9 +57,9 @@ export default function ProjectSection() {
       <div className="layout-container w-full">
         <div className="mb-8">
           <Title
-            eyebrow="Danh mục"
-            title="Danh mục bất động sản"
-            description="Khám phá các nhóm bất động sản theo nhu cầu sử dụng, từ văn phòng, mặt bằng bán lẻ đến kho xưởng, khu công nghiệp và nhà ở."
+            eyebrow="Khám phá"
+            title="Phân loại theo nhu cầu thị trường"
+            description="Danh mục đa dạng, dễ dàng lọc và tìm kiếm theo nhu cầu thuê và cho thuê, giúp bạn nhanh chóng tìm được mặt bằng phù hợp."
           />
         </div>
 
