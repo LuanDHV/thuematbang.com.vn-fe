@@ -55,14 +55,16 @@ export function ProjectCard({ project }: { project: Project }) {
     [project.ward?.name, project.province?.name],
     "Đang cập nhật vị trí",
   );
-  const contentPreview = project.content?.replace(/<[^>]+>/g, "").trim() || "";
+  // const contentPreview = project.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
     <Link
       href={`/du-an/${project.slug}`}
       className="surface-editorial interactive-lift group block overflow-hidden rounded-[1.75rem]"
     >
-      <article className={`surface-editorial ${CARD_HOVER_CLASSES} rounded-[1.75rem]`}>
+      <article
+        className={`surface-editorial ${CARD_HOVER_CLASSES} rounded-[1.75rem]`}
+      >
         <div className="bg-surface-alt relative h-56 overflow-hidden">
           <CloudinaryImage
             src={thumbnailImageUrl}
@@ -73,22 +75,19 @@ export function ProjectCard({ project }: { project: Project }) {
             cldQuality="auto:best"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-[var(--editorial-scrim)]" />
-
-          <div className="absolute right-3 bottom-3 left-3 z-20">
-            <h3 className="mt-2 line-clamp-2 text-xl leading-snug font-semibold text-white md:text-2xl">
-              {project.name}
-            </h3>
-          </div>
         </div>
 
-        <div className="flex h-full flex-1 flex-col p-5">
+        <div className="flex h-full flex-1 flex-col p-4">
+          <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+            {project.name}
+          </h3>
+
           {project.category?.name ? (
             <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-[0.8rem] font-semibold tracking-[0.18em] uppercase">
               {project.category.name}
             </span>
           ) : null}
-          <p className="group-hover:text-primary text-heading text-xl font-semibold tracking-[-0.02em] transition-colors duration-200">
+          <p className="group-hover:text-primary text-heading text-lg font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-xl">
             {formatNegotiablePrice(project.price, project.isNegotiable, {
               fallback: "Liên hệ",
               amount: project.priceAmount,
@@ -99,27 +98,29 @@ export function ProjectCard({ project }: { project: Project }) {
           <div className="text-secondary my-2 grid grid-cols-1 gap-y-1.5">
             <p className="flex items-start gap-1.5">
               <MapPin size={14} className="text-primary mt-0.5 shrink-0" />
-              <span className="line-clamp-1 text-sm">{location}</span>
+              <span className="text-secondary line-clamp-1 text-sm">
+                {location}
+              </span>
             </p>
             <p className="flex items-start gap-1.5">
               <Building2 size={14} className="text-primary mt-0.5 shrink-0" />
-              <span className="line-clamp-1 text-sm">
+              <span className="text-secondary line-clamp-1 text-sm">
                 {project.developer || "Đang cập nhật chủ đầu tư"}
               </span>
             </p>
             <p className="flex items-start gap-1.5">
               <Maximize size={14} className="text-primary mt-0.5 shrink-0" />
-              <span className="line-clamp-1 text-sm">
+              <span className="text-secondary line-clamp-1 text-sm">
                 {formatAreaValue(project.area, "Đang cập nhật diện tích")}
               </span>
             </p>
           </div>
 
-          {contentPreview ? (
-            <p className="text-secondary mb-2 line-clamp-2 text-xs leading-relaxed">
+          {/* {contentPreview ? (
+            <p className="text-secondary mb-2 line-clamp-2 text-sm leading-relaxed">
               {contentPreview}
             </p>
-          ) : null}
+          ) : null} */}
 
           <CardFooter
             createdAt={project.createdAt}

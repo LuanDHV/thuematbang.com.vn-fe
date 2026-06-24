@@ -46,7 +46,7 @@ export default function NewsCard({
           ) : null}
 
           {/* Title */}
-          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-base">
+          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
             {news.title}
           </h3>
 

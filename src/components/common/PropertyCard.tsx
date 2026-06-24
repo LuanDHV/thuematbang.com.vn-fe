@@ -115,31 +115,6 @@ function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
   );
 }
 
-function OverlayTitle({
-  property,
-  tone,
-}: {
-  property: Property;
-  tone: CardTone;
-}) {
-  const titleClass =
-    tone === "PREMIUM"
-      ? "text-xl md:text-2xl"
-      : tone === "STANDARD"
-        ? "text-lg md:text-xl"
-        : "text-base md:text-lg";
-
-  return (
-    <div className="absolute right-3 bottom-3 left-3 z-20">
-      <h3
-        className={`line-clamp-2 leading-snug font-semibold text-white ${titleClass}`}
-      >
-        {property.title}
-      </h3>
-    </div>
-  );
-}
-
 function CardHoverBar() {
   return (
     <div className="from-primary to-primary/70 h-0.5 w-0 bg-linear-to-r transition-[width] duration-300 group-hover:w-full" />
@@ -171,8 +146,6 @@ function FeaturedCard({
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-(--editorial-scrim)" />
-        <OverlayTitle property={property} tone={tone} />
       </div>
 
       <CardBody
@@ -180,6 +153,7 @@ function FeaturedCard({
         density="rich"
         tone={tone}
         showPreview={false}
+        showRooms={false}
       />
       <CardHoverBar />
     </article>
@@ -309,13 +283,16 @@ function PremiumCard({
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-(--editorial-scrim)" />
         <TierBadge tone="PREMIUM" />
         <ImageCountBadge count={realImageCount} tone="PREMIUM" />
-        <OverlayTitle property={property} tone="PREMIUM" />
       </div>
 
-      <CardBody property={property} density="rich" tone="PREMIUM" showPreview />
+      <CardBody
+        property={property}
+        density="rich"
+        tone="PREMIUM"
+        showPreview={false}
+      />
       <CardHoverBar />
     </article>
   );
@@ -390,17 +367,16 @@ function StandardCard({
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-(--editorial-scrim)" />
         <TierBadge tone="STANDARD" />
         <ImageCountBadge count={realImageCount} tone="STANDARD" />
-        <OverlayTitle property={property} tone="STANDARD" />
       </div>
 
       <CardBody
         property={property}
         density="rich"
         tone="STANDARD"
-        showPreview
+        showPreview={false}
+        showRooms
       />
       <CardHoverBar />
     </article>
@@ -431,9 +407,7 @@ function FreeCard({
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-(--editorial-scrim)" />
         <TierBadge tone="FREE" />
-        <OverlayTitle property={property} tone="FREE" />
       </div>
 
       <CardBody
@@ -441,6 +415,7 @@ function FreeCard({
         density="compact"
         tone="FREE"
         showPreview={false}
+        showRooms
       />
       <CardHoverBar />
     </article>
@@ -452,11 +427,13 @@ function CardBody({
   density,
   tone,
   showPreview,
+  showRooms = true,
 }: {
   property: Property;
   density: CardDensity;
   tone: CardTone;
   showPreview: boolean;
+  showRooms?: boolean;
 }) {
   const location = formatLocationParts(
     [property.ward?.name, property.province?.name],
@@ -464,16 +441,20 @@ function CardBody({
   );
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
   const isCompact = density === "compact";
-  const bedroomsText = property.bedrooms
-    ? `${property.bedrooms} phòng ngủ`
-    : isCompact
-      ? null
-      : "Đang cập nhật phòng ngủ";
-  const bathroomsText = property.bathrooms
-    ? `${property.bathrooms} phòng tắm`
-    : isCompact
-      ? null
-      : "Đang cập nhật phòng tắm";
+  const bedroomsText = showRooms
+    ? property.bedrooms
+      ? `${property.bedrooms} phòng ngủ`
+      : isCompact
+        ? null
+        : "Đang cập nhật phòng ngủ"
+    : null;
+  const bathroomsText = showRooms
+    ? property.bathrooms
+      ? `${property.bathrooms} phòng tắm`
+      : isCompact
+        ? null
+        : "Đang cập nhật phòng tắm"
+    : null;
 
   const metaItems = [
     { icon: MapPin, text: location },
@@ -487,10 +468,10 @@ function CardBody({
 
   const categoryBadgeSizeClass =
     tone === "PREMIUM"
-      ? "text-base"
+      ? "text-sm"
       : tone === "STANDARD"
-        ? "text-sm"
-        : "text-xs";
+        ? "text-xs"
+        : "text-[11px]";
 
   const priceClass =
     tone === "PREMIUM"
@@ -506,7 +487,12 @@ function CardBody({
         ? "text-sm"
         : "text-xs";
 
-  const previewTextClass = tone === "PREMIUM" ? "text-sm" : "text-xs";
+  const previewTextClass =
+    tone === "PREMIUM"
+      ? "text-sm"
+      : tone === "STANDARD"
+        ? "text-sm"
+        : "text-sm";
   const metaGridClass =
     tone === "PREMIUM" || tone === "STANDARD"
       ? "grid-cols-1"
@@ -515,7 +501,7 @@ function CardBody({
         : "grid-cols-2";
 
   return (
-    <div className="flex h-full flex-1 flex-col p-5">
+    <div className="flex h-full flex-1 flex-col p-4">
       {property.category?.name && (
         <span
           className={`text-primary mb-2 inline-flex w-fit items-center self-start font-semibold tracking-[0.16em] uppercase ${categoryBadgeSizeClass}`}
@@ -523,6 +509,10 @@ function CardBody({
           {property.category.name}
         </span>
       )}
+      <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+        {property.title}
+      </h3>
+
       <p
         className={`group-hover:text-primary text-heading transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
       >
