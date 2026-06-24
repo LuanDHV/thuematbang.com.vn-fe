@@ -21,10 +21,10 @@ export default function PropertyDetailSidebar({
   relatedCategoryProvinceLinks,
 }: PropertyDetailSidebarProps) {
   return (
-    <aside className="flex w-full flex-col gap-6">
+    <aside className="flex h-full w-full flex-col gap-6">
       <div
         id="detail-contact-card"
-        className="surface-utility w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-22"
+        className="surface-utility relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-22"
       >
         <PosterContactCard
           fullName={contactName}

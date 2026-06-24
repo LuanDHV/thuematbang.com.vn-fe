@@ -17,10 +17,10 @@ export default function RentRequestDetailSidebar({
   latestWantedProperties,
 }: RentRequestDetailSidebarProps) {
   return (
-    <aside className="flex w-full flex-col gap-6">
+    <aside className="flex h-full w-full flex-col gap-6">
       <div
         id="detail-contact-card"
-        className="surface-card w-full self-start p-5 scroll-mt-24 lg:sticky lg:top-18"
+        className="surface-card relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-18"
       >
         <PosterContactCard
           fullName={contactName}
