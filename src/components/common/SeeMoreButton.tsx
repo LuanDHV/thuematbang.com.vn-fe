@@ -21,7 +21,7 @@ export default function SeeMoreButton({
 
   if (onClick) {
     return (
-      <div className="mt-12 text-center">
+      <div className="mt-8 text-center">
         <Button
           type="button"
           size="lg"
@@ -38,9 +38,13 @@ export default function SeeMoreButton({
   const resolvedHref = href!;
 
   return (
-    <div className="mt-12 text-center">
+    <div className="mt-8 text-center">
       <Button asChild size="lg" className={CTA_CLASS_NAME}>
-        <Link href={resolvedHref.startsWith("/") ? resolvedHref : `/${resolvedHref}`}>
+        <Link
+          href={
+            resolvedHref.startsWith("/") ? resolvedHref : `/${resolvedHref}`
+          }
+        >
           Xem thêm
         </Link>
       </Button>

@@ -67,9 +67,7 @@ export default async function RentRequestExpressSection() {
           }}
         </SafeFetch>
 
-        <div className="mt-8">
-          <SeeMoreButton href="/can-thue" />
-        </div>
+        <SeeMoreButton href="/can-thue" />
       </div>
     </section>
   );

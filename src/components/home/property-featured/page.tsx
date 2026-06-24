@@ -68,9 +68,7 @@ export default async function PropertyFeaturedSection() {
           }}
         </SafeFetch>
 
-        <div className="mt-8">
-          <SeeMoreButton href="/cho-thue" />
-        </div>
+        <SeeMoreButton href="/cho-thue" />
       </div>
     </section>
   );
