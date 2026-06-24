@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import FeaturedSection from "@/components/home/featured/page";
 import HeroSection from "@/components/home/hero/page";
 import IntroduceSection from "@/components/home/introduce/page";
 import NewsSection from "@/components/home/news/page";
+import PropertyFeaturedSection from "@/components/home/property-featured/page";
 import ProjectSection from "@/components/home/project/page";
+import RentRequestExpressSection from "@/components/home/rent-request-express/page";
 import { createPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
 import { connection } from "next/server";
@@ -21,7 +22,8 @@ export default async function HomePage() {
     <>
       <HeroSection />
       <IntroduceSection />
-      <FeaturedSection />
+      <PropertyFeaturedSection />
+      <RentRequestExpressSection />
       <ProjectSection />
       <NewsSection />
     </>
