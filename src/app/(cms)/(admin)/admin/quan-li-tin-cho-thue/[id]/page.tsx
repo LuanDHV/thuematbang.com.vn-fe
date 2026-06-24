@@ -84,7 +84,6 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
           isBoosted: property.isBoosted,
           boostCount: property.boostCount,
           status: property.status,
-          isFeatured: property.isFeatured,
           userId: property.userId ?? undefined,
         }}
       />

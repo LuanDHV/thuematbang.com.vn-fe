@@ -149,6 +149,7 @@ export const PURCHASE_TYPE_OPTIONS: EnumOption<PurchaseType>[] =
     const labels: Record<PurchaseType, string> = {
       PROPERTY_POST_PACKAGE: "Gói đăng tin",
       PROPERTY_BOOST: "Gói đẩy tin",
+      RENT_REQUEST_EXPRESS: "Tin hỏa tốc",
     };
 
     return { value, label: labels[value] };

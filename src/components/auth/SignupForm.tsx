@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { HttpError } from "@/lib/http";
 import { useRegisterMutation } from "@/hooks/use-auth";
 import { registerSchema, type RegisterFormValues } from "@/schemas/auth.schema";
 
@@ -47,6 +48,31 @@ export function SignupForm({
     router.push("/");
     router.refresh();
   });
+
+  function getRegisterErrorMessage() {
+    const error = registerMutation.error;
+    if (!error) {
+      return null;
+    }
+
+    const message =
+      error instanceof HttpError ? error.message : error.message ?? "";
+
+    const normalizedMessage = message.trim().toLowerCase();
+    if (normalizedMessage.includes("phone already exists")) {
+      return "Số điện thoại đã được sử dụng.";
+    }
+
+    if (normalizedMessage.includes("email already exists")) {
+      return "Email đã được sử dụng.";
+    }
+
+    if (normalizedMessage.includes("email and phone already exist")) {
+      return "Email và số điện thoại đã được sử dụng.";
+    }
+
+    return "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.";
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -189,7 +215,7 @@ export function SignupForm({
 
               {registerMutation.error ? (
                 <p className="text-danger text-center text-sm">
-                  Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.
+                  {getRegisterErrorMessage()}
                 </p>
               ) : null}
 

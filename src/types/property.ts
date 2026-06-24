@@ -31,6 +31,9 @@ export interface Property {
   publishSource: PublishSource;
   isBoosted: boolean;
   boostCount: number;
+  lastBoostedAt?: Date | string | null;
+  listingExpiresAt?: Date | string | null;
+  boostExpiresAt?: Date | string | null;
   provinceId: number;
   wardId: number | null;
   addressDetail?: string | null;
@@ -41,7 +44,6 @@ export interface Property {
   content?: string | null;
   viewCount: number;
   status: PublishStatus;
-  isFeatured: boolean;
   createdAt: Date | string;
   updatedAt: Date | string;
   propertyPackageOrderId?: number | null;

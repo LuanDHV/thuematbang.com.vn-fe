@@ -20,7 +20,7 @@ export default async function PropertyFeaturedSection() {
 
         <SafeFetch
           fetcher={propertyService.getAll({
-            filters: { isFeatured: true },
+            filters: { priorityStatus: "PREMIUM" },
             limit: 8,
           })}
           debugLabel="Featured Properties Response"

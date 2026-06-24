@@ -30,11 +30,24 @@ export type PaymentStatus =
   | "FAILED"
   | "CANCELED";
 
-export type PurchaseType = "PROPERTY_POST_PACKAGE" | "PROPERTY_BOOST";
+export type PurchaseType =
+  | "PROPERTY_POST_PACKAGE"
+  | "PROPERTY_BOOST"
+  | "RENT_REQUEST_EXPRESS";
 
 export type OrderStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELED";
 
 export type PublishSource = "FREE_QUOTA" | "PAID_PACKAGE";
+
+export type ExpressDuration =
+  | "D1"
+  | "D3"
+  | "D5"
+  | "D7"
+  | "D14"
+  | "D30";
+
+export type PropertyListingDuration = "D30" | "D60" | "D90";
 
 export type PriceUnit =
   | "MILLION"

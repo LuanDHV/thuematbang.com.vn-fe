@@ -31,6 +31,7 @@ import {
   normalizeGalleryImages,
   normalizePropertyCreateDefaults,
 } from "@/lib/listing/listing-form";
+import { useAuthMe } from "@/hooks/use-auth";
 import type { Category } from "@/types/category";
 import type { ExistingGalleryImage } from "@/types/gallery";
 import type { Province } from "@/types/location";
@@ -94,7 +95,6 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   isBoosted: false,
   boostCount: 0,
   status: "PUBLISHED",
-  isFeatured: false,
   userId: undefined,
 };
 
@@ -102,6 +102,33 @@ function getVisibleModeFields(mode: PropertyCreateFormMode) {
   return {
     showAdminOnly: mode === "admin-edit-full",
   };
+}
+
+function resolvePropertyCreateErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  const normalizedMessage = message.toLowerCase();
+
+  if (normalizedMessage.includes("free property posting quota exceeded")) {
+    return "Bạn đã hết lượt đăng tin miễn phí. Vui lòng nâng cấp gói hoặc liên hệ quản trị viên.";
+  }
+
+  if (normalizedMessage.includes("free property posting quota not found")) {
+    return "Không tìm thấy thông tin lượt đăng tin miễn phí của tài khoản.";
+  }
+
+  if (normalizedMessage.includes("slug tin cho thuê đã tồn tại")) {
+    return "Slug tin cho thuê đã tồn tại.";
+  }
+
+  if (normalizedMessage.includes("invalid userid")) {
+    return "Tài khoản đăng tin không hợp lệ.";
+  }
+
+  if (normalizedMessage.includes("failed to create property")) {
+    return "Không thể lưu tin đăng. Vui lòng thử lại.";
+  }
+
+  return message || "Không thể lưu tin đăng. Vui lòng thử lại.";
 }
 
 export function PropertyCreateForm({
@@ -201,6 +228,7 @@ function PropertyCreateFormContent({
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
   const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
+  const { data: authUser } = useAuthMe();
 
   const form = useForm<PropertyCreateFormValues>({
     resolver: zodResolver(propertyCreateFormSchema) as never,
@@ -230,6 +258,29 @@ function PropertyCreateFormContent({
       });
     }
   }, [form, slugValue, titleValue]);
+
+  useEffect(() => {
+    if (mode !== "public-create" || !authUser) {
+      return;
+    }
+
+    const currentName = String(form.getValues("contactName") ?? "").trim();
+    const currentPhone = String(form.getValues("contactPhone") ?? "").trim();
+
+    if (!currentName && authUser.fullName) {
+      form.setValue("contactName", authUser.fullName, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+
+    if (!currentPhone && authUser.phone) {
+      form.setValue("contactPhone", authUser.phone, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [authUser, form, mode]);
 
   const categoryOptions = useMemo(
     () =>
@@ -286,7 +337,6 @@ function PropertyCreateFormContent({
       isBoosted: showAdminOnly ? Boolean(values.isBoosted) : undefined,
       boostCount: showAdminOnly ? values.boostCount : undefined,
       status: showAdminOnly ? values.status : undefined,
-      isFeatured: showAdminOnly ? Boolean(values.isFeatured) : undefined,
       longitude: showAdminOnly ? values.longitude : undefined,
       latitude: showAdminOnly ? values.latitude : undefined,
       userId: values.userId,
@@ -321,9 +371,7 @@ function PropertyCreateFormContent({
       setUploadedImages([]);
       setExistingGalleryImages(initialExistingGalleryImages);
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "Không thể lưu tin đăng.",
-      );
+      setSubmitError(resolvePropertyCreateErrorMessage(error));
     }
   };
 
@@ -518,7 +566,6 @@ function PropertyCreateFormContent({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <ListingCheckboxField name="isFeatured" label="Nổi bật" />
               <ListingCheckboxField name="isBoosted" label="Đã boost" />
             </div>
           </>

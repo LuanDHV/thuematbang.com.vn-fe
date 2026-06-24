@@ -3,8 +3,10 @@ import type {
   CategoryType,
   LeadStatus,
   OrderStatus,
+  ExpressDuration,
   PropertyDirection,
   PropertyPriority,
+  PropertyListingDuration,
   PublishSource,
   PublishStatus,
   PriceUnit,
@@ -77,7 +79,23 @@ export const AUTH_PROVIDER_VALUES = [
 export const PURCHASE_TYPE_VALUES = [
   "PROPERTY_POST_PACKAGE",
   "PROPERTY_BOOST",
+  "RENT_REQUEST_EXPRESS",
 ] as const satisfies readonly PurchaseType[];
+
+export const PROPERTY_LISTING_DURATION_VALUES = [
+  "D30",
+  "D60",
+  "D90",
+] as const satisfies readonly PropertyListingDuration[];
+
+export const EXPRESS_DURATION_VALUES = [
+  "D1",
+  "D3",
+  "D5",
+  "D7",
+  "D14",
+  "D30",
+] as const satisfies readonly ExpressDuration[];
 
 export const ORDER_STATUS_VALUES = [
   "PENDING",

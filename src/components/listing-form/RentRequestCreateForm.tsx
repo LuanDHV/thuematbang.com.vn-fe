@@ -19,6 +19,7 @@ import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { normalizeRentRequestFormDefaults } from "@/lib/listing/listing-form";
+import { useAuthMe } from "@/hooks/use-auth";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
 import type { RentRequest } from "@/types/rent-request";
@@ -88,6 +89,7 @@ export function RentRequestCreateForm({
   const [successOpen, setSuccessOpen] = useState(false);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
   const { toast } = useToast();
+  const { data: authUser } = useAuthMe();
 
   const resolvedDefaults = useMemo(
     () =>
@@ -126,6 +128,29 @@ export function RentRequestCreateForm({
       });
     }
   }, [form, slugValue, titleValue]);
+
+  useEffect(() => {
+    if (mode !== "public-create" || !authUser) {
+      return;
+    }
+
+    const currentName = String(form.getValues("contactName") ?? "").trim();
+    const currentPhone = String(form.getValues("contactPhone") ?? "").trim();
+
+    if (!currentName && authUser.fullName) {
+      form.setValue("contactName", authUser.fullName, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+
+    if (!currentPhone && authUser.phone) {
+      form.setValue("contactPhone", authUser.phone, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [authUser, form, mode]);
 
   const categoryOptions = useMemo(
     () =>

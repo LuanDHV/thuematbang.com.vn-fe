@@ -1,6 +1,7 @@
 ﻿import { z } from "zod";
 
 import {
+  EXPRESS_DURATION_VALUES,
   PROPERTY_DIRECTION_VALUES,
   PROPERTY_PRIORITY_VALUES,
   PRICE_UNIT_VALUES,
@@ -139,7 +140,6 @@ export const propertyCreateFormSchema = z.object({
   isBoosted: z.boolean().default(false).optional(),
   boostCount: optionalIntegerSchema,
   status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
-  isFeatured: z.boolean().default(false).optional(),
   userId: optionalIntegerSchema,
 }).superRefine((value, ctx) => {
   if (value.isNegotiable) {
@@ -241,6 +241,10 @@ export const rentRequestCreateFormSchema = z.object({
   userId: optionalIntegerSchema,
   status: z.enum(RENT_REQUEST_STATUS_VALUES).nullable().optional(),
   isMatched: z.boolean().default(false).optional(),
+  isExpress: z.boolean().default(false).optional(),
+  duration: z.enum(EXPRESS_DURATION_VALUES).nullable().optional(),
+  moveInDeadline: z.string().datetime().nullable().optional(),
+  expressExpiresAt: z.string().datetime().nullable().optional(),
 });
 
 export type PropertyCreateFormValues = z.infer<

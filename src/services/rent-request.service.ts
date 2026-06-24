@@ -1,7 +1,11 @@
 import "server-only";
 
 import { RentRequest } from "@/types/rent-request";
-import { PropertyDirection, PublishStatus } from "@/types/enums";
+import {
+  ExpressDuration,
+  PropertyDirection,
+  PublishStatus,
+} from "@/types/enums";
 import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
@@ -33,6 +37,10 @@ export type RentRequestListFilters = {
   desiredDirection?: PropertyDirection | null;
   status?: PublishStatus;
   isMatched?: boolean;
+  isExpress?: boolean;
+  duration?: ExpressDuration | null;
+  moveInDeadline?: string | null;
+  expressExpiresAt?: string | null;
   sortBy?: RentRequestSortBy;
   sortOrder?: "asc" | "desc";
 };
@@ -74,6 +82,10 @@ export type RentRequestUpsertPayload = {
   userId?: number;
   status?: PublishStatus | null;
   isMatched?: boolean;
+  isExpress?: boolean;
+  duration?: ExpressDuration | null;
+  moveInDeadline?: string | null;
+  expressExpiresAt?: string | null;
 };
 
 export const rentRequestService = {

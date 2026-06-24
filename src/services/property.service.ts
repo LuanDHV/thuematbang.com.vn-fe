@@ -20,8 +20,7 @@ export type PropertySortBy =
   | "price"
   | "area"
   | "viewCount"
-  | "priorityStatus"
-  | "isFeatured";
+  | "priorityStatus";
 
 export type PropertyListFilters = {
   categoryId?: number;
@@ -48,7 +47,6 @@ export type PropertyListFilters = {
   publishSource?: PublishSource;
   isBoosted?: boolean;
   status?: PublishStatus;
-  isFeatured?: boolean;
   sortBy?: PropertySortBy;
   sortOrder?: "asc" | "desc";
 };
@@ -96,7 +94,6 @@ export type PropertyUpsertPayload = {
   isBoosted?: boolean;
   boostCount?: number;
   status?: PublishStatus | null;
-  isFeatured?: boolean;
   userId?: number;
   images?: UploadedCloudinaryImage[];
 };

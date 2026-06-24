@@ -176,7 +176,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     );
 
     const featuredProperties = relatedProperties
-      .filter((item) => item.isFeatured)
+      .filter((item) => item.priorityStatus === "PREMIUM")
       .slice(0, 6);
 
     const viewedProperties = relatedProperties.slice(0, 3);
