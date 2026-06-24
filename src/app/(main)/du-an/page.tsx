@@ -4,7 +4,6 @@ import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
-import Title from "@/components/common/Title";
 import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import { buildProjectCategoryBreadcrumbs } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
@@ -45,15 +44,7 @@ export default async function DuAnPage() {
           }),
         ]}
       />
-      <section className="layout-container layout-section-sm pb-0">
-        <Title
-          eyebrow="Dự án"
-          title="Dự án bất động sản"
-          description="Cập nhật thông tin dự án bất động sản nổi bật và mới nhất."
-          align="left"
-          level={1}
-        />
-      </section>
+
       <SafeFetch
         fetcher={projectService.getAll({
           limit: 24,

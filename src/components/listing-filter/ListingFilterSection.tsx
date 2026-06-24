@@ -11,6 +11,7 @@ import {
 import type { BreadcrumbItem, FlatUrlContext } from "@/lib/listing/flat-url";
 import { PaginationMeta } from "@/types/api";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
+import Title from "../common/Title";
 
 type Props = {
   properties: Property[] | RentRequest[];
@@ -33,10 +34,14 @@ export default function ListingFilterSection({
   paginationMeta,
   paginationBasePath,
 }: Props) {
+  const resolvedTitle =
+    listingMode === "property"
+      ? "Bất động sản cho thuê"
+      : "Nhu cầu thuê bất động sản";
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
   return (
-    <div className="relative">
+    <section className="relative">
       <div className="layout-container sticky top-20 z-40">
         <ListingFilterToolbar
           basePath={basePath}
@@ -45,6 +50,9 @@ export default function ListingFilterSection({
           initialLocationContext={initialLocationContext}
         />
       </div>
+      <div className="layout-container layout-section-sm pb-0">
+        <Title title={resolvedTitle} level={1} />
+      </div>
       <ListingResultsClient
         properties={properties}
         listingMode={listingMode}
@@ -52,6 +60,6 @@ export default function ListingFilterSection({
         paginationMeta={resolvedPaginationMeta}
         paginationBasePath={paginationBasePath ?? basePath}
       />
-    </div>
+    </section>
   );
 }

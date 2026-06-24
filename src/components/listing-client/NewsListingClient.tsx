@@ -20,6 +20,7 @@ import { News } from "@/types/news";
 import { Category } from "@/types/category";
 import type { PaginationMeta } from "@/types/api";
 import { useMostViewedNews } from "@/hooks/use-news";
+import Title from "../common/Title";
 
 type NewsListingClientProps = {
   newsList: News[];
@@ -112,83 +113,94 @@ export default function NewsListingClient({
   );
 
   return (
-    <div className="layout-container pt-4 pb-0 md:pt-5 h-auto">
-      {breadcrumbItems?.length ? (
-        <DynamicBreadcrumb items={breadcrumbItems} />
-      ) : null}
+    <>
+      <section className="layout-container layout-section-sm pb-0">
+        <Title title="Tin tức bất động sản" level={1} />
 
-      <div className="mt-4">
-        <CategoryChips
-          activeValue={selectedCategorySlug}
-          onChange={handleSelectCategory}
-          items={categoryItems}
-        />
-      </div>
+        <div className="layout-container h-auto pt-4 pb-0 md:pt-5">
+          {breadcrumbItems?.length ? (
+            <DynamicBreadcrumb items={breadcrumbItems} />
+          ) : null}
 
-      <div className="mt-8 flex flex-col gap-6 lg:flex-row">
-        <div className="flex w-full flex-col lg:w-4/6">
-          <div className="surface-card space-y-5 p-5">
-            {featuredNews ? (
-              <FeaturedNewsCard
-                news={featuredNews}
-                className="aspect-16/10 lg:aspect-16/8"
+          <div className="mt-4">
+            <CategoryChips
+              activeValue={selectedCategorySlug}
+              onChange={handleSelectCategory}
+              items={categoryItems}
+            />
+          </div>
+
+          <div className="mt-8 flex flex-col gap-6 lg:flex-row">
+            <div className="flex w-full flex-col lg:w-4/6">
+              <div className="surface-card space-y-5 p-5">
+                {featuredNews ? (
+                  <FeaturedNewsCard
+                    news={featuredNews}
+                    className="aspect-16/10 lg:aspect-16/8"
+                  />
+                ) : null}
+
+                {remainingNews.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-5">
+                    {remainingNews.map((newsItem) => (
+                      <NewsCard key={newsItem.id} news={newsItem} />
+                    ))}
+                  </div>
+                ) : sourceNews.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <p className="text-secondary">Không có bài viết nào</p>
+                  </div>
+                ) : null}
+              </div>
+
+              <Pagination
+                page={currentPage}
+                totalPages={totalPages}
+                onChange={(nextPage) =>
+                  router.replace(
+                    buildPagedPath(
+                      getCategoryPath(selectedCategorySlug),
+                      nextPage,
+                    ),
+                    {
+                      scroll: false,
+                    },
+                  )
+                }
               />
-            ) : null}
+            </div>
 
-            {remainingNews.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5">
-                {remainingNews.map((newsItem) => (
-                  <NewsCard key={newsItem.id} news={newsItem} />
-                ))}
+            <aside className="w-full lg:w-2/6">
+              <div className="lg:sticky lg:top-24">
+                <section className="surface-card hidden rounded-2xl border p-5 lg:block">
+                  <h2 className="text-heading text-base font-medium">
+                    <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
+                    Bài viết được xem nhiều nhất
+                  </h2>
+
+                  {mostViewedNews.length > 0 ? (
+                    <div className="divide-hairline mt-3 grid divide-y">
+                      {mostViewedNews.map((newsItem) => (
+                        <Link
+                          key={newsItem.id}
+                          href={`/tin-tuc/${newsItem.slug}`}
+                          className="group text-body hover:text-primary py-2.5 text-sm font-medium transition-all duration-200"
+                        >
+                          <span className="line-clamp-2">{newsItem.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-secondary mt-3 text-sm">
+                      Không có bài viết
+                    </p>
+                  )}
+                </section>
               </div>
-            ) : sourceNews.length === 0 ? (
-              <div className="py-12 text-center">
-                <p className="text-secondary">Không có bài viết nào</p>
-              </div>
-            ) : null}
+            </aside>
           </div>
-
-          <Pagination
-            page={currentPage}
-            totalPages={totalPages}
-            onChange={(nextPage) =>
-              router.replace(
-                buildPagedPath(getCategoryPath(selectedCategorySlug), nextPage),
-                {
-                  scroll: false,
-                },
-              )
-            }
-          />
         </div>
-
-        <aside className="w-full lg:w-2/6">
-          <div className="lg:sticky lg:top-24">
-            <section className="surface-card hidden rounded-2xl border p-5 lg:block">
-              <h2 className="text-heading text-base font-medium">
-                <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
-                Bài viết được xem nhiều nhất
-              </h2>
-
-              {mostViewedNews.length > 0 ? (
-                <div className="mt-3 grid divide-y divide-hairline">
-                  {mostViewedNews.map((newsItem) => (
-                    <Link
-                      key={newsItem.id}
-                      href={`/tin-tuc/${newsItem.slug}`}
-                      className="group text-body hover:text-primary py-2.5 text-sm font-medium transition-all duration-200"
-                    >
-                      <span className="line-clamp-2">{newsItem.title}</span>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-3 text-sm text-secondary">Không có bài viết</p>
-              )}
-            </section>
-          </div>
-        </aside>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }

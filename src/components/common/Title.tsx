@@ -16,11 +16,13 @@ export default function Title({
   return (
     <div className="mx-auto max-w-5xl text-center">
       {eyebrow ? (
-        <p className="text-primary mb-2 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">
+        <p className="text-primary mb-2 text-sm font-semibold tracking-[0.22em] uppercase">
           {eyebrow}
         </p>
       ) : null}
-      <HeadingTag className={`text-heading text-3xl font-semibold tracking-[-0.04em] md:text-5xl ${description ? "mb-4" : ""}`}>
+      <HeadingTag
+        className={`text-heading text-3xl font-semibold tracking-[-0.04em] md:text-4xl ${description ? "mb-4" : ""}`}
+      >
         {title}
       </HeadingTag>
       {description ? (

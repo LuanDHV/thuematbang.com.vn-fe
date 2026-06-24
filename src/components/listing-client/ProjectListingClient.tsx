@@ -11,6 +11,7 @@ import { Pagination } from "@/components/common/Pagination";
 import { ProjectCard } from "@/components/common/ProjectCard";
 import { CategoryChips } from "@/components/common/CategoryChips";
 import type { PaginationMeta } from "@/types/api";
+import Title from "../common/Title";
 
 export default function ProjectListingClient({
   projects,
@@ -56,6 +57,9 @@ export default function ProjectListingClient({
 
   return (
     <section className="layout-container pt-4 pb-0 md:pt-5">
+      <div className="layout-container layout-section-sm pb-0">
+        <Title title="Dự án bất động sản" level={1} />
+      </div>
       {breadcrumbItems?.length ? (
         <DynamicBreadcrumb items={breadcrumbItems} />
       ) : null}
