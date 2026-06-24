@@ -20,16 +20,16 @@ const categories = [
   },
   { name: "Mặt Bằng", icon: <Store size={40} strokeWidth={1.2} /> },
   {
-    name: "Kho xưởng, khu công nghiệp",
+    name: "Kho Xưởng, Khu Công Nghiệp",
     icon: <Factory size={40} strokeWidth={1.2} />,
   },
-  { name: "Căn hộ, chung cư", icon: <Building2 size={40} strokeWidth={1.2} /> },
+  { name: "Căn Hộ, Chung Cư", icon: <Building2 size={40} strokeWidth={1.2} /> },
   {
-    name: "Trung tâm thương mại",
+    name: "Trung Tâm Thương Mại",
     icon: <ShoppingBag size={40} strokeWidth={1.2} />,
   },
   {
-    name: "Nhà trọ, phòng trọ",
+    name: "Nhà Trọ, Phòng Trọ",
     icon: <BedDouble size={40} strokeWidth={1.2} />,
   },
 ];
@@ -43,7 +43,7 @@ function CategoryCard({ category }: { category: (typeof categories)[number] }) {
       <div className="text-primary mb-4 transition-all duration-300 group-hover:scale-110">
         {category.icon}
       </div>
-      <h3 className="group-hover:text-primary text-body text-center text-base font-bold tracking-tight uppercase transition-colors duration-300">
+      <h3 className="group-hover:text-primary text-body text-center text-base font-bold tracking-tight transition-colors duration-300">
         {category.name}
       </h3>
       <div className="bg-primary mt-4 h-1 w-0 transition-all duration-300 group-hover:w-12" />

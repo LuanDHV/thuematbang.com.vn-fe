@@ -155,20 +155,21 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
           <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.42)] md:text-4xl lg:text-5xl">
-            Sàn Thương Mại Bất Động Sản
-            <br />
-            Kết Nối Nhu Cầu Thuê - Cho Thuê Toàn Quốc
+            Sàn Thương Mại Bất Động Sản Kết Nối Nhu Cầu Thuê - Cho Thuê Toàn
+            Quốc
           </h1>
 
-          <div className="mt-8 flex w-full flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row">
+          <div className="mt-8 grid w-full max-w-4xl grid-cols-1 gap-3 md:grid-cols-2 xl:mt-10 xl:gap-4">
             <Button
               asChild
               size="lg"
-              className="h-14 w-full max-w-72 rounded-xl px-8 text-base font-bold shadow-[0_0_0_4px_rgba(251,170,25,0.18),0_18px_46px_rgba(251,170,25,0.28)] sm:w-auto sm:min-w-64"
-            >
+              className="group bg-primary h-auto min-h-16 w-full justify-center gap-2 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-[0_0_0_4px_rgba(251,170,25,0.18),0_18px_46px_rgba(251,170,25,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:shadow-[0_0_0_6px_rgba(251,170,25,0.18),0_24px_60px_rgba(251,170,25,0.34)] sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+              >
               <Link href="/dang-tin/cho-thue">
-                <CirclePlus className="size-5" />
-                Đăng tin cho thuê
+                <CirclePlus className="size-4 shrink-0 transition-transform duration-300 group-hover:scale-110 lg:size-5" />
+                <span className="flex flex-col items-start gap-1">
+                  <span>Đăng tin cho thuê</span>
+                </span>
               </Link>
             </Button>
 
@@ -176,24 +177,26 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               asChild
               variant="outline"
               size="lg"
-              className="h-14 w-full max-w-72 rounded-xl px-8 text-base font-bold shadow-[0_18px_46px_rgba(0,0,0,0.18)] sm:w-auto sm:min-w-64"
+              className="h-auto min-h-16 w-full justify-center gap-2 rounded-2xl border border-white/20 bg-white px-4 py-3 text-left text-sm font-bold text-black shadow-[0_18px_46px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
             >
               <Link href="/dang-tin/can-thue">
-                <CirclePlus className="size-5" />
-                Đăng nhu cầu cần thuê
+                <CirclePlus className="size-4 shrink-0 lg:size-5" />
+                <span className="flex flex-col items-start gap-1">
+                  <span>Đăng nhu cầu cần thuê</span>
+                </span>
               </Link>
             </Button>
           </div>
 
-          <div className="mt-5 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-4 grid w-full max-w-4xl grid-cols-1 gap-2 sm:grid-cols-2 lg:mt-5 lg:gap-3">
             <Button
               asChild
               variant="ghost"
               size="lg"
-              className="border-surface/20 bg-surface/10 hover:bg-surface/15 h-12 w-full max-w-72 rounded-full border px-6 text-sm font-semibold text-white backdrop-blur-sm hover:text-white sm:w-auto sm:min-w-60"
+              className="group border-surface/20 bg-surface/10 hover:bg-surface/18 h-12 w-full rounded-full border px-4 text-xs font-semibold text-white shadow-[0_8px_30px_rgba(0,0,0,0.16)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:text-white lg:h-14 lg:px-6 lg:text-sm"
             >
               <Link href="/cho-thue">
-                <Search className="size-4" />
+                <Search className="size-3.5 shrink-0 transition-transform duration-300 group-hover:scale-110 lg:size-4" />
                 Xem mặt bằng cho thuê
               </Link>
             </Button>
@@ -202,10 +205,10 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               asChild
               variant="ghost"
               size="lg"
-              className="border-surface/20 bg-surface/10 hover:bg-surface/15 h-12 w-full max-w-72 rounded-full border px-6 text-sm font-semibold text-white backdrop-blur-sm hover:text-white sm:w-auto sm:min-w-60"
+              className="group border-surface/20 bg-surface/10 hover:bg-surface/18 h-12 w-full rounded-full border px-4 text-xs font-semibold text-white shadow-[0_8px_30px_rgba(0,0,0,0.16)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:text-white lg:h-14 lg:px-6 lg:text-sm"
             >
               <Link href="/can-thue">
-                <UsersRound className="size-4" />
+                <UsersRound className="size-3.5 shrink-0 transition-transform duration-300 group-hover:scale-110 lg:size-4" />
                 Xem nhu cầu cần thuê
               </Link>
             </Button>

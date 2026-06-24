@@ -14,6 +14,7 @@ import {
   breadcrumbItemsFromAppBreadcrumb,
   buildBreadcrumbListSchema,
 } from "@/lib/seo";
+import { cn } from "@/lib/utils";
 
 type Props = {
   items: Item[];
@@ -29,15 +30,15 @@ export default function DynamicBreadcrumb({
   if (!items.length) return null;
 
   return (
-    <div className="mb-4">
+    <>
       <JsonLd
         data={buildBreadcrumbListSchema(
           breadcrumbItemsFromAppBreadcrumb(items),
           canonicalUrl,
         )}
       />
-      <Breadcrumb className={className}>
-        <BreadcrumbList>
+      <Breadcrumb className={cn("inline-flex w-full items-center", className)}>
+        <BreadcrumbList className="text-body text-sm">
           {items.map((item, index) => {
             const isLast = index === items.length - 1;
 
@@ -45,11 +46,13 @@ export default function DynamicBreadcrumb({
               <React.Fragment key={`${item.label}-${index}`}>
                 <BreadcrumbItem>
                   {isLast || !item.href ? (
-                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    <BreadcrumbPage className="text-heading font-medium">
+                      {item.label}
+                    </BreadcrumbPage>
                   ) : (
                     <BreadcrumbLink
                       asChild
-                      className="text-primary hover:text-primary/80 font-semibold"
+                      className="text-primary hover:text-primary/80 font-medium transition-colors"
                     >
                       <Link href={item.href}>{item.label}</Link>
                     </BreadcrumbLink>
@@ -61,6 +64,6 @@ export default function DynamicBreadcrumb({
           })}
         </BreadcrumbList>
       </Breadcrumb>
-    </div>
+    </>
   );
 }

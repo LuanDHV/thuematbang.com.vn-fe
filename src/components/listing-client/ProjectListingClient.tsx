@@ -57,42 +57,41 @@ export default function ProjectListingClient({
 
   return (
     <section className="layout-container layout-section-sm pb-0">
-      <Title title="Dự án bất động sản" level={1} />
+      <div className="flex flex-col gap-4">
+        <Title title="Dự án bất động sản" level={1} />
 
-      {breadcrumbItems?.length ? (
-        <DynamicBreadcrumb items={breadcrumbItems} />
-      ) : null}
+        {breadcrumbItems?.length ? (
+          <DynamicBreadcrumb items={breadcrumbItems} />
+        ) : null}
 
-      <div className="mt-4">
         <CategoryChips
           activeValue={selectedCategorySlug}
           onChange={handleSelectCategory}
           items={categoryItems}
         />
-      </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
-
-      <div className="mt-8">
-        <Pagination
-          page={currentPage}
-          totalPages={totalPages}
-          onChange={(nextPage) =>
-            router.replace(
-              buildPagedPath(
-                targetPathFromCategory(selectedCategorySlug),
-                nextPage,
-              ),
-              {
-                scroll: false,
-              },
-            )
-          }
-        />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+        <>
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={(nextPage) =>
+              router.replace(
+                buildPagedPath(
+                  targetPathFromCategory(selectedCategorySlug),
+                  nextPage,
+                ),
+                {
+                  scroll: false,
+                },
+              )
+            }
+          />
+        </>
       </div>
     </section>
   );

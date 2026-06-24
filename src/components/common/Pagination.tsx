@@ -35,7 +35,7 @@ function PaginationControls({
         className={cn(
           "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
           "text-secondary border-hairline bg-surface shadow-(--shadow-card)",
-          "hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
+          "hover:border-primary/20 hover:text-primary",
           "disabled:hover:text-secondary disabled:hover:border-hairline disabled:hover:bg-surface disabled:cursor-not-allowed disabled:opacity-40",
         )}
       >
@@ -64,7 +64,7 @@ function PaginationControls({
               "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
               active
                 ? "border-primary bg-primary text-white shadow-(--shadow-card)"
-                : "text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary border-hairline bg-surface shadow-(--shadow-card)",
+                : "text-secondary hover:border-primary/20 hover:text-primary border-hairline bg-surface shadow-(--shadow-card)",
             )}
           >
             {p}
@@ -79,7 +79,7 @@ function PaginationControls({
         className={cn(
           "flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all",
           "text-secondary border-hairline bg-surface shadow-(--shadow-card)",
-          "hover:border-primary/20 hover:bg-primary/5 hover:text-primary",
+          "hover:border-primary/20 hover:text-primary",
           "disabled:hover:text-secondary disabled:hover:border-hairline disabled:hover:bg-surface disabled:cursor-not-allowed disabled:opacity-40",
         )}
       >

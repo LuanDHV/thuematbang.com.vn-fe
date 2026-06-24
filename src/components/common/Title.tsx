@@ -21,12 +21,12 @@ export default function Title({
         </p>
       ) : null}
       <HeadingTag
-        className={`text-heading text-2xl font-bold tracking-[-0.04em] uppercase md:text-3xl ${description ? "mb-4" : ""}`}
+        className={`text-heading text-2xl font-bold tracking-[-0.04em] uppercase lg:text-3xl ${description ? "mb-4" : ""}`}
       >
         {title}
       </HeadingTag>
       {description ? (
-        <p className="text-secondary mx-auto max-w-2xl text-[0.97rem] leading-8 md:text-[1.05rem]">
+        <p className="text-secondary mx-auto max-w-3xl text-sm leading-6 lg:text-base">
           {description}
         </p>
       ) : null}

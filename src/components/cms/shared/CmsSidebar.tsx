@@ -159,7 +159,10 @@ export default function CmsSidebar({
   return (
     <TooltipProvider delayDuration={120}>
       <aside
-        className={cn("bg-surface flex h-full flex-col overflow-hidden", className)}
+        className={cn(
+          "bg-surface flex h-full flex-col overflow-hidden",
+          className,
+        )}
       >
         <div className="border-hairline hidden border-b p-3 lg:block">
           <div
@@ -316,7 +319,7 @@ export default function CmsSidebar({
                     "lg:items-center lg:justify-start lg:gap-3 lg:px-3",
                   isActive
                     ? "border-primary/14 bg-primary/6 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
-                    : "border-transparent hover:bg-subtle/70",
+                    : "hover:bg-subtle/70 border-transparent",
                 )}
               >
                 <Icon

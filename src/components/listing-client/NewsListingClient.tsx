@@ -115,22 +115,20 @@ export default function NewsListingClient({
   return (
     <>
       <section className="layout-container layout-section-sm pb-0">
-        <Title title="Tin tức bất động sản" level={1} />
+        <div className="flex flex-col gap-4">
+          <Title title="Tin tức bất động sản" level={1} />
 
-        <div className="layout-container h-auto pt-4 pb-0 md:pt-5">
           {breadcrumbItems?.length ? (
             <DynamicBreadcrumb items={breadcrumbItems} />
           ) : null}
 
-          <div className="mt-4">
-            <CategoryChips
-              activeValue={selectedCategorySlug}
-              onChange={handleSelectCategory}
-              items={categoryItems}
-            />
-          </div>
+          <CategoryChips
+            activeValue={selectedCategorySlug}
+            onChange={handleSelectCategory}
+            items={categoryItems}
+          />
 
-          <div className="mt-8 flex flex-col gap-6 lg:flex-row">
+          <div className="flex flex-col gap-6 lg:flex-row">
             <div className="flex w-full flex-col lg:w-4/6">
               <div className="surface-card space-y-5 p-5">
                 {featuredNews ? (
@@ -153,21 +151,23 @@ export default function NewsListingClient({
                 ) : null}
               </div>
 
-              <Pagination
-                page={currentPage}
-                totalPages={totalPages}
-                onChange={(nextPage) =>
-                  router.replace(
-                    buildPagedPath(
-                      getCategoryPath(selectedCategorySlug),
-                      nextPage,
-                    ),
-                    {
-                      scroll: false,
-                    },
-                  )
-                }
-              />
+              <>
+                <Pagination
+                  page={currentPage}
+                  totalPages={totalPages}
+                  onChange={(nextPage) =>
+                    router.replace(
+                      buildPagedPath(
+                        getCategoryPath(selectedCategorySlug),
+                        nextPage,
+                      ),
+                      {
+                        scroll: false,
+                      },
+                    )
+                  }
+                />
+              </>
             </div>
 
             <aside className="w-full lg:w-2/6">

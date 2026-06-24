@@ -35,9 +35,9 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
   return (
     <Link
       href="/gioi-thieu"
-      className="group hover:shadow-primary/20 border-hairline bg-surface relative flex min-h-64 flex-col items-center rounded-xl border p-5 text-center shadow-(--shadow-card) transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-(--shadow-float)"
+      className="group border-hairline bg-surface relative flex min-h-56 flex-col items-center rounded-xl border p-5 text-center shadow-(--shadow-card) transition-all duration-300 ease-in-out hover:-translate-y-1 hover:border-primary/20 hover:shadow-(--shadow-float)"
     >
-      <div className="bg-primary/5 group-hover:bg-primary/10 mb-4 rounded-full p-4 transition-colors duration-300">
+      <div className="bg-primary/5 group-hover:border-primary/10 mb-4 rounded-full border border-transparent p-4 transition-colors duration-300">
         {feature.icon}
       </div>
       <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
@@ -72,7 +72,7 @@ export default function IntroduceSection() {
           ))}
         </HomeCarousel>
 
-        <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 hidden grid-cols-1 gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
           {features.map((feature, index) => (
             <FeatureCard key={index} feature={feature} />
           ))}

@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { LogOut, Menu, Settings, User } from "lucide-react";
+import { ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
@@ -27,8 +27,9 @@ export default function Header() {
   const { data: authUser } = useAuthMe();
   const logoutMutation = useLogoutMutation();
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
-  const displayName = authUser?.fullName || authUser?.email || "Tài khoản";
+  const displayName = authUser?.fullName || authUser?.email || "Người dùng";
   const avatarUrl = authUser?.avatarUrl?.trim() || "";
+  const userRole = authUser?.role || "Người dùng";
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const setMobileMenuOpen = useUIStore((state) => state.setMobileMenuOpen);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
@@ -72,7 +73,7 @@ export default function Header() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="text-heading hover:text-primary after:bg-primary/80 relative rounded-full px-3.5 py-2 text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors after:absolute after:right-3.5 after:bottom-1.5 after:left-3.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
+                className="text-heading hover:text-primary after:bg-primary/80 relative rounded-full px-3.5 py-2 text-sm font-semibold tracking-[0.08em] uppercase transition-colors after:absolute after:right-3.5 after:bottom-1.5 after:left-3.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
               >
                 {item.name}
               </Link>
@@ -85,27 +86,36 @@ export default function Header() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="hidden size-10 rounded-full border border-transparent p-0 lg:inline-flex"
+                    className="hidden h-11 items-center gap-3 rounded-full px-2.5 py-2 lg:inline-flex"
                     aria-label="Tài khoản người dùng"
                   >
-                    {avatarUrl ? (
-                      <CloudinaryImage
-                        src={avatarUrl}
-                        alt={displayName}
-                        width={36}
-                        height={36}
-                        cldQuality="auto:best"
-                        className="ring-hairline size-9 rounded-full object-cover ring-1"
-                      />
-                    ) : (
-                      <span className="text-secondary bg-surface flex size-9 items-center justify-center rounded-full shadow-(--shadow-panel)">
-                        <User className="size-5" />
+                    <span className="bg-surface ring-hairline flex size-9 items-center justify-center overflow-hidden rounded-full ring-1">
+                      {avatarUrl ? (
+                        <CloudinaryImage
+                          src={avatarUrl}
+                          alt={displayName}
+                          width={32}
+                          height={32}
+                          cldQuality="auto:best"
+                          className="size-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <User className="text-primary size-4" />
+                      )}
+                    </span>
+                    <span className="flex min-w-0 flex-col items-start leading-tight">
+                      <span className="text-heading max-w-42 truncate text-sm font-medium">
+                        {displayName}
                       </span>
-                    )}
+                      <span className="text-secondary text-[11px]">
+                        {userRole}
+                      </span>
+                    </span>
+                    <ChevronDown className="text-secondary size-3.5 shrink-0" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  align="center"
+                  align="end"
                   sideOffset={10}
                   className="w-56 min-w-56 p-2"
                 >
@@ -113,7 +123,7 @@ export default function Header() {
                     <Link
                       href="/quan-li-tai-khoan"
                       onClick={() => setUserMenuOpen(false)}
-                      className="text-body hover:bg-primary/8 hover:text-primary flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+                      className="text-body hover:text-primary flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
                     >
                       Quản lý tài khoản
                       <Settings className="size-5" />
@@ -122,7 +132,7 @@ export default function Header() {
                       type="button"
                       onClick={handleLogout}
                       disabled={logoutMutation.isPending}
-                      className="text-body hover:bg-primary/8 hover:text-primary flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                      className="text-body hover:text-primary flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {logoutMutation.isPending
                         ? "Đang đăng xuất..."
@@ -133,7 +143,11 @@ export default function Header() {
                 </PopoverContent>
               </Popover>
             ) : (
-              <Button asChild size="lg" className="hidden lg:inline-flex">
+              <Button
+                asChild
+                size="lg"
+                className="hidden rounded-full px-5 lg:inline-flex"
+              >
                 <Link href="/dang-nhap">
                   Đăng nhập
                   <User className="size-5" />
@@ -163,7 +177,7 @@ export default function Header() {
                           key={item.id}
                           href={item.href}
                           onClick={closeMobileMenu}
-                          className="text-heading hover:bg-primary/6 hover:text-primary block rounded-lg px-3 py-2 text-sm font-medium tracking-[0.06em] uppercase transition-colors"
+                          className="text-heading hover:text-primary block rounded-lg px-3 py-2 text-sm font-medium tracking-[0.06em] uppercase transition-colors"
                         >
                           {item.name}
                         </Link>
