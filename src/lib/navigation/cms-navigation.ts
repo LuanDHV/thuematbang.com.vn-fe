@@ -2,19 +2,20 @@ import {
   BadgeQuestionMark,
   Building2,
   CreditCard,
-  FileText,
-  FolderCog,
-  Inbox,
   LayoutDashboard,
-  MapPinned,
-  Megaphone,
   Newspaper,
   House,
-  Search,
-  Tags,
-  User,
   Users,
   type LucideIcon,
+  UserStar,
+  Wallpaper,
+  TrendingUp,
+  Compass,
+  ClipboardList,
+  Layers,
+  LockKeyholeOpen,
+  UserRoundCog,
+  Signpost,
 } from "lucide-react";
 import type { User as AppUser } from "@/types";
 
@@ -39,23 +40,23 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
     {
       href: "/quan-li-tai-khoan/chinh-sua-thong-tin",
       label: "Hồ sơ cá nhân",
-      icon: User,
+      icon: UserRoundCog,
       exact: true,
     },
     {
       href: "/quan-li-tai-khoan/cho-thue",
       label: "Tin cho thuê của tôi",
-      icon: Building2,
+      icon: Signpost,
     },
     {
       href: "/quan-li-tai-khoan/cau-thue",
       label: "Nhu cầu thuê của tôi",
-      icon: Inbox,
+      icon: ClipboardList,
     },
     {
       href: "/quan-li-tai-khoan/doi-mat-khau",
       label: hasPassword ? "Đổi mật khẩu" : "Tạo mật khẩu",
-      icon: FolderCog,
+      icon: LockKeyholeOpen,
       exact: true,
     },
   ];
@@ -72,22 +73,22 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
     {
       href: "/admin/quan-li-danh-muc",
       label: "Danh mục",
-      icon: Tags,
+      icon: Layers,
     },
     {
       href: "/admin/quan-li-tin-cho-thue",
       label: "Tin cho thuê",
-      icon: Building2,
+      icon: Signpost,
     },
     {
       href: "/admin/quan-li-tin-can-thue",
       label: "Tin cần thuê",
-      icon: Inbox,
+      icon: ClipboardList,
     },
     {
       href: "/admin/quan-li-du-an",
       label: "Dự án",
-      icon: FileText,
+      icon: Building2,
     },
     {
       href: "/admin/quan-li-tin-tuc",
@@ -102,7 +103,7 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
     {
       href: "/admin/quan-li-dia-diem",
       label: "Địa điểm",
-      icon: MapPinned,
+      icon: Compass,
     },
     {
       href: "/admin/quan-li-faqs",
@@ -112,17 +113,17 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
     {
       href: "/admin/quan-li-noi-dung-seo",
       label: "Nội dung SEO",
-      icon: FolderCog,
+      icon: TrendingUp,
     },
     {
       href: "/admin/quan-li-banners",
       label: "Banner",
-      icon: Megaphone,
+      icon: Wallpaper,
     },
     {
       href: "/admin/quan-li-leads",
       label: "Lead",
-      icon: Search,
+      icon: UserStar,
     },
     {
       href: "/admin/quan-li-thanh-toan",
