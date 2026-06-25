@@ -201,7 +201,7 @@ export function ListingFilterDrawer({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="border-hairline bg-surface flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+      <DialogContent className="border-hairline bg-surface flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-visible rounded-[1.75rem] border p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
         <DialogHeader className="from-primary/10 border-hairline via-surface to-surface border-b bg-linear-to-b p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao
