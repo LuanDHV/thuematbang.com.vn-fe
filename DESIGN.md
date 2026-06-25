@@ -192,6 +192,12 @@ Use for:
 - if a pattern repeats, promote it to a token or shared variant
 - prefer subtle separation over heavy borders
 
+### Tailwind usage
+
+- prefer standard Tailwind utilities first
+- avoid custom arbitrary values like `rounded-[...]`, `w-[...]`, `shadow-[...]`, or `transition-[...]` unless there is no standard Tailwind alternative
+- keep arbitrary values for true layout/runtime constraints only
+
 ## 7. Radius and Shadow
 
 Current visual language prefers soft corners and soft depth.

@@ -26,7 +26,7 @@ import { Property } from "@/types/property";
 
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-2xl";
+  "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";

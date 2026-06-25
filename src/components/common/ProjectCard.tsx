@@ -15,7 +15,7 @@ import { Project } from "@/types/project";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-2xl";
+  "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 
 function getProjectThumbnailUrl(project: Project) {
   const sortedImages =
@@ -60,7 +60,7 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/du-an/${project.slug}`}
-      className="surface-editorial interactive-lift group block overflow-hidden"
+      className="surface-editorial group block overflow-hidden"
     >
       <article
         className={`surface-editorial ${CARD_HOVER_CLASSES}`}

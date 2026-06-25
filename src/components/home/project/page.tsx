@@ -39,7 +39,7 @@ function CategoryCard({ category }: { category: (typeof categories)[number] }) {
   return (
     <Link
       href="/du-an"
-      className="group hover:border-primary/50 hover:shadow-primary/10 border-hairline bg-surface hover:bg-surface flex min-h-52 flex-col items-center justify-center rounded-xl border p-4 shadow-(--shadow-card) transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-float)"
+      className="group hover:border-primary/50 hover:shadow-primary/10 border-hairline bg-surface hover:bg-surface flex min-h-52 flex-col items-center justify-center rounded-xl border p-4 shadow-(--shadow-card) transition-[border-color,box-shadow] duration-300 hover:shadow-(--shadow-float)"
     >
       <div className="text-primary mb-4 transition-all duration-300 group-hover:scale-110">
         {category.icon}

@@ -15,7 +15,7 @@ import {
 import { RentRequest } from "@/types/rent-request";
 
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-2xl";
+  "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 
 function CardFooter({ request }: { request: RentRequest }) {
   return (
