@@ -188,7 +188,7 @@ export function ListingFilterDrawer({
           } ${
             activeCount > 0
               ? "border-primary text-primary bg-white"
-              : "text-secondary hover:border-primary/20 hover:bg-white hover:text-primary border-hairline bg-surface"
+              : "text-secondary hover:border-primary/20 hover:text-primary border-hairline bg-surface hover:bg-white"
           }`}
         >
           <Filter size={14} />
@@ -201,7 +201,7 @@ export function ListingFilterDrawer({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="border-hairline bg-surface flex max-h-[92vh] w-[96vw] max-w-5xl flex-col overflow-visible rounded-2xl border p-0 shadow-2xl">
+      <DialogContent className="border-hairline bg-surface flex h-[92vh] w-[96vw] max-w-5xl flex-col overflow-visible rounded-2xl border p-0 shadow-2xl">
         <DialogHeader className="from-primary/10 border-hairline via-surface to-surface border-b bg-linear-to-b p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao
@@ -237,7 +237,7 @@ export function ListingFilterDrawer({
               <Button
                 variant="ghost"
                 onClick={goMain}
-                className="text-primary hover:bg-white mb-3 h-8 rounded-lg px-2 text-xs font-medium"
+                className="text-primary mb-3 h-8 rounded-lg px-2 text-xs font-medium hover:bg-white"
               >
                 <ArrowLeft className="mr-1 size-5" />
                 Quay lại
@@ -287,22 +287,21 @@ export function ListingFilterDrawer({
               />
             ) : null}
           </div>
-
-          <div className="border-hairline bg-surface/95 supports-backdrop-filter:bg-surface/75 flex items-center justify-between gap-2 border-t p-4 backdrop-blur">
-            <Button
-              variant="outline"
-              onClick={handleReset}
-              className="h-10 px-5 font-semibold"
-            >
-              Đặt lại
-            </Button>
-            <Button
-              onClick={handleApply}
-              className="h-10 rounded-lg px-6 font-semibold"
-            >
-              Xem kết quả
-            </Button>
-          </div>
+        </div>
+        <div className="border-hairline bg-surface flex items-center justify-between gap-2 rounded-b-xl border-t p-4">
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            className="h-10 px-5 font-semibold"
+          >
+            Đặt lại
+          </Button>
+          <Button
+            onClick={handleApply}
+            className="h-10 rounded-lg px-6 font-semibold"
+          >
+            Xem kết quả
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
