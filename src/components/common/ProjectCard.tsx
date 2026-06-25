@@ -15,7 +15,7 @@ import { Project } from "@/types/project";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-float)]";
+  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-2xl";
 
 function getProjectThumbnailUrl(project: Project) {
   const sortedImages =
@@ -73,7 +73,7 @@ export function ProjectCard({ project }: { project: Project }) {
             height={900}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             cldQuality="auto:best"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </div>
 
@@ -83,7 +83,7 @@ export function ProjectCard({ project }: { project: Project }) {
           </h3>
 
           {project.category?.name ? (
-            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-[0.8rem] font-semibold tracking-[0.18em] uppercase">
+            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-xs font-semibold tracking-[0.18em] uppercase">
               {project.category.name}
             </span>
           ) : null}

@@ -70,7 +70,7 @@ export default function ProjectSection() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
+                className="min-w-0 basis-11/12 pl-3 md:basis-1/2"
               >
                 <CategoryCard category={category} />
               </div>

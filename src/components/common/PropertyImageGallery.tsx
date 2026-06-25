@@ -131,9 +131,9 @@ export default function PropertyImageGallery({
           aria-hidden
           sizes="(max-width: 1024px) 100vw, 66vw"
           cldQuality="auto:good"
-          className="pointer-events-none h-full w-full scale-110 object-cover opacity-70 blur-2xl"
+          className="pointer-events-none h-full w-full scale-105 object-cover opacity-70 blur-2xl"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-(--overlay-soft) via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent" />
 
         <AnimatePresence initial={false} custom={slideDirection} mode="sync">
           <motion.div
@@ -168,7 +168,7 @@ export default function PropertyImageGallery({
             <button
               type="button"
               onClick={goPrev}
-              className="bg-surface/92 text-body hover:bg-primary absolute top-1/2 left-3 -translate-y-1/2 cursor-pointer rounded-lg p-2 shadow-(--shadow-card) transition-colors duration-200 ease-in-out hover:text-white"
+              className="bg-surface/92 text-body hover:bg-primary absolute top-1/2 left-3 -translate-y-1/2 cursor-pointer rounded-lg p-2 shadow-lg transition-colors duration-200 ease-in-out hover:text-white"
               aria-label="Ảnh trước"
             >
               <ChevronLeft size={18} />
@@ -176,14 +176,14 @@ export default function PropertyImageGallery({
             <button
               type="button"
               onClick={goNext}
-              className="bg-surface/92 text-body hover:bg-primary absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer rounded-lg p-2 shadow-(--shadow-card) transition-colors duration-200 ease-in-out hover:text-white"
+              className="bg-surface/92 text-body hover:bg-primary absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer rounded-lg p-2 shadow-lg transition-colors duration-200 ease-in-out hover:text-white"
               aria-label="Ảnh sau"
             >
               <ChevronRight size={18} />
             </button>
           </>
         ) : null}
-        <div className="absolute right-3 bottom-3 rounded-md bg-(--overlay-strong) px-2 py-1 text-sm font-semibold text-white">
+        <div className="absolute right-3 bottom-3 rounded-md bg-black/50 px-2 py-1 text-sm font-semibold text-white">
           {activeIndex + 1}/{safeImages.length}
         </div>
       </div>

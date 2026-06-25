@@ -20,7 +20,7 @@ interface ListingFilterChipPopoverProps {
 }
 
 const triggerBaseClass =
-  "flex h-10 min-w-35 items-center justify-between gap-2 rounded-lg border border-hairline bg-surface px-4 text-xs font-medium whitespace-nowrap text-body shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition-all hover:border-primary/20 hover:bg-white hover:text-primary focus:ring-0";
+  "flex h-10 min-w-35 items-center justify-between gap-2 rounded-lg border border-hairline bg-surface px-4 text-xs font-medium whitespace-nowrap text-body shadow-lg transition-all hover:border-primary/20 hover:bg-white hover:text-primary focus:ring-0";
 const bodyClass =
   "max-h-75 overflow-y-auto p-4 [&::-webkit-scrollbar-thumb]:bg-primary/35 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1";
 const footerButtonClass =
@@ -65,7 +65,7 @@ export function ListingFilterChipPopover({
       <PopoverContent
         align="center"
         onOpenAutoFocus={(event) => event.preventDefault()}
-        className="w-[min(92vw,320px)] overflow-hidden rounded-2xl p-0"
+        className="w-full max-w-xs overflow-hidden rounded-2xl p-0"
       >
         <div className="border-b border-hairline p-4">
           <h3 className="text-sm font-semibold text-heading">{title}</h3>

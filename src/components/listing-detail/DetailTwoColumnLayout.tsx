@@ -10,7 +10,7 @@ export default function DetailTwoColumnLayout({
   aside,
 }: DetailTwoColumnLayoutProps) {
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,0.32fr)] lg:items-stretch">
+    <div className="grid gap-5 lg:grid-cols-2 lg:items-stretch">
       <div className="min-w-0 h-full">{main}</div>
       <div className="min-w-0 h-full">{aside}</div>
     </div>

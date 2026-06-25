@@ -94,7 +94,7 @@ export default function ProjectDetailContent({
             </div>
           </div>
 
-            <div className="surface-card flex items-center gap-3 px-3 py-3">
+          <div className="surface-card flex items-center gap-3 px-3 py-3">
             <Building2 className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
               <p className="text-secondary text-xs tracking-wide uppercase">
@@ -143,7 +143,7 @@ export default function ProjectDetailContent({
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="border-hairline h-80 w-full rounded-2xl border shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
+            className="border-hairline h-80 w-full rounded-2xl border shadow-xl"
           />
         ) : (
           <div className="surface-card text-secondary p-4 text-sm">

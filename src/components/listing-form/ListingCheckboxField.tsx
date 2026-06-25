@@ -29,7 +29,7 @@ export function ListingCheckboxField({
 
   return (
     <Field className={cn("flex cursor-pointer flex-col gap-2", className)}>
-      <div className="border-hairline bg-surface rounded-xl border px-4 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+      <div className="border-hairline bg-surface rounded-xl border px-4 py-2 shadow-lg">
         <label
           htmlFor={name}
           className="flex cursor-pointer items-center gap-3"

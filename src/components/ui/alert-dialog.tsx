@@ -54,7 +54,7 @@ function AlertDialogContent({
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         className={cn(
-          "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border border-hairline bg-surface p-4 text-sm text-body shadow-[0_24px_60px_rgba(15,23,42,0.12)] duration-100 outline-none sm:max-w-md",
+          "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border border-hairline bg-surface p-4 text-sm text-body shadow-2xl duration-100 outline-none sm:max-w-md",
           className,
         )}
         {...props}
@@ -127,7 +127,7 @@ function AlertDialogAction({
       data-slot="alert-dialog-action"
       className={cn(
         buttonVariants({ variant: "destructive" }),
-        "border-red-200 bg-red-600 text-white shadow-[0_12px_28px_rgba(220,38,38,0.22)] hover:bg-red-700 hover:text-white",
+        "border-red-200 bg-red-600 text-white shadow-lg hover:bg-red-700 hover:text-white",
         className,
       )}
       {...props}

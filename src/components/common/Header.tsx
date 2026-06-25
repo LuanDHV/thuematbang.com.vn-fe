@@ -107,7 +107,7 @@ export default function Header() {
                       <span className="text-heading max-w-42 truncate text-sm font-medium">
                         {displayName}
                       </span>
-                      <span className="text-secondary text-[11px]">
+                      <span className="text-secondary text-xs">
                         {userRole}
                       </span>
                     </span>

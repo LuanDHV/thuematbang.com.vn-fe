@@ -20,10 +20,10 @@ export default function NewsCard({
   return (
     <Link
       href={`/tin-tuc/${news.slug}`}
-      className="surface-utility group flex flex-row items-stretch overflow-hidden transition-[transform,box-shadow] duration-260 ease-out hover:-translate-y-0.5"
+      className="surface-utility group flex flex-row items-stretch overflow-hidden transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-2xl"
     >
       {/* Thumbnail */}
-      <div className="bg-surface-alt relative w-[38%] shrink-0 overflow-hidden">
+      <div className="bg-surface-alt relative w-2/5 shrink-0 overflow-hidden">
         <CloudinaryImage
           src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
           alt={news.title}
@@ -31,7 +31,7 @@ export default function NewsCard({
           height={720}
           sizes="(max-width: 768px) 40vw, 20vw"
           priority={priority}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
       </div>
 
@@ -40,7 +40,7 @@ export default function NewsCard({
         <div>
           {/* Category badge */}
           {category ? (
-            <span className="border-primary/25 bg-primary/10 text-primary mb-1.5 inline-block rounded-full border px-2.5 py-0.5 text-[9px] font-semibold tracking-[0.11em] uppercase">
+            <span className="border-primary/25 bg-primary/10 text-primary mb-1.5 inline-block rounded-full border px-2.5 py-0.5 text-xs font-semibold tracking-[0.11em] uppercase">
               {category}
             </span>
           ) : null}

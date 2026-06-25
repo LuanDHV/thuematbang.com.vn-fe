@@ -183,7 +183,7 @@ export default function CmsSidebar({
                 <div className="flex items-center gap-3">
                   {avatar}
                   <div className="min-w-0">
-                    <p className="text-secondary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
+                    <p className="text-secondary text-xs font-semibold tracking-[0.2em] uppercase">
                       {user.role}
                     </p>
                     <p className="text-heading truncate text-sm font-semibold">
@@ -318,7 +318,7 @@ export default function CmsSidebar({
                     desktopExpanded &&
                     "lg:items-center lg:justify-start lg:gap-3 lg:px-3",
                   isActive
-                    ? "border-primary/14 bg-white shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+                    ? "border-primary/14 bg-white shadow-lg"
                     : "hover:bg-white hover:text-primary border-transparent",
                 )}
               >

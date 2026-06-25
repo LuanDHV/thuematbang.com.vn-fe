@@ -194,14 +194,14 @@ export function ListingFilterDrawer({
           <Filter size={14} />
 
           {displayedCount > 0 ? (
-            <span className="bg-primary inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white">
+            <span className="bg-primary inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
               {displayedCount}
             </span>
           ) : null}
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="border-hairline bg-surface flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-visible rounded-[1.75rem] border p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+      <DialogContent className="border-hairline bg-surface flex max-h-[92vh] w-[96vw] max-w-5xl flex-col overflow-visible rounded-2xl border p-0 shadow-2xl">
         <DialogHeader className="from-primary/10 border-hairline via-surface to-surface border-b bg-linear-to-b p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao

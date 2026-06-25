@@ -262,7 +262,7 @@ export default function AdminDashboardOverview({
         })}
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.5fr)_minmax(360px,1fr)]">
+      <div className="grid gap-5 xl:grid-cols-2">
         <Card className="surface-panel gap-0">
           <CardHeader className="border-hairline border-b">
             <div className="space-y-1">

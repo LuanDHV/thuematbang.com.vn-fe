@@ -188,7 +188,7 @@ export default function PropertyDetailContent({
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="border-hairline h-80 w-full rounded-2xl border shadow-[0_18px_36px_rgba(36,26,10,0.08)]"
+            className="border-hairline h-80 w-full rounded-2xl border shadow-xl"
           />
         ) : (
           <div className="surface-card text-secondary p-4 text-sm">

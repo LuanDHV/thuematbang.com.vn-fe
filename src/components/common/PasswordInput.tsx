@@ -28,7 +28,7 @@ export default function PasswordInput({
         aria-label={isVisible ? `Ẩn ${revealLabel}` : `Hiện ${revealLabel}`}
         aria-pressed={isVisible}
         onClick={() => setIsVisible((current) => !current)}
-        className="text-secondary hover:bg-primary/6 hover:text-primary focus-visible:ring-primary/20 absolute top-1/2 right-1 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none active:translate-y-[-50%]"
+        className="text-secondary hover:bg-primary/6 hover:text-primary focus-visible:ring-primary/20 absolute top-1/2 right-1 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none active:-translate-y-1/2"
       >
         {isVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
       </button>

@@ -334,7 +334,7 @@ export default function ListingFilterToolbar({
             className="relative flex min-w-0 flex-1 items-center"
           >
             <div
-              className={`focus-within:border-primary/25 border-hairline bg-surface relative flex min-w-0 flex-1 items-center border px-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all focus-within:shadow-[0_12px_28px_rgba(247,170,27,0.12)] ${
+              className={`focus-within:border-primary/25 border-hairline bg-surface relative flex min-w-0 flex-1 items-center border px-2 shadow-lg transition-all focus-within:shadow-xl ${
                 isSuggestionOpen && trimmedDebouncedKeyword.length >= 2
                   ? "rounded-t-lg rounded-b-none border-b-transparent"
                   : "rounded-lg"
@@ -392,8 +392,8 @@ export default function ListingFilterToolbar({
             </div>
 
             {showSuggestions ? (
-              <div className="border-hairline bg-surface absolute top-full left-0 z-50 w-full overflow-hidden rounded-b-lg border-x border-b shadow-[0_14px_28px_rgba(15,23,42,0.08)]">
-                <ul className="[&::-webkit-scrollbar-thumb]:bg-primary/30 max-h-80 overflow-y-auto py-1.5 pr-1 [scrollbar-color:rgba(247,170,27,0.3)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
+              <div className="border-hairline bg-surface absolute top-full left-0 z-50 w-full overflow-hidden rounded-b-lg border-x border-b shadow-xl">
+                <ul className="[&::-webkit-scrollbar-thumb]:bg-primary/30 max-h-80 overflow-y-auto py-1.5 pr-1 [scrollbar-color:theme(colors.primary/30)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
                   {suggestions.length > 0 ? (
                     suggestions.map((suggestion, index) => {
                       const isActive = index === activeSuggestionIndex;
@@ -430,7 +430,7 @@ export default function ListingFilterToolbar({
             ) : null}
 
             {showEmptySuggestions ? (
-              <div className="text-secondary border-hairline bg-surface absolute top-full left-0 z-50 w-full rounded-b-lg border-x border-b px-4 py-3 text-sm shadow-[0_14px_28px_rgba(15,23,42,0.08)]">
+              <div className="text-secondary border-hairline bg-surface absolute top-full left-0 z-50 w-full rounded-b-lg border-x border-b px-4 py-3 text-sm shadow-xl">
                 Không tìm thấy gợi ý phù hợp.
               </div>
             ) : null}

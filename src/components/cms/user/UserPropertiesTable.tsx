@@ -205,13 +205,13 @@ export default function UserPropertiesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[30%]">Tin cho thuê</TableHead>
-              <TableHead className="w-[18%]">Danh mục</TableHead>
-              <TableHead className="w-[18%]">Khu vực</TableHead>
-              <TableHead className="w-[12%]">Giá</TableHead>
-              <TableHead className="w-[12%]">Loại tin</TableHead>
-              <TableHead className="w-[12%]">Trạng thái</TableHead>
-              <TableHead className="w-[10%]">Ngày tạo</TableHead>
+              <TableHead className="w-1/3">Tin cho thuê</TableHead>
+              <TableHead className="w-1/6">Danh mục</TableHead>
+              <TableHead className="w-1/6">Khu vực</TableHead>
+              <TableHead className="w-24">Giá</TableHead>
+              <TableHead className="w-24">Loại tin</TableHead>
+              <TableHead className="w-24">Trạng thái</TableHead>
+              <TableHead className="w-24">Ngày tạo</TableHead>
               <TableHead className="text-right">Tác vụ</TableHead>
             </TableRow>
           </TableHeader>

@@ -8,7 +8,7 @@ interface SeeMoreButtonProps {
 }
 
 const CTA_CLASS_NAME =
-  "h-11 min-w-60 rounded-xl border-primary/20 bg-surface px-5 font-semibold tracking-[0.12em] uppercase text-primary shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-60";
+  "h-11 min-w-60 rounded-xl border-primary/20 bg-surface px-5 font-semibold tracking-[0.12em] uppercase text-primary shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-60";
 
 export default function SeeMoreButton({
   href,

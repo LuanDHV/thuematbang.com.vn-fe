@@ -76,7 +76,7 @@ export function SignupForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="surface-panel overflow-hidden p-0 shadow-(--shadow-float)">
+      <Card className="surface-panel overflow-hidden p-0 shadow-2xl">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
             onSubmit={onSubmit}
@@ -267,7 +267,7 @@ export function SignupForm({
               loading="eager"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-(--overlay-strong) via-(--overlay-soft) to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/15 to-transparent" />
           </div>
         </CardContent>
       </Card>

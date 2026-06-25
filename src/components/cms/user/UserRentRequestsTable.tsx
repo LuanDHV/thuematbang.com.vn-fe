@@ -212,14 +212,14 @@ export default function UserRentRequestsTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[30%]">Nhu cầu</TableHead>
-              <TableHead className="w-[18%]">Danh mục</TableHead>
-              <TableHead className="w-[18%]">Khu vực mong muốn</TableHead>
-              <TableHead className="w-[12%]">Ngân sách</TableHead>
-              <TableHead className="w-[12%]">Diện tích</TableHead>
-              <TableHead className="w-[12%]">Trạng thái</TableHead>
-              <TableHead className="w-[12%]">Khớp</TableHead>
-              <TableHead className="w-[10%]">Ngày tạo</TableHead>
+              <TableHead className="w-1/3">Nhu cầu</TableHead>
+              <TableHead className="w-1/6">Danh mục</TableHead>
+              <TableHead className="w-1/6">Khu vực mong muốn</TableHead>
+              <TableHead className="w-24">Ngân sách</TableHead>
+              <TableHead className="w-24">Diện tích</TableHead>
+              <TableHead className="w-24">Trạng thái</TableHead>
+              <TableHead className="w-24">Khớp</TableHead>
+              <TableHead className="w-24">Ngày tạo</TableHead>
               <TableHead className="text-right">Tác vụ</TableHead>
             </TableRow>
           </TableHeader>

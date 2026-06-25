@@ -60,6 +60,12 @@
   --shadow-card: 0 18px 40px rgba(26, 18, 8, 0.08);
   --shadow-panel: 0 12px 28px rgba(26, 18, 8, 0.06);
   --shadow-float: 0 26px 60px rgba(26, 18, 8, 0.12);
+  --radius-surface-card: 12px;
+  --radius-surface-panel: 12px;
+  --radius-surface-float: 12px;
+  --radius-surface-marketplace: 12px;
+  --radius-surface-editorial: 12px;
+  --radius-surface-utility: 12px;
   --overlay-soft: rgba(28, 20, 12, 0.1);
   --overlay-strong: rgba(28, 20, 12, 0.48);
   --overlay-hero: rgba(28, 20, 12, 0.34);
@@ -117,6 +123,12 @@
   --shadow-card: 0 10px 24px rgba(15, 23, 42, 0.04);
   --shadow-panel: 0 14px 30px rgba(15, 23, 42, 0.05);
   --shadow-float: 0 20px 44px rgba(15, 23, 42, 0.08);
+  --radius-surface-card: 12px;
+  --radius-surface-panel: 12px;
+  --radius-surface-float: 12px;
+  --radius-surface-marketplace: 12px;
+  --radius-surface-editorial: 12px;
+  --radius-surface-utility: 12px;
   --overlay-soft: rgba(15, 23, 42, 0.06);
   --overlay-strong: rgba(15, 23, 42, 0.42);
   --overlay-hero: rgba(15, 23, 42, 0.22);
@@ -162,6 +174,12 @@
   --shadow-card: 0 12px 26px rgba(31, 23, 13, 0.05);
   --shadow-panel: 0 14px 30px rgba(31, 23, 13, 0.06);
   --shadow-float: 0 20px 42px rgba(31, 23, 13, 0.08);
+  --radius-surface-card: 12px;
+  --radius-surface-panel: 12px;
+  --radius-surface-float: 12px;
+  --radius-surface-marketplace: 12px;
+  --radius-surface-editorial: 12px;
+  --radius-surface-utility: 12px;
   --overlay-soft: rgba(31, 23, 13, 0.08);
   --overlay-strong: rgba(31, 23, 13, 0.42);
   --overlay-hero: rgba(31, 23, 13, 0.24);
@@ -259,20 +277,21 @@ textarea {
 .surface-card {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: var(--radius-surface-card);
   box-shadow: var(--shadow-card);
 }
 
 .surface-panel {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: var(--radius-surface-panel);
   box-shadow: var(--shadow-panel);
 }
 
 .surface-float {
   background-color: var(--surface);
   border: 1px solid var(--border-strong);
+  border-radius: var(--radius-surface-float);
   box-shadow: var(--shadow-float);
   backdrop-filter: blur(18px);
 }
@@ -280,7 +299,7 @@ textarea {
 .surface-marketplace {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: var(--radius-surface-marketplace);
   box-shadow: var(--marketplace-shadow);
 }
 
@@ -289,14 +308,14 @@ textarea {
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 1)),
     var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: var(--radius-surface-editorial);
   box-shadow: var(--editorial-shadow);
 }
 
 .surface-utility {
   background-color: var(--utility-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: var(--radius-surface-utility);
   box-shadow: var(--utility-shadow);
   backdrop-filter: blur(14px);
 }

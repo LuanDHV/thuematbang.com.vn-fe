@@ -46,7 +46,7 @@ export default function CmsLayout({
         <aside
           className={cn(
             "border-hairline bg-surface/94 inset-y-0 left-0 z-30 hidden border-r lg:sticky lg:top-0 lg:block lg:h-dvh lg:shrink-0",
-            isCmsSidebarCollapsed ? "lg:w-22" : "lg:w-[18rem]",
+            isCmsSidebarCollapsed ? "lg:w-24" : "lg:w-72",
           )}
         >
           <div className="h-full">{sidebar}</div>

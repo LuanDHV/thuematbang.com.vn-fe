@@ -26,7 +26,7 @@ import { Property } from "@/types/property";
 
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-float)]";
+  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-2xl";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
@@ -105,7 +105,7 @@ function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
 
   return (
     <div
-      className={`absolute top-3 right-3 z-30 rounded-lg bg-(--overlay-strong) font-semibold text-white ${badgeSizeClass}`}
+      className={`absolute top-3 right-3 z-30 rounded-lg bg-black/50 font-semibold text-white ${badgeSizeClass}`}
     >
       <span className="inline-flex items-center gap-1">
         <Images size={iconSize} />
@@ -143,7 +143,7 @@ function FeaturedCard({
           height={800}
           priority={priority}
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           cldQuality="auto:best"
         />
       </div>
@@ -197,7 +197,7 @@ function PremiumCard({
             height={800}
             priority={priority}
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             cldQuality="auto:best"
           />
         </div>
@@ -327,7 +327,7 @@ function StandardCard({
             height={800}
             priority={priority}
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             cldQuality="auto:best"
           />
         </div>
@@ -404,7 +404,7 @@ function FreeCard({
           height={800}
           priority={priority}
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           cldQuality="auto:best"
         />
         <TierBadge tone="FREE" />
@@ -471,7 +471,7 @@ function CardBody({
       ? "text-sm"
       : tone === "STANDARD"
         ? "text-xs"
-        : "text-[11px]";
+        : "text-xs";
 
   const priceClass =
     tone === "PREMIUM"

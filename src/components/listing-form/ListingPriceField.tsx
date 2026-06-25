@@ -89,7 +89,7 @@ export function ListingPriceField({
         {required ? <span className="ml-1 text-red-500">*</span> : null}
       </FieldLabel>
 
-      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px]">
+      <div className="grid gap-3 md:grid-cols-2">
         <Controller
           control={control}
           name={resolvedAmountName}

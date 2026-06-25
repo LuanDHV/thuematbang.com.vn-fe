@@ -26,7 +26,7 @@ export default function Footer() {
   return (
     <footer className="bg-footer text-footer-body border-footer-border mt-auto w-full border-t">
       <div className="layout-container py-12 md:py-14">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div className="flex flex-col gap-7">
             <div className="relative h-16 w-56 sm:h-20 sm:w-64">
               <Link href="/" className="relative block h-full w-full">
@@ -99,7 +99,7 @@ export default function Footer() {
 
       <div className="border-footer-border border-t">
         <div className="layout-container py-5">
-          <div className="text-footer-body text-center text-[0.7rem] font-semibold tracking-[0.24em] uppercase">
+          <div className="text-footer-body text-center text-xs font-semibold tracking-[0.24em] uppercase">
             Copyright © 2026 Thuematbang
           </div>
         </div>

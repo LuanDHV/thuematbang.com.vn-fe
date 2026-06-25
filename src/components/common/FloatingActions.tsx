@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 
 const scrollTopClassName =
-  "interactive-lift inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-primary/35 bg-primary text-white shadow-[var(--shadow-float)] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35";
+  "interactive-lift inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-primary/35 bg-primary text-white shadow-2xl hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35";
 
 export default function FloatingActions() {
   const [showScrollTop, setShowScrollTop] = useState(false);

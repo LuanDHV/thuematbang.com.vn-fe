@@ -37,7 +37,7 @@ type DetailTabSharedProps = {
 };
 
 const quickCellClass =
-  "mt-2 cursor-pointer rounded-lg border border-hairline bg-surface px-4 py-1.5 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all hover:border-primary/20 hover:bg-white hover:text-primary";
+  "mt-2 cursor-pointer rounded-lg border border-hairline bg-surface px-4 py-1.5 text-sm font-medium text-body shadow-lg transition-all hover:border-primary/20 hover:bg-white hover:text-primary";
 const selectedQuickCellClass = "border-primary bg-white text-primary";
 
 export function PropertyTypeDetailTab({
@@ -129,7 +129,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="0"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-secondary">→</span>
@@ -149,7 +149,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="60000"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -267,7 +267,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Từ"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <span className="mt-1 text-xl text-secondary">→</span>
@@ -282,7 +282,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Đến"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -418,7 +418,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("propertyType")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
           <div className="flex items-center gap-2 text-secondary">
             <Building2 className="size-5" />
@@ -433,7 +433,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("location")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
           <div className="flex items-center gap-2 text-secondary">
             <MapPin className="size-5" />
@@ -450,7 +450,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("price")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
           <div className="flex items-center gap-2 text-secondary">
             <CircleDollarSign className="size-5" />
@@ -465,7 +465,7 @@ export function AdvancedMainTab({
         <button
           type="button"
           onClick={() => setDetailTab("area")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
           <div className="flex items-center gap-2 text-secondary">
             <Maximize className="size-5" />
@@ -545,7 +545,7 @@ export function AdvancedMainTab({
                     y={textY}
                     textAnchor="middle"
                     dominantBaseline="central"
-                    className={`pointer-events-none text-[10px] transition-colors duration-200 ${isSelected ? "fill-white font-bold" : "fill-secondary font-medium"}`}
+                    className={`pointer-events-none text-xs transition-colors duration-200 ${isSelected ? "fill-white font-bold" : "fill-secondary font-medium"}`}
                   >
                     {dir.label}
                   </text>

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowRight, CirclePlus, Search, UsersRound } from "lucide-react";
+import { ArrowRight, CirclePlus } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { Button } from "@/components/ui/button";
@@ -129,16 +129,16 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                     cldQuality="auto:best"
                     className="h-full w-full object-cover object-center"
                   />
-                  <div className="absolute inset-0 bg-[rgba(28,20,12,0.18)]" />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(28,20,12,0.08),rgba(28,20,12,0.48))]" />
-                  <div className="absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(180deg,transparent,rgba(28,20,12,0.34))]" />
+                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="absolute inset-0 bg-linear-to-b from-black/10 via-black/30 to-black/60" />
+                  <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-b from-transparent to-black/35" />
                 </div>
               );
 
               return (
                 <div
                   key={slide.id}
-                  className="min-w-0 flex-[0_0_100%] overflow-hidden"
+                  className="min-w-0 basis-full overflow-hidden"
                 >
                   {slide.targetLink ? (
                     <SlideLink href={slide.targetLink}>{SlideInner}</SlideLink>
@@ -154,7 +154,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
-          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.42)] md:text-4xl lg:text-5xl">
+          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-xl md:text-4xl lg:text-5xl">
             Sàn Thương Mại Bất Động Sản Kết Nối Nhu Cầu Thuê - Cho Thuê Toàn
             Quốc
           </h1>
@@ -163,7 +163,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
             <Button
               asChild
               size="lg"
-              className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-[0_0_0_4px_rgba(251,170,25,0.18),0_18px_46px_rgba(251,170,25,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:shadow-[0_0_0_6px_rgba(251,170,25,0.18),0_24px_60px_rgba(251,170,25,0.34)] sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+              className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:shadow-2xl sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
             >
               <Link href="/dang-tin/cho-thue">
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -182,7 +182,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               asChild
               variant="outline"
               size="lg"
-              className="h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/20 bg-white px-4 py-3 text-left text-sm font-bold text-black shadow-[0_18px_46px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+              className="h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/20 bg-white px-4 py-3 text-left text-sm font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
             >
               <Link href="/dang-tin/can-thue">
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -199,7 +199,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
           </div>
 
           <div className="mt-4 w-full max-w-4xl lg:mt-5">
-            <div className="mb-2 text-center text-[11px] font-semibold tracking-[0.24em] text-white/70 uppercase">
+            <div className="mb-2 text-center text-xs font-semibold tracking-[0.24em] text-white/70 uppercase">
               Khám phá nhanh
             </div>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:gap-3">
@@ -207,7 +207,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 asChild
                 variant="ghost"
                 size="lg"
-                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.16)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
+                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
               >
                 <Link href="/cho-thue">
                   <span className="flex min-w-0 flex-1 items-center">
@@ -221,7 +221,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 asChild
                 variant="ghost"
                 size="lg"
-                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.16)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
+                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
               >
                 <Link href="/can-thue">
                   <span className="flex min-w-0 flex-1 items-center">
@@ -237,7 +237,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       {slides.length > 1 ? (
         <div className="absolute inset-x-0 bottom-6 z-20 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2 rounded-full bg-[rgba(28,20,12,0.18)] px-3 py-2 backdrop-blur-md">
+          <div className="flex items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-md">
             {slides.map((slide, index) => (
               <button
                 key={slide.id}
@@ -246,7 +246,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 className={cn(
                   "h-2.5 cursor-pointer rounded-full transition-all duration-300",
                   index === selectedIndex
-                    ? "bg-primary w-8 shadow-[0_0_0_4px_rgba(251,170,25,0.18)]"
+                    ? "bg-primary w-8 shadow-lg"
                     : "bg-surface/45 hover:bg-surface/70 w-2.5",
                 )}
                 aria-label={`Chuyển đến banner ${index + 1}`}
