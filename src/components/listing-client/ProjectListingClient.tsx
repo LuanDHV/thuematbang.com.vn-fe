@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+import EmptyStateCard from "@/components/common/EmptyStateCard";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Project } from "@/types/project";
 import { Category } from "@/types/category";
@@ -70,11 +72,19 @@ export default function ProjectListingClient({
           items={categoryItems}
         />
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
+        {projects.length === 0 ? (
+          <EmptyStateCard
+            icon={<Search size={20} strokeWidth={2} />}
+            title="Không có dự án phù hợp"
+            description="hệ thống sẽ hiển thị các dự án phù hợp ngay khi có dữ liệu."
+          />
+        ) : (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        )}
         <>
           <Pagination
             page={currentPage}

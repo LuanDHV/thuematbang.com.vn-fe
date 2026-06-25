@@ -1,3 +1,6 @@
+import { Search } from "lucide-react";
+
+import EmptyStateCard from "@/components/common/EmptyStateCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import NewsCard from "@/components/common/NewsCard";
 import SafeFetch from "@/components/common/SafeFetch";
@@ -30,11 +33,11 @@ export default async function NewsSection() {
 
             if (isEmpty) {
               return (
-                <div className="surface-editorial border-hairline mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed px-6 py-8 text-center">
-                  <p className="text-body text-base font-medium">
-                    Tin tức sẽ sớm được cập nhật
-                  </p>
-                </div>
+                <EmptyStateCard
+                  icon={<Search size={20} strokeWidth={2} />}
+                  title="Tin tức sẽ sớm được cập nhật"
+                  description="Hệ thống sẽ hiển thị bài viết mới ngay khi có nội dung phù hợp."
+                />
               );
             }
 

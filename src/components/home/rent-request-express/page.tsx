@@ -1,3 +1,6 @@
+import { Search } from "lucide-react";
+
+import EmptyStateCard from "@/components/common/EmptyStateCard";
 import SafeFetch from "@/components/common/SafeFetch";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import Title from "@/components/common/Title";
@@ -35,11 +38,11 @@ export default async function RentRequestExpressSection() {
 
             if (isEmpty) {
               return (
-                <div className="surface-editorial border-hairline mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed px-6 py-8 text-center">
-                  <p className="text-body text-base font-medium">
-                    Nhu cầu thuê mới nhất sẽ sớm được cập nhật
-                  </p>
-                </div>
+                <EmptyStateCard
+                  icon={<Search size={20} strokeWidth={2} />}
+                  title="Nhu cầu thuê mới nhất sẽ sớm được cập nhật"
+                  description="Hệ thống sẽ hiển thị các nhu cầu thuê mới nhất ngay khi có dữ liệu."
+                />
               );
             }
 
