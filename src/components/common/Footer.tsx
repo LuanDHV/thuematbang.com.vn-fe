@@ -29,14 +29,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
           <div className="flex flex-col gap-7">
             <div className="relative h-16 w-56 sm:h-20 sm:w-64">
-              <Link href="/" className="block h-full w-full">
+              <Link href="/" className="relative block h-full w-full">
                 <Image
                   src="/imgs/logo-TMB-white.png"
                   alt="Thuematbang.com.vn"
-                  width={280}
-                  height={80}
+                  fill
+                  sizes="(max-width: 640px) 14rem, 16rem"
                   priority
-                  className="h-full w-full object-contain object-left"
+                  className="object-contain object-left"
                 />
               </Link>
             </div>

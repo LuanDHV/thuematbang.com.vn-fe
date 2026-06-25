@@ -31,7 +31,6 @@ export interface RentRequest {
   isMatched: boolean;
   isExpress: boolean;
   duration?: ExpressDuration | null;
-  moveInDeadline?: Date | string | null;
   expressExpiresAt?: Date | string | null;
   rentRequestExpressOrderId?: number | null;
   viewCount: number;

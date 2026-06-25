@@ -86,104 +86,106 @@ function requiredNumberSchema({
   }, schema);
 }
 
-export const propertyCreateFormSchema = z.object({
-  title: z
-    .string()
-    .trim()
-    .min(2, "Vui lòng nhập tiêu đề hợp lệ")
-    .max(255, "Tiêu đề không vượt quá 255 ký tự"),
-  slug: slugSchema,
-  categoryId: requiredNumberSchema({
-    requiredMessage: "Vui lòng chọn danh mục",
-    invalidMessage: "Danh mục không hợp lệ",
-    positiveMessage: "Vui lòng chọn danh mục",
-    integer: true,
-  }),
-  priceAmount: optionalNumberSchema,
-  priceUnit: z.enum(PRICE_UNIT_VALUES).optional(),
-  price: optionalNumberSchema,
-  isNegotiable: z.boolean().default(false),
-  area: requiredNumberSchema({
-    requiredMessage: "Vui lòng nhập diện tích",
-    invalidMessage: "Diện tích không hợp lệ",
-    positiveMessage: "Vui lòng nhập diện tích hợp lệ",
-    max: Number.MAX_SAFE_INTEGER,
-    maxMessage: "Diện tích không hợp lệ",
-  }),
-  bedrooms: optionalIntegerSchema,
-  bathrooms: optionalIntegerSchema,
-  floors: optionalIntegerSchema,
-  direction: nullableDirectionSchema,
-  provinceId: requiredNumberSchema({
-    requiredMessage: "Vui lòng chọn tỉnh/thành",
-    invalidMessage: "Khu vực không hợp lệ",
-    positiveMessage: "Vui lòng chọn tỉnh/thành",
-    integer: true,
-  }),
-  wardId: optionalIntegerSchema,
-  contactName: z
-    .string()
-    .trim()
-    .min(2, "Vui lòng nhập họ và tên hợp lệ")
-    .max(255, "Họ và tên không vượt quá 255 ký tự"),
-  contactPhone: z
-    .string()
-    .trim()
-    .min(9, "Số điện thoại không hợp lệ")
-    .max(20, "Số điện thoại không hợp lệ"),
-  addressDetail: optionalTextSchema,
-  longitude: optionalNumberSchema,
-  latitude: optionalNumberSchema,
-  content: optionalTextSchema,
-  priorityStatus: z.enum(PROPERTY_PRIORITY_VALUES).nullable().optional(),
-  publishSource: z.enum(PUBLISH_SOURCE_VALUES).nullable().optional(),
-  isBoosted: z.boolean().default(false).optional(),
-  boostCount: optionalIntegerSchema,
-  status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
-  userId: optionalIntegerSchema,
-}).superRefine((value, ctx) => {
-  if (value.isNegotiable) {
-    return;
-  }
+export const propertyCreateFormSchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(2, "Vui lòng nhập tiêu đề hợp lệ")
+      .max(255, "Tiêu đề không vượt quá 255 ký tự"),
+    slug: slugSchema,
+    categoryId: requiredNumberSchema({
+      requiredMessage: "Vui lòng chọn danh mục",
+      invalidMessage: "Danh mục không hợp lệ",
+      positiveMessage: "Vui lòng chọn danh mục",
+      integer: true,
+    }),
+    priceAmount: optionalNumberSchema,
+    priceUnit: z.enum(PRICE_UNIT_VALUES).optional(),
+    price: optionalNumberSchema,
+    isNegotiable: z.boolean().default(false),
+    area: requiredNumberSchema({
+      requiredMessage: "Vui lòng nhập diện tích",
+      invalidMessage: "Diện tích không hợp lệ",
+      positiveMessage: "Vui lòng nhập diện tích hợp lệ",
+      max: Number.MAX_SAFE_INTEGER,
+      maxMessage: "Diện tích không hợp lệ",
+    }),
+    bedrooms: optionalIntegerSchema,
+    bathrooms: optionalIntegerSchema,
+    floors: optionalIntegerSchema,
+    direction: nullableDirectionSchema,
+    provinceId: requiredNumberSchema({
+      requiredMessage: "Vui lòng chọn tỉnh/thành",
+      invalidMessage: "Khu vực không hợp lệ",
+      positiveMessage: "Vui lòng chọn tỉnh/thành",
+      integer: true,
+    }),
+    wardId: optionalIntegerSchema,
+    contactName: z
+      .string()
+      .trim()
+      .min(2, "Vui lòng nhập họ và tên hợp lệ")
+      .max(255, "Họ và tên không vượt quá 255 ký tự"),
+    contactPhone: z
+      .string()
+      .trim()
+      .min(9, "Số điện thoại không hợp lệ")
+      .max(20, "Số điện thoại không hợp lệ"),
+    addressDetail: optionalTextSchema,
+    longitude: optionalNumberSchema,
+    latitude: optionalNumberSchema,
+    content: optionalTextSchema,
+    priorityStatus: z.enum(PROPERTY_PRIORITY_VALUES).nullable().optional(),
+    publishSource: z.enum(PUBLISH_SOURCE_VALUES).nullable().optional(),
+    isBoosted: z.boolean().default(false).optional(),
+    boostCount: optionalIntegerSchema,
+    status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
+    userId: optionalIntegerSchema,
+  })
+  .superRefine((value, ctx) => {
+    if (value.isNegotiable) {
+      return;
+    }
 
-  const hasCanonicalPrice = typeof value.price === "number";
-  const hasPriceAmount = typeof value.priceAmount === "number";
+    const hasCanonicalPrice = typeof value.price === "number";
+    const hasPriceAmount = typeof value.priceAmount === "number";
 
-  if (!hasCanonicalPrice && !hasPriceAmount) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["priceAmount"],
-      message: "Vui lòng nhập giá",
-    });
-  }
+    if (!hasCanonicalPrice && !hasPriceAmount) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["priceAmount"],
+        message: "Vui lòng nhập giá",
+      });
+    }
 
-  const priceAmount = value.priceAmount;
-  const price = value.price;
+    const priceAmount = value.priceAmount;
+    const price = value.price;
 
-  if (typeof priceAmount === "number" && priceAmount <= 0) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["priceAmount"],
-      message: "Vui lòng nhập giá hợp lệ",
-    });
-  }
+    if (typeof priceAmount === "number" && priceAmount <= 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["priceAmount"],
+        message: "Vui lòng nhập giá hợp lệ",
+      });
+    }
 
-  if (typeof priceAmount === "number" && !value.priceUnit) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["priceUnit"],
-      message: "Vui lòng chọn đơn vị giá",
-    });
-  }
+    if (typeof priceAmount === "number" && !value.priceUnit) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["priceUnit"],
+        message: "Vui lòng chọn đơn vị giá",
+      });
+    }
 
-  if (typeof price === "number" && price <= 0) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["price"],
-      message: "Vui lòng nhập giá hợp lệ",
-    });
-  }
-});
+    if (typeof price === "number" && price <= 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["price"],
+        message: "Vui lòng nhập giá hợp lệ",
+      });
+    }
+  });
 
 export const rentRequestCreateFormSchema = z.object({
   title: z
@@ -243,14 +245,10 @@ export const rentRequestCreateFormSchema = z.object({
   isMatched: z.boolean().default(false).optional(),
   isExpress: z.boolean().default(false).optional(),
   duration: z.enum(EXPRESS_DURATION_VALUES).nullable().optional(),
-  moveInDeadline: z.string().datetime().nullable().optional(),
   expressExpiresAt: z.string().datetime().nullable().optional(),
 });
 
-export type PropertyCreateFormValues = z.infer<
-  typeof propertyCreateFormSchema
->;
+export type PropertyCreateFormValues = z.infer<typeof propertyCreateFormSchema>;
 export type RentRequestCreateFormValues = z.infer<
   typeof rentRequestCreateFormSchema
 >;
-

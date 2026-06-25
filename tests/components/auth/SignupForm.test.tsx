@@ -6,6 +6,7 @@ import { SignupForm } from "@/components/auth/SignupForm";
 const pushMock = jest.fn();
 const refreshMock = jest.fn();
 const mutateAsyncMock = jest.fn();
+let registerErrorMock: Error | null = null;
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -19,7 +20,7 @@ jest.mock("@/hooks/use-auth", () => {
     useRegisterMutation: () => ({
       mutateAsync: mutateAsyncMock,
       isPending: false,
-      error: null,
+      error: registerErrorMock,
     }),
   };
 });
@@ -29,6 +30,7 @@ describe("SignupForm", () => {
     pushMock.mockReset();
     refreshMock.mockReset();
     mutateAsyncMock.mockReset();
+    registerErrorMock = null;
   });
 
   it("shows validation errors when submitted empty", async () => {
@@ -74,5 +76,17 @@ describe("SignupForm", () => {
 
     expect(pushMock).toHaveBeenCalledWith("/");
     expect(refreshMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("maps duplicate server errors into friendly messages", async () => {
+    registerErrorMock = new Error("email and phone already exist");
+
+    renderWithProviders(<SignupForm />);
+
+    expect(
+      screen.getByText("Email và số điện thoại đã được sử dụng."),
+    ).toBeInTheDocument();
+    expect(pushMock).not.toHaveBeenCalled();
+    expect(refreshMock).not.toHaveBeenCalled();
   });
 });

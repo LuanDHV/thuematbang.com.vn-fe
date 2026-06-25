@@ -10,15 +10,10 @@ import {
 export async function createPropertyAction(payload: Parameters<typeof propertyService.create>[0]) {
   const result = await propertyService.create(payload);
 
-  refreshCrudTags(
-    ["properties", "my-properties"],
-    [
-      "/cho-thue",
-      "/dang-tin/cho-thue",
-      "/quan-li-tai-khoan/cho-thue",
-      "/admin/quan-li-tin-cho-thue",
-    ],
-  );
+  // Keep tag invalidation so list views can refetch, but avoid path revalidation
+  // here because it can refresh the current create page and drop the success modal
+  // before the client sees it in E2E.
+  refreshCrudTags(["properties", "my-properties"]);
 
   return result;
 }
@@ -28,15 +23,9 @@ export async function createRentRequestAction(
 ) {
   const result = await rentRequestService.create(payload);
 
-  refreshCrudTags(
-    ["rent-requests", "my-rent-requests"],
-    [
-      "/can-thue",
-      "/dang-tin/can-thue",
-      "/quan-li-tai-khoan/cau-thue",
-      "/admin/quan-li-tin-can-thue",
-    ],
-  );
+  // Same rationale as createPropertyAction: avoid path refreshes that can
+  // re-render the current page before the success dialog is observable.
+  refreshCrudTags(["rent-requests", "my-rent-requests"]);
 
   return result;
 }

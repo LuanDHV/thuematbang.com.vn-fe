@@ -16,14 +16,15 @@ const port = Number(process.env.PLAYWRIGHT_MOCK_API_PORT || 4010);
 const baseUrl = `http://127.0.0.1:${port}`;
 const apiBaseUrl = `${baseUrl}/api/v1`;
 const state = createInitialState();
-const {
-  issueTokenPair,
-  getCurrentUserFromRequest,
-  getUserByRefreshToken,
-  envelope,
-  makeProperty,
-  makeRentRequest,
-} = createSharedHelpers(state);
+  const {
+    issueTokenPair,
+    getCurrentUserFromRequest,
+    getUserByRefreshToken,
+    envelope,
+    makeProperty,
+    makeRentRequest,
+    suggestByKeyword,
+  } = createSharedHelpers(state);
 
 async function handleRequest(req, res) {
   const requestUrl = new URL(req.url, baseUrl);
@@ -54,6 +55,7 @@ async function handleRequest(req, res) {
     envelope,
     makeProperty,
     makeRentRequest,
+    suggestByKeyword,
   });
 
   if (!handled) {

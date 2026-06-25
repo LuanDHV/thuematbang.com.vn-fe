@@ -39,7 +39,6 @@ export type RentRequestListFilters = {
   isMatched?: boolean;
   isExpress?: boolean;
   duration?: ExpressDuration | null;
-  moveInDeadline?: string | null;
   expressExpiresAt?: string | null;
   sortBy?: RentRequestSortBy;
   sortOrder?: "asc" | "desc";
@@ -84,7 +83,6 @@ export type RentRequestUpsertPayload = {
   isMatched?: boolean;
   isExpress?: boolean;
   duration?: ExpressDuration | null;
-  moveInDeadline?: string | null;
   expressExpiresAt?: string | null;
 };
 
@@ -184,21 +182,27 @@ export const rentRequestService = {
 
   // Delete one rent request through the authenticated CMS mutation contract.
   remove: async (id: number) => {
-    const response = await requestServerApi<RentRequest>(`/rent-requests/${id}`, {
-      method: "DELETE",
-      auth: "required",
-    });
+    const response = await requestServerApi<RentRequest>(
+      `/rent-requests/${id}`,
+      {
+        method: "DELETE",
+        auth: "required",
+      },
+    );
     return response.data;
   },
 
   // Fetch the current user's own rent requests for the account area.
   getMine: async (params: RentRequestMineParams = {}) =>
-    requestServerApi<RentRequest[]>(buildListPath("/me/rent-requests", params), {
-      auth: "required",
-      cache: "no-store",
-      tags: buildListTags("my-rent-requests", {
-        page: params.page,
-        limit: params.limit,
-      }),
-    }),
+    requestServerApi<RentRequest[]>(
+      buildListPath("/me/rent-requests", params),
+      {
+        auth: "required",
+        cache: "no-store",
+        tags: buildListTags("my-rent-requests", {
+          page: params.page,
+          limit: params.limit,
+        }),
+      },
+    ),
 };
