@@ -6,11 +6,12 @@ import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import { Pagination } from "@/components/common/Pagination";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
-import { buildPagedPath, type BreadcrumbItem } from "@/lib/flat-url";
+import { buildPagedPath, type BreadcrumbItem } from "@/lib/listing/flat-url";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
 import { Property } from "@/types/property";
 import { RentRequest } from "@/types/rent-request";
 import { PaginationMeta } from "@/types/api";
+import Title from "../common/Title";
 
 const TIER_ORDER = ["PREMIUM", "STANDARD", "FREE"] as const;
 
@@ -42,6 +43,10 @@ export default function ListingResultsClient({
   paginationBasePath?: string;
 }) {
   const router = useRouter();
+  const resolvedTitle =
+    listingMode === "property"
+      ? "Bất động sản cho thuê"
+      : "Nhu cầu thuê bất động sản";
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
   const totalPages = Math.max(1, resolvedPaginationMeta.totalPage ?? 1);
@@ -69,64 +74,72 @@ export default function ListingResultsClient({
   );
 
   return (
-    <section className="layout-container layout-section-sm">
-      {breadcrumbItems?.length ? (
-        <DynamicBreadcrumb items={breadcrumbItems} />
-      ) : null}
-
-      <div className="flex flex-col gap-10">
-        {!hasItems ? (
-          <section className="p-8 text-center">
-            <h3 className="text-lg font-semibold text-gray-700">
-              Không có bất động sản phù hợp
-            </h3>
-            <p className="mt-2 text-sm text-gray-500">
-              Hãy điều chỉnh bộ lọc khác.
-            </p>
-          </section>
+    <section className="layout-container layout-section-sm pb-0">
+      <div className="flex flex-col gap-4">
+        <Title title={resolvedTitle} level={1} />
+        {breadcrumbItems?.length ? (
+          <DynamicBreadcrumb items={breadcrumbItems} />
         ) : null}
 
-        {listingMode === "property" && groupedPageItems
-          ? TIER_ORDER.map((tier) => {
-              const tierItems = groupedPageItems[tier];
+        <div className="flex flex-col gap-8">
+          {!hasItems ? (
+            <section className="surface-editorial p-8 text-center">
+              <h3 className="text-heading text-lg font-semibold">
+                Không có bất động sản phù hợp
+              </h3>
+              <p className="text-secondary mt-2 text-sm">
+                Hãy điều chỉnh bộ lọc khác.
+              </p>
+            </section>
+          ) : null}
 
-              if (tierItems.length === 0) return null;
+          {listingMode === "property" && groupedPageItems
+            ? TIER_ORDER.map((tier) => {
+                const tierItems = groupedPageItems[tier];
 
-              return (
-                <section key={tier} className="flex flex-col gap-4">
-                  <div className={TIER_CONFIG[tier].gridClass}>
-                    {tierItems.map((property) => (
-                      <PropertyCard
-                        key={property.id}
-                        property={property}
-                        variant="tier"
-                      />
-                    ))}
-                  </div>
-                </section>
-              );
-            })
-          : null}
+                if (tierItems.length === 0) return null;
 
-        {listingMode === "rentRequest" ? (
-          <section className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {(pageItems as RentRequest[]).map((request) => (
-                <RentRequestCard key={request.id} request={request} />
-              ))}
-            </div>
-          </section>
-        ) : null}
+                return (
+                  <section key={tier} className="flex flex-col gap-4">
+                    <div className={TIER_CONFIG[tier].gridClass}>
+                      {tierItems.map((property) => (
+                        <PropertyCard
+                          key={property.id}
+                          property={property}
+                          variant="tier"
+                        />
+                      ))}
+                    </div>
+                  </section>
+                );
+              })
+            : null}
 
-        <Pagination
-          page={currentPage}
-          totalPages={totalPages}
-          onChange={(nextPage) =>
-            router.replace(buildPagedPath(paginationBasePath ?? "", nextPage), {
-              scroll: false,
-            })
-          }
-        />
+          {listingMode === "rentRequest" ? (
+            <section className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {(pageItems as RentRequest[]).map((request) => (
+                  <RentRequestCard key={request.id} request={request} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          <>
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={(nextPage) =>
+                router.replace(
+                  buildPagedPath(paginationBasePath ?? "", nextPage),
+                  {
+                    scroll: false,
+                  },
+                )
+              }
+            />
+          </>
+        </div>
       </div>
     </section>
   );

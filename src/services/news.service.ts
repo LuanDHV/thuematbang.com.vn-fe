@@ -30,6 +30,18 @@ export type NewsGetAllParams = {
   limit?: number;
 };
 
+export type NewsUpsertPayload = {
+  categoryId: number;
+  title: string;
+  slug: string;
+  summary?: string;
+  content?: string;
+  status?: PublishStatus | null;
+  isFeatured?: boolean;
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
+};
+
 export const newsService = {
   getAll: async (params: NewsGetAllParams = {}) => {
     const filters = {
@@ -83,6 +95,47 @@ export const newsService = {
         tags: ["news-detail", slug],
       },
     );
+    return response.data;
+  },
+
+  getById: async (id: number) => {
+    const response = await requestServerApi<News>(`/news/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["news-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  create: async (payload: NewsUpsertPayload) => {
+    const response = await requestServerApi<News>("/news", {
+      method: "POST",
+      auth: "required",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.data;
+  },
+
+  update: async (id: number, payload: NewsUpsertPayload) => {
+    const response = await requestServerApi<News>(`/news/${id}`, {
+      method: "PATCH",
+      auth: "required",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    const response = await requestServerApi<News>(`/news/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
     return response.data;
   },
 };

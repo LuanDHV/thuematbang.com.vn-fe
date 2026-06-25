@@ -59,7 +59,7 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-  "group/navigation-menu-trigger inline-flex h-9 w-max items-center justify-center rounded-xl px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-secondary focus:bg-secondary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-popup-open:bg-secondary/50 data-popup-open:hover:bg-secondary data-open:bg-secondary/50 data-open:hover:bg-secondary data-open:focus:bg-secondary",
+  "group/navigation-menu-trigger inline-flex h-9 w-max items-center justify-center rounded-xl px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-secondary focus:bg-secondary focus-visible:ring-4 focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-popup-open:bg-secondary/50 data-popup-open:hover:bg-secondary data-open:bg-secondary/50 data-open:hover:bg-secondary data-open:focus:bg-secondary",
 );
 
 function NavigationMenuTrigger({
@@ -128,7 +128,7 @@ function NavigationMenuLink({
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"
       className={cn(
-        "hover:bg-secondary focus:bg-secondary focus-visible:ring-ring/50 data-active:bg-secondary/50 data-active:hover:bg-secondary data-active:focus:bg-secondary flex items-center gap-2 rounded-xl p-2 text-sm transition-all outline-none focus-visible:ring-3 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-md [&_svg:not([class*='size-'])]:size-5",
+        "hover:bg-secondary focus:bg-secondary focus-visible:ring-ring/50 data-active:bg-secondary/50 data-active:hover:bg-secondary data-active:focus:bg-secondary flex items-center gap-2 rounded-xl p-2 text-sm transition-all outline-none focus-visible:ring-4 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-md [&_svg:not([class*='size-'])]:size-5",
         className,
       )}
       {...props}
@@ -149,7 +149,7 @@ function NavigationMenuIndicator({
       )}
       {...props}
     >
-      <div className="bg-border relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm shadow-md" />
+      <div className="bg-border relative top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 rounded-tl-sm shadow-md" />
     </NavigationMenuPrimitive.Indicator>
   );
 }
@@ -165,3 +165,4 @@ export {
   NavigationMenuViewport,
   navigationMenuTriggerStyle,
 };
+

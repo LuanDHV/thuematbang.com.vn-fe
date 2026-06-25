@@ -1,9 +1,9 @@
 import AdminProjectsTable from "@/components/cms/admin/AdminProjectsTable";
 import {
   resolvePaginationServer,
-  resolveSearchQueryValue,
   resolveSearchParamValue,
-} from "@/lib/server-side";
+  resolveSearchQueryValue,
+} from "@/lib/server/server-side";
 import { projectService } from "@/services/project.service";
 
 type PageProps = {
@@ -43,6 +43,7 @@ export default async function AdminDuAnPage({ searchParams }: PageProps) {
           searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
           searchValue,
           actionLabel: "Tạo mới",
+          actionHref: "/admin/quan-li-du-an/new",
         }}
       />
     </section>

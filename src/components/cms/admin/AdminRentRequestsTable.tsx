@@ -1,22 +1,28 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+
+import { deleteRentRequestAction } from "@/actions/admin-crud.actions";
+import AdminEntityCell from "@/components/cms/admin/AdminEntityCell";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
+} from "@/components/cms/admin/DataTable";
 import AdminStatusBadge, {
   type AdminBadgeTone,
 } from "@/components/cms/admin/AdminStatusBadge";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
+import { useToast } from "@/components/ui/use-toast";
+import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
-  createPaginationChangeHandler,
-  formatBudgetRange,
+  formatAreaValue,
   formatLocationParts,
-} from "@/lib/utils";
-import type { RentRequestStatus } from "@/types/enums";
+  formatListingPrice,
+} from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
+import type { PublishStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
-import AdminEntityCell from "./AdminEntityCell";
 
 type AdminRentRequestsTableProps = {
   items: RentRequest[];
@@ -25,18 +31,10 @@ type AdminRentRequestsTableProps = {
   toolbar?: AdminTableToolbar;
 };
 
-const statusToneMap: Record<RentRequestStatus, AdminBadgeTone> = {
-  ACTIVE: "success",
-  MATCHED: "info",
-  CLOSED: "muted",
-  EXPIRED: "warning",
-};
-
-const statusLabelMap: Record<RentRequestStatus, string> = {
-  ACTIVE: "Đang tìm",
-  MATCHED: "Đã khớp",
-  CLOSED: "Đã đóng",
-  EXPIRED: "Hết hạn",
+const statusToneMap: Record<PublishStatus, AdminBadgeTone> = {
+  DRAFT: "muted",
+  PUBLISHED: "success",
+  ARCHIVED: "neutral",
 };
 
 export default function AdminRentRequestsTable({
@@ -48,6 +46,7 @@ export default function AdminRentRequestsTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -55,9 +54,17 @@ export default function AdminRentRequestsTable({
     totalPages,
   );
 
-  async function handleDeleteRentRequest(id: string | number) {
-    console.info("Delete rent request requested", { id });
-  }
+  const handleDeleteRentRequest = useCallback(
+    async (id: string | number) => {
+      await deleteRentRequestAction(id);
+      toast({
+        title: "Đã xóa tin cần thuê",
+        description: "Tin cần thuê đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
 
   const fields = useMemo<FieldConfig<RentRequest>[]>(
     () => [
@@ -67,7 +74,7 @@ export default function AdminRentRequestsTable({
         fieldType: "text",
         render: ({ row }) => (
           <AdminEntityCell
-            imageUrl={row.imageUrl}
+            imageUrl={RENT_REQUEST_COVER_IMAGE}
             title={row.title}
             slug={row.slug}
           />
@@ -93,7 +100,18 @@ export default function AdminRentRequestsTable({
         key: "budget",
         header: "Ngân sách",
         fieldType: "text",
-        accessor: (item) => formatBudgetRange(item.minBudget, item.maxBudget),
+        accessor: (item) =>
+          formatListingPrice(item.budget, {
+            fallback: "Đang cập nhật",
+            amount: item.budgetAmount,
+            unit: item.budgetUnit,
+          }),
+      },
+      {
+        key: "desiredArea",
+        header: "Diện tích",
+        fieldType: "text",
+        accessor: (item) => formatAreaValue(item.desiredArea),
       },
       {
         key: "status",
@@ -102,9 +120,27 @@ export default function AdminRentRequestsTable({
         accessor: (item) => item.status,
         render: ({ row }) => (
           <AdminStatusBadge tone={statusToneMap[row.status]}>
-            {statusLabelMap[row.status]}
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
           </AdminStatusBadge>
         ),
+      },
+      {
+        key: "isMatched",
+        header: "Khớp",
+        fieldType: "text",
+        accessor: (item) => item.isMatched,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={row.isMatched ? "success" : "muted"}>
+            {row.isMatched ? "Đã khớp" : "Chưa khớp"}
+          </AdminStatusBadge>
+        ),
+      },
+      {
+        key: "viewCount",
+        header: "Lượt xem",
+        fieldType: "number",
+        accessor: (item) => item.viewCount,
+        mobileHidden: true,
       },
       {
         key: "createdAt",
@@ -121,7 +157,7 @@ export default function AdminRentRequestsTable({
         onDelete: handleDeleteRentRequest,
       },
     ],
-    [],
+    [handleDeleteRentRequest],
   );
 
   return (
@@ -136,3 +172,5 @@ export default function AdminRentRequestsTable({
     />
   );
 }
+
+

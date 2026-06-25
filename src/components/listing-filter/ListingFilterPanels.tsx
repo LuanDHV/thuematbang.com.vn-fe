@@ -1,13 +1,7 @@
 "use client";
 
 import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import {
   Building2,
   ChevronRight,
@@ -28,9 +22,9 @@ import {
   formatCurrencyShort,
   millionToVnd,
   parseNumericInput,
-} from "@/helpers/filterHelpers";
-import { normalizeVietnameseText } from "@/lib/text-normalize";
-import type { ProvinceWardMap } from "./listing-filter-location";
+} from "@/lib/filter/filter-helpers";
+import { normalizeVietnameseText } from "@/lib/text/text-normalize";
+import type { ProvinceWardMap } from "@/lib/location/location-filter";
 
 type UpdateCurrent = (
   updater: (prev: AdvancedFilterValue) => AdvancedFilterValue,
@@ -42,6 +36,10 @@ type DetailTabSharedProps = {
   onDone?: () => void;
 };
 
+const quickCellClass =
+  "mt-2 cursor-pointer rounded-lg border border-hairline bg-surface px-4 py-1.5 text-sm font-medium text-body shadow-lg transition-all hover:border-primary/20 hover:bg-white hover:text-primary";
+const selectedQuickCellClass = "border-primary bg-white text-primary";
+
 export function PropertyTypeDetailTab({
   current,
   updateCurrent,
@@ -50,8 +48,8 @@ export function PropertyTypeDetailTab({
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5">
-        <span className="text-sm text-gray-700">Tất cả loại mặt bằng</span>
+      <label className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white hover:text-primary">
+        <span className="text-sm text-heading">Tất cả loại bất động sản</span>
         <input
           type="checkbox"
           name="property-type-single"
@@ -69,9 +67,9 @@ export function PropertyTypeDetailTab({
       {propertyTypeOptions.map((type) => (
         <label
           key={type}
-          className="hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5"
+          className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white hover:text-primary"
         >
-          <span className="text-sm text-gray-700">{type}</span>
+          <span className="text-sm text-heading">{type}</span>
           <input
             type="checkbox"
             name="property-type-single"
@@ -131,10 +129,10 @@ export function PriceDetailTab({
               }))
             }
             placeholder="0"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
-        <span className="mt-1 text-xl text-gray-500">→</span>
+        <span className="mt-1 text-xl text-secondary">→</span>
         <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
@@ -151,7 +149,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="60000"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -181,7 +179,7 @@ export function PriceDetailTab({
           return (
             <label
               key={option.label}
-              className={`hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white hover:text-primary ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -269,10 +267,10 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Từ"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
-        <span className="mt-1 text-xl text-gray-500">→</span>
+        <span className="mt-1 text-xl text-secondary">→</span>
         <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
@@ -284,7 +282,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Đến"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-black/8 bg-white px-3.5 text-sm shadow-[0_10px_24px_rgba(15,23,42,0.05)] outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -311,7 +309,7 @@ export function AreaDetailTab({
           return (
             <label
               key={option.label}
-              className={`hover:bg-primary/5 flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white hover:text-primary ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -342,13 +340,20 @@ export function LocationDetailTab({
 }: DetailTabSharedProps & {
   provinceWardMap: ProvinceWardMap;
 }) {
-  const wards = current.province
-    ? Object.keys(provinceWardMap[current.province] ?? {})
+  const provinceOptions = Object.keys(provinceWardMap).map((province) => ({
+    value: province,
+    label: province,
+  }));
+  const wardOptions = current.province
+    ? Object.keys(provinceWardMap[current.province] ?? {}).map((ward) => ({
+        value: ward,
+        label: ward,
+      }))
     : [];
 
   return (
     <div className="flex flex-col gap-3">
-      <Select
+      <SearchableSelect
         value={current.province}
         onValueChange={(valueItem) =>
           updateCurrent((prev) => ({
@@ -357,41 +362,25 @@ export function LocationDetailTab({
             ward: "",
           }))
         }
-      >
-        <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
-          <SelectValue placeholder="Chọn tỉnh / thành phố" />
-        </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-80 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {Object.keys(provinceWardMap).map((province) => (
-            <SelectItem
-              key={province}
-              value={province}
-              className="cursor-pointer"
-            >
-              {province}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        options={provinceOptions}
+        placeholder="Chọn tỉnh / thành phố"
+        searchPlaceholder="Tìm tỉnh / thành phố..."
+        allowClear
+        emptyLabel="Tất cả tỉnh / thành phố"
+      />
 
-      <Select
+      <SearchableSelect
         value={current.ward}
         onValueChange={(valueItem) =>
-          updateCurrent((prev) => ({ ...prev, ward: valueItem, street: "" }))
+          updateCurrent((prev) => ({ ...prev, ward: valueItem }))
         }
+        options={wardOptions}
+        placeholder="Chọn phường / xã"
+        searchPlaceholder="Tìm phường / xã..."
+        allowClear
+        emptyLabel="Tất cả phường / xã"
         disabled={!current.province}
-      >
-        <SelectTrigger className="h-11 cursor-pointer rounded-xl border-gray-200">
-          <SelectValue placeholder="Chọn phường / xã" />
-        </SelectTrigger>
-        <SelectContent className="[&::-webkit-scrollbar-thumb]:bg-primary/35 max-h-80 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {wards.map((ward) => (
-            <SelectItem key={ward} value={ward} className="cursor-pointer">
-              {ward}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      />
     </div>
   );
 }
@@ -414,9 +403,6 @@ export function AdvancedMainTab({
     item: string,
   ) => void;
 }) {
-  const quickCellClass =
-    "mt-2 cursor-pointer rounded-lg border border-black/8 bg-white px-4 py-1.5 text-sm font-medium text-body shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all hover:border-primary/20 hover:bg-primary/5 hover:text-primary";
-  const selectedQuickCellClass = "border-primary bg-primary/5 text-primary";
   const locationSummary = [current.province, current.ward]
     .filter(Boolean)
     .join(", ");
@@ -426,73 +412,73 @@ export function AdvancedMainTab({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-gray-700">
+        <label className="text-sm font-semibold text-heading">
           Loại bất động sản
         </label>
         <button
           type="button"
           onClick={() => setDetailTab("propertyType")}
-          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-secondary">
             <Building2 className="size-5" />
             <span className="text-sm">{propertyTypeSummary}</span>
           </div>
-          <ChevronRight className="size-5 text-gray-400" />
+          <ChevronRight className="size-5 text-muted" />
         </button>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-gray-700">Khu vực</label>
+        <label className="text-sm font-semibold text-heading">Khu vực</label>
         <button
           type="button"
           onClick={() => setDetailTab("location")}
-          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-secondary">
             <MapPin className="size-5" />
             <span className="text-sm">{locationSummary || "Toàn quốc"}</span>
           </div>
-          <ChevronRight className="size-5 text-gray-400" />
+          <ChevronRight className="size-5 text-muted" />
         </button>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-gray-700">
+        <label className="text-sm font-semibold text-heading">
           Khoảng giá
         </label>
         <button
           type="button"
           onClick={() => setDetailTab("price")}
-          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-secondary">
             <CircleDollarSign className="size-5" />
             <span className="text-sm">{priceSummary}</span>
           </div>
-          <ChevronRight className="size-5 text-gray-400" />
+          <ChevronRight className="size-5 text-muted" />
         </button>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-gray-700">Diện tích</label>
+        <label className="text-sm font-semibold text-heading">Diện tích</label>
         <button
           type="button"
           onClick={() => setDetailTab("area")}
-          className="hover:border-primary/20 hover:bg-primary/5 mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-white px-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)]"
+          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
         >
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-secondary">
             <Maximize className="size-5" />
             <span className="text-sm">{areaSummary}</span>
           </div>
-          <ChevronRight className="size-5 text-gray-400" />
+          <ChevronRight className="size-5 text-muted" />
         </button>
       </div>
 
       {listingMode === "property" ? (
         <>
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+            <label className="text-sm font-semibold text-heading">
               Số phòng ngủ
             </label>
             <div className="flex flex-wrap gap-2">
@@ -510,7 +496,7 @@ export function AdvancedMainTab({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+            <label className="text-sm font-semibold text-heading">
               Số phòng tắm, vệ sinh
             </label>
             <div className="flex flex-wrap gap-2">
@@ -530,7 +516,7 @@ export function AdvancedMainTab({
       ) : null}
 
       <div className="flex flex-col gap-4">
-        <label className="text-sm font-semibold text-gray-700">Hướng nhà</label>
+        <label className="text-sm font-semibold text-heading">Hướng nhà</label>
         <div className="flex justify-center py-2">
           <svg
             viewBox="-5 -5 210 210"
@@ -552,14 +538,14 @@ export function AdvancedMainTab({
                   <path
                     d="M 61.73 7.61 A 100 100 0 0 1 138.27 7.61 L 115.31 63.04 A 40 40 0 0 0 84.69 63.04 Z"
                     transform={`rotate(${angle} 100 100)`}
-                    className={`stroke-white stroke-[2.5px] transition-colors duration-200 ${isSelected ? "fill-primary" : "fill-[#f4f4f4] group-hover:fill-gray-200"}`}
+                    className={`stroke-white stroke-[2.5px] transition-colors duration-200 ${isSelected ? "fill-primary" : "fill-surface-alt group-hover:fill-accent-soft"}`}
                   />
                   <text
                     x={textX}
                     y={textY}
                     textAnchor="middle"
                     dominantBaseline="central"
-                    className={`pointer-events-none text-[10px] transition-colors duration-200 ${isSelected ? "fill-white font-bold" : "fill-gray-600 font-medium"}`}
+                    className={`pointer-events-none text-xs transition-colors duration-200 ${isSelected ? "fill-white font-bold" : "fill-secondary font-medium"}`}
                   >
                     {dir.label}
                   </text>

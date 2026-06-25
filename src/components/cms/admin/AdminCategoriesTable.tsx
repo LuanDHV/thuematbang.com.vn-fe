@@ -1,15 +1,24 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { CATEGORY_TYPE_LABEL_MAP } from "@/constants/enum-options";
+
+import {
+  createCategoryAction,
+  deleteCategoryAction,
+  updateCategoryAction,
+} from "@/actions/admin-crud.actions";
+import CategoryFormDialog from "@/components/cms/admin/AdminCategoryFormDialog";
 import AdminStatusBadge, {
   type AdminBadgeTone,
 } from "@/components/cms/admin/AdminStatusBadge";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
-import type { CategoryType } from "@/types/enums";
+} from "@/components/cms/admin/DataTable";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
+import { useToast } from "@/components/ui/use-toast";
 import type { Category } from "@/types/category";
+import type { CategoryType } from "@/types/enums";
 
 type AdminCategoriesTableProps = {
   items: Category[];
@@ -33,22 +42,49 @@ const typeToneMap: Record<CategoryType, AdminBadgeTone> = {
   NEWS: "muted",
 };
 
-const typeLabelMap: Record<CategoryType, string> = {
-  PROPERTY: "Cho thuê",
-  RENT_REQUEST: "Cần thuê",
-  PROJECT: "Dự án",
-  NEWS: "Tin tức",
-};
-
 export default function AdminCategoriesTable({
   items,
   currentPage,
   totalPages,
   toolbar,
 }: AdminCategoriesTableProps) {
-  async function handleDeleteCategory(id: string | number) {
-    console.info("Delete category requested", { id });
-  }
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const { toast } = useToast();
+
+  const handleDeleteCategory = useCallback(
+    async (id: string | number) => {
+      await deleteCategoryAction(id);
+      toast({
+        title: "Đã xóa danh mục",
+        description: "Danh mục đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
+
+  const createDefaults = useMemo(
+    () => ({
+      type: "PROPERTY" as const,
+      isActive: true,
+    }),
+    [],
+  );
+
+  const editingDefaults = useMemo(
+    () =>
+      editingCategory
+        ? {
+            type: editingCategory.type,
+            name: editingCategory.name,
+            slug: editingCategory.slug,
+            priority: editingCategory.priority,
+            isActive: editingCategory.isActive,
+          }
+        : createDefaults,
+    [createDefaults, editingCategory],
+  );
 
   const fields = useMemo<FieldConfig<Category>[]>(
     () => [
@@ -65,7 +101,7 @@ export default function AdminCategoriesTable({
         accessor: (item) => item.type,
         render: ({ row }) => (
           <AdminStatusBadge tone={typeToneMap[row.type]}>
-            {typeLabelMap[row.type]}
+            {CATEGORY_TYPE_LABEL_MAP[row.type]}
           </AdminStatusBadge>
         ),
       },
@@ -108,22 +144,57 @@ export default function AdminCategoriesTable({
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
-        getEditHref: (item) => `/admin/quan-li-danh-muc/${item.id}`,
+        onEdit: (_id, item) => {
+          setEditingCategory(item);
+        },
         onDelete: handleDeleteCategory,
       },
     ],
-    [],
+    [handleDeleteCategory],
   );
 
+  const toolbarConfig = toolbar
+    ? {
+        ...toolbar,
+        onActionClick: toolbar.actionLabel
+          ? () => {
+              setEditingCategory(null);
+              setCreateOpen(true);
+            }
+          : toolbar.onActionClick,
+      }
+    : toolbar;
+
   return (
-    <AdminDataTable
-      data={items}
-      fields={fields}
-      getRowId={(item) => item.id}
-      page={currentPage}
-      totalPages={totalPages}
-      onPageChange={() => {}}
-      toolbar={toolbar}
-    />
+    <>
+      <AdminDataTable
+        data={items}
+        fields={fields}
+        getRowId={(item) => item.id}
+        page={currentPage}
+        totalPages={totalPages}
+        onPageChange={() => {}}
+        toolbar={toolbarConfig}
+      />
+
+      <CategoryFormDialog
+        open={createOpen || Boolean(editingCategory)}
+        onOpenChange={(open) => {
+          setCreateOpen(open);
+          if (!open) setEditingCategory(null);
+        }}
+        title={editingCategory ? "Chỉnh sửa danh mục" : "Tạo danh mục"}
+        description="Quản lý danh mục hiển thị trong CMS."
+        submitLabel={editingCategory ? "Cập nhật" : "Tạo mới"}
+        defaultValues={editingDefaults}
+        onSubmit={async (values) => {
+          if (editingCategory) {
+            return updateCategoryAction(editingCategory.id, values);
+          }
+
+          return createCategoryAction(values);
+        }}
+      />
+    </>
   );
 }

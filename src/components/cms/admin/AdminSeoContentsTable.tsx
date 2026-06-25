@@ -1,12 +1,15 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+
+import { deleteSeoContentAction } from "@/actions/admin-crud.actions";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
-import { createPaginationChangeHandler } from "@/lib/utils";
+} from "@/components/cms/admin/DataTable";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
+import { createPaginationChangeHandler } from "@/lib/pagination";
+import { useToast } from "@/components/ui/use-toast";
 import type { SeoContent } from "@/types/seo-content";
 
 type AdminSeoContentsTableProps = {
@@ -25,6 +28,7 @@ export default function AdminSeoContentsTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -32,9 +36,18 @@ export default function AdminSeoContentsTable({
     totalPages,
   );
 
-  async function handleDeleteSeoContent(id: string | number) {
-    console.info("Delete SEO content requested", { id });
-  }
+  const handleDeleteSeoContent = useCallback(
+    async (id: string | number) => {
+      await deleteSeoContentAction(id);
+      toast({
+        title: "Đã xóa nội dung SEO",
+        description: "Nội dung SEO đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
+
   const fields = useMemo<FieldConfig<SeoContent>[]>(
     () => [
       {
@@ -64,7 +77,7 @@ export default function AdminSeoContentsTable({
         onDelete: handleDeleteSeoContent,
       },
     ],
-    [],
+    [handleDeleteSeoContent],
   );
 
   return (
@@ -79,3 +92,5 @@ export default function AdminSeoContentsTable({
     />
   );
 }
+
+

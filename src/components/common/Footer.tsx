@@ -1,41 +1,50 @@
-import Image from "next/image";
 import { MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
   const aboutLinks = [
-    { label: "Giới thiệu", href: "#" },
-    { label: "Liên hệ", href: "#" },
-    { label: "Câu hỏi thường gặp", href: "#" },
-    { label: "Tin tức", href: "#" },
+    { label: "Giới thiệu", href: "/gioi-thieu" },
+    { label: "Liên hệ", href: "/lien-he" },
+    { label: "Câu hỏi thường gặp", href: "/cau-hoi-thuong-gap" },
+    { label: "Tin tức", href: "/tin-tuc" },
   ];
   const policyLinks = [
-    { label: "Quy chế hoạt động", href: "#" },
-    { label: "Chính sách bảo mật thông tin", href: "#" },
-    { label: "Giải quyết tranh chấp, khiếu nại", href: "#" },
-    { label: "Điều khoản thỏa thuận", href: "#" },
-    { label: "Quy định đăng tin", href: "#" },
+    { label: "Quy chế hoạt động", href: "/quy-che-hoat-dong" },
+    {
+      label: "Chính sách bảo mật thông tin",
+      href: "/chinh-sach-bao-mat-thong-tin",
+    },
+    {
+      label: "Giải quyết tranh chấp, khiếu nại",
+      href: "/giai-quyet-tranh-chap-khieu-nai",
+    },
+    { label: "Điều khoản thỏa thuận", href: "/dieu-khoan-thoa-thuan" },
+    { label: "Quy định đăng tin", href: "/quy-dinh-dang-tin" },
   ];
 
   return (
-    <footer className="bg-footer text-footer-body mt-auto w-full border-t border-black/6">
-      <div className="layout-container py-10 md:py-12">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-          <div className="flex flex-col gap-8">
-            <div className="relative h-20 w-64 sm:h-24 sm:w-72">
-              <Link href="/" className="block h-full w-full">
+    <footer className="bg-footer text-footer-body border-footer-border mt-auto w-full border-t">
+      <div className="layout-container py-12 md:py-14">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <div className="flex flex-col gap-7">
+            <div className="relative h-16 w-56 sm:h-20 sm:w-64">
+              <Link href="/" className="relative block h-full w-full">
                 <Image
-                  src="/imgs/brand-logo.png"
-                  alt="thuematbang-logo"
-                  width={280}
-                  height={80}
+                  src="/imgs/logo-TMB-white.png"
+                  alt="Thuematbang.com.vn"
+                  fill
+                  sizes="(max-width: 640px) 14rem, 16rem"
                   priority
-                  className="h-full w-full object-contain object-left"
+                  className="object-contain object-left"
                 />
               </Link>
             </div>
-            <div className="max-w-xl">
-              <h2 className="text-footer-heading mb-3 text-base font-semibold tracking-[-0.02em] md:text-lg">
+            <div className="max-w-xl space-y-3">
+              <p className="text-primary text-xs font-semibold tracking-[0.2em] uppercase">
+                Thuematbang
+              </p>
+              <h2 className="text-footer-heading text-base font-semibold tracking-[-0.02em] md:text-lg">
                 CÔNG TY TNHH DỊCH VỤ QUẢNG CÁO THUEMATBANG
               </h2>
               <div className="text-footer-body flex items-start gap-2 text-sm leading-7">
@@ -50,7 +59,7 @@ export default function Footer() {
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
             <div>
-              <h3 className="text-footer-heading mb-4 text-sm font-semibold tracking-[0.16em] uppercase">
+              <h3 className="text-footer-heading mb-4 text-xs font-semibold tracking-[0.22em] uppercase">
                 Về chúng tôi
               </h3>
               <ul className="text-footer-body flex flex-col gap-3 text-sm">
@@ -68,7 +77,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="text-footer-heading mb-4 text-sm font-semibold tracking-[0.16em] uppercase">
+              <h3 className="text-footer-heading mb-4 text-xs font-semibold tracking-[0.22em] uppercase">
                 Quy định
               </h3>
               <ul className="text-footer-body flex flex-col gap-3 text-sm">
@@ -88,9 +97,9 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-black/6">
-        <div className="layout-container py-4">
-          <div className="text-footer-body text-center text-xs font-semibold tracking-[0.18em] uppercase">
+      <div className="border-footer-border border-t">
+        <div className="layout-container py-5">
+          <div className="text-footer-body text-center text-xs font-semibold tracking-[0.24em] uppercase">
             Copyright © 2026 Thuematbang
           </div>
         </div>

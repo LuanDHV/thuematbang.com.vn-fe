@@ -7,9 +7,10 @@ import {
   PublishStatus,
 } from "./enums";
 import { Lead } from "./lead";
-import { Province, Street, Ward } from "./location";
+import { Province, Ward } from "./location";
 import { PropertyImage } from "./media";
 import { User } from "./user";
+import { PriceUnit } from "./enums";
 
 export interface Property {
   id: number;
@@ -18,36 +19,31 @@ export interface Property {
   slug: string;
   categoryId: number;
   price?: number | null;
+  priceAmount?: number | null;
+  priceUnit?: PriceUnit | null;
   isNegotiable: boolean;
-  area?: number | null;
+  area: number;
   direction?: PropertyDirection | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
   floors?: number | null;
-  frontage?: number | null;
-  roadWidth?: number | null;
   priorityStatus: PropertyPriority;
   publishSource: PublishSource;
   isBoosted: boolean;
-  boostedAt?: Date | string | null;
-  boostStartAt?: Date | string | null;
-  boostEndAt?: Date | string | null;
   boostCount: number;
-  lastBoostAt?: Date | string | null;
-  provinceId?: number | null;
-  wardId?: number | null;
-  streetId?: number | null;
+  lastBoostedAt?: Date | string | null;
+  listingExpiresAt?: Date | string | null;
+  boostExpiresAt?: Date | string | null;
+  provinceId: number;
+  wardId: number | null;
   addressDetail?: string | null;
   longitude?: number | null;
   latitude?: number | null;
-  contactName?: string | null;
-  contactPhone?: string | null;
+  contactName: string;
+  contactPhone: string;
   content?: string | null;
   viewCount: number;
   status: PublishStatus;
-  isFeatured: boolean;
-  publishedAt?: Date | string | null;
-  expiredAt?: Date | string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
   propertyPackageOrderId?: number | null;
@@ -55,7 +51,6 @@ export interface Property {
   category?: Category;
   province?: Province | null;
   ward?: Ward | null;
-  street?: Street | null;
   leads?: Lead[];
   images?: PropertyImage[];
   boostOrders?: PropertyBoostOrder[];

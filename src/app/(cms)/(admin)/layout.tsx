@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import CmsLayout from "@/components/cms/shared/CmsLayout";
 import AdminSidebar from "@/components/cms/admin/AdminSidebar";
-import { getServerAuthUser } from "@/lib/server-auth";
+import { getServerAuthUser } from "@/lib/server/server-auth";
 
 export default async function AdminLayout({
   children,
@@ -20,8 +20,13 @@ export default async function AdminLayout({
   }
 
   return (
-    <CmsLayout sidebar={<AdminSidebar user={authUser} />}>
-      {children}
-    </CmsLayout>
+    <div data-theme="admin" className="cms-shell bg-app text-body min-h-dvh">
+      <CmsLayout
+        sidebar={<AdminSidebar user={authUser} />}
+        mobileSidebar={<AdminSidebar user={authUser} forceExpanded />}
+      >
+        {children}
+      </CmsLayout>
+    </div>
   );
 }

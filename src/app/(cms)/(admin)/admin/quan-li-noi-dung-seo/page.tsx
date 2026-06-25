@@ -1,9 +1,9 @@
 import AdminSeoContentsTable from "@/components/cms/admin/AdminSeoContentsTable";
 import {
   resolvePaginationServer,
-  resolveSearchQueryValue,
   resolveSearchParamValue,
-} from "@/lib/server-side";
+  resolveSearchQueryValue,
+} from "@/lib/server/server-side";
 import { seoContentService } from "@/services/seo-content.service";
 
 type PageProps = {
@@ -41,6 +41,7 @@ export default async function AdminSeoContentsPage({
           searchPlaceholder: "Tìm kiếm theo nội dung SEO",
           searchValue,
           actionLabel: "Tạo mới",
+          actionHref: "/admin/quan-li-noi-dung-seo/new",
         }}
       />
     </section>

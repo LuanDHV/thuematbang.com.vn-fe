@@ -7,7 +7,6 @@ export interface Province {
   name: string;
   slug: string;
   wards?: Ward[];
-  streets?: Street[];
   properties?: Property[];
   rentRequests?: RentRequest[];
   projects?: Project[];
@@ -19,20 +18,7 @@ export interface Ward {
   name: string;
   slug: string;
   province?: Province;
-  streets?: Street[];
   properties?: Property[];
   rentRequests?: RentRequest[];
   projects?: Project[];
-}
-
-export interface Street {
-  id: number;
-  provinceId: number;
-  wardId?: number | null;
-  name: string;
-  slug: string;
-  province?: Province;
-  ward?: Ward | null;
-  properties?: Property[];
-  rentRequests?: RentRequest[];
 }

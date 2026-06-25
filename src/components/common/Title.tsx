@@ -1,17 +1,37 @@
-﻿interface TitleProps {
+interface TitleProps {
   title: string;
   description?: string;
+  eyebrow?: string;
+  level?: 1 | 2 | 3;
+  variant?: "default" | "home";
 }
 
-export default function Title({ title, description }: TitleProps) {
+export default function Title({
+  title,
+  description,
+  eyebrow,
+  level = 2,
+  variant = "default",
+}: TitleProps) {
+  const HeadingTag = `h${level}` as const;
+  const isHomeVariant = variant === "home";
+
   return (
-    <div className="mx-auto mb-8 max-w-5xl text-center lg:mb-12">
-      <h1 className="text-heading mb-4 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+    <div className="mx-auto max-w-5xl text-center">
+      {eyebrow ? (
+        <p className="text-primary mb-4 text-sm font-semibold tracking-[0.22em] uppercase">
+          {eyebrow}
+        </p>
+      ) : null}
+      <HeadingTag
+        className={`text-heading ${isHomeVariant ? "text-3xl font-semibold tracking-[-0.055em] normal-case leading-tight md:text-4xl lg:text-5xl" : "text-2xl font-bold tracking-[-0.04em] uppercase lg:text-3xl"} ${description ? "mb-4" : ""}`}
+      >
         {title}
-      </h1>
-      <div className="bg-primary/70 mx-auto mb-8 h-px w-20 rounded-full" />
+      </HeadingTag>
       {description ? (
-        <p className="text-secondary mx-auto max-w-2xl text-base leading-8 md:text-lg">
+        <p
+          className={`text-secondary mx-auto max-w-3xl ${isHomeVariant ? "text-base leading-7 lg:text-lg" : "text-sm leading-6 lg:text-base"}`}
+        >
           {description}
         </p>
       ) : null}

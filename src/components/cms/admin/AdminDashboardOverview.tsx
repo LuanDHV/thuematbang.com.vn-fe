@@ -239,7 +239,7 @@ export default function AdminDashboardOverview({
           return (
             <div
               key={metric.key}
-              className="surface-panel rounded-xl p-4 shadow-none"
+              className="surface-panel p-4 shadow-none"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">
@@ -262,7 +262,7 @@ export default function AdminDashboardOverview({
         })}
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.5fr)_minmax(360px,1fr)]">
+      <div className="grid gap-5 xl:grid-cols-2">
         <Card className="surface-panel gap-0">
           <CardHeader className="border-hairline border-b">
             <div className="space-y-1">

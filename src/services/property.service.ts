@@ -7,6 +7,7 @@ import {
   PublishSource,
   PublishStatus,
 } from "@/types/enums";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
@@ -19,9 +20,7 @@ export type PropertySortBy =
   | "price"
   | "area"
   | "viewCount"
-  | "boostedAt"
-  | "priorityStatus"
-  | "isFeatured";
+  | "priorityStatus";
 
 export type PropertyListFilters = {
   categoryId?: number;
@@ -32,10 +31,8 @@ export type PropertyListFilters = {
   title?: string;
   provinceId?: number;
   wardId?: number;
-  streetId?: number;
   provinceSlug?: string;
   wardSlug?: string;
-  streetSlug?: string;
   minPrice?: number;
   maxPrice?: number;
   minArea?: number;
@@ -50,7 +47,6 @@ export type PropertyListFilters = {
   publishSource?: PublishSource;
   isBoosted?: boolean;
   status?: PublishStatus;
-  isFeatured?: boolean;
   sortBy?: PropertySortBy;
   sortOrder?: "asc" | "desc";
 };
@@ -72,7 +68,45 @@ export type PropertyMineParams = {
   limit?: number;
 };
 
-export type UpdatePropertyPayload = FormData;
+export type PropertyUpsertPayload = {
+  title: string;
+  slug: string;
+  categoryId?: number;
+  priceAmount?: number;
+  priceUnit?: string;
+  price?: number | null;
+  isNegotiable?: boolean;
+  area?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  floors?: number;
+  direction?: PropertyDirection | null;
+  provinceId?: number;
+  wardId?: number;
+  contactName: string;
+  contactPhone: string;
+  addressDetail?: string;
+  longitude?: number;
+  latitude?: number;
+  content?: string;
+  priorityStatus?: PropertyPriority | null;
+  publishSource?: PublishSource | null;
+  isBoosted?: boolean;
+  boostCount?: number;
+  status?: PublishStatus | null;
+  userId?: number;
+  images?: UploadedCloudinaryImage[];
+};
+
+export type PropertyCreatePayload = Omit<
+  PropertyUpsertPayload,
+  "removeImageIds" | "orderedExistingImageIds"
+>;
+
+export type PropertyUpdatePayload = PropertyUpsertPayload & {
+  removeImageIds?: number[];
+  orderedExistingImageIds?: number[];
+};
 
 export const propertyService = {
   // Fetch one paginated property list with the filter contract used across public and CMS pages.
@@ -124,6 +158,19 @@ export const propertyService = {
     return response.data;
   },
 
+  // Create one property through the authenticated CMS mutation contract.
+  create: async (payload: PropertyCreatePayload) => {
+    const response = await requestServerApi<Property>("/properties", {
+      method: "POST",
+      auth: "required",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.data;
+  },
+
   // Fetch the current user's own property listings for the account area.
   getMine: async (params: PropertyMineParams = {}) =>
     requestServerApi<Property[]>(buildListPath("/me/properties", params), {
@@ -136,11 +183,14 @@ export const propertyService = {
     }),
 
   // Update one property through the authenticated CMS mutation contract.
-  update: async (id: number, payload: UpdatePropertyPayload) => {
+  update: async (id: number, payload: PropertyUpdatePayload) => {
     const response = await requestServerApi<Property>(`/properties/${id}`, {
       method: "PATCH",
       auth: "required",
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
     return response.data;
   },

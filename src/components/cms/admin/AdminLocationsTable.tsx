@@ -17,13 +17,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import type { Province, Street, Ward } from "@/types/location";
-import type { AdminTableToolbar } from "./data-table";
+import type { Province, Ward } from "@/types/location";
+import type { AdminTableToolbar } from "./DataTable";
 
 type AdminLocationsTableProps = {
   provinces: Province[];
   wards: Ward[];
-  streets: Street[];
   selectedProvince?: Province | null;
   selectedWard?: Ward | null;
   searchValue?: string;
@@ -223,9 +222,8 @@ function LocationDrilldownTable<TData extends { id: number }>({
 export default function AdminLocationsTable({
   provinces,
   wards,
-  streets,
   selectedProvince,
-  selectedWard,
+
   searchValue,
   toolbar,
 }: AdminLocationsTableProps) {
@@ -299,9 +297,7 @@ export default function AdminLocationsTable({
     }
   };
 
-  // Query params drive the visible level so reload and browser history stay
-  // aligned with the server-fetched province -> ward -> street hierarchy.
-  const navigateWithParams = (provinceId?: QueryValue, wardId?: QueryValue) => {
+  const navigateToProvince = (provinceId?: QueryValue) => {
     const params = new URLSearchParams(searchParams);
 
     if (searchValue) {
@@ -316,11 +312,7 @@ export default function AdminLocationsTable({
       params.delete("provinceId");
     }
 
-    if (wardId) {
-      params.set("wardId", String(wardId));
-    } else {
-      params.delete("wardId");
-    }
+    params.delete("wardId");
 
     const query = params.toString();
     router.push(query ? `${pathname}?${query}` : pathname);
@@ -355,7 +347,9 @@ export default function AdminLocationsTable({
         render: (ward) => (
           <div className="space-y-1">
             <p className="font-medium">{ward.name}</p>
-            <p className="text-secondary text-xs">Nhấn để xem đường phố</p>
+            <p className="text-secondary text-xs">
+              Thuộc {selectedProvince?.name}
+            </p>
           </div>
         ),
       },
@@ -365,58 +359,27 @@ export default function AdminLocationsTable({
         render: (ward) => ward.slug,
       },
     ],
-    [],
+    [selectedProvince?.name],
   );
 
-  const streetColumns = useMemo<DrilldownColumn<Street>[]>(
-    () => [
-      {
-        key: "name",
-        header: "Tên",
-        render: (street) => street.name,
-      },
-      {
-        key: "slug",
-        header: "Slug",
-        render: (street) => street.slug,
-      },
-      {
-        key: "wardId",
-        header: "Phường ID",
-        className: "hidden lg:table-cell",
-        render: (street) => street.wardId ?? "Chưa có",
-      },
-    ],
-    [],
-  );
-
-  const levelMeta = selectedWard
+  const levelMeta = selectedProvince
     ? {
-        eyebrow: "Level 3",
-        title: "Đường phố",
-        description: `Danh sách đường phố thuộc ${selectedWard.name}.`,
-        emptyTitle: "Chưa có dữ liệu đường phố",
+        eyebrow: "Level 2",
+        title: "Phường / Xã",
+        description: `Danh sách phường/xã thuộc ${selectedProvince.name}.`,
+        emptyTitle: "Không có phường/xã",
         emptyDescription:
-          "Hiện chưa có bản ghi đường phố cho phường/xã này hoặc kết quả tìm kiếm không khớp.",
+          "Chưa có bản ghi phường/xã cho tỉnh/thành này hoặc kết quả tìm kiếm không khớp.",
       }
-    : selectedProvince
-      ? {
-          eyebrow: "Level 2",
-          title: "Phường / Xã",
-          description: `Danh sách phường/xã thuộc ${selectedProvince.name}.`,
-          emptyTitle: "Không có phường/xã",
-          emptyDescription:
-            "Chưa có bản ghi phường/xã cho tỉnh/thành này hoặc kết quả tìm kiếm không khớp.",
-        }
-      : {
-          eyebrow: "Level 1",
-          title: "Tỉnh / Thành phố",
-          description:
-            "Chọn một tỉnh/thành để drill down sang danh sách phường/xã tương ứng.",
-          emptyTitle: "Không có tỉnh/thành",
-          emptyDescription:
-            "Chưa có bản ghi tỉnh/thành hoặc kết quả tìm kiếm không khớp.",
-        };
+    : {
+        eyebrow: "Level 1",
+        title: "Tỉnh / Thành phố",
+        description:
+          "Chọn một tỉnh/thành để xem danh sách phường/xã tương ứng.",
+        emptyTitle: "Không có tỉnh/thành",
+        emptyDescription:
+          "Chưa có bản ghi tỉnh/thành hoặc kết quả tìm kiếm không khớp.",
+      };
 
   const tableHeader = (
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -476,25 +439,13 @@ export default function AdminLocationsTable({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2">
-          {selectedWard ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="gap-1.5"
-              onClick={() => navigateWithParams(selectedProvince?.id)}
-            >
-              <ArrowLeft className="size-4" />
-              Quay lại phường/xã
-            </Button>
-          ) : null}
           {selectedProvince ? (
             <Button
               type="button"
               variant="outline"
               size="sm"
               className="gap-1.5"
-              onClick={() => navigateWithParams()}
+              onClick={() => navigateToProvince()}
             >
               <ArrowLeft className="size-4" />
               Quay lại tỉnh/thành
@@ -507,23 +458,13 @@ export default function AdminLocationsTable({
 
   return (
     <div className="space-y-5">
-      {selectedWard ? (
-        <LocationDrilldownTable
-          data={streets}
-          columns={streetColumns}
-          emptyTitle={levelMeta.emptyTitle}
-          emptyDescription={levelMeta.emptyDescription}
-          header={tableHeader}
-        />
-      ) : selectedProvince ? (
+      {selectedProvince ? (
         <LocationDrilldownTable
           data={wards}
           columns={wardColumns}
           emptyTitle={levelMeta.emptyTitle}
           emptyDescription={levelMeta.emptyDescription}
           header={tableHeader}
-          actionLabel="Xem đường phố"
-          onSelect={(ward) => navigateWithParams(selectedProvince.id, ward.id)}
         />
       ) : (
         <LocationDrilldownTable
@@ -533,18 +474,18 @@ export default function AdminLocationsTable({
           emptyDescription={levelMeta.emptyDescription}
           header={tableHeader}
           actionLabel="Xem phường/xã"
-          onSelect={(province) => navigateWithParams(province.id)}
+          onSelect={(province) => navigateToProvince(province.id)}
         />
       )}
 
       {!selectedProvince ? (
         <div className="surface-card border-hairline border p-4">
           <p className="text-secondary text-sm">
-            Chọn một tỉnh/thành để chuyển sang level phường/xã. Từ đó có thể
-            drill down tiếp sang đường phố khi dữ liệu streets sẵn sàng.
+            Chọn một tỉnh/thành để chuyển sang level phường/xã.
           </p>
         </div>
       ) : null}
     </div>
   );
 }
+

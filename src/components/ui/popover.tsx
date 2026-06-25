@@ -21,16 +21,19 @@ function PopoverContent({
   className,
   align = "center",
   sideOffset = 4,
+  container,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+}: React.ComponentProps<typeof PopoverPrimitive.Content> & {
+  container?: React.ComponentProps<typeof PopoverPrimitive.Portal>["container"];
+}) {
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={container ?? undefined}>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-(--radix-popover-trigger-width) min-w-(--radix-popover-trigger-width) rounded-xl border border-black/8 bg-white p-3 text-body shadow-[0_24px_60px_rgba(15,23,42,0.12)] outline-none backdrop-blur-md",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-(--radix-popover-trigger-width) min-w-(--radix-popover-trigger-width) rounded-xl border border-hairline bg-surface p-3 text-body shadow-xl outline-none backdrop-blur-md",
           className,
         )}
         {...props}
@@ -40,3 +43,4 @@ function PopoverContent({
 }
 
 export { Popover, PopoverTrigger, PopoverContent };
+

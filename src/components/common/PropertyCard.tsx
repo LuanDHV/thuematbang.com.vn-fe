@@ -1,15 +1,6 @@
 "use client";
 
-import CloudinaryImage from "@/components/common/CloudinaryImage";
-import {
-  formatAreaValue,
-  formatDate,
-  formatLocationParts,
-  formatNegotiablePrice,
-  formatNumber,
-} from "@/lib/utils";
-import type { PropertyPriority } from "@/types";
-import { Property } from "@/types/property";
+import Link from "next/link";
 import {
   Bath,
   Bed,
@@ -21,11 +12,21 @@ import {
   Maximize,
   Star,
 } from "lucide-react";
-import Link from "next/link";
+
+import CloudinaryImage from "@/components/common/CloudinaryImage";
+import {
+  formatAreaValue,
+  formatDate,
+  formatLocationParts,
+  formatNegotiablePrice,
+  formatNumber,
+} from "@/lib/format";
+import type { PropertyPriority } from "@/types";
+import { Property } from "@/types/property";
 
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
 const CARD_HOVER_CLASSES =
-  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(26,18,8,0.13)]";
+  "group flex h-full flex-col overflow-hidden transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-2xl";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
@@ -35,29 +36,20 @@ function resolvePropertyHref(property: Property) {
 }
 
 function getSortedPropertyImageUrls(property: Property) {
-  return (
+  const sortedImages =
     property.images
       ?.slice()
       .sort((left, right) => left.sortOrder - right.sortOrder)
       .map((image) => image.imageUrl)
-      .filter(Boolean) ?? []
+      .filter(Boolean) ?? [];
+
+  return sortedImages.filter(
+    (url, index, array) => array.indexOf(url) === index,
   );
 }
 
 function getPropertyThumbnailUrl(property: Property) {
   return getSortedPropertyImageUrls(property)[0] || DEFAULT_PROPERTY_IMAGE;
-}
-
-function getPropertyGalleryImages(property: Property) {
-  const images = getSortedPropertyImageUrls(property);
-  const fallbackImage = images[0] || getPropertyThumbnailUrl(property);
-  const normalizedImages = images.length > 0 ? [...images] : [fallbackImage];
-
-  while (normalizedImages.length < 4) {
-    normalizedImages.push(fallbackImage);
-  }
-
-  return normalizedImages.slice(0, 4);
 }
 
 function getTierTone(priorityStatus?: string | null): CardTone {
@@ -73,7 +65,7 @@ function getTierTone(priorityStatus?: string | null): CardTone {
 
 function CardFooter({ property }: { property: Property }) {
   return (
-    <div className="text-secondary mt-auto grid grid-cols-2 gap-2 border-t border-dashed border-black/10 pt-3 text-xs">
+    <div className="text-secondary border-hairline mt-auto grid grid-cols-2 gap-2 border-t border-dashed pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
         <Calendar size={14} />
         {formatDate(property.createdAt)}
@@ -91,13 +83,13 @@ function TierBadge({ tone }: { tone: CardTone }) {
     tone === "PREMIUM"
       ? "bg-primary text-white"
       : tone === "STANDARD"
-        ? "bg-white/90 text-body"
-        : "bg-white/80 text-secondary";
+        ? "bg-surface/92 text-body"
+        : "bg-subtle text-secondary";
   const iconSize = 14;
 
   return (
     <span
-      className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${toneClasses}`}
+      className={`absolute top-3 left-0 z-20 inline-flex items-center gap-1 rounded-l-none rounded-r-full px-2 py-0.5 text-xs font-semibold uppercase ${toneClasses}`}
     >
       {tone === "PREMIUM" ? <Crown size={iconSize} /> : null}
       {tone === "STANDARD" ? <Star size={iconSize} /> : null}
@@ -113,37 +105,12 @@ function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
 
   return (
     <div
-      className={`absolute top-3 right-3 z-30 rounded-lg bg-black/52 font-semibold text-white ${badgeSizeClass}`}
+      className={`absolute top-3 right-3 z-30 rounded-lg bg-black/50 font-semibold text-white ${badgeSizeClass}`}
     >
       <span className="inline-flex items-center gap-1">
         <Images size={iconSize} />
         {count}
       </span>
-    </div>
-  );
-}
-
-function OverlayTitle({
-  property,
-  tone,
-}: {
-  property: Property;
-  tone: CardTone;
-}) {
-  const titleClass =
-    tone === "PREMIUM"
-      ? "text-2xl"
-      : tone === "STANDARD"
-        ? "text-xl "
-        : "text-lg";
-
-  return (
-    <div className="absolute right-3 bottom-3 left-3 z-20">
-      <h3
-        className={`line-clamp-2 leading-snug font-medium text-white ${titleClass}`}
-      >
-        {property.title}
-      </h3>
     </div>
   );
 }
@@ -154,23 +121,31 @@ function CardHoverBar() {
   );
 }
 
-function FeaturedCard({ property }: { property: Property }) {
+function FeaturedCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const tone = getTierTone(property.priorityStatus);
 
   return (
-    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
+    <article
+      className={`surface-editorial ${CARD_HOVER_CLASSES}`}
+    >
       <div className="relative h-52 overflow-hidden">
         <TierBadge tone={tone} />
         <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
           alt={property.title || "Bất động sản"}
-          fill
+          width={1200}
+          height={800}
+          priority={priority}
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/62 via-black/18 to-transparent" />
-        <OverlayTitle property={property} tone={tone} />
       </div>
 
       <CardBody
@@ -178,166 +153,261 @@ function FeaturedCard({ property }: { property: Property }) {
         density="rich"
         tone={tone}
         showPreview={false}
+        showRooms={false}
       />
       <CardHoverBar />
     </article>
   );
 }
 
-function PremiumCard({ property }: { property: Property }) {
+function PremiumCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const fallbackImage = getPropertyThumbnailUrl(property);
-  const imagesList = getPropertyGalleryImages(property);
-  const realImageCount = Math.max(
-    1,
-    getSortedPropertyImageUrls(property).length,
-  );
+  const imagesList = getSortedPropertyImageUrls(property);
+  const realImageCount = imagesList.length;
+  const heroImage = imagesList[0] || fallbackImage;
+  const sideImages = imagesList.slice(1, 4);
+  const hasSideGallery = sideImages.length > 0;
+  const sideLayout =
+    sideImages.length >= 3
+      ? "stacked"
+      : sideImages.length === 2
+        ? "split"
+        : sideImages.length === 1
+          ? "single"
+          : "none";
 
   return (
     <article
-      className={`surface-card ${CARD_HOVER_CLASSES} border-primary/10 rounded-2xl`}
+      className={`surface-marketplace ${CARD_HOVER_CLASSES} border-primary/10`}
     >
       <div className="bg-subtle relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
-          className={`relative h-full overflow-hidden ${imagesList.length > 1 ? "w-2/3" : "w-full"}`}
+          className={`relative h-full overflow-hidden ${hasSideGallery ? "w-2/3" : "w-full"}`}
         >
           <CloudinaryImage
-            src={imagesList[0]}
+            src={heroImage}
             alt={property.title || "Bất động sản"}
-            fill
+            width={1200}
+            height={800}
+            priority={priority}
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             cldQuality="auto:best"
           />
         </div>
 
-        {imagesList.length > 1 ? (
+        {hasSideGallery ? (
           <div className="flex w-1/3 flex-col gap-0.5">
-            <div className="relative h-1/2 w-full overflow-hidden">
-              <CloudinaryImage
-                src={imagesList[1] || fallbackImage}
-                alt={`${property.title} - ảnh 2`}
-                fill
-                sizes="(max-width: 768px) 40vw, 20vw"
-                className="object-cover"
-                cldQuality="auto:best"
-              />
-            </div>
-            <div className="flex h-1/2 w-full gap-0.5">
-              <div className="relative h-full w-1/2 overflow-hidden">
+            {sideLayout === "single" ? (
+              <div className="relative h-full w-full overflow-hidden">
                 <CloudinaryImage
-                  src={imagesList[2] || fallbackImage}
-                  alt={`${property.title} - ảnh 3`}
-                  fill
-                  sizes="(max-width: 768px) 30vw, 15vw"
-                  className="object-cover"
+                  src={sideImages[0] || fallbackImage}
+                  alt={`${property.title} - ảnh 2`}
+                  width={800}
+                  height={600}
+                  sizes="(max-width: 768px) 40vw, 20vw"
+                  className="h-full w-full object-cover"
                   cldQuality="auto:best"
                 />
               </div>
-              <div className="relative h-full w-1/2 overflow-hidden">
-                <CloudinaryImage
-                  src={imagesList[3] || fallbackImage}
-                  alt={`${property.title} - ảnh 4`}
-                  fill
-                  sizes="(max-width: 768px) 30vw, 15vw"
-                  className="object-cover"
-                  cldQuality="auto:best"
-                />
-              </div>
-            </div>
+            ) : sideLayout === "split" ? (
+              <>
+                <div className="relative h-1/2 w-full overflow-hidden">
+                  <CloudinaryImage
+                    src={sideImages[0] || fallbackImage}
+                    alt={`${property.title} - ảnh 2`}
+                    width={800}
+                    height={600}
+                    sizes="(max-width: 768px) 40vw, 20vw"
+                    className="h-full w-full object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+                <div className="relative h-1/2 w-full overflow-hidden">
+                  <CloudinaryImage
+                    src={sideImages[1] || fallbackImage}
+                    alt={`${property.title} - ảnh 3`}
+                    width={800}
+                    height={600}
+                    sizes="(max-width: 768px) 40vw, 20vw"
+                    className="h-full w-full object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="relative h-1/2 w-full overflow-hidden">
+                  <CloudinaryImage
+                    src={sideImages[0] || fallbackImage}
+                    alt={`${property.title} - ảnh 2`}
+                    width={800}
+                    height={600}
+                    sizes="(max-width: 768px) 40vw, 20vw"
+                    className="h-full w-full object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+                <div className="flex h-1/2 w-full gap-0.5">
+                  <div className="relative h-full w-1/2 overflow-hidden">
+                    <CloudinaryImage
+                      src={sideImages[1] || fallbackImage}
+                      alt={`${property.title} - ảnh 3`}
+                      width={800}
+                      height={600}
+                      sizes="(max-width: 768px) 30vw, 15vw"
+                      className="h-full w-full object-cover"
+                      cldQuality="auto:best"
+                    />
+                  </div>
+                  <div className="relative h-full w-1/2 overflow-hidden">
+                    <CloudinaryImage
+                      src={sideImages[2] || fallbackImage}
+                      alt={`${property.title} - ảnh 4`}
+                      width={800}
+                      height={600}
+                      sizes="(max-width: 768px) 30vw, 15vw"
+                      className="h-full w-full object-cover"
+                      cldQuality="auto:best"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
         <TierBadge tone="PREMIUM" />
         <ImageCountBadge count={realImageCount} tone="PREMIUM" />
-        <OverlayTitle property={property} tone="PREMIUM" />
       </div>
 
-      <CardBody property={property} density="rich" tone="PREMIUM" showPreview />
+      <CardBody
+        property={property}
+        density="rich"
+        tone="PREMIUM"
+        showPreview={false}
+      />
       <CardHoverBar />
     </article>
   );
 }
 
-function StandardCard({ property }: { property: Property }) {
+function StandardCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const fallbackImage = getPropertyThumbnailUrl(property);
-  const imagesList = getPropertyGalleryImages(property);
-  const realImageCount = Math.max(
-    1,
-    getSortedPropertyImageUrls(property).length,
-  );
-
-  const rightThumbs = [
-    imagesList[1] || fallbackImage,
-    imagesList[2] || fallbackImage,
-  ];
+  const imagesList = getSortedPropertyImageUrls(property);
+  const realImageCount = imagesList.length;
+  const heroImage = imagesList[0] || fallbackImage;
+  const sideImages = imagesList.slice(1, 3);
+  const hasSideGallery = sideImages.length > 0;
 
   return (
-    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-2xl`}>
+    <article
+      className={`surface-marketplace ${CARD_HOVER_CLASSES}`}
+    >
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden">
-        <div className="relative w-2/3 overflow-hidden">
+        <div
+          className={`relative overflow-hidden ${hasSideGallery ? "w-2/3" : "w-full"}`}
+        >
           <CloudinaryImage
-            src={imagesList[0]}
+            src={heroImage}
             alt={property.title || "Bất động sản"}
-            fill
+            width={1200}
+            height={800}
+            priority={priority}
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             cldQuality="auto:best"
           />
         </div>
 
-        <div className="flex w-1/3 flex-col gap-0.5">
-          {rightThumbs.map((src, index) => (
-            <div
-              key={`${property.id}-right-thumb-${index}`}
-              className="relative h-1/2 overflow-hidden"
-            >
-              <CloudinaryImage
-                src={src}
-                alt={`${property.title} - ảnh phụ ${index + 1}`}
-                fill
-                sizes="(max-width: 768px) 30vw, 15vw"
-                className="object-cover"
-                cldQuality="auto:best"
-              />
-            </div>
-          ))}
-        </div>
+        {hasSideGallery ? (
+          <div className="flex w-1/3 flex-col gap-0.5">
+            {sideImages.length === 1 ? (
+              <div className="relative h-full overflow-hidden">
+                <CloudinaryImage
+                  src={sideImages[0] || fallbackImage}
+                  alt={`${property.title} - ảnh phụ 1`}
+                  width={800}
+                  height={600}
+                  sizes="(max-width: 768px) 30vw, 15vw"
+                  className="h-full w-full object-cover"
+                  cldQuality="auto:best"
+                />
+              </div>
+            ) : (
+              sideImages.map((src, index) => (
+                <div
+                  key={`${property.id}-right-thumb-${index}`}
+                  className="relative h-1/2 overflow-hidden"
+                >
+                  <CloudinaryImage
+                    src={src || fallbackImage}
+                    alt={`${property.title} - ảnh phụ ${index + 1}`}
+                    width={800}
+                    height={600}
+                    sizes="(max-width: 768px) 30vw, 15vw"
+                    className="h-full w-full object-cover"
+                    cldQuality="auto:best"
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        ) : null}
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/24 to-transparent" />
         <TierBadge tone="STANDARD" />
         <ImageCountBadge count={realImageCount} tone="STANDARD" />
-        <OverlayTitle property={property} tone="STANDARD" />
       </div>
 
       <CardBody
         property={property}
         density="rich"
         tone="STANDARD"
-        showPreview
+        showPreview={false}
+        showRooms
       />
       <CardHoverBar />
     </article>
   );
 }
 
-function FreeCard({ property }: { property: Property }) {
+function FreeCard({
+  property,
+  priority = false,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const image = getPropertyThumbnailUrl(property);
 
   return (
-    <article className={`surface-card ${CARD_HOVER_CLASSES} rounded-xl`}>
+    <article
+      className={`surface-utility ${CARD_HOVER_CLASSES}`}
+    >
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage
           src={image}
           alt={property.title || "Bất động sản"}
-          fill
+          width={1200}
+          height={800}
+          priority={priority}
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           cldQuality="auto:best"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/22 to-transparent" />
         <TierBadge tone="FREE" />
-        <OverlayTitle property={property} tone="FREE" />
       </div>
 
       <CardBody
@@ -345,6 +415,7 @@ function FreeCard({ property }: { property: Property }) {
         density="compact"
         tone="FREE"
         showPreview={false}
+        showRooms
       />
       <CardHoverBar />
     </article>
@@ -356,11 +427,13 @@ function CardBody({
   density,
   tone,
   showPreview,
+  showRooms = true,
 }: {
   property: Property;
   density: CardDensity;
   tone: CardTone;
   showPreview: boolean;
+  showRooms?: boolean;
 }) {
   const location = formatLocationParts(
     [property.ward?.name, property.province?.name],
@@ -368,18 +441,20 @@ function CardBody({
   );
   const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
   const isCompact = density === "compact";
-
-  const bedroomsText = property.bedrooms
-    ? `${property.bedrooms} phòng ngủ`
-    : isCompact
-      ? null
-      : "Đang cập nhật phòng ngủ";
-
-  const bathroomsText = property.bathrooms
-    ? `${property.bathrooms} phòng tắm`
-    : isCompact
-      ? null
-      : "Đang cập nhật phòng tắm";
+  const bedroomsText = showRooms
+    ? property.bedrooms
+      ? `${property.bedrooms} phòng ngủ`
+      : isCompact
+        ? null
+        : "Đang cập nhật phòng ngủ"
+    : null;
+  const bathroomsText = showRooms
+    ? property.bathrooms
+      ? `${property.bathrooms} phòng tắm`
+      : isCompact
+        ? null
+        : "Đang cập nhật phòng tắm"
+    : null;
 
   const metaItems = [
     { icon: MapPin, text: location },
@@ -393,9 +468,9 @@ function CardBody({
 
   const categoryBadgeSizeClass =
     tone === "PREMIUM"
-      ? "text-base"
+      ? "text-sm"
       : tone === "STANDARD"
-        ? "text-sm"
+        ? "text-xs"
         : "text-xs";
 
   const priceClass =
@@ -412,7 +487,12 @@ function CardBody({
         ? "text-sm"
         : "text-xs";
 
-  const previewTextClass = tone === "PREMIUM" ? "text-sm" : "text-xs";
+  const previewTextClass =
+    tone === "PREMIUM"
+      ? "text-sm"
+      : tone === "STANDARD"
+        ? "text-sm"
+        : "text-sm";
   const metaGridClass =
     tone === "PREMIUM" || tone === "STANDARD"
       ? "grid-cols-1"
@@ -421,19 +501,25 @@ function CardBody({
         : "grid-cols-2";
 
   return (
-    <div className="flex h-full flex-1 flex-col p-5">
+    <div className="flex h-full flex-1 flex-col p-4">
       {property.category?.name && (
         <span
-          className={`text-primary mb-2 inline-flex w-fit items-center self-start font-semibold uppercase ${categoryBadgeSizeClass}`}
+          className={`text-primary mb-2 inline-flex w-fit items-center self-start font-semibold tracking-[0.16em] uppercase ${categoryBadgeSizeClass}`}
         >
           {property.category.name}
         </span>
       )}
+      <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+        {property.title}
+      </h3>
+
       <p
         className={`group-hover:text-primary text-heading transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
       >
         {formatNegotiablePrice(property.price, property.isNegotiable, {
           fallback: "Liên hệ",
+          amount: property.priceAmount,
+          unit: property.priceUnit,
         })}
       </p>
 
@@ -467,27 +553,29 @@ function CardBody({
 export function PropertyCard({
   property,
   variant = "tier",
+  priority = false,
 }: {
   property: Property;
   variant?: "featured" | "tier";
+  priority?: boolean;
 }) {
   const href = resolvePropertyHref(property);
 
   let content: React.ReactNode;
 
   if (variant === "featured") {
-    content = <FeaturedCard property={property} />;
+    content = <FeaturedCard property={property} priority={priority} />;
   } else {
     const tier = (property.priorityStatus ?? "FREE") as PropertyPriority;
     switch (tier) {
       case "PREMIUM":
-        content = <PremiumCard property={property} />;
+        content = <PremiumCard property={property} priority={priority} />;
         break;
       case "STANDARD":
-        content = <StandardCard property={property} />;
+        content = <StandardCard property={property} priority={priority} />;
         break;
       default:
-        content = <FreeCard property={property} />;
+        content = <FreeCard property={property} priority={priority} />;
         break;
     }
   }

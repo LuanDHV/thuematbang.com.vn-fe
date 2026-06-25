@@ -1,20 +1,20 @@
 "use client";
 
+import { useMemo, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+
+import { deleteProjectAction } from "@/actions/admin-crud.actions";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
+} from "@/components/cms/admin/DataTable";
 import AdminStatusBadge, {
   publishStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
-import {
-  createPaginationChangeHandler,
-  formatLocationParts,
-  formatVndAmount,
-} from "@/lib/utils";
-import type { PublishStatus } from "@/types/enums";
+import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
+import { formatLocationParts, formatNegotiablePrice } from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
+import { useToast } from "@/components/ui/use-toast";
 import type { Project } from "@/types/project";
 import AdminEntityCell from "./AdminEntityCell";
 
@@ -23,12 +23,6 @@ type AdminProjectsTableProps = {
   currentPage: number;
   totalPages: number;
   toolbar?: AdminTableToolbar;
-};
-
-const statusLabelMap: Record<PublishStatus, string> = {
-  DRAFT: "Nháp",
-  PUBLISHED: "Đã đăng",
-  ARCHIVED: "Lưu trữ",
 };
 
 export default function AdminProjectsTable({
@@ -40,6 +34,7 @@ export default function AdminProjectsTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -47,9 +42,17 @@ export default function AdminProjectsTable({
     totalPages,
   );
 
-  async function handleDeleteProject(id: string | number) {
-    console.info("Delete project requested", { id });
-  }
+  const handleDeleteProject = useCallback(
+    async (id: string | number) => {
+      await deleteProjectAction(id);
+      toast({
+        title: "Đã xóa dự án",
+        description: "Dự án đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
 
   function getPrimaryProjectImage(project: Project) {
     return (
@@ -90,7 +93,11 @@ export default function AdminProjectsTable({
         key: "price",
         header: "Giá",
         fieldType: "text",
-        accessor: (item) => formatVndAmount(item.price),
+        accessor: (item) =>
+          formatNegotiablePrice(item.price, item.isNegotiable, {
+            amount: item.priceAmount,
+            unit: item.priceUnit,
+          }),
       },
       {
         key: "status",
@@ -99,9 +106,16 @@ export default function AdminProjectsTable({
         accessor: (item) => item.status,
         render: ({ row }) => (
           <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
-            {statusLabelMap[row.status]}
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
           </AdminStatusBadge>
         ),
+      },
+      {
+        key: "viewCount",
+        header: "Lượt xem",
+        fieldType: "number",
+        accessor: (item) => item.viewCount,
+        mobileHidden: true,
       },
       {
         key: "createdAt",
@@ -118,7 +132,7 @@ export default function AdminProjectsTable({
         onDelete: handleDeleteProject,
       },
     ],
-    [],
+    [handleDeleteProject],
   );
 
   return (

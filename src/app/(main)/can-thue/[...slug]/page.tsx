@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
@@ -11,12 +12,14 @@ import RentRequestDetailSidebar from "@/components/listing-detail/rent-request/R
 import {
   buildPropertyFilterBreadcrumbs,
   isLikelyPropertyFilterSlug,
-  parsePagedSlugSegments,
+  parseListingPagedSlugSegments,
   parsePropertyFilterSlug,
-} from "@/lib/flat-url";
+} from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
+import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import { RentRequest } from "@/types/rent-request";
 import { rentRequestService } from "@/services/rent-request.service";
 import { locationService } from "@/services/location.service";
@@ -87,15 +90,25 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { rawSlug } = parsePagedSlugSegments(slug);
+  const { rawSlug } = parseListingPagedSlugSegments(slug);
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
   if (rentRequest) {
+    const locationText = [
+      rentRequest.desiredWard?.name,
+      rentRequest.desiredProvince?.name,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
     return createPageMetadata({
       title: rentRequest.title,
-      description: rentRequest.requirementText || "Chi tiết nhu cầu cần thuê.",
+      description: buildMetaDescription(
+        [rentRequest.requirementText, locationText],
+        "Chi tiết nhu cầu cần thuê.",
+      ),
       pathname: `/can-thue/${rentRequest.slug}`,
-      image: rentRequest.imageUrl || undefined,
+      image: RENT_REQUEST_COVER_IMAGE,
       type: "article",
     });
   }
@@ -103,15 +116,16 @@ export async function generateMetadata({
   return createPageMetadata({
     title: "Cần thuê mặt bằng",
     description: "Danh sách cần thuê bất động sản theo bộ lọc.",
-    pathname: `/can-thue/${slug.join("/")}`,
+    pathname: rawSlug ? `/can-thue/${rawSlug}` : "/can-thue",
   });
 }
 
 export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
-  const { rawSlug, page } = parsePagedSlugSegments(slug);
+  const { rawSlug, page } = parseListingPagedSlugSegments(slug);
   const { accessToken } = await readAuthCookies();
   const isLoggedIn = Boolean(accessToken);
+
   const [seoRes, faqRes] = await Promise.all([
     seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
     faqService
@@ -136,7 +150,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     }
 
     const locationText = [
-      rentRequest.desiredStreet?.name,
       rentRequest.desiredWard?.name,
       rentRequest.desiredProvince?.name,
     ]
@@ -160,6 +173,21 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
     return (
       <article className="layout-container layout-section-sm">
+        <PageStructuredData
+          schemas={[
+            buildWebPageSchema({
+              title: rentRequest.title,
+              description: buildMetaDescription(
+                [rentRequest.requirementText, locationText],
+                "Chi tiết nhu cầu cần thuê.",
+              ),
+              url: `/can-thue/${rentRequest.slug}`,
+              image: RENT_REQUEST_COVER_IMAGE,
+              datePublished: rentRequest.createdAt,
+              dateModified: rentRequest.updatedAt,
+            }),
+          ]}
+        />
         <DynamicBreadcrumb
           className="mb-6"
           items={[
@@ -180,7 +208,6 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           aside={
             <RentRequestDetailSidebar
               contactName={rentRequest.contactName}
-              contactPhone={rentRequest.contactPhone}
               isLoggedIn={isLoggedIn}
               latestWantedProperties={latestWantedRequests}
             />
@@ -205,6 +232,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       });
 
   const paginationBasePath = rawSlug ? `/can-thue/${rawSlug}` : "/can-thue";
+
   return (
     <>
       <SafeFetch

@@ -1,7 +1,13 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+import {
+  PROPERTY_PRIORITY_LABEL_MAP,
+  PUBLISH_STATUS_LABEL_MAP,
+} from "@/constants/enum-options";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+
+import { deletePropertyAction } from "@/actions/property.actions";
 import AdminEntityCell from "@/components/cms/admin/AdminEntityCell";
 import AdminPriorityBadge, {
   type AdminPriorityTone,
@@ -11,14 +17,12 @@ import AdminStatusBadge, {
 } from "@/components/cms/admin/AdminStatusBadge";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
-import {
-  createPaginationChangeHandler,
-  formatLocationParts,
-  formatNegotiablePrice,
-} from "@/lib/utils";
-import type { PropertyPriority, PublishStatus } from "@/types/enums";
+} from "@/components/cms/admin/DataTable";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
+import { formatLocationParts, formatNegotiablePrice } from "@/lib/format";
+import { createPaginationChangeHandler } from "@/lib/pagination";
+import { useToast } from "@/components/ui/use-toast";
+import type { PropertyPriority } from "@/types/enums";
 import type { Property } from "@/types/property";
 
 type AdminPropertiesTableProps = {
@@ -32,18 +36,6 @@ const priorityToneMap: Record<PropertyPriority, AdminPriorityTone> = {
   FREE: "free",
   STANDARD: "standard",
   PREMIUM: "premium",
-};
-
-const priorityLabelMap: Record<PropertyPriority, string> = {
-  FREE: "Miễn phí",
-  STANDARD: "Tiêu chuẩn",
-  PREMIUM: "Cao cấp",
-};
-
-const statusLabelMap: Record<PublishStatus, string> = {
-  DRAFT: "Nháp",
-  PUBLISHED: "Đã đăng",
-  ARCHIVED: "Lưu trữ",
 };
 
 function getPrimaryPropertyImage(property: Property) {
@@ -63,6 +55,7 @@ export default function AdminPropertiesTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
@@ -71,9 +64,17 @@ export default function AdminPropertiesTable({
     totalPages,
   );
 
-  async function handleDeleteProperty(id: string | number) {
-    console.info("Delete property requested", { id });
-  }
+  const handleDeleteProperty = useCallback(
+    async (id: string | number) => {
+      await deletePropertyAction(id);
+      toast({
+        title: "Đã xóa tin cho thuê",
+        description: "Tin cho thuê đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
 
   const fields = useMemo<FieldConfig<Property>[]>(
     () => [
@@ -100,18 +101,17 @@ export default function AdminPropertiesTable({
         header: "Khu vực",
         fieldType: "text",
         accessor: (property) =>
-          formatLocationParts([
-            property.street?.name,
-            property.ward?.name,
-            property.province?.name,
-          ]),
+          formatLocationParts([property.ward?.name, property.province?.name]),
       },
       {
         key: "price",
         header: "Giá",
         fieldType: "text",
         accessor: (property) =>
-          formatNegotiablePrice(property.price, property.isNegotiable),
+          formatNegotiablePrice(property.price, property.isNegotiable, {
+            amount: property.priceAmount,
+            unit: property.priceUnit,
+          }),
       },
       {
         key: "priorityStatus",
@@ -120,7 +120,7 @@ export default function AdminPropertiesTable({
         accessor: (property) => property.priorityStatus,
         render: ({ row }) => (
           <AdminPriorityBadge tone={priorityToneMap[row.priorityStatus]}>
-            {priorityLabelMap[row.priorityStatus]}
+            {PROPERTY_PRIORITY_LABEL_MAP[row.priorityStatus]}
           </AdminPriorityBadge>
         ),
       },
@@ -131,9 +131,16 @@ export default function AdminPropertiesTable({
         accessor: (property) => property.status,
         render: ({ row }) => (
           <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
-            {statusLabelMap[row.status]}
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
           </AdminStatusBadge>
         ),
+      },
+      {
+        key: "viewCount",
+        header: "Lượt xem",
+        fieldType: "number",
+        accessor: (property) => property.viewCount,
+        mobileHidden: true,
       },
       {
         key: "createdAt",
@@ -150,7 +157,7 @@ export default function AdminPropertiesTable({
         onDelete: handleDeleteProperty,
       },
     ],
-    [],
+    [handleDeleteProperty],
   );
 
   return (

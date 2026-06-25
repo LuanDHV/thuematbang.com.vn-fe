@@ -3,7 +3,7 @@ import {
   resolvePaginationServer,
   resolveSearchQueryValue,
   resolveSearchParamValue,
-} from "@/lib/server-side";
+} from "@/lib/server/server-side";
 import { leadService } from "@/services/lead.service";
 import type { LeadStatus } from "@/types/enums";
 
@@ -20,9 +20,9 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
   const limit = 10;
   const status =
     statusValue &&
-    (
-      ["NEW", "CONTACTED", "QUALIFIED", "CLOSED", "REJECTED"] as LeadStatus[]
-    ).includes(statusValue as LeadStatus)
+    (["NEW", "CONTACTED", "QUALIFIED", "REJECTED"] as LeadStatus[]).includes(
+      statusValue as LeadStatus,
+    )
       ? (statusValue as LeadStatus)
       : undefined;
 
@@ -48,7 +48,7 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
         totalPages={totalPages}
         toolbar={{
           title: "Quản lí leads",
-          searchPlaceholder: "Tìm kiếm tên, email hoặc sđt",
+          searchPlaceholder: "Tìm kiếm tên hoặc sđt",
           searchValue,
           actionLabel: "Tạo mới",
         }}
@@ -56,3 +56,4 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
     </section>
   );
 }
+

@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import PageStructuredData from "@/components/common/PageStructuredData";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import SafeFetch from "@/components/common/SafeFetch";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
-import { buildPropertyFilterBreadcrumbs } from "@/lib/flat-url";
+import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildWebPageSchema } from "@/lib/seo";
 import { faqService } from "@/services/faq.service";
 import { seoContentService } from "@/services/seo-content.service";
 import { propertyService } from "@/services/property.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Cho thuê mặt bằng",
-  description: "Tổng hợp mặt bằng cho thuê mới nhất trên toàn quốc.",
+  description: "Tổng hợp mặt bằng cho thuê mới nhất trên.",
   pathname: "/cho-thue",
 });
 
@@ -28,6 +30,17 @@ export default async function ChoThuePage() {
 
   return (
     <>
+      <PageStructuredData
+        schemas={[
+          buildWebPageSchema({
+            title: "Cho thuê mặt bằng",
+            description: "Tổng hợp mặt bằng cho thuê mới nhất trên.",
+            url: "/cho-thue",
+            schemaType: "CollectionPage",
+          }),
+        ]}
+      />
+
       <SafeFetch
         fetcher={propertyService.getAll({
           limit: 24,

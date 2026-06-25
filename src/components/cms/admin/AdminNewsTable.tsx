@@ -1,31 +1,28 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+
+import { deleteNewsAction } from "@/actions/admin-crud.actions";
+import AdminEntityCell from "@/components/cms/admin/AdminEntityCell";
 import AdminDataTable, {
   type AdminTableToolbar,
-} from "@/components/cms/admin/data-table";
+} from "@/components/cms/admin/DataTable";
 import AdminStatusBadge, {
   type AdminBadgeTone,
   publishStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
-import { type FieldConfig } from "@/components/cms/admin/column-generator";
-import { createPaginationChangeHandler } from "@/lib/utils";
-import type { PublishStatus } from "@/types/enums";
+import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
+import { createPaginationChangeHandler } from "@/lib/pagination";
+import { useToast } from "@/components/ui/use-toast";
 import type { News } from "@/types/news";
-import AdminEntityCell from "./AdminEntityCell";
 
 type AdminNewsTableProps = {
   items: News[];
   currentPage: number;
   totalPages: number;
   toolbar?: AdminTableToolbar;
-};
-
-const statusLabelMap: Record<PublishStatus, string> = {
-  DRAFT: "Nháp",
-  PUBLISHED: "Đã đăng",
-  ARCHIVED: "Lưu trữ",
 };
 
 function getFeaturedTone(isFeatured: boolean): AdminBadgeTone {
@@ -45,6 +42,7 @@ export default function AdminNewsTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -52,9 +50,17 @@ export default function AdminNewsTable({
     totalPages,
   );
 
-  async function handleDeleteNews(id: string | number) {
-    console.info("Delete news requested", { id });
-  }
+  const handleDeleteNews = useCallback(
+    async (id: string | number) => {
+      await deleteNewsAction(id);
+      toast({
+        title: "Đã xóa tin tức",
+        description: "Bài viết đã được xóa thành công.",
+        variant: "success",
+      });
+    },
+    [toast],
+  );
 
   const fields = useMemo<FieldConfig<News>[]>(
     () => [
@@ -94,7 +100,7 @@ export default function AdminNewsTable({
         accessor: (item) => item.status,
         render: ({ row }) => (
           <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
-            {statusLabelMap[row.status]}
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
           </AdminStatusBadge>
         ),
       },
@@ -119,7 +125,7 @@ export default function AdminNewsTable({
         onDelete: handleDeleteNews,
       },
     ],
-    [],
+    [handleDeleteNews],
   );
 
   return (
@@ -134,3 +140,5 @@ export default function AdminNewsTable({
     />
   );
 }
+
+

@@ -2,6 +2,7 @@ import {
   PaymentTransaction,
   PropertyBoostOrder,
   PropertyPackageOrder,
+  RentRequestExpressOrder,
   UserPostingQuota,
 } from "./commerce";
 import { AuthProvider, UserRole } from "./enums";
@@ -30,5 +31,6 @@ export interface User {
   postingQuota?: UserPostingQuota | null;
   packageOrders?: PropertyPackageOrder[];
   boostOrders?: PropertyBoostOrder[];
+  expressOrders?: RentRequestExpressOrder[];
   payments?: PaymentTransaction[];
 }

@@ -1,33 +1,27 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import "@fontsource/be-vietnam-pro/400.css";
+import "@fontsource/be-vietnam-pro/500.css";
+import "@fontsource/be-vietnam-pro/600.css";
+import "@fontsource/be-vietnam-pro/700.css";
 import "./globals.css";
 import { isProductionAppEnv } from "@/lib/app-env";
-import { siteConfig } from "@/lib/metadata";
+import { siteConfig } from "@/lib/site-config";
 import AppProviders from "@/components/providers/AppProviders";
+import PageStructuredData from "@/components/common/PageStructuredData";
+import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo";
 
 const isProduction = isProductionAppEnv();
-
-const geistSans = Be_Vietnam_Pro({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-  variable: "--font-geist-sans",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.description,
-    template: "%s | Thuematbang.com.vn",
+    default: siteConfig.titleSuffix,
+    template: `%s | ${siteConfig.titleSuffix}`,
   },
   description: siteConfig.description,
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    url: "/",
     siteName: siteConfig.name,
     title: siteConfig.name,
     description: siteConfig.description,
@@ -47,8 +41,8 @@ export const metadata: Metadata = {
     images: [siteConfig.defaultImage],
   },
   icons: {
-    icon: "/imgs/brand-logo.png",
-    apple: "/imgs/brand-logo.png",
+    icon: "/imgs/logo-TMB-black.png",
+    apple: "/imgs/logo-TMB-black.png",
   },
   robots: isProduction
     ? {
@@ -68,8 +62,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="bg-app text-body min-h-screen">
+    <html lang="vi" suppressHydrationWarning className="h-full antialiased">
+      <body className="bg-app text-body min-h-dvh">
+        <PageStructuredData
+          schemas={[buildWebSiteSchema(), buildOrganizationSchema()]}
+        />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
+import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
 import NewsDetailContent from "@/components/listing-detail/news/NewsDetailContent";
@@ -11,8 +12,13 @@ import {
   buildNewsCategoryBreadcrumbs,
   parsePagedSlugSegments,
   parseNewsCategoryFromSlug,
-} from "@/lib/flat-url";
+} from "@/lib/listing/flat-url";
 import { createPageMetadata } from "@/lib/metadata";
+import {
+  buildMetaDescription,
+  buildNewsArticleSchema,
+  buildWebPageSchema,
+} from "@/lib/seo";
 import { News } from "@/types/news";
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
@@ -71,7 +77,10 @@ export async function generateMetadata({
   if (news) {
     return createPageMetadata({
       title: news.title,
-      description: news.summary || "Nội dung bài viết tin tức bất động sản.",
+      description: buildMetaDescription(
+        [news.summary, news.content],
+        "Nội dung bài viết tin tức bất động sản.",
+      ),
       pathname: `/tin-tuc/${news.slug}`,
       image: news.imageUrl || undefined,
       type: "article",
@@ -109,6 +118,33 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
 
     return (
       <article className="layout-container layout-section-sm">
+        <PageStructuredData
+          schemas={[
+            buildWebPageSchema({
+              title: news.title,
+              description: buildMetaDescription(
+                [news.summary, news.content],
+                "Nội dung bài viết tin tức bất động sản.",
+              ),
+              url: `/tin-tuc/${news.slug}`,
+              image: news.imageUrl || undefined,
+              datePublished: news.createdAt,
+              dateModified: news.updatedAt,
+            }),
+            buildNewsArticleSchema({
+              title: news.title,
+              description: buildMetaDescription(
+                [news.summary, news.content],
+                "Nội dung bài viết tin tức bất động sản.",
+              ),
+              url: `/tin-tuc/${news.slug}`,
+              image: news.imageUrl || undefined,
+              datePublished: news.createdAt,
+              dateModified: news.updatedAt,
+              categoryName: news.category?.name,
+            }),
+          ]}
+        />
         <DynamicBreadcrumb
           className="mb-6"
           items={[
@@ -146,7 +182,7 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
     <SafeFetch
       fetcher={categoryFetch}
       debugLabel="News Dynamic Response"
-      fallbackMessage="Không tải được danh sách tin tức."
+      fallbackMessage="Khong tai duoc danh sach tin tuc."
     >
       {(response) => (
         <NewsListingClient

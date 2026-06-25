@@ -2,6 +2,7 @@ import "server-only";
 
 import { Project } from "@/types/project";
 import { PublishStatus } from "@/types/enums";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
@@ -34,6 +35,36 @@ export type ProjectGetAllParams = {
   categorySlug?: string;
   page?: number;
   limit?: number;
+};
+
+export type ProjectUpsertPayload = {
+  name: string;
+  slug: string;
+  categoryId?: number;
+  developer?: string;
+  provinceId?: number;
+  wardId?: number;
+  addressDetail?: string;
+  longitude?: number;
+  latitude?: number;
+  area?: number;
+  priceAmount?: number;
+  priceUnit?: string;
+  price?: number;
+  isNegotiable?: boolean;
+  content?: string;
+  status?: PublishStatus | null;
+  images?: UploadedCloudinaryImage[];
+};
+
+export type ProjectCreatePayload = Omit<
+  ProjectUpsertPayload,
+  "removeImageIds" | "orderedExistingImageIds"
+>;
+
+export type ProjectUpdatePayload = ProjectUpsertPayload & {
+  removeImageIds?: number[];
+  orderedExistingImageIds?: number[];
 };
 
 export const projectService = {
@@ -89,6 +120,47 @@ export const projectService = {
         tags: ["project-detail", slug],
       },
     );
+    return response.data;
+  },
+
+  getById: async (id: number) => {
+    const response = await requestServerApi<Project>(`/projects/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["project-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  create: async (payload: ProjectCreatePayload) => {
+    const response = await requestServerApi<Project>("/projects", {
+      method: "POST",
+      auth: "required",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.data;
+  },
+
+  update: async (id: number, payload: ProjectUpdatePayload) => {
+    const response = await requestServerApi<Project>(`/projects/${id}`, {
+      method: "PATCH",
+      auth: "required",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    const response = await requestServerApi<Project>(`/projects/${id}`, {
+      method: "DELETE",
+      auth: "required",
+    });
     return response.data;
   },
 };

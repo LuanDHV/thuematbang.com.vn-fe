@@ -26,8 +26,9 @@ export default function HomeCarousel({
   });
 
   return (
-    <div className={cn("overflow-hidden lg:hidden", className)} ref={emblaRef}>
+    <div className={cn("overflow-hidden md:hidden", className)} ref={emblaRef}>
       <div className={cn("-ml-3 flex touch-pan-y", trackClassName)}>{children}</div>
     </div>
   );
 }
+

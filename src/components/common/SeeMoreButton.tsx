@@ -7,6 +7,9 @@ interface SeeMoreButtonProps {
   disabled?: boolean;
 }
 
+const CTA_CLASS_NAME =
+  "h-11 min-w-60 rounded-xl border-primary/20 bg-surface px-5 font-semibold tracking-[0.12em] uppercase text-primary shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-60";
+
 export default function SeeMoreButton({
   href,
   onClick,
@@ -18,13 +21,13 @@ export default function SeeMoreButton({
 
   if (onClick) {
     return (
-      <div className="mt-12 text-center">
+      <div className="mt-8 text-center">
         <Button
           type="button"
           size="lg"
           onClick={onClick}
           disabled={disabled}
-          className="border-primary hover:bg-primary shadow-primary/10 text-primary h-10 min-w-60 cursor-pointer rounded-xl bg-white px-4 font-semibold tracking-widest uppercase shadow-lg transition-all duration-300 hover:-translate-y-1 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className={CTA_CLASS_NAME}
         >
           Xem thêm
         </Button>
@@ -32,18 +35,19 @@ export default function SeeMoreButton({
     );
   }
 
+  const resolvedHref = href!;
+
   return (
-    <>
-      <div className="mt-12 text-center">
-        <Link href={`${href}`}>
-          <Button
-            size="lg"
-            className="border-primary hover:bg-primary shadow-primary/10 text-primary h-10 min-w-60 cursor-pointer rounded-xl bg-white px-4 font-semibold tracking-widest uppercase shadow-lg transition-all duration-300 hover:-translate-y-1 hover:text-white"
-          >
-            Xem thêm
-          </Button>
+    <div className="mt-8 text-center">
+      <Button asChild size="lg" className={CTA_CLASS_NAME}>
+        <Link
+          href={
+            resolvedHref.startsWith("/") ? resolvedHref : `/${resolvedHref}`
+          }
+        >
+          Xem thêm
         </Link>
-      </div>
-    </>
+      </Button>
+    </div>
   );
 }

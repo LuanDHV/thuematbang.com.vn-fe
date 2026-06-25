@@ -48,13 +48,13 @@ export default function PosterContactCard({
 
   return (
     <section>
-      <h2 className="text-lg font-semibold tracking-[-0.02em] text-heading">
+      <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
         Thông tin người đăng
       </h2>
 
       <div className="mt-4 flex items-center gap-3">
         {avatarUrl ? (
-          <div className="relative h-12 w-12 overflow-hidden rounded-full ring-1 ring-black/5">
+          <div className="ring-hairline relative h-12 w-12 overflow-hidden rounded-full ring-1">
             <CloudinaryImage
               src={avatarUrl}
               alt={fullName || "Người đăng"}
@@ -65,13 +65,13 @@ export default function PosterContactCard({
             />
           </div>
         ) : (
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+          <div className="bg-accent-soft text-primary flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold">
             {getInitials(fullName)}
           </div>
         )}
         <div>
-          <p className="text-sm text-secondary">Người đăng</p>
-          <p className="text-base font-semibold text-heading">
+          <p className="text-secondary text-sm">Người đăng</p>
+          <p className="text-heading text-base font-semibold">
             {fullName || "Đang cập nhật"}
           </p>
         </div>
@@ -80,7 +80,7 @@ export default function PosterContactCard({
       {canRevealPhone ? (
         <a
           href={normalizedPhone ? `tel:${normalizedPhone}` : undefined}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)] transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
+          className="bg-primary mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-card) transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
         >
           <PhoneCall size={16} />
           {revealLabelPrefix} {directPhone}
@@ -88,7 +88,7 @@ export default function PosterContactCard({
       ) : (
         <Link
           href={loginHref}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(251,170,25,0.18)] transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
+          className="bg-primary mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-card) transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
         >
           <PhoneCall size={16} />
           {maskedLabelPrefix} {maskedPhone}
@@ -97,4 +97,3 @@ export default function PosterContactCard({
     </section>
   );
 }
-

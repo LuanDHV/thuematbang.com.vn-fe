@@ -191,7 +191,7 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "bg-surface grid min-w-32 items-start gap-1.5 rounded-lg border border-black/8 px-2.5 py-1.5 text-xs shadow-xl",
+        "bg-surface grid min-w-32 items-start gap-1.5 rounded-lg border border-hairline px-2.5 py-1.5 text-xs shadow-xl",
         className,
       )}
     >
@@ -371,3 +371,4 @@ export {
   ChartLegendContent,
   ChartStyle,
 };
+

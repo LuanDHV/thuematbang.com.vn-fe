@@ -6,6 +6,7 @@ export * from "./category";
 export * from "./commerce";
 export * from "./enums";
 export * from "./faq";
+export * from "./gallery";
 export * from "./lead";
 export * from "./location";
 export * from "./media";

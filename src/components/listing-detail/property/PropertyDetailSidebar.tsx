@@ -21,8 +21,11 @@ export default function PropertyDetailSidebar({
   relatedCategoryProvinceLinks,
 }: PropertyDetailSidebarProps) {
   return (
-    <aside className="flex w-full flex-col gap-6">
-      <div className="surface-card w-full self-start p-5 lg:sticky lg:top-18">
+    <aside className="flex h-full w-full flex-col gap-6">
+      <div
+        id="detail-contact-card"
+        className="surface-utility relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-22"
+      >
         <PosterContactCard
           fullName={contactName}
           phone={contactPhone}
@@ -30,7 +33,7 @@ export default function PropertyDetailSidebar({
         />
       </div>
 
-      <section className="surface-card hidden rounded-2xl border p-5 lg:block">
+      <section className="surface-utility hidden p-5 lg:block">
         <h3 className="text-heading text-base font-medium">
           <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
           Gợi ý theo khu vực
@@ -38,7 +41,7 @@ export default function PropertyDetailSidebar({
 
         {relatedCategoryProvinceLinks.length > 0 ? (
           <div className="mt-3">
-            <div className="grid divide-y divide-black/6">
+            <div className="divide-hairline grid divide-y">
               {relatedCategoryProvinceLinks.map((item) => (
                 <Link
                   href={item.href}

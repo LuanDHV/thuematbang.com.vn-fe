@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +26,7 @@ import {
   resolvePriceSummary,
   toAreaRange,
   toPriceRange,
-} from "@/helpers/filterHelpers";
+} from "@/lib/filter/filter-helpers";
 import {
   getProvinceWardsAction,
   getProvincesAction,
@@ -41,7 +41,7 @@ import {
 import {
   buildEffectiveProvinceWardMap,
   type ProvinceWardMap,
-} from "./listing-filter-location";
+} from "@/lib/location/location-filter";
 
 type DemandTab = "cho-thue" | "can-thue";
 type DetailTab = "main" | "propertyType" | "location" | "price" | "area";
@@ -135,7 +135,7 @@ export function ListingFilterDrawer({
   const activeCount = useMemo(() => {
     return [
       current.propertyTypes.length,
-      current.province || current.ward || current.street ? 1 : 0,
+      current.province || current.ward ? 1 : 0,
       current.priceMin || current.priceMax || current.negotiable ? 1 : 0,
       current.areaMin || current.areaMax ? 1 : 0,
       current.bedrooms.length,
@@ -181,27 +181,28 @@ export function ListingFilterDrawer({
     >
       <DialogTrigger asChild>
         <Button
+          aria-label="Mở bộ lọc nâng cao"
           variant="outline"
           className={`h-10 items-center justify-center rounded-lg border text-xs font-semibold transition-all ${
             displayedCount > 0 ? "gap-1.5 px-3" : "w-10 px-0"
           } ${
             activeCount > 0
-              ? "border-primary text-primary bg-primary/5"
-              : "text-secondary hover:border-primary/20 hover:bg-primary/5 hover:text-primary border-black/8 bg-white"
+              ? "border-primary text-primary bg-white"
+              : "text-secondary hover:border-primary/20 hover:bg-white hover:text-primary border-hairline bg-surface"
           }`}
         >
           <Filter size={14} />
 
           {displayedCount > 0 ? (
-            <span className="bg-primary inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white">
+            <span className="bg-primary inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
               {displayedCount}
             </span>
           ) : null}
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="flex h-[min(92vh,760px)] w-[min(96vw,920px)] max-w-none flex-col overflow-hidden rounded-[1.75rem] border border-black/6 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
-        <DialogHeader className="from-primary/10 border-b border-black/6 bg-linear-to-b via-white to-white p-5">
+      <DialogContent className="border-hairline bg-surface flex max-h-[92vh] w-[96vw] max-w-5xl flex-col overflow-visible rounded-2xl border p-0 shadow-2xl">
+        <DialogHeader className="from-primary/10 border-hairline via-surface to-surface border-b bg-linear-to-b p-5">
           <DialogTitle className="text-primary text-lg font-bold tracking-tight">
             Bộ lọc nâng cao
           </DialogTitle>
@@ -213,7 +214,7 @@ export function ListingFilterDrawer({
             value={demandTab}
             onValueChange={(v) => setDemandTab(v as DemandTab)}
           >
-            <TabsList className="mt-4 flex h-12 w-full items-stretch rounded-xl border border-black/6 bg-white p-1">
+            <TabsList className="border-hairline bg-surface mt-4 flex h-12 w-full items-stretch rounded-xl border p-1">
               <TabsTrigger
                 value="cho-thue"
                 className="data-[state=active]:bg-primary h-full flex-1 rounded-lg px-4 text-base font-semibold data-[state=active]:text-white"
@@ -230,13 +231,13 @@ export function ListingFilterDrawer({
           </Tabs>
         </DialogHeader>
 
-        <div className="flex min-h-0 flex-1 flex-col bg-white">
+        <div className="bg-surface flex min-h-0 flex-1 flex-col">
           <div className="via-app/60 min-h-0 flex-1 overflow-y-auto bg-linear-to-b from-white to-white px-4">
             {detailTab !== "main" ? (
               <Button
                 variant="ghost"
                 onClick={goMain}
-                className="text-primary hover:bg-primary/8 mb-3 h-8 rounded-lg px-2 text-xs font-medium"
+                className="text-primary hover:bg-white mb-3 h-8 rounded-lg px-2 text-xs font-medium"
               >
                 <ArrowLeft className="mr-1 size-5" />
                 Quay lại
@@ -287,7 +288,7 @@ export function ListingFilterDrawer({
             ) : null}
           </div>
 
-          <div className="flex items-center justify-between gap-2 border-t border-black/6 bg-white/95 p-4 backdrop-blur supports-backdrop-filter:bg-white/75">
+          <div className="border-hairline bg-surface/95 supports-backdrop-filter:bg-surface/75 flex items-center justify-between gap-2 border-t p-4 backdrop-blur">
             <Button
               variant="outline"
               onClick={handleReset}

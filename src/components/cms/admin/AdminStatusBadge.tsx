@@ -15,12 +15,12 @@ const adminStatusBadgeVariants = cva(
     variants: {
       tone: {
         muted: "border-hairline bg-subtle text-secondary",
-        info: "border-blue-200 bg-blue-50 text-blue-700",
-        success: "border-emerald-200 bg-emerald-50 text-emerald-700",
-        warning: "border-amber-200 bg-amber-50 text-amber-700",
-        danger: "border-red-200 bg-red-50 text-red-700",
-        neutral: "border-zinc-200 bg-zinc-50 text-zinc-600",
-        purple: "border-purple-200 bg-purple-50 text-purple-700",
+        info: "border-transparent bg-info-soft text-info",
+        success: "border-transparent bg-success-soft text-success",
+        warning: "border-transparent bg-warning-soft text-warning",
+        danger: "border-transparent bg-danger-soft text-danger",
+        neutral: "border-hairline-strong bg-surface-alt text-body",
+        purple: "border-transparent bg-accent-soft text-admin-accent",
       },
     },
     defaultVariants: {
@@ -44,7 +44,6 @@ export const leadStatusBadgeToneMap: Record<LeadStatus, AdminBadgeTone> = {
   NEW: "info",
   CONTACTED: "warning",
   QUALIFIED: "success",
-  CLOSED: "neutral",
   REJECTED: "danger",
 };
 
@@ -56,7 +55,6 @@ export const paymentStatusBadgeToneMap: Record<
   SUCCESS: "success",
   FAILED: "danger",
   CANCELED: "danger",
-  REFUNDED: "purple",
 };
 
 export default function AdminStatusBadge({

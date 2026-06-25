@@ -1,5 +1,11 @@
 # Design
 
+## 0. Design Tooling
+
+This project uses Taste Skill as the primary design reference.
+When Taste Skill principles conflict with any rule in this file, Taste Skill takes precedence.
+Skill files are located at `.agents/skills/`.
+
 ## 1. Visual Direction
 
 The current UI system is:
@@ -65,27 +71,38 @@ Loaded through `next/font/google` in the root layout.
 
 Current semantic tokens in `globals.css`:
 
-| Token | Value | Usage |
-| --- | --- | --- |
-| `--primary` | `#f7aa1b` | primary CTA, active state, highlight |
-| `--app` | `#f8f6f2` | app/page background |
-| `--subtle` | `#f0ede7` | softer section background |
-| `--surface` | `#ffffff` | main card/surface color |
-| `--footer` | `#26231f` | footer dark zone |
-| `--footer-heading` | `#f5f0e8` | footer headings |
-| `--footer-body` | `#c8bfb2` | footer body text |
-| `--heading` | `#18160f` | main strong text |
-| `--body` | `#302d26` | main body text |
-| `--secondary` | `#6e6a62` | secondary text |
-| `--muted` | `#a8a49e` | subtle/supporting text |
-| `--hairline` | `#3d200a18` | light border |
-| `--hairline-strong` | `#3d200a28` | stronger border |
+| Token               | Value                       | Usage                                        |
+| ------------------- | --------------------------- | -------------------------------------------- |
+| `--primary`         | `#f7aa1b`                   | primary CTA, active state, highlight         |
+| `--accent-soft`     | `#fff4dc`                   | soft accent background, pill, hover wash     |
+| `--app`             | `#f8f6f2`                   | app/page background                          |
+| `--surface-alt`     | `#fbfaf7`                   | elevated neutral surface, media controls     |
+| `--subtle`          | `#f0ede7`                   | softer section background                    |
+| `--surface`         | `#ffffff`                   | main card/surface color                      |
+| `--footer`          | `#26231f`                   | footer dark zone                             |
+| `--footer-heading`  | `#f5f0e8`                   | footer headings                              |
+| `--footer-body`     | `#c8bfb2`                   | footer body text                             |
+| `--footer-border`   | `rgba(245, 240, 232, 0.12)` | footer dividers and hairlines                |
+| `--heading`         | `#18160f`                   | main strong text                             |
+| `--body`            | `#302d26`                   | main body text                               |
+| `--secondary`       | `#6e6a62`                   | secondary text                               |
+| `--muted`           | `#a8a49e`                   | subtle/supporting text                       |
+| `--hairline`        | `#3d200a18`                 | light border                                 |
+| `--hairline-strong` | `#3d200a28`                 | stronger border                              |
+| `--border-subtle`   | `rgba(61, 32, 10, 0.08)`    | main border tone for cards and panels        |
+| `--border-strong`   | `rgba(61, 32, 10, 0.18)`    | stronger divider and floating surface border |
+| `--success`         | `#168f57`                   | success state and badge tone                 |
+| `--warning`         | `#b76b00`                   | warning state and badge tone                 |
+| `--info`            | `#1678a7`                   | info state and badge tone                    |
+| `--danger`          | `#c53b2d`                   | danger state and badge tone                  |
 
 ### Color rules
 
 - use semantic tokens before raw color values
 - keep `primary` for action emphasis, not for full-page dominance
 - keep large surfaces in the `app/subtle/surface` family
+- prefer `surface-alt` for media controls, controls chrome, and quiet neutral overlays
+- prefer `border-subtle` or `hairline` before raw `black/*` borders
 - do not introduce a separate dashboard palette unless the whole system changes
 - keep admin status/badge tones local to the badge component instead of adding a scoped admin theme
 
@@ -131,7 +148,7 @@ Current shared surface patterns:
 ### `surface-card`
 
 - white surface
-- light border
+- subtle border
 - rounded corners
 - medium shadow
 
@@ -144,7 +161,7 @@ Use for:
 ### `surface-panel`
 
 - white surface
-- light border
+- subtle border
 - softer large-radius panel
 - lighter shadow
 
@@ -158,7 +175,7 @@ Use for:
 ### `surface-float`
 
 - white surface
-- light border
+- stronger border
 - stronger shadow
 - backdrop blur
 
@@ -260,6 +277,11 @@ From `src/components/cms/shared/CmsLayout.tsx`:
 - keep the mobile CMS sidebar as a fixed rail instead of a sheet menu
 - use panel-based content inside the right column
 - avoid squeezing CMS content into public-page width rules
+- keep table and dashboard screens full-width
+- constrain form-only CMS screens to a shared centered form shell
+- admin surfaces must live inside `[data-theme="admin"]` and use the neutral admin palette defined in `globals.css`
+- `src/app/(auth)/dang-nhap-admin` also belongs to the admin theme scope
+- CMS user pages under `src/app/(cms)/(user)/quan-li-tai-khoan/**` must continue inheriting the public theme, not the admin theme
 
 ## 11. Component Language
 
@@ -289,6 +311,8 @@ UI rules:
 - inputs should feel clean and readable first
 - validation messages should be concise and visible
 - success/error states should not invent a second design language
+- form-only CMS screens and listing-create screens should use a shared `max-w-2xl` content width
+- use `surface-panel` as the default surface for those centered form screens
 
 ### Tables
 

@@ -1,3 +1,5 @@
+import { PROPERTY_DIRECTION_OPTIONS } from "@/constants/enum-options";
+
 export type RangeOption = {
   label: string;
   min: string;
@@ -13,22 +15,15 @@ export const FILTER_LIMITS = {
 
 export const BED_BATH_OPTIONS = ["1", "2", "3", "4", "5+"];
 
-export const DIRECTION_OPTIONS = [
-  { id: "BAC", label: "Bắc" },
-  { id: "DONG_BAC", label: "Đông Bắc" },
-  { id: "DONG", label: "Đông" },
-  { id: "DONG_NAM", label: "Đông Nam" },
-  { id: "NAM", label: "Nam" },
-  { id: "TAY_NAM", label: "Tây Nam" },
-  { id: "TAY", label: "Tây" },
-  { id: "TAY_BAC", label: "Tây Bắc" },
-];
+export const DIRECTION_OPTIONS = PROPERTY_DIRECTION_OPTIONS.map((option) => ({
+  id: option.value,
+  label: option.label,
+}));
 
 export const mockFilterPropertyTypes = [
   "Văn phòng",
   "Mặt bằng",
-  "Kho xưởng",
-  "Khu công nghiệp",
+  "Kho xưởng, khu công nghiệp",
   "Căn hộ, chung cư",
   "Trung tâm thương mại",
   "Nhà trọ, phòng trọ",

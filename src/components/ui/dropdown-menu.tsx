@@ -34,7 +34,7 @@ function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-52 overflow-hidden rounded-2xl border bg-white/96 p-1.5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl",
+          "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-52 overflow-hidden rounded-2xl border bg-surface/96 p-1.5 shadow-2xl backdrop-blur-xl",
           className,
         )}
         {...props}
@@ -51,11 +51,11 @@ function DropdownMenuItem({
   inset?: boolean;
 }) {
   return (
-    <DropdownMenuPrimitive.Item
+      <DropdownMenuPrimitive.Item
       data-slot="dropdown-menu-item"
       data-inset={inset}
       className={cn(
-        "focus:bg-primary/5 focus:text-heading relative flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
+        "focus:bg-white focus:text-primary relative flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         inset && "pl-8",
         className,
       )}
@@ -130,7 +130,7 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "focus:bg-primary/5 focus:text-heading data-[state=open]:bg-primary/5 flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm outline-none",
+        "focus:bg-white focus:text-primary data-[state=open]:bg-white data-[state=open]:text-primary flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm outline-none",
         inset && "pl-8",
         className,
       )}
@@ -150,7 +150,7 @@ function DropdownMenuSubContent({
     <DropdownMenuPrimitive.SubContent
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 min-w-52 overflow-hidden rounded-2xl border bg-white/96 p-1.5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl",
+        "text-body border-hairline data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 min-w-52 overflow-hidden rounded-2xl border bg-surface/96 p-1.5 shadow-2xl backdrop-blur-xl",
         className,
       )}
       {...props}
@@ -168,7 +168,7 @@ function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
-        "focus:bg-primary/5 focus:text-heading relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
+        "focus:bg-white focus:text-primary relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       checked={checked}
@@ -193,7 +193,7 @@ function DropdownMenuRadioItem({
     <DropdownMenuPrimitive.RadioItem
       data-slot="dropdown-menu-radio-item"
       className={cn(
-        "focus:bg-primary/5 focus:text-heading relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
+        "focus:bg-white focus:text-primary relative flex cursor-pointer items-center rounded-xl py-2 pr-3 pl-8 text-sm transition-colors outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       {...props}
@@ -231,3 +231,4 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 };
+

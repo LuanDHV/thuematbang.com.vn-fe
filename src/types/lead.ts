@@ -8,8 +8,6 @@ export interface Lead {
   propertyId?: number | null;
   fullName: string;
   phone: string;
-  email?: string | null;
-  source: string;
   message?: string | null;
   status: LeadStatus;
   createdAt: Date | string;

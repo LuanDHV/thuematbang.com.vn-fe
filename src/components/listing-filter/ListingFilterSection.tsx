@@ -8,7 +8,7 @@ import {
   type AdvancedFilterValue,
   INITIAL_ADVANCED_FILTER_VALUE,
 } from "@/types/filter";
-import type { BreadcrumbItem, FlatUrlContext } from "@/lib/flat-url";
+import type { BreadcrumbItem, FlatUrlContext } from "@/lib/listing/flat-url";
 import { PaginationMeta } from "@/types/api";
 import { resolvePaginationClientMeta } from "@/lib/client-side";
 
@@ -36,7 +36,7 @@ export default function ListingFilterSection({
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
 
   return (
-    <div className="relative">
+    <section className="relative">
       <div className="layout-container sticky top-20 z-40">
         <ListingFilterToolbar
           basePath={basePath}
@@ -45,6 +45,7 @@ export default function ListingFilterSection({
           initialLocationContext={initialLocationContext}
         />
       </div>
+
       <ListingResultsClient
         properties={properties}
         listingMode={listingMode}
@@ -52,6 +53,6 @@ export default function ListingFilterSection({
         paginationMeta={resolvedPaginationMeta}
         paginationBasePath={paginationBasePath ?? basePath}
       />
-    </div>
+    </section>
   );
 }

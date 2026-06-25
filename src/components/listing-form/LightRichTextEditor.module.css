@@ -1,0 +1,341 @@
+.shell {
+  display: block;
+}
+
+.wrapper {
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  overflow: visible;
+  background: var(--surface);
+  box-shadow: 0 14px 36px rgba(26, 18, 8, 0.08);
+  position: relative;
+}
+
+.wrapper :global(.ck.ck-editor) {
+  --ck-font-face: var(--font-sans);
+  --ck-font-size-base: 14px;
+  --ck-line-height-base: 1.5;
+  --ck-color-base-background: var(--surface);
+  --ck-color-base-foreground: var(--surface-alt);
+  --ck-color-base-border: var(--border-subtle);
+  --ck-color-base-text: var(--body);
+  --ck-color-base-focus: var(--primary);
+  --ck-color-base-active: var(--primary);
+  --ck-color-base-active-focus: var(--primary);
+  --ck-color-button-default-hover-background: var(--accent-soft);
+  --ck-color-button-default-active-background: var(--accent-soft);
+  --ck-color-button-on-background: var(--accent-soft);
+  --ck-color-button-on-hover-background: var(--accent-soft);
+  --ck-color-button-on-active-background: var(--accent-soft);
+  --ck-color-button-on-color: var(--primary);
+  --ck-color-toolbar-background: var(--surface);
+  --ck-color-toolbar-border: var(--border-subtle);
+  --ck-color-panel-background: var(--surface);
+  --ck-color-panel-border: var(--border-subtle);
+  --ck-color-dropdown-panel-background: var(--surface);
+  --ck-color-dropdown-panel-border: var(--border-subtle);
+  --ck-color-input-background: var(--surface);
+  --ck-color-input-border: var(--border-subtle);
+  --ck-color-link-default: var(--primary);
+  --ck-color-focus-border: transparent;
+  --ck-color-focus-outer-shadow: transparent;
+  --ck-powered-by-background: var(--surface);
+  --ck-powered-by-text-color: var(--secondary);
+  --ck-powered-by-border-color: var(--border-subtle);
+}
+
+.wrapper:focus-within {
+  border-color: var(--border-subtle);
+  box-shadow: 0 14px 36px rgba(26, 18, 8, 0.08);
+}
+
+.wrapper :global(.ck.ck-editor) {
+  width: 100%;
+}
+
+.wrapper :global(.ck.ck-editor__top) {
+  border-bottom: 1px solid var(--border-subtle);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  position: relative;
+  overflow: visible;
+  z-index: 2;
+}
+
+.wrapper :global(.ck.ck-toolbar) {
+  border: 0;
+  background: var(--surface);
+  padding-inline: 8px;
+  padding-block: 8px;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.wrapper :global(.ck.ck-toolbar__separator) {
+  background: var(--border-subtle);
+}
+
+.wrapper :global(.ck.ck-button) {
+  min-height: 32px;
+  min-width: 32px;
+  padding: 0 0.35rem;
+  border-radius: 0.5rem;
+  color: var(--body);
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.wrapper :global(.ck.ck-button .ck-icon) {
+  color: currentColor;
+  width: 24px;
+  height: 24px;
+}
+
+.wrapper :global(.ck.ck-button:hover),
+.wrapper :global(.ck.ck-button.ck-on) {
+  background: var(--accent-soft);
+  color: var(--primary);
+}
+
+.wrapper :global(.ck.ck-dropdown__button) {
+  min-width: 0;
+}
+
+.wrapper :global(.ck.ck-dropdown__button .ck-button__label) {
+  font-weight: 500;
+}
+
+.wrapper :global(.ck.ck-toolbar .ck-button) {
+  border: 1px solid transparent;
+}
+
+.wrapper :global(.ck.ck-toolbar .ck-button:hover) {
+  border-color: rgba(247, 170, 27, 0.08);
+  box-shadow: 0 4px 10px rgba(247, 170, 27, 0.08);
+}
+
+.wrapper :global(.ck.ck-button .ck-icon) {
+  width: 16px;
+  height: 16px;
+}
+
+.wrapper :global(.ck.ck-dropdown__panel) {
+  border-color: var(--border-subtle);
+  box-shadow: 0 16px 40px rgba(26, 18, 8, 0.12);
+  z-index: 10;
+}
+
+:global(.ck.ck-form.ck-link-form) {
+  width: 360px;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 18px 44px rgba(26, 18, 8, 0.14);
+}
+
+:global(.ck.ck-form.ck-link-form .ck-form__header) {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+:global(.ck.ck-form.ck-link-form .ck-form__header__label) {
+  color: var(--heading);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-form__row) {
+  margin-top: 10px;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-labeled-field-view) {
+  margin: 0;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-labeled-field-view__label) {
+  color: var(--secondary);
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-labeled-field-view__input-wrapper) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-input-text) {
+  min-height: 40px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.8rem;
+  background: var(--surface);
+  color: var(--body);
+  box-shadow: none;
+  padding-inline: 12px;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-input-text:focus) {
+  border: 1px solid var(--border-subtle);
+  box-shadow: none;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-form__row_with-submit) {
+  align-items: end;
+  gap: 10px;
+}
+
+:global(.ck.ck-form.ck-link-form .ck-button.ck-button-action) {
+  min-height: 40px;
+  border: 0;
+  border-radius: 0.8rem;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  padding-inline: 14px;
+  box-shadow: 0 8px 18px rgba(247, 170, 27, 0.24);
+}
+
+:global(.ck.ck-form.ck-link-form .ck-button.ck-button-action:hover) {
+  background: var(--primary);
+  filter: brightness(0.96);
+}
+
+:global(
+  .ck.ck-form.ck-link-form .ck-button.ck-button-action .ck-button__label
+) {
+  font-size: 13px;
+}
+
+.wrapper :global(.ck.ck-editor__editable.ck-focused) {
+  border-color: var(--border-subtle) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.wrapper :global(.ck.ck-editor__editable.ck-focused:focus) {
+  border-color: var(--border-subtle) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.wrapper :global(.ck.ck-editor__main) {
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  overflow: hidden;
+}
+
+.wrapper :global(.ck.ck-editor__editable) {
+  border: 0;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.wrapper :global(.ck.ck-list__item) {
+  font-size: 14px;
+}
+
+.wrapper :global(.ck.ck-balloon-panel.ck-powered-by-balloon) {
+  background: var(--surface);
+  border-color: var(--border-subtle);
+  box-shadow: 0 12px 30px rgba(26, 18, 8, 0.12);
+}
+
+.wrapper :global(.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by) {
+  padding: 2px 6px;
+}
+
+.wrapper
+  :global(.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by__label) {
+  font-size: 11px;
+  color: var(--secondary);
+}
+
+.wrapper :global(.ck-content) {
+  min-height: 300px;
+  padding: 18px 20px 20px;
+  color: var(--body);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.wrapper :global(.ck-content p) {
+  margin: 0 0 0.5em;
+  font-size: 14px;
+}
+
+.wrapper :global(.ck-content p:last-child) {
+  margin-bottom: 0;
+}
+
+.wrapper :global(.ck-content h1),
+.wrapper :global(.ck-content h2),
+.wrapper :global(.ck-content h3) {
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 1em 0 0.5em;
+}
+
+.wrapper :global(.ck-content h1) {
+  font-size: 24px;
+}
+
+.wrapper :global(.ck-content h2) {
+  font-size: 18px;
+}
+
+.wrapper :global(.ck-content h3) {
+  font-size: 16px;
+}
+
+.wrapper :global(.ck-content ul),
+.wrapper :global(.ck-content ol) {
+  margin: 0.5em 0 0.75em;
+  padding-left: 1.6em;
+}
+
+.wrapper :global(.ck-content li) {
+  margin: 0.2em 0;
+}
+
+.wrapper :global(.ck-content img) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0.75em 0;
+}
+
+.wrapper :global(.ck-content blockquote) {
+  margin: 1em 0;
+  padding: 0.75em 1em;
+  border-left: 4px solid var(--primary);
+  background: var(--accent-soft);
+  border-radius: 0 0.75rem 0.75rem 0;
+  color: var(--body);
+}
+
+.wrapper :global(.ck-content a) {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.wrapper :global(.ck-content a:hover) {
+  text-decoration: underline;
+}
+
+.error {
+  border-top: 1px solid var(--border-subtle);
+  padding: 0.75rem 1rem;
+  color: var(--danger);
+  font-size: 0.75rem;
+}

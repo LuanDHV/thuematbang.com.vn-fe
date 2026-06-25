@@ -10,9 +10,9 @@ export default function DetailTwoColumnLayout({
   aside,
 }: DetailTwoColumnLayoutProps) {
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
-      <div className="w-full lg:w-3/4">{main}</div>
-      <div className="w-full lg:w-1/4">{aside}</div>
+    <div className="grid gap-5 lg:grid-cols-2 lg:items-stretch">
+      <div className="min-w-0 h-full">{main}</div>
+      <div className="min-w-0 h-full">{aside}</div>
     </div>
   );
 }

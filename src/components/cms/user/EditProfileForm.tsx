@@ -1,10 +1,13 @@
-﻿"use client";
+"use client";
 
 import { type ComponentProps, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Mail, Phone, Upload, UserRound } from "lucide-react";
+import { Mail, Phone, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
-import CloudinaryImage from "@/components/common/CloudinaryImage";
+
+import { ListingImageField } from "@/components/listing-form/ListingImageField";
+import CmsFormPageShell from "@/components/cms/shared/CmsFormPageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,15 +17,8 @@ import {
   editProfileSchema,
   type EditProfileFormValues,
 } from "@/schemas/user.schema";
+import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import { cn } from "@/lib/utils";
-
-const ALLOWED_AVATAR_TYPES = new Set([
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-]);
-const MAX_AVATAR_SIZE_BYTES = 2 * 1024 * 1024;
 
 function getErrorMessage(error: unknown, fallback: string) {
   if (error instanceof Error && error.message) return error.message;
@@ -58,7 +54,7 @@ const PROFILE_FIELDS: ProfileFieldConfig[] = [
   {
     name: "email",
     label: "Email đăng nhập",
-    placeholder: "email@example.com",
+    placeholder: "email@gmail.com",
     icon: Mail,
     autoComplete: "email",
     type: "email",
@@ -66,20 +62,56 @@ const PROFILE_FIELDS: ProfileFieldConfig[] = [
   },
 ] as const;
 
+type EditProfileFormContentProps = {
+  authUser: NonNullable<ReturnType<typeof useAuthMe>["data"]>;
+  defaultValues: EditProfileFormValues;
+  initialAvatar: UploadedCloudinaryImage | null;
+};
+
 export default function EditProfileForm() {
   const { data: authUser } = useAuthMe();
-  const updateMutation = useUpdateMyProfileMutation();
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarError, setAvatarError] = useState<string | null>(null);
-
   const defaultValues = useMemo<EditProfileFormValues>(
     () => ({
       fullName: authUser?.fullName || "",
       phone: authUser?.phone || "",
       email: authUser?.email || "",
     }),
-    [authUser],
+    [authUser?.email, authUser?.fullName, authUser?.phone],
   );
+
+  const initialAvatar = useMemo<UploadedCloudinaryImage | null>(
+    () =>
+      authUser?.avatarUrl
+        ? {
+            imageUrl: authUser?.avatarUrl ?? "",
+            imagePublicId: authUser?.avatarPublicId ?? null,
+          }
+        : null,
+    [authUser?.avatarPublicId, authUser?.avatarUrl],
+  );
+
+  if (!authUser) return null;
+
+  return (
+    <EditProfileFormContent
+      authUser={authUser}
+      defaultValues={defaultValues}
+      initialAvatar={initialAvatar}
+    />
+  );
+}
+
+function EditProfileFormContent({
+  authUser,
+  defaultValues,
+  initialAvatar,
+}: EditProfileFormContentProps) {
+  const router = useRouter();
+  const updateMutation = useUpdateMyProfileMutation();
+  const [avatar, setAvatar] = useState<UploadedCloudinaryImage | null>(null);
+  const [avatarBusy, setAvatarBusy] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [draftId] = useState(() => crypto.randomUUID());
 
   const form = useForm<EditProfileFormValues>({
     resolver: zodResolver(editProfileSchema),
@@ -90,113 +122,40 @@ export default function EditProfileForm() {
     form.reset(defaultValues);
   }, [defaultValues, form]);
 
-  const previewUrl = useMemo(() => {
-    if (!avatarFile) return null;
-    return URL.createObjectURL(avatarFile);
-  }, [avatarFile]);
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
-
-  if (!authUser) return null;
-
   const onSubmit = form.handleSubmit(async (values) => {
-    if (avatarError) return;
+    if (avatarError || avatarBusy) return;
+    const nextAvatar = avatar ?? initialAvatar;
 
     await updateMutation.mutateAsync({
       fullName: values.fullName,
       phone: values.phone,
       email: values.email,
-      avatar: avatarFile || undefined,
+      avatarUrl: nextAvatar ? nextAvatar.imageUrl : null,
+      avatarPublicId: nextAvatar ? nextAvatar.imagePublicId : null,
     });
-    setAvatarFile(null);
+    router.refresh();
   });
 
-  const onAvatarChange: ComponentProps<"input">["onChange"] = (event) => {
-    const file = event.target.files?.[0] || null;
-
-    if (!file) {
-      setAvatarFile(null);
-      setAvatarError(null);
-      return;
-    }
-
-    if (!ALLOWED_AVATAR_TYPES.has(file.type)) {
-      setAvatarFile(null);
-      setAvatarError(
-        "Định dạng ảnh không hợp lệ. Vui lòng chọn JPEG, JPG, PNG hoặc WEBP.",
-      );
-      return;
-    }
-
-    if (file.size > MAX_AVATAR_SIZE_BYTES) {
-      setAvatarFile(null);
-      setAvatarError("Ảnh vượt quá 2MB. Vui lòng chọn ảnh nhỏ hơn.");
-      return;
-    }
-
-    setAvatarFile(file);
-    setAvatarError(null);
-  };
-
-  const avatarDisplay = previewUrl || authUser.avatarUrl || null;
-
   return (
-    <div className="mx-auto flex flex-col gap-5">
+    <CmsFormPageShell>
       <form className="flex flex-col gap-5" onSubmit={onSubmit}>
         <section className="surface-panel p-5">
-          <div className="flex flex-col items-center gap-5">
-            <div className="flex flex-col items-center gap-3 text-center">
-              {avatarDisplay ? (
-                <CloudinaryImage
-                  src={avatarDisplay}
-                  alt={`Ảnh đại diện của ${authUser.fullName || "người dùng"}`}
-                  width={128}
-                  height={128}
-                  cldQuality="auto:best"
-                  className="border-hairline-strong ring-subtle size-32 rounded-full border-2 object-cover ring-4"
-                />
-              ) : (
-                <div className="text-secondary border-hairline-strong bg-subtle ring-surface flex size-32 items-center justify-center rounded-full border-2 border-dashed ring-4">
-                  <Upload className="size-8" />
-                </div>
-              )}
-            </div>
+          <ListingImageField
+            value={avatar}
+            onChange={setAvatar}
+            initialImagePublicId={initialAvatar?.imagePublicId ?? null}
+            resourceType="users"
+            draftId={draftId}
+            resourceId={authUser.id}
+            onBusyChange={setAvatarBusy}
+            onErrorChange={setAvatarError}
+            error={avatarError}
+            label="Ảnh đại diện"
+            description="Chọn ảnh đại diện mới cho tài khoản của bạn."
+            required={false}
+          />
 
-            <input
-              id="avatar-upload"
-              type="file"
-              accept=".jpeg,.jpg,.png,.webp,image/jpeg,image/jpg,image/png,image/webp"
-              className="hidden"
-              aria-label="Tải ảnh đại diện"
-              onChange={onAvatarChange}
-            />
-            <Label
-              htmlFor="avatar-upload"
-              className="group bg-surface hover:border-primary/50 border-hairline-strong hover:bg-subtle relative flex min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors"
-            >
-              <Upload className="text-secondary group-hover:text-primary size-6" />
-              <p className="text-body text-base font-medium">
-                Chọn ảnh hoặc kéo thả vào đây
-              </p>
-              <p className="text-secondary text-sm">
-                Định dạng jpeg, jpg, png, webp. Tối đa 2MB
-              </p>
-            </Label>
-          </div>
-
-          {avatarError ? (
-            <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600">
-              {avatarError}
-            </p>
-          ) : null}
-        </section>
-
-        <section className="surface-panel p-5">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
             {PROFILE_FIELDS.map((field) => {
               const Icon = field.icon;
               const error = form.formState.errors[field.name];
@@ -222,7 +181,7 @@ export default function EditProfileForm() {
                     placeholder={field.placeholder}
                     readOnly={field.readOnly}
                     className={cn(
-                      "text-body focus-visible:ring-primary/20 border-hairline-strong h-11 rounded-xl bg-white px-3 text-sm shadow-none focus-visible:ring-2",
+                      "text-body focus-visible:ring-primary/20 border-hairline-strong bg-surface h-11 rounded-xl px-3 text-sm shadow-none focus-visible:ring-2",
                       field.readOnly && "text-secondary bg-subtle",
                     )}
                     {...form.register(field.name)}
@@ -257,18 +216,11 @@ export default function EditProfileForm() {
               size="lg"
               disabled={updateMutation.isPending || Boolean(avatarError)}
             >
-              {updateMutation.isPending ? (
-                <>
-                  <Loader2 className="size-5 animate-spin" />
-                  Đang lưu...
-                </>
-              ) : (
-                "Lưu thay đổi"
-              )}
+              {updateMutation.isPending ? "Đang lưu..." : "Lưu thay đổi"}
             </Button>
           </div>
         </section>
       </form>
-    </div>
+    </CmsFormPageShell>
   );
 }
