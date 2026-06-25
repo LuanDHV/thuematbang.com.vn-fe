@@ -29,7 +29,7 @@ export default function RentRequestDetailSidebar({
         />
       </div>
 
-      <section className="surface-card border-hairline hidden rounded-2xl border p-5 lg:block">
+      <section className="surface-card border-hairline hidden border p-5 lg:block">
         <h3 className="text-heading text-base font-medium">
           <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
           Tin cần thuê mới nhất

@@ -22,7 +22,7 @@ export default function EmptyStateCard({
   return (
     <div
       className={cn(
-        "surface-editorial border-hairline mt-6 flex min-h-36 items-center justify-center rounded-[1.75rem] border border-dashed px-6 py-8 text-center",
+        "surface-editorial border-hairline mt-6 flex min-h-36 items-center justify-center border border-dashed px-6 py-8 text-center",
         className,
       )}
     >

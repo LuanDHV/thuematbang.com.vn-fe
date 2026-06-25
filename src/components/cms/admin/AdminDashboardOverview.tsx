@@ -239,7 +239,7 @@ export default function AdminDashboardOverview({
           return (
             <div
               key={metric.key}
-              className="surface-panel rounded-xl p-4 shadow-none"
+              className="surface-panel p-4 shadow-none"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">

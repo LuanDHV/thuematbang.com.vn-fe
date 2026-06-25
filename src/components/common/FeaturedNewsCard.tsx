@@ -22,7 +22,7 @@ export default function FeaturedNewsCard({
     <Link
       href={`/tin-tuc/${news.slug}`}
       className={cn(
-        "surface-editorial interactive-lift group relative block aspect-4/3 overflow-hidden rounded-[1.75rem]",
+        "surface-editorial interactive-lift group relative block aspect-4/3 overflow-hidden",
         className,
       )}
     >

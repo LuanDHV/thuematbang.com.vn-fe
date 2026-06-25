@@ -314,7 +314,7 @@ export default function ListingFilterToolbar({
     suggestions.length === 0;
 
   return (
-    <div className="surface-float rounded-3xl transition-all duration-300">
+    <div className="surface-float transition-all duration-300">
       <form
         onSubmit={(event) => {
           event.preventDefault();

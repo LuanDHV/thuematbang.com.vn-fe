@@ -60,10 +60,10 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/du-an/${project.slug}`}
-      className="surface-editorial interactive-lift group block overflow-hidden rounded-[1.75rem]"
+      className="surface-editorial interactive-lift group block overflow-hidden"
     >
       <article
-        className={`surface-editorial ${CARD_HOVER_CLASSES} rounded-[1.75rem]`}
+        className={`surface-editorial ${CARD_HOVER_CLASSES}`}
       >
         <div className="bg-surface-alt relative h-56 overflow-hidden">
           <CloudinaryImage

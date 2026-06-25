@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import Title from "@/components/common/Title";
+import SectionBand from "@/components/home/SectionBand";
 import HomeCarousel from "@/components/home/HomeCarousel";
 import { Award, Handshake, Layers, ShieldCheck } from "lucide-react";
 
@@ -53,31 +54,34 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
 
 export default function IntroduceSection() {
   return (
-    <section className="to-primary/10 from-app relative w-full overflow-hidden bg-linear-to-b px-4 py-10 lg:py-14">
-      <div className="layout-container w-full">
-        <Title
-          eyebrow="Về chúng tôi"
-          title="Giải pháp tối ưu cho nhu cầu thuê và cho thuê"
-          description="Nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. "
-        />
+    <SectionBand tone="app">
+      <div className="layout-section w-full px-4">
+        <div className="layout-container w-full">
+          <Title
+            eyebrow="Về chúng tôi"
+            title="Giải pháp tối ưu cho nhu cầu thuê và cho thuê"
+            description="Nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. "
+            variant="home"
+          />
 
-        <HomeCarousel className="mt-6" options={{ align: "center" }}>
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
-            >
-              <FeatureCard feature={feature} />
-            </div>
-          ))}
-        </HomeCarousel>
+          <HomeCarousel className="mt-6" options={{ align: "center" }}>
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
+              >
+                <FeatureCard feature={feature} />
+              </div>
+            ))}
+          </HomeCarousel>
 
-        <div className="mt-5 hidden grid-cols-1 gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
-          {features.map((feature, index) => (
-            <FeatureCard key={index} feature={feature} />
-          ))}
+          <div className="mt-5 hidden grid-cols-1 gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
+            {features.map((feature, index) => (
+              <FeatureCard key={index} feature={feature} />
+            ))}
+          </div>
         </div>
       </div>
-    </section>
+    </SectionBand>
   );
 }

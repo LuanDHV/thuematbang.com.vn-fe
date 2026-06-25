@@ -89,7 +89,7 @@ function TierBadge({ tone }: { tone: CardTone }) {
 
   return (
     <span
-      className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${toneClasses}`}
+      className={`absolute top-3 left-0 z-20 inline-flex items-center gap-1 rounded-l-none rounded-r-full px-2 py-0.5 text-xs font-semibold uppercase ${toneClasses}`}
     >
       {tone === "PREMIUM" ? <Crown size={iconSize} /> : null}
       {tone === "STANDARD" ? <Star size={iconSize} /> : null}
@@ -132,7 +132,7 @@ function FeaturedCard({
 
   return (
     <article
-      className={`surface-editorial ${CARD_HOVER_CLASSES} rounded-[1.75rem]`}
+      className={`surface-editorial ${CARD_HOVER_CLASSES}`}
     >
       <div className="relative h-52 overflow-hidden">
         <TierBadge tone={tone} />
@@ -184,7 +184,7 @@ function PremiumCard({
 
   return (
     <article
-      className={`surface-marketplace ${CARD_HOVER_CLASSES} border-primary/10 rounded-[1.75rem]`}
+      className={`surface-marketplace ${CARD_HOVER_CLASSES} border-primary/10`}
     >
       <div className="bg-subtle relative flex h-60 w-full gap-0.5 overflow-hidden">
         <div
@@ -314,7 +314,7 @@ function StandardCard({
 
   return (
     <article
-      className={`surface-marketplace ${CARD_HOVER_CLASSES} rounded-3xl`}
+      className={`surface-marketplace ${CARD_HOVER_CLASSES}`}
     >
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden">
         <div
@@ -394,7 +394,7 @@ function FreeCard({
 
   return (
     <article
-      className={`surface-utility ${CARD_HOVER_CLASSES} rounded-[1.25rem]`}
+      className={`surface-utility ${CARD_HOVER_CLASSES}`}
     >
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage

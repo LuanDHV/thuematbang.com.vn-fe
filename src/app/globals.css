@@ -259,14 +259,14 @@ textarea {
 .surface-card {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 1rem;
+  border-radius: 12px;
   box-shadow: var(--shadow-card);
 }
 
 .surface-panel {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 1.25rem;
+  border-radius: 12px;
   box-shadow: var(--shadow-panel);
 }
 
@@ -280,7 +280,7 @@ textarea {
 .surface-marketplace {
   background-color: var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 1.5rem;
+  border-radius: 12px;
   box-shadow: var(--marketplace-shadow);
 }
 
@@ -289,14 +289,14 @@ textarea {
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 1)),
     var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 1.75rem;
+  border-radius: 12px;
   box-shadow: var(--editorial-shadow);
 }
 
 .surface-utility {
   background-color: var(--utility-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 1rem;
+  border-radius: 12px;
   box-shadow: var(--utility-shadow);
   backdrop-filter: blur(14px);
 }
@@ -311,7 +311,11 @@ textarea {
 
 .cms-shell {
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.82), transparent 22%),
+    radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.82),
+      transparent 22%
+    ),
     linear-gradient(180deg, var(--app) 0%, var(--surface-alt) 100%);
 }
 

@@ -59,7 +59,7 @@ export default function PageFaq({ title, description, faqData }: PageFaqProps) {
         </div>
       ) : null}
 
-      <Accordion type="single" collapsible className="surface-editorial w-full overflow-hidden rounded-[1.75rem]">
+      <Accordion type="single" collapsible className="surface-editorial w-full overflow-hidden">
         {items.map((faq) => (
           <AccordionItem
             key={faq.id}

@@ -172,7 +172,7 @@ export default function NewsListingClient({
 
             <aside className="w-full lg:w-2/6">
               <div className="lg:sticky lg:top-24">
-                <section className="surface-card hidden rounded-2xl border p-5 lg:block">
+                <section className="surface-card hidden border p-5 lg:block">
                   <h2 className="text-heading text-base font-medium">
                     <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
                     Bài viết được xem nhiều nhất

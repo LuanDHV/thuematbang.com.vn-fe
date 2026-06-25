@@ -33,7 +33,7 @@ export default function PropertyDetailSidebar({
         />
       </div>
 
-      <section className="surface-utility hidden rounded-3xl p-5 lg:block">
+      <section className="surface-utility hidden p-5 lg:block">
         <h3 className="text-heading text-base font-medium">
           <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
           Gợi ý theo khu vực

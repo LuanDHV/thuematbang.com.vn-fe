@@ -54,9 +54,7 @@ export function RentRequestCard({
 
   return (
     <Link href={`/can-thue/${request.slug}`} className="block h-full">
-      <article
-        className={`surface-utility ${CARD_HOVER_CLASSES} ${isFeatured ? "rounded-3xl" : "rounded-[1.25rem]"}`}
-      >
+      <article className={`surface-utility ${CARD_HOVER_CLASSES}`}>
         <div
           className={`bg-surface-alt relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
         >

@@ -19,7 +19,7 @@ export default function DataErrorCard({
   const router = useRouter();
 
   return (
-    <div className="surface-card rounded-2xl p-6 text-center">
+    <div className="surface-card p-6 text-center">
       <div className="bg-accent-soft text-primary mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full">
         <AlertTriangle size={20} />
       </div>

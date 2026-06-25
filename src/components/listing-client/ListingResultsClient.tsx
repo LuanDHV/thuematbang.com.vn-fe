@@ -83,7 +83,7 @@ export default function ListingResultsClient({
 
         <div className="flex flex-col gap-8">
           {!hasItems ? (
-            <section className="surface-editorial rounded-[1.75rem] p-8 text-center">
+            <section className="surface-editorial p-8 text-center">
               <h3 className="text-heading text-lg font-semibold">
                 Không có bất động sản phù hợp
               </h3>

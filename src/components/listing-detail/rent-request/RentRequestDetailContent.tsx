@@ -96,7 +96,7 @@ export default function RentRequestDetailContent({
           </div>
 
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
-            <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
+            <div className="surface-card flex items-center gap-3 px-3 py-3">
               <MapPin className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
                 <p className="text-secondary text-xs tracking-wide uppercase">
@@ -108,7 +108,7 @@ export default function RentRequestDetailContent({
               </div>
             </div>
 
-            <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
+            <div className="surface-card flex items-center gap-3 px-3 py-3">
               <Wallet className="text-primary mt-0.5 size-5 shrink-0" />
               <div>
                 <p className="text-secondary text-xs tracking-wide uppercase">
@@ -125,7 +125,7 @@ export default function RentRequestDetailContent({
             </div>
 
             {hasArea ? (
-              <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
+              <div className="surface-card flex items-center gap-3 px-3 py-3">
                 <Maximize className="text-primary mt-0.5 size-5 shrink-0" />
                 <div>
                   <p className="text-secondary text-xs tracking-wide uppercase">
@@ -139,7 +139,7 @@ export default function RentRequestDetailContent({
             ) : null}
 
             {hasDirection ? (
-              <div className="surface-card flex items-center gap-3 rounded-xl px-3 py-3">
+              <div className="surface-card flex items-center gap-3 px-3 py-3">
                 <Navigation className="text-primary mt-0.5 size-5 shrink-0" />
                 <div>
                   <p className="text-secondary text-xs tracking-wide uppercase">

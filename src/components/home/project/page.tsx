@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import Title from "@/components/common/Title";
+import SectionBand from "@/components/home/SectionBand";
 import HomeCarousel from "@/components/home/HomeCarousel";
 import {
   BedDouble,
@@ -53,33 +54,36 @@ function CategoryCard({ category }: { category: (typeof categories)[number] }) {
 
 export default function ProjectSection() {
   return (
-    <section className="to-primary/10 from-app w-full bg-linear-to-b px-4 py-10 lg:py-14">
-      <div className="layout-container w-full">
-        <div className="mb-8">
-          <Title
-            eyebrow="Khám phá"
-            title="Phân loại theo nhu cầu thị trường"
-            description="Danh mục đa dạng, dễ dàng lọc và tìm kiếm theo nhu cầu thuê và cho thuê, giúp bạn nhanh chóng tìm được mặt bằng phù hợp."
-          />
-        </div>
+    <SectionBand tone="surface">
+      <div className="layout-section w-full px-4">
+        <div className="layout-container w-full">
+          <div className="mb-8">
+            <Title
+              eyebrow="Khám phá"
+              title="Phân loại theo nhu cầu thị trường"
+              description="Danh mục đa dạng, dễ dàng lọc và tìm kiếm theo nhu cầu thuê và cho thuê, giúp bạn nhanh chóng tìm được mặt bằng phù hợp."
+              variant="home"
+            />
+          </div>
 
-        <HomeCarousel options={{ align: "center" }}>
-          {categories.map((category, index) => (
-            <div
-              key={index}
-              className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
-            >
-              <CategoryCard category={category} />
-            </div>
-          ))}
-        </HomeCarousel>
+          <HomeCarousel options={{ align: "center" }}>
+            {categories.map((category, index) => (
+              <div
+                key={index}
+                className="min-w-0 flex-[0_0_88%] pl-3 md:flex-[0_0_50%]"
+              >
+                <CategoryCard category={category} />
+              </div>
+            ))}
+          </HomeCarousel>
 
-        <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-3 xl:grid-cols-6">
-          {categories.map((category, index) => (
-            <CategoryCard key={index} category={category} />
-          ))}
+          <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-3 xl:grid-cols-6">
+            {categories.map((category, index) => (
+              <CategoryCard key={index} category={category} />
+            ))}
+          </div>
         </div>
       </div>
-    </section>
+    </SectionBand>
   );
 }

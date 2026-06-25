@@ -169,7 +169,7 @@ export default function AdminDataTable<TData>({
   };
 
   return (
-    <div className="surface-panel overflow-hidden rounded-3xl shadow-none">
+    <div className="surface-panel overflow-hidden shadow-none">
       <div className="border-hairline space-y-3 border-b px-4 py-3 md:px-5">
         {toolbar ? (
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
