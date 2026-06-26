@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Đăng nhập",
+  title: "Đăng nhập ngay",
   description:
     "Đăng nhập vào tài khoản Thuematbang.com.vn để quản lý tin đăng và thông tin cá nhân.",
   pathname: "/dang-nhap",
