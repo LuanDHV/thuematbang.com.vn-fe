@@ -4,6 +4,7 @@ import "@fontsource/be-vietnam-pro/500.css";
 import "@fontsource/be-vietnam-pro/600.css";
 import "@fontsource/be-vietnam-pro/700.css";
 import "./globals.css";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { isProductionAppEnv } from "@/lib/app-env";
 import { siteConfig } from "@/lib/site-config";
 import AppProviders from "@/components/providers/AppProviders";
@@ -58,8 +59,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gtmId = siteConfig.googleTagManagerId;
+
   return (
     <html lang="vi" suppressHydrationWarning className="h-full antialiased">
+      {isProduction && gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="bg-app text-body min-h-dvh">
         <PageStructuredData
           schemas={[buildWebSiteSchema(), buildOrganizationSchema()]}
