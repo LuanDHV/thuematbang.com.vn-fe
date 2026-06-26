@@ -5,9 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Đăng ký",
-  description:
-    "Tạo tài khoản mới trên Thuematbang.com.vn để bắt đầu quản lý nhu cầu thuê và cho thuê.",
+  title: "Đăng ký ngay",
+  description: "Tạo tài khoản mới để bắt đầu quản lý nhu cầu thuê và cho thuê.",
   pathname: "/dang-ky",
   noIndex: true,
 });
