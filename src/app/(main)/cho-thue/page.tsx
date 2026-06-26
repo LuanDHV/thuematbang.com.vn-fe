@@ -6,15 +6,16 @@ import PageSeoContent from "@/components/common/PageSeoContent";
 import SafeFetch from "@/components/common/SafeFetch";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import { buildLatestListingTitle, createPageMetadata } from "@/lib/metadata";
 import { buildWebPageSchema } from "@/lib/seo";
 import { faqService } from "@/services/faq.service";
 import { seoContentService } from "@/services/seo-content.service";
 import { propertyService } from "@/services/property.service";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Cho thuê mặt bằng",
-  description: "Tổng hợp mặt bằng cho thuê mới nhất trên.",
+  title: buildLatestListingTitle("Bất động sản cho thuê"),
+  description:
+    "Khám phá tin bất động sản cho thuê mới nhất, bao gồm mặt bằng, văn phòng, kho xưởng, căn hộ và nhiều lựa chọn theo khu vực, diện tích, giá thuê và nhu cầu thực tế.",
   pathname: "/cho-thue",
 });
 
@@ -33,8 +34,9 @@ export default async function ChoThuePage() {
       <PageStructuredData
         schemas={[
           buildWebPageSchema({
-            title: "Cho thuê mặt bằng",
-            description: "Tổng hợp mặt bằng cho thuê mới nhất trên.",
+            title: buildLatestListingTitle("Bất động sản cho thuê"),
+            description:
+              "Khám phá tin bất động sản cho thuê mới nhất, bao gồm mặt bằng, văn phòng, kho xưởng, căn hộ và nhiều lựa chọn theo khu vực, diện tích, giá thuê và nhu cầu thực tế.",
             url: "/cho-thue",
             schemaType: "CollectionPage",
           }),

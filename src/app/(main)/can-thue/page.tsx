@@ -6,15 +6,16 @@ import PageSeoContent from "@/components/common/PageSeoContent";
 import PageStructuredData from "@/components/common/PageStructuredData";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import { buildLatestListingTitle, createPageMetadata } from "@/lib/metadata";
 import { buildWebPageSchema } from "@/lib/seo";
 import { faqService } from "@/services/faq.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import { seoContentService } from "@/services/seo-content.service";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Cần thuê bất động sản",
-  description: "Tổng hợp nhu cầu cần thuê bất động sản mới nhất.",
+  title: buildLatestListingTitle("Nhu cầu thuê bất động sản"),
+  description:
+    "Tìm nhanh các nhu cầu cần thuê bất động sản mới nhất, từ mặt bằng kinh doanh, văn phòng đến kho xưởng và căn hộ, giúp bạn kết nối đúng khách hàng theo khu vực, ngân sách và diện tích phù hợp.",
   pathname: "/can-thue",
 });
 
@@ -33,8 +34,9 @@ export default async function CanThuePage() {
       <PageStructuredData
         schemas={[
           buildWebPageSchema({
-            title: "Cần thuê bất động sản",
-            description: "Tổng hợp nhu cầu cần thuê bất động sản mới nhất.",
+            title: buildLatestListingTitle("Cần thuê mặt bằng"),
+            description:
+              "Tìm nhanh các nhu cầu cần thuê bất động sản mới nhất, từ mặt bằng kinh doanh, văn phòng đến kho xưởng và căn hộ, giúp bạn kết nối đúng khách hàng theo khu vực, ngân sách và diện tích phù hợp.",
             url: "/can-thue",
             schemaType: "CollectionPage",
           }),

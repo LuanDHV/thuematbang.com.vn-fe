@@ -59,13 +59,13 @@ export function ListingCreateSuccessDialog({
             <Button
               asChild
               variant="outline"
-              className="h-11 w-full border-primary/20 bg-accent-soft text-primary shadow-lg hover:-translate-y-0.5 hover:border-primary/30 hover:bg-accent-soft hover:text-primary"
+              className="h-11 w-full border-primary/20 bg-accent-soft text-primary shadow-lg hover:border-primary/30 hover:bg-accent-soft hover:text-primary"
             >
               <Link href={primaryActionHref}>{primaryActionLabel}</Link>
             </Button>
             <Button
               asChild
-              className="h-11 w-full bg-primary text-white shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+              className="h-11 w-full bg-primary text-white shadow-lg hover:bg-primary/90"
             >
               <Link href={secondaryActionHref}>{secondaryActionLabel}</Link>
             </Button>

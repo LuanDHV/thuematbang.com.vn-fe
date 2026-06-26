@@ -163,7 +163,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
             <Button
               asChild
               size="lg"
-              className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:shadow-2xl sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+              className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
             >
               <Link href="/dang-tin/cho-thue">
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -182,7 +182,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               asChild
               variant="outline"
               size="lg"
-              className="h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/20 bg-white px-4 py-3 text-left text-sm font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+              className="h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/20 bg-white px-4 py-3 text-left text-sm font-bold text-black shadow-2xl transition-colors duration-300 hover:bg-white/95 hover:text-black sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
             >
               <Link href="/dang-tin/can-thue">
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -207,7 +207,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 asChild
                 variant="ghost"
                 size="lg"
-                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
+                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
               >
                 <Link href="/cho-thue">
                   <span className="flex min-w-0 flex-1 items-center">
@@ -221,7 +221,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 asChild
                 variant="ghost"
                 size="lg"
-                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
+                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
               >
                 <Link href="/can-thue">
                   <span className="flex min-w-0 flex-1 items-center">

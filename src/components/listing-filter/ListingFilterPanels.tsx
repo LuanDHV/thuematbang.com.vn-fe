@@ -48,8 +48,8 @@ export function PropertyTypeDetailTab({
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white hover:text-primary">
-        <span className="text-sm text-heading">Tất cả loại bất động sản</span>
+      <label className="hover:text-primary flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white">
+        <span className="text-heading text-sm">Tất cả loại bất động sản</span>
         <input
           type="checkbox"
           name="property-type-single"
@@ -67,9 +67,9 @@ export function PropertyTypeDetailTab({
       {propertyTypeOptions.map((type) => (
         <label
           key={type}
-          className="flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white hover:text-primary"
+          className="hover:text-primary flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white"
         >
-          <span className="text-sm text-heading">{type}</span>
+          <span className="text-heading text-sm">{type}</span>
           <input
             type="checkbox"
             name="property-type-single"
@@ -129,10 +129,10 @@ export function PriceDetailTab({
               }))
             }
             placeholder="0"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 border-hairline bg-surface h-11 w-full [appearance:textfield] rounded-lg border px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
-        <span className="mt-1 text-xl text-secondary">→</span>
+        <span className="text-secondary mt-1 text-xl">→</span>
         <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
@@ -149,7 +149,7 @@ export function PriceDetailTab({
               }))
             }
             placeholder="60000"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 border-hairline bg-surface h-11 w-full [appearance:textfield] rounded-lg border px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -179,7 +179,7 @@ export function PriceDetailTab({
           return (
             <label
               key={option.label}
-              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white hover:text-primary ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`hover:text-primary flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -267,10 +267,10 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Từ"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 border-hairline bg-surface h-11 w-full [appearance:textfield] rounded-lg border px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
-        <span className="mt-1 text-xl text-secondary">→</span>
+        <span className="text-secondary mt-1 text-xl">→</span>
         <div className="flex flex-1 flex-col gap-1">
           <input
             type="number"
@@ -282,7 +282,7 @@ export function AreaDetailTab({
               }))
             }
             placeholder="Đến"
-            className="text-body focus:ring-primary/12 h-11 w-full [appearance:textfield] rounded-lg border border-hairline bg-surface px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="text-body focus:ring-primary/12 border-hairline bg-surface h-11 w-full [appearance:textfield] rounded-lg border px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -309,7 +309,7 @@ export function AreaDetailTab({
           return (
             <label
               key={option.label}
-              className={`flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white hover:text-primary ${isSelected ? "text-primary font-semibold" : "text-body"}`}
+              className={`hover:text-primary flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-sm hover:bg-white ${isSelected ? "text-primary font-semibold" : "text-body"}`}
             >
               <span>{option.label}</span>
               <input
@@ -412,73 +412,71 @@ export function AdvancedMainTab({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-heading">
+        <label className="text-heading text-sm font-semibold">
           Loại bất động sản
         </label>
         <button
           type="button"
           onClick={() => setDetailTab("propertyType")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
+          className="hover:border-primary/20 hover:text-primary border-hairline bg-surface mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border px-4 shadow-lg hover:bg-white"
         >
-          <div className="flex items-center gap-2 text-secondary">
+          <div className="text-secondary flex items-center gap-2">
             <Building2 className="size-5" />
             <span className="text-sm">{propertyTypeSummary}</span>
           </div>
-          <ChevronRight className="size-5 text-muted" />
+          <ChevronRight className="text-muted size-5" />
         </button>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-heading">Khu vực</label>
+        <label className="text-heading text-sm font-semibold">Khu vực</label>
         <button
           type="button"
           onClick={() => setDetailTab("location")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
+          className="hover:border-primary/20 hover:text-primary border-hairline bg-surface mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border px-4 shadow-lg hover:bg-white"
         >
-          <div className="flex items-center gap-2 text-secondary">
+          <div className="text-secondary flex items-center gap-2">
             <MapPin className="size-5" />
             <span className="text-sm">{locationSummary || "Toàn quốc"}</span>
           </div>
-          <ChevronRight className="size-5 text-muted" />
+          <ChevronRight className="text-muted size-5" />
         </button>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-heading">
-          Khoảng giá
-        </label>
+        <label className="text-heading text-sm font-semibold">Khoảng giá</label>
         <button
           type="button"
           onClick={() => setDetailTab("price")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
+          className="hover:border-primary/20 hover:text-primary border-hairline bg-surface mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border px-4 shadow-lg hover:bg-white"
         >
-          <div className="flex items-center gap-2 text-secondary">
+          <div className="text-secondary flex items-center gap-2">
             <CircleDollarSign className="size-5" />
             <span className="text-sm">{priceSummary}</span>
           </div>
-          <ChevronRight className="size-5 text-muted" />
+          <ChevronRight className="text-muted size-5" />
         </button>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-heading">Diện tích</label>
+        <label className="text-heading text-sm font-semibold">Diện tích</label>
         <button
           type="button"
           onClick={() => setDetailTab("area")}
-          className="hover:border-primary/20 hover:bg-white hover:text-primary mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border border-hairline bg-surface px-4 shadow-lg"
+          className="hover:border-primary/20 hover:text-primary border-hairline bg-surface mt-2 flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border px-4 shadow-lg hover:bg-white"
         >
-          <div className="flex items-center gap-2 text-secondary">
+          <div className="text-secondary flex items-center gap-2">
             <Maximize className="size-5" />
             <span className="text-sm">{areaSummary}</span>
           </div>
-          <ChevronRight className="size-5 text-muted" />
+          <ChevronRight className="text-muted size-5" />
         </button>
       </div>
 
       {listingMode === "property" ? (
         <>
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-heading">
+            <label className="text-heading text-sm font-semibold">
               Số phòng ngủ
             </label>
             <div className="flex flex-wrap gap-2">
@@ -496,7 +494,7 @@ export function AdvancedMainTab({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-heading">
+            <label className="text-heading text-sm font-semibold">
               Số phòng tắm, vệ sinh
             </label>
             <div className="flex flex-wrap gap-2">
@@ -516,7 +514,7 @@ export function AdvancedMainTab({
       ) : null}
 
       <div className="flex flex-col gap-4">
-        <label className="text-sm font-semibold text-heading">Hướng nhà</label>
+        <label className="text-heading text-sm font-semibold">Hướng nhà</label>
         <div className="flex justify-center py-2">
           <svg
             viewBox="-5 -5 210 210"
@@ -525,8 +523,8 @@ export function AdvancedMainTab({
             {DIRECTION_OPTIONS.map((dir, index) => {
               const angle = index * 45;
               const textAngle = angle - 90;
-              const textX = 100 + 70 * Math.cos((textAngle * Math.PI) / 180);
-              const textY = 100 + 70 * Math.sin((textAngle * Math.PI) / 180);
+              const textX = 100 + 75 * Math.cos((textAngle * Math.PI) / 180);
+              const textY = 100 + 75 * Math.sin((textAngle * Math.PI) / 180);
               const isSelected = current.directions.includes(dir.id);
 
               return (
@@ -545,7 +543,7 @@ export function AdvancedMainTab({
                     y={textY}
                     textAnchor="middle"
                     dominantBaseline="central"
-                    className={`pointer-events-none text-xs transition-colors duration-200 ${isSelected ? "fill-white font-bold" : "fill-secondary font-medium"}`}
+                    className={`pointer-events-none text-[10px] transition-colors duration-200 ${isSelected ? "fill-white font-bold" : "fill-body font-medium"}`}
                   >
                     {dir.label}
                   </text>

@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = createPageMetadata({
   title: "Giới thiệu",
   description:
-    "Trang giới thiệu đang được hoàn thiện để cung cấp thông tin đầy đủ hơn về Thuematbang.com.vn.",
+    "Tìm hiểu nền tảng hỗ trợ người dùng tra cứu tin cho thuê, nhu cầu cần thuê, dự án và tin tức bất động sản, đồng thời kết nối nhanh hơn giữa người đăng tin và người đang tìm kiếm mặt bằng phù hợp.",
   pathname: "/gioi-thieu",
   noIndex: true,
 });

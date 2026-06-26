@@ -13,7 +13,11 @@ import {
   parsePagedSlugSegments,
   parseNewsCategoryFromSlug,
 } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import {
+  buildLatestListingTitle,
+  buildPageTitle,
+  createPageMetadata,
+} from "@/lib/metadata";
 import {
   buildMetaDescription,
   buildNewsArticleSchema,
@@ -76,10 +80,10 @@ export async function generateMetadata({
 
   if (news) {
     return createPageMetadata({
-      title: news.title,
+      title: buildPageTitle(news.title),
       description: buildMetaDescription(
         [news.summary, news.content],
-        "Nội dung bài viết tin tức bất động sản.",
+        "Xem bài viết tin tức bất động sản để cập nhật xu hướng giá thuê, kinh nghiệm tìm mặt bằng và các phân tích hữu ích giúp bạn theo dõi thị trường tốt hơn.",
       ),
       pathname: `/tin-tuc/${news.slug}`,
       image: news.imageUrl || undefined,
@@ -88,8 +92,9 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Tin tức",
-    description: "Tổng hợp tin tức và kiến thức bất động sản mới nhất.",
+    title: buildLatestListingTitle("Tin tức bất động sản"),
+    description:
+      "Kho tin tức và kiến thức bất động sản mới nhất, gồm xu hướng thị trường, kinh nghiệm thuê mặt bằng và góc nhìn hữu ích dành cho người đang tìm hiểu nhu cầu thực tế.",
     pathname: `/tin-tuc/${slug.join("/")}`,
   });
 }
@@ -121,10 +126,10 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
         <PageStructuredData
           schemas={[
             buildWebPageSchema({
-              title: news.title,
+              title: buildPageTitle(news.title),
               description: buildMetaDescription(
                 [news.summary, news.content],
-                "Nội dung bài viết tin tức bất động sản.",
+                "Xem bài viết tin tức bất động sản để cập nhật xu hướng giá thuê, kinh nghiệm tìm mặt bằng và các phân tích hữu ích giúp bạn theo dõi thị trường tốt hơn.",
               ),
               url: `/tin-tuc/${news.slug}`,
               image: news.imageUrl || undefined,
@@ -132,10 +137,10 @@ export default async function TinTucDynamicPage({ params }: PageProps) {
               dateModified: news.updatedAt,
             }),
             buildNewsArticleSchema({
-              title: news.title,
+              title: buildPageTitle(news.title),
               description: buildMetaDescription(
                 [news.summary, news.content],
-                "Nội dung bài viết tin tức bất động sản.",
+                "Xem bài viết tin tức bất động sản để cập nhật xu hướng giá thuê, kinh nghiệm tìm mặt bằng và các phân tích hữu ích giúp bạn theo dõi thị trường tốt hơn.",
               ),
               url: `/tin-tuc/${news.slug}`,
               image: news.imageUrl || undefined,

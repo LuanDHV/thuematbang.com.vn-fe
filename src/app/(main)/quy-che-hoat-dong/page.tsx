@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = createPageMetadata({
   title: "Quy chế hoạt động",
   description:
-    "Nội dung quy chế hoạt động đang được hoàn thiện để công bố đúng chuẩn.",
+    "Tìm hiểu quy chế hoạt động, bao gồm nguyên tắc vận hành, quyền và nghĩa vụ của các bên, cách sử dụng dịch vụ và những nội dung cần biết trước khi đăng hoặc tìm tin trên hệ thống.",
   pathname: "/quy-che-hoat-dong",
   noIndex: true,
 });

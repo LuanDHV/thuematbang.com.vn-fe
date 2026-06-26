@@ -4,15 +4,15 @@ import PageStructuredData from "@/components/common/PageStructuredData";
 import SafeFetch from "@/components/common/SafeFetch";
 import NewsListingClient from "@/components/listing-client/NewsListingClient";
 import { buildNewsCategoryBreadcrumbs } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import { buildLatestListingTitle, createPageMetadata } from "@/lib/metadata";
 import { buildWebPageSchema } from "@/lib/seo";
 import { categoryService } from "@/services/category.service";
 import { newsService } from "@/services/news.service";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Tin tức",
+  title: buildLatestListingTitle("Tin tức bất động sản"),
   description:
-    "Tổng hợp tin tức, phân tích và kiến thức bất động sản mới nhất.",
+    "Cập nhật tin tức, phân tích, xu hướng giá thuê và kinh nghiệm tìm mặt bằng bất động sản mới nhất để bạn theo dõi thị trường và ra quyết định nhanh hơn.",
   pathname: "/tin-tuc",
 });
 
@@ -27,9 +27,9 @@ export default async function TinTucPage() {
       <PageStructuredData
         schemas={[
           buildWebPageSchema({
-            title: "Tin tức",
+            title: buildLatestListingTitle("Tin tức bất động sản"),
             description:
-              "Tổng hợp tin tức, phân tích và kiến thức bất động sản mới nhất.",
+              "Cập nhật tin tức, phân tích, xu hướng giá thuê và kinh nghiệm tìm mặt bằng bất động sản mới nhất để bạn theo dõi thị trường và ra quyết định nhanh hơn.",
             url: "/tin-tuc",
             schemaType: "CollectionPage",
           }),

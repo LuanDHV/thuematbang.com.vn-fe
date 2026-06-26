@@ -20,7 +20,7 @@ export default function NewsCard({
   return (
     <Link
       href={`/tin-tuc/${news.slug}`}
-      className="surface-utility group flex flex-row items-stretch overflow-hidden transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-2xl"
+      className="surface-utility group flex flex-row items-stretch overflow-hidden transition-shadow duration-300 ease-out hover:shadow-2xl"
     >
       {/* Thumbnail */}
       <div className="bg-surface-alt relative w-2/5 shrink-0 overflow-hidden">

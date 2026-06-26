@@ -16,7 +16,11 @@ import {
   parseListingPagedSlugSegments,
   parsePropertyFilterSlug,
 } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import {
+  buildLatestListingTitle,
+  buildPageTitle,
+  createPageMetadata,
+} from "@/lib/metadata";
 import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
@@ -113,13 +117,13 @@ export async function generateMetadata({
 
     const propertyDescription = buildMetaDescription(
       [property.content, locationText, property.category?.name],
-      "Chi tiết tin đăng cho thuê.",
+      "Xem chi tiết tin cho thuê, gồm vị trí, diện tích, giá thuê, mô tả tài sản và thông tin liên hệ để bạn đánh giá nhanh trước khi kết nối.",
     );
 
     const image = extractPropertyImages(property)[0];
 
     return createPageMetadata({
-      title: property.title,
+      title: buildPageTitle(property.title),
       description: propertyDescription,
       pathname: `/cho-thue/${property.slug}`,
       image,
@@ -128,8 +132,9 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Cho thuê mặt bằng",
-    description: "Danh sách cho thuê bất động sản theo bộ lọc.",
+    title: buildLatestListingTitle("Bất động sản cho thuê"),
+    description:
+      "Danh sách bất động sản cho thuê mới nhất, giúp bạn lọc nhanh theo khu vực, diện tích, mức giá và loại hình phù hợp trước khi liên hệ.",
     pathname: rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue",
   });
 }
@@ -219,10 +224,10 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         <PageStructuredData
           schemas={[
             buildWebPageSchema({
-              title: property.title,
+              title: buildPageTitle(property.title),
               description: buildMetaDescription(
                 [property.content, locationText, property.category?.name],
-                "Chi tiết tin đăng cho thuê.",
+                "Xem chi tiết tin cho thuê, gồm vị trí, diện tích, giá thuê, mô tả tài sản và thông tin liên hệ để bạn đánh giá nhanh trước khi kết nối.",
               ),
               url: `/cho-thue/${property.slug}`,
               image: galleryImages[0],

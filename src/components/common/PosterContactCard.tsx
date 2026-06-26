@@ -80,7 +80,7 @@ export default function PosterContactCard({
       {canRevealPhone ? (
         <a
           href={normalizedPhone ? `tel:${normalizedPhone}` : undefined}
-          className="bg-primary mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-card) transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
+          className="bg-primary mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-card) transition-[filter] hover:brightness-[1.02]"
         >
           <PhoneCall size={16} />
           {revealLabelPrefix} {directPhone}
@@ -88,7 +88,7 @@ export default function PosterContactCard({
       ) : (
         <Link
           href={loginHref}
-          className="bg-primary mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-card) transition-all hover:-translate-y-0.5 hover:brightness-[1.02]"
+          className="bg-primary mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-card) transition-[filter] hover:brightness-[1.02]"
         >
           <PhoneCall size={16} />
           {maskedLabelPrefix} {maskedPhone}
