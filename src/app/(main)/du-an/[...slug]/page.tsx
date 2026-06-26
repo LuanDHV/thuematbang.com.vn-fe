@@ -13,7 +13,11 @@ import {
   parsePagedSlugSegments,
   parseProjectCategoryFromSlug,
 } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import {
+  buildLatestListingTitle,
+  buildPageTitle,
+  createPageMetadata,
+} from "@/lib/metadata";
 import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { Project } from "@/types/project";
 import { categoryService } from "@/services/category.service";
@@ -79,7 +83,7 @@ export async function generateMetadata({
 
   if (project) {
     return createPageMetadata({
-      title: project.name,
+      title: buildPageTitle(project.name),
       description: buildMetaDescription(
         [project.content, project.addressDetail, project.category?.name],
         "Chi tiết dự án bất động sản.",
@@ -91,7 +95,7 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Dự án",
+    title: buildLatestListingTitle("Dự án bất động sản"),
     description: "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
     pathname: `/du-an/${slug.join("/")}`,
   });
@@ -133,7 +137,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
         <PageStructuredData
           schemas={[
             buildWebPageSchema({
-              title: project.name,
+              title: buildPageTitle(project.name),
               description: buildMetaDescription(
                 [
                   project.content,

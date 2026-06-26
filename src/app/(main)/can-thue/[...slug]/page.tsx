@@ -15,7 +15,11 @@ import {
   parseListingPagedSlugSegments,
   parsePropertyFilterSlug,
 } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import {
+  buildLatestListingTitle,
+  buildPageTitle,
+  createPageMetadata,
+} from "@/lib/metadata";
 import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
@@ -102,7 +106,7 @@ export async function generateMetadata({
       .join(", ");
 
     return createPageMetadata({
-      title: rentRequest.title,
+      title: buildPageTitle(rentRequest.title),
       description: buildMetaDescription(
         [rentRequest.requirementText, locationText],
         "Chi tiết nhu cầu cần thuê.",
@@ -114,8 +118,8 @@ export async function generateMetadata({
   }
 
   return createPageMetadata({
-    title: "Cần thuê mặt bằng",
-    description: "Danh sách cần thuê bất động sản theo bộ lọc.",
+    title: buildLatestListingTitle("Nhu cầu thuê bất động sản"),
+    description: "Danh sách nhu cầu thuê bất động sản mới nhất.",
     pathname: rawSlug ? `/can-thue/${rawSlug}` : "/can-thue",
   });
 }
@@ -176,7 +180,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
         <PageStructuredData
           schemas={[
             buildWebPageSchema({
-              title: rentRequest.title,
+              title: buildPageTitle(rentRequest.title),
               description: buildMetaDescription(
                 [rentRequest.requirementText, locationText],
                 "Chi tiết nhu cầu cần thuê.",

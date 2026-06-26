@@ -6,14 +6,14 @@ import PageSeoContent from "@/components/common/PageSeoContent";
 import PageStructuredData from "@/components/common/PageStructuredData";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
-import { createPageMetadata } from "@/lib/metadata";
+import { buildLatestListingTitle, createPageMetadata } from "@/lib/metadata";
 import { buildWebPageSchema } from "@/lib/seo";
 import { faqService } from "@/services/faq.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import { seoContentService } from "@/services/seo-content.service";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Cần thuê bất động sản",
+  title: buildLatestListingTitle("Nhu cầu thuê bất động sản"),
   description: "Tổng hợp nhu cầu cần thuê bất động sản mới nhất.",
   pathname: "/can-thue",
 });
@@ -33,7 +33,7 @@ export default async function CanThuePage() {
       <PageStructuredData
         schemas={[
           buildWebPageSchema({
-            title: "Cần thuê bất động sản",
+            title: buildLatestListingTitle("Cần thuê mặt bằng"),
             description: "Tổng hợp nhu cầu cần thuê bất động sản mới nhất.",
             url: "/can-thue",
             schemaType: "CollectionPage",

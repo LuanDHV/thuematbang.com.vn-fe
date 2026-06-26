@@ -14,10 +14,7 @@ const isProduction = isProductionAppEnv();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: {
-    default: siteConfig.titleSuffix,
-    template: `%s | ${siteConfig.titleSuffix}`,
-  },
+  title: siteConfig.name,
   description: siteConfig.description,
   openGraph: {
     type: "website",

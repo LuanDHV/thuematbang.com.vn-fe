@@ -5,12 +5,12 @@ import NewsSection from "@/components/home/news/page";
 import PropertyFeaturedSection from "@/components/home/property-featured/page";
 import ProjectSection from "@/components/home/project/page";
 import RentRequestExpressSection from "@/components/home/rent-request-express/page";
-import { createPageMetadata } from "@/lib/metadata";
+import { buildPageTitle, createPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
 import { connection } from "next/server";
 
 export const metadata: Metadata = createPageMetadata({
-  title: siteConfig.name,
+  title: buildPageTitle("Sàn bất động sản kết nối nhu cầu thuê và cho thuê"),
   description: siteConfig.description,
   pathname: "/",
 });
