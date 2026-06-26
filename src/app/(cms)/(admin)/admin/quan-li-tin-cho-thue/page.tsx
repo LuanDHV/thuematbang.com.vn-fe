@@ -13,7 +13,7 @@ type PageProps = {
 
 function resolvePropertyStatus(value?: string) {
   return value &&
-    (["PUBLISHED", "DRAFT", "ARCHIVED"] as PublishStatus[]).includes(
+    (["PUBLISHED", "DRAFT", "PENDING", "ARCHIVED"] as PublishStatus[]).includes(
       value as PublishStatus,
     )
     ? (value as PublishStatus)

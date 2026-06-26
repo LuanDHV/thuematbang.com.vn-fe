@@ -33,6 +33,7 @@ type AdminRentRequestsTableProps = {
 
 const statusToneMap: Record<PublishStatus, AdminBadgeTone> = {
   DRAFT: "muted",
+  PENDING: "warning",
   PUBLISHED: "success",
   ARCHIVED: "neutral",
 };
@@ -172,5 +173,3 @@ export default function AdminRentRequestsTable({
     />
   );
 }
-
-

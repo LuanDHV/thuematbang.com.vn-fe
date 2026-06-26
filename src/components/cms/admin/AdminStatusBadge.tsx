@@ -36,6 +36,7 @@ export type AdminBadgeTone = NonNullable<
 export const publishStatusBadgeToneMap: Record<PublishStatus, AdminBadgeTone> =
   {
     DRAFT: "muted",
+    PENDING: "warning",
     PUBLISHED: "success",
     ARCHIVED: "neutral",
   };

@@ -170,6 +170,12 @@ function buildOverviewData(args: {
       fill: "var(--primary)",
     },
     {
+      status: "Chờ duyệt",
+      total: args.properties.data.filter((item) => item.status === "PENDING")
+        .length,
+      fill: "var(--warning)",
+    },
+    {
       status: "Nháp",
       total: args.properties.data.filter((item) => item.status === "DRAFT")
         .length,

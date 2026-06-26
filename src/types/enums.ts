@@ -2,7 +2,7 @@ export type AuthProvider = "LOCAL" | "GOOGLE";
 
 export type UserRole = "CUSTOMER" | "AGENT" | "ADMIN";
 
-export type PublishStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+export type PublishStatus = "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
 
 export type LeadStatus =
   | "NEW"

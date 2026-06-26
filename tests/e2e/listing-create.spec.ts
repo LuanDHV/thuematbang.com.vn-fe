@@ -11,9 +11,7 @@ function uniqueValue(prefix: string) {
 
 async function loginAsCustomer(page: Page) {
   await page.goto("/dang-nhap");
-  await page
-    .getByLabel("Số điện thoại hoặc email")
-    .fill("customer@example.com");
+  await page.getByLabel("Số điện thoại hoặc email").fill("customer@example.com");
   await page.locator("#password").fill("Password123!");
   await Promise.all([
     page.waitForURL("/"),
@@ -86,15 +84,15 @@ test.describe("listing creation", () => {
     await fillPropertyCreateForm(page, title);
     await page.getByRole("button", { name: "Đăng tin cho thuê" }).click();
 
+    await expect(page.getByRole("dialog")).toContainText("Tin đã được gửi");
     await expect(page.getByRole("dialog")).toContainText(
-      "Đã đăng tin thành công",
-    );
-    await expect(page.getByRole("dialog")).toContainText(
-      "Xem bài đăng của tôi",
+      "Theo dõi trạng thái bài đăng",
     );
 
-    await page.getByRole("link", { name: "Xem bài đăng của tôi" }).click();
-    await expect(page).toHaveURL(/\/cho-thue\/[a-z0-9-]+$/);
+    await page
+      .getByRole("link", { name: "Theo dõi trạng thái bài đăng" })
+      .click();
+    await expect(page).toHaveURL("/quan-li-tai-khoan/cho-thue");
   });
 
   test("customer can submit a rent-request listing", async ({ page }) => {
@@ -109,14 +107,14 @@ test.describe("listing creation", () => {
     await fillRentRequestCreateForm(page, title);
     await page.getByRole("button", { name: "Đăng yêu cầu thuê" }).click();
 
+    await expect(page.getByRole("dialog")).toContainText("Tin đã được gửi");
     await expect(page.getByRole("dialog")).toContainText(
-      "Đã đăng tin thành công",
-    );
-    await expect(page.getByRole("dialog")).toContainText(
-      "Xem bài đăng của tôi",
+      "Theo dõi trạng thái bài đăng",
     );
 
-    await page.getByRole("link", { name: "Xem bài đăng của tôi" }).click();
-    await expect(page).toHaveURL(/\/can-thue\/[a-z0-9-]+$/);
+    await page
+      .getByRole("link", { name: "Theo dõi trạng thái bài đăng" })
+      .click();
+    await expect(page).toHaveURL("/quan-li-tai-khoan/cau-thue");
   });
 });

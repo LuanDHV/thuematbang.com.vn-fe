@@ -88,6 +88,7 @@ export const PUBLISH_STATUS_OPTIONS: EnumOption<PublishStatus>[] =
   PUBLISH_STATUS_VALUES.map((value) => {
     const labels: Record<PublishStatus, string> = {
       DRAFT: "Nháp",
+      PENDING: "Chờ duyệt",
       PUBLISHED: "Đã đăng",
       ARCHIVED: "Lưu trữ",
     };

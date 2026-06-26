@@ -64,7 +64,7 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
   contactPhone: "",
   requirementText: "",
   userId: undefined,
-  status: "PUBLISHED",
+  status: "PENDING",
   isMatched: false,
 };
 
@@ -87,7 +87,6 @@ export function RentRequestCreateForm({
 }: RentRequestCreateFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
-  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
   const { toast } = useToast();
   const { data: authUser } = useAuthMe();
 
@@ -100,9 +99,17 @@ export function RentRequestCreateForm({
     [defaultValues],
   );
 
+  const normalizedDefaults = useMemo(
+    () => ({
+      ...resolvedDefaults,
+      status: resolvedDefaults.status ?? DEFAULT_VALUES.status,
+    }),
+    [resolvedDefaults],
+  );
+
   const form = useForm<RentRequestCreateFormValues>({
     resolver: zodResolver(rentRequestCreateFormSchema) as never,
-    defaultValues: resolvedDefaults,
+    defaultValues: normalizedDefaults,
     mode: "onSubmit",
   });
 
@@ -116,8 +123,8 @@ export function RentRequestCreateForm({
   });
 
   useEffect(() => {
-    form.reset(resolvedDefaults);
-  }, [form, resolvedDefaults]);
+    form.reset(normalizedDefaults);
+  }, [form, normalizedDefaults]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(titleValue ?? ""));
@@ -177,7 +184,6 @@ export function RentRequestCreateForm({
   ) => {
     setSubmitError(null);
     setSuccessOpen(false);
-    setCreatedSlug(null);
 
     const payload: RentRequestUpsertPayload = {
       ...values,
@@ -185,15 +191,16 @@ export function RentRequestCreateForm({
     };
 
     try {
-      const createdRentRequest = await submitAction(payload);
+      await submitAction(payload);
       if (showSuccessDialog) {
-        form.reset(resolvedDefaults);
-        setCreatedSlug(createdRentRequest.slug);
+        form.reset(normalizedDefaults);
         setSuccessOpen(true);
       } else {
         toast({
-          title: "Đã đăng tin thành công",
-          description: "Tin đăng đã được lưu thành công.",
+          title: showAdminOnly ? "Đã lưu tin thành công" : "Tin đã được gửi",
+          description: showAdminOnly
+            ? "Tin đăng đã được lưu thành công."
+            : "Tin đăng đang đợi duyệt trước khi hiển thị công khai.",
           variant: "success",
         });
       }
@@ -356,14 +363,12 @@ export function RentRequestCreateForm({
         <ListingCreateSuccessDialog
           open={successOpen}
           onOpenChange={setSuccessOpen}
-          title="Đã đăng tin thành công"
-          description="Bạn có muốn xem các tin đăng không?"
-          primaryActionLabel="Xem bài đăng của tôi"
-          primaryActionHref={
-            createdSlug ? `/can-thue/${createdSlug}` : "/can-thue"
-          }
-          secondaryActionLabel="Trang cho thuê"
-          secondaryActionHref="/cho-thue"
+          title="Tin đã được gửi"
+          description="Tin đăng đang đợi duyệt trước khi hiển thị công khai."
+          primaryActionLabel="Theo dõi trạng thái bài đăng"
+          primaryActionHref="/quan-li-tai-khoan/cau-thue"
+          secondaryActionLabel="Đăng tin khác"
+          secondaryActionHref="/dang-tin/can-thue"
         />
       ) : null}
     </>

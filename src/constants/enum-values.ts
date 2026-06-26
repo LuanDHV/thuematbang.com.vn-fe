@@ -45,6 +45,7 @@ export const PRICE_UNIT_VALUES = [
 
 export const PUBLISH_STATUS_VALUES = [
   "DRAFT",
+  "PENDING",
   "PUBLISHED",
   "ARCHIVED",
 ] as const satisfies readonly PublishStatus[];

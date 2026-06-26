@@ -94,7 +94,7 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   publishSource: "FREE_QUOTA",
   isBoosted: false,
   boostCount: 0,
-  status: "PUBLISHED",
+  status: "PENDING",
   userId: undefined,
 };
 
@@ -225,7 +225,6 @@ function PropertyCreateFormContent({
   >([]);
   const [galleryBusy, setGalleryBusy] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
-  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
   const [draftId] = useState(() => crypto.randomUUID());
   const { toast } = useToast();
   const { data: authUser } = useAuthMe();
@@ -306,7 +305,6 @@ function PropertyCreateFormContent({
     setSubmitError(null);
     setImagesError(null);
     setSuccessOpen(false);
-    setCreatedSlug(null);
 
     const totalImageCount =
       existingGalleryImages.length + uploadedImages.length;
@@ -336,7 +334,7 @@ function PropertyCreateFormContent({
       publishSource: showAdminOnly ? values.publishSource : undefined,
       isBoosted: showAdminOnly ? Boolean(values.isBoosted) : undefined,
       boostCount: showAdminOnly ? values.boostCount : undefined,
-      status: showAdminOnly ? values.status : undefined,
+      status: values.status,
       longitude: showAdminOnly ? values.longitude : undefined,
       latitude: showAdminOnly ? values.latitude : undefined,
       userId: values.userId,
@@ -354,15 +352,16 @@ function PropertyCreateFormContent({
         : basePayload;
 
     try {
-      const createdProperty = await submitAction(payload);
+      await submitAction(payload);
 
       if (showSuccessDialog) {
-        setCreatedSlug(createdProperty.slug);
         setSuccessOpen(true);
       } else {
         toast({
-          title: "Đã đăng tin thành công",
-          description: "Tin đăng đã được lưu thành công.",
+          title: showAdminOnly ? "Đã lưu tin thành công" : "Tin đã được gửi",
+          description: showAdminOnly
+            ? "Tin đăng đã được lưu thành công."
+            : "Tin đăng đang đợi duyệt trước khi hiển thị công khai.",
           variant: "success",
         });
       }
@@ -598,14 +597,12 @@ function PropertyCreateFormContent({
         <ListingCreateSuccessDialog
           open={successOpen}
           onOpenChange={setSuccessOpen}
-          title="Đã đăng tin thành công"
-          description="Bạn có muốn xem các nhu cầu thuê không?"
-          primaryActionLabel="Xem bài đăng của tôi"
-          primaryActionHref={
-            createdSlug ? `/cho-thue/${createdSlug}` : "/cho-thue"
-          }
-          secondaryActionLabel="Trang cần thuê"
-          secondaryActionHref="/can-thue"
+          title="Tin đã được gửi"
+          description="Tin đăng đang đợi duyệt trước khi hiển thị công khai."
+          primaryActionLabel="Theo dõi trạng thái bài đăng"
+          primaryActionHref="/quan-li-tai-khoan/cho-thue"
+          secondaryActionLabel="Đăng tin khác"
+          secondaryActionHref="/dang-tin/cho-thue"
         />
       ) : null}
     </>
