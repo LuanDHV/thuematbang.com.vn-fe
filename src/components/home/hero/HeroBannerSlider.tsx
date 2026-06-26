@@ -138,7 +138,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               return (
                 <div
                   key={slide.id}
-                  className="min-w-0 basis-full overflow-hidden"
+                  className="min-w-0 shrink-0 basis-full overflow-hidden"
                 >
                   {slide.targetLink ? (
                     <SlideLink href={slide.targetLink}>{SlideInner}</SlideLink>

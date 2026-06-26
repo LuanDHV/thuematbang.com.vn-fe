@@ -68,7 +68,7 @@ export default function IntroduceSection() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="min-w-0 basis-11/12 pl-3 md:basis-1/2"
+                className="min-w-0 shrink-0 basis-11/12 pl-3 md:basis-1/2"
               >
                 <FeatureCard feature={feature} />
               </div>

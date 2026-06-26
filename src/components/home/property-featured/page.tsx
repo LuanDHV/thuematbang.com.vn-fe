@@ -49,7 +49,10 @@ export default async function PropertyFeaturedSection() {
                 <>
                   <HomeCarousel className="mt-6 py-2">
                     {featuredProperties.map((item, index) => (
-                      <div key={item.id} className="min-w-0 basis-11/12 pl-3">
+                      <div
+                        key={item.id}
+                        className="min-w-0 shrink-0 basis-11/12 pl-3"
+                      >
                         <PropertyCard
                           property={item}
                           variant="featured"
