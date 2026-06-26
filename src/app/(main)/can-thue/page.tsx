@@ -45,6 +45,9 @@ export default async function CanThuePage() {
 
       <SafeFetch
         fetcher={rentRequestService.getAll({
+          filters: {
+            status: "PUBLISHED",
+          },
           limit: 24,
         })}
         debugLabel="Rent-Requests Response"
