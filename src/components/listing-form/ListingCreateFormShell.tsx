@@ -11,12 +11,7 @@ import {
 
 import { useAuthMe } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { User } from "lucide-react";
 
@@ -107,9 +102,9 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
       >
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-heading text-2xl font-semibold tracking-[-0.03em]">
+            <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
               {title}
-            </CardTitle>
+            </h1>
             <CardDescription className="text-secondary max-w-2xl text-sm leading-7 md:text-base">
               {description}
             </CardDescription>
