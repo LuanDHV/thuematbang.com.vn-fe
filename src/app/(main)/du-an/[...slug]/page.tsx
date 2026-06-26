@@ -86,7 +86,7 @@ export async function generateMetadata({
       title: buildPageTitle(project.name),
       description: buildMetaDescription(
         [project.content, project.addressDetail, project.category?.name],
-        "Chi tiết dự án bất động sản.",
+        "Xem chi tiết dự án bất động sản, gồm vị trí, quy mô, tiện ích, tiến độ và thông tin tổng quan để bạn dễ so sánh trước khi quan tâm hoặc liên hệ.",
       ),
       pathname: `/du-an/${project.slug}`,
       image: extractProjectImages(project)[0],
@@ -96,7 +96,8 @@ export async function generateMetadata({
 
   return createPageMetadata({
     title: buildLatestListingTitle("Dự án bất động sản"),
-    description: "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
+    description:
+      "Danh sách dự án bất động sản nổi bật và mới nhất, giúp bạn xem nhanh vị trí, quy mô, tiện ích và tình trạng dự án trước khi đánh giá.",
     pathname: `/du-an/${slug.join("/")}`,
   });
 }
@@ -144,7 +145,7 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
                   project.addressDetail,
                   project.category?.name,
                 ],
-                "Chi tiết dự án bất động sản.",
+                "Xem chi tiết dự án bất động sản, gồm vị trí, quy mô, tiện ích, tiến độ và thông tin tổng quan để bạn dễ so sánh trước khi quan tâm hoặc liên hệ.",
               ),
               url: `/du-an/${project.slug}`,
               image: galleryImages[0],

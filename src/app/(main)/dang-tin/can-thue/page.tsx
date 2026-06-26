@@ -8,7 +8,8 @@ import { locationService } from "@/services/location.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Đăng tin cần thuê",
-  description: "Đăng tin cần thuê bất động sản nhanh chóng và dễ dàng.",
+  description:
+    "Đăng tin cần thuê bất động sản nhanh chóng và dễ dàng, giúp bạn mô tả rõ nhu cầu tìm mặt bằng, văn phòng hay kho xưởng để tiếp cận đúng đối tác phù hợp hơn.",
   pathname: "/dang-tin/can-thue",
 });
 

@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = createPageMetadata({
   title: "Chính sách bảo mật thông tin",
   description:
-    "Trang chính sách bảo mật đang được hoàn thiện theo đúng nội dung công bố chính thức.",
+    "Xem chính sách bảo mật thông tin để hiểu cách chúng tôi thu thập, sử dụng, lưu trữ và bảo vệ dữ liệu cá nhân trong quá trình bạn truy cập, đăng tin hoặc sử dụng các dịch vụ trên nền tảng.",
   pathname: "/chinh-sach-bao-mat-thong-tin",
   noIndex: true,
 });

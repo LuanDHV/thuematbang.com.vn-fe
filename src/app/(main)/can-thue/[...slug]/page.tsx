@@ -109,7 +109,7 @@ export async function generateMetadata({
       title: buildPageTitle(rentRequest.title),
       description: buildMetaDescription(
         [rentRequest.requirementText, locationText],
-        "Chi tiết nhu cầu cần thuê.",
+        "Xem chi tiết nhu cầu cần thuê, bao gồm khu vực mong muốn, ngân sách, diện tích và thông tin liên hệ để bạn gửi đề xuất phù hợp hơn.",
       ),
       pathname: `/can-thue/${rentRequest.slug}`,
       image: RENT_REQUEST_COVER_IMAGE,
@@ -119,7 +119,8 @@ export async function generateMetadata({
 
   return createPageMetadata({
     title: buildLatestListingTitle("Nhu cầu thuê bất động sản"),
-    description: "Danh sách nhu cầu thuê bất động sản mới nhất.",
+    description:
+      "Danh sách nhu cầu thuê bất động sản mới nhất, giúp bạn tìm nhanh các yêu cầu theo khu vực, ngân sách và diện tích để kết nối đúng đối tượng.",
     pathname: rawSlug ? `/can-thue/${rawSlug}` : "/can-thue",
   });
 }
@@ -183,7 +184,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
               title: buildPageTitle(rentRequest.title),
               description: buildMetaDescription(
                 [rentRequest.requirementText, locationText],
-                "Chi tiết nhu cầu cần thuê.",
+                "Xem chi tiết nhu cầu cần thuê, bao gồm khu vực mong muốn, ngân sách, diện tích và thông tin liên hệ để bạn gửi đề xuất phù hợp hơn.",
               ),
               url: `/can-thue/${rentRequest.slug}`,
               image: RENT_REQUEST_COVER_IMAGE,

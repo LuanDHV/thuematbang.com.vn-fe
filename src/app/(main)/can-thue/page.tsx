@@ -14,7 +14,8 @@ import { seoContentService } from "@/services/seo-content.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: buildLatestListingTitle("Nhu cầu thuê bất động sản"),
-  description: "Tổng hợp nhu cầu cần thuê bất động sản mới nhất.",
+  description:
+    "Tìm nhanh các nhu cầu cần thuê bất động sản mới nhất, từ mặt bằng kinh doanh, văn phòng đến kho xưởng và căn hộ, giúp bạn kết nối đúng khách hàng theo khu vực, ngân sách và diện tích phù hợp.",
   pathname: "/can-thue",
 });
 
@@ -34,7 +35,8 @@ export default async function CanThuePage() {
         schemas={[
           buildWebPageSchema({
             title: buildLatestListingTitle("Cần thuê mặt bằng"),
-            description: "Tổng hợp nhu cầu cần thuê bất động sản mới nhất.",
+            description:
+              "Tìm nhanh các nhu cầu cần thuê bất động sản mới nhất, từ mặt bằng kinh doanh, văn phòng đến kho xưởng và căn hộ, giúp bạn kết nối đúng khách hàng theo khu vực, ngân sách và diện tích phù hợp.",
             url: "/can-thue",
             schemaType: "CollectionPage",
           }),

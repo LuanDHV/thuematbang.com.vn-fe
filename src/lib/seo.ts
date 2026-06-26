@@ -1,7 +1,8 @@
 import type { BreadcrumbItem } from "@/lib/listing/flat-url";
 import { siteConfig } from "@/lib/site-config";
 
-export const SEO_DESCRIPTION_MAX_LENGTH = 200;
+export const SEO_DESCRIPTION_MIN_LENGTH = 100;
+export const SEO_DESCRIPTION_MAX_LENGTH = 320;
 
 export function stripHtml(value?: string | null) {
   if (!value) return "";
@@ -32,12 +33,27 @@ export function buildMetaDescription(
   candidates: Array<string | null | undefined>,
   fallback: string,
   maxLength = SEO_DESCRIPTION_MAX_LENGTH,
+  minLength = SEO_DESCRIPTION_MIN_LENGTH,
 ) {
-  const candidate = candidates
+  const normalizedCandidates = candidates
     .map((value) => stripHtml(value))
     .find((value) => value.length > 0);
+  const normalizedFallback = stripHtml(fallback);
+  const normalizedSiteDescription = stripHtml(siteConfig.description);
 
-  return truncateText(candidate || fallback, maxLength);
+  let resolved = normalizedCandidates || normalizedFallback;
+  if (resolved.length < minLength) {
+    const supplements = [normalizedFallback, normalizedSiteDescription].filter(
+      (value) => value && value !== resolved,
+    );
+
+    for (const supplement of supplements) {
+      resolved = `${resolved} ${supplement}`.trim();
+      if (resolved.length >= minLength) break;
+    }
+  }
+
+  return truncateText(resolved || normalizedFallback, maxLength);
 }
 
 export type JsonLdBreadcrumbItem = {

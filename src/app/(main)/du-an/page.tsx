@@ -15,7 +15,8 @@ import { projectService } from "@/services/project.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: buildLatestListingTitle("Dự án bất động sản"),
-  description: "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
+  description:
+    "Khám phá các dự án bất động sản nổi bật và mới nhất, kèm thông tin vị trí, quy mô, tiện ích và tiến độ để bạn so sánh, đánh giá và chọn đúng dự án phù hợp nhu cầu.",
   pathname: "/du-an",
 });
 
@@ -38,7 +39,7 @@ export default async function DuAnPage() {
           buildWebPageSchema({
             title: buildLatestListingTitle("Dự án bất động sản"),
             description:
-              "Cập nhật thông tin dự án bất động sản nổi bật và mới nhất.",
+              "Khám phá các dự án bất động sản nổi bật và mới nhất, kèm thông tin vị trí, quy mô, tiện ích và tiến độ để bạn so sánh, đánh giá và chọn đúng dự án phù hợp nhu cầu.",
             url: "/du-an",
             schemaType: "CollectionPage",
           }),

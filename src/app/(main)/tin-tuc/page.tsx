@@ -11,7 +11,8 @@ import { newsService } from "@/services/news.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: buildLatestListingTitle("Tin tức bất động sản"),
-  description: "Tổng hợp tin tức, phân tích và kiến thức bất động sản mới nhất.",
+  description:
+    "Cập nhật tin tức, phân tích, xu hướng giá thuê và kinh nghiệm tìm mặt bằng bất động sản mới nhất để bạn theo dõi thị trường và ra quyết định nhanh hơn.",
   pathname: "/tin-tuc",
 });
 
@@ -27,7 +28,8 @@ export default async function TinTucPage() {
         schemas={[
           buildWebPageSchema({
             title: buildLatestListingTitle("Tin tức bất động sản"),
-            description: "Tổng hợp tin tức, phân tích và kiến thức bất động sản mới nhất.",
+            description:
+              "Cập nhật tin tức, phân tích, xu hướng giá thuê và kinh nghiệm tìm mặt bằng bất động sản mới nhất để bạn theo dõi thị trường và ra quyết định nhanh hơn.",
             url: "/tin-tuc",
             schemaType: "CollectionPage",
           }),

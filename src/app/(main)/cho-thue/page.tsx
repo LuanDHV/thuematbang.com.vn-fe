@@ -14,7 +14,8 @@ import { propertyService } from "@/services/property.service";
 
 export const metadata: Metadata = createPageMetadata({
   title: buildLatestListingTitle("Bất động sản cho thuê"),
-  description: "Tổng hợp bất động sản cho thuê mới nhất.",
+  description:
+    "Khám phá tin bất động sản cho thuê mới nhất, bao gồm mặt bằng, văn phòng, kho xưởng, căn hộ và nhiều lựa chọn theo khu vực, diện tích, giá thuê và nhu cầu thực tế.",
   pathname: "/cho-thue",
 });
 
@@ -34,7 +35,8 @@ export default async function ChoThuePage() {
         schemas={[
           buildWebPageSchema({
             title: buildLatestListingTitle("Bất động sản cho thuê"),
-            description: "Tổng hợp bất động sản cho thuê mới nhất.",
+            description:
+              "Khám phá tin bất động sản cho thuê mới nhất, bao gồm mặt bằng, văn phòng, kho xưởng, căn hộ và nhiều lựa chọn theo khu vực, diện tích, giá thuê và nhu cầu thực tế.",
             url: "/cho-thue",
             schemaType: "CollectionPage",
           }),

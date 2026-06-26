@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = createPageMetadata({
   title: "Điều khoản thỏa thuận",
   description:
-    "Nội dung điều khoản thỏa thuận đang được hoàn thiện trước khi công bố chính thức.",
+    "Tham khảo điều khoản thỏa thuận để nắm các quy định sử dụng dịch vụ, phạm vi trách nhiệm, điều kiện áp dụng và quyền lợi liên quan khi bạn tương tác với nền tảng.",
   pathname: "/dieu-khoan-thoa-thuan",
   noIndex: true,
 });

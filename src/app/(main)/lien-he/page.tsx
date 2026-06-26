@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = createPageMetadata({
   title: "Liên hệ hỗ trợ",
   description:
-    "Kênh liên hệ chính thức đang được hoàn thiện để hỗ trợ khách hàng tốt hơn.",
+    "Thông tin liên hệ hỗ trợ dành cho khách hàng, đối tác và người dùng cần tư vấn, phản hồi hoặc trao đổi về tin đăng, dịch vụ và trải nghiệm sử dụng trên nền tảng.",
   pathname: "/lien-he",
   noIndex: true,
 });

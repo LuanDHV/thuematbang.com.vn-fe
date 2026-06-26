@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = createPageMetadata({
   title: "Câu hỏi thường gặp",
   description:
-    "Trang FAQ đang được chuẩn hóa để tổng hợp các câu hỏi phổ biến và câu trả lời chính xác.",
+    "Tổng hợp các câu hỏi thường gặp về cách tìm tin cho thuê, đăng tin, liên hệ, quy trình sử dụng và những nội dung phổ biến khác để người dùng tra cứu nhanh câu trả lời phù hợp.",
   pathname: "/cau-hoi-thuong-gap",
   noIndex: true,
 });
