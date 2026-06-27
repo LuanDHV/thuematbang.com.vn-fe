@@ -11,7 +11,9 @@ function uniqueValue(prefix: string) {
 
 async function loginAsCustomer(page: Page) {
   await page.goto("/dang-nhap");
-  await page.getByLabel("Số điện thoại hoặc email").fill("customer@example.com");
+  await page
+    .getByLabel("Số điện thoại hoặc email")
+    .fill("customer@example.com");
   await page.locator("#password").fill("Password123!");
   await Promise.all([
     page.waitForURL("/"),
@@ -73,6 +75,20 @@ async function fillRentRequestCreateForm(page: Page, title: string) {
   await selectSearchableSelect(page, "Phường/xã mong muốn", "Quận 1");
 }
 
+async function fillNegotiableRentRequestCreateForm(
+  page: Page,
+  title: string,
+) {
+  await page.getByLabel("Họ và tên").fill("Nguyễn Văn B");
+  await page.getByLabel("Số điện thoại").fill("0907654321");
+  await page.locator("#title").fill(title);
+  await selectRadixOption(page, "Danh mục", "Căn hộ chung cư");
+  await page.getByLabel("Thương lượng").check();
+  await page.getByLabel("Diện tích mong muốn").fill("75");
+  await selectSearchableSelect(page, "Khu vực mong muốn", "Hồ Chí Minh");
+  await selectSearchableSelect(page, "Phường/xã mong muốn", "Quận 1");
+}
+
 test.describe("listing creation", () => {
   test("customer can submit a property listing", async ({ page }) => {
     await loginAsCustomer(page);
@@ -86,12 +102,10 @@ test.describe("listing creation", () => {
 
     await expect(page.getByRole("dialog")).toContainText("Tin đã được gửi");
     await expect(page.getByRole("dialog")).toContainText(
-      "Theo dõi trạng thái bài đăng",
+      "Theo dõi trạng thái",
     );
 
-    await page
-      .getByRole("link", { name: "Theo dõi trạng thái bài đăng" })
-      .click();
+    await page.getByRole("link", { name: "Theo dõi trạng thái" }).click();
     await expect(page).toHaveURL("/quan-li-tai-khoan/cho-thue");
   });
 
@@ -109,12 +123,29 @@ test.describe("listing creation", () => {
 
     await expect(page.getByRole("dialog")).toContainText("Tin đã được gửi");
     await expect(page.getByRole("dialog")).toContainText(
-      "Theo dõi trạng thái bài đăng",
+      "Theo dõi trạng thái",
     );
 
-    await page
-      .getByRole("link", { name: "Theo dõi trạng thái bài đăng" })
-      .click();
+    await page.getByRole("link", { name: "Theo dõi trạng thái" }).click();
+    await expect(page).toHaveURL("/quan-li-tai-khoan/cau-thue");
+  });
+
+  test("customer can submit a negotiable rent-request listing without budget", async ({
+    page,
+  }) => {
+    await loginAsCustomer(page);
+    const title = `Cần thuê thương lượng ${uniqueValue("rent-negotiable")}`;
+
+    await page.goto("/dang-tin/can-thue");
+    await expect(page.locator("main")).toContainText(
+      "Thông tin nhu cầu cần thuê",
+    );
+
+    await fillNegotiableRentRequestCreateForm(page, title);
+    await page.getByRole("button", { name: "Đăng yêu cầu thuê" }).click();
+
+    await expect(page.getByRole("dialog")).toContainText("Tin đã được gửi");
+    await page.getByRole("link", { name: "Theo dõi trạng thái" }).click();
     await expect(page).toHaveURL("/quan-li-tai-khoan/cau-thue");
   });
 });

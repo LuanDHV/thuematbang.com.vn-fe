@@ -599,10 +599,10 @@ function PropertyCreateFormContent({
           onOpenChange={setSuccessOpen}
           title="Tin đã được gửi"
           description="Tin đăng đang đợi duyệt trước khi hiển thị công khai."
-          primaryActionLabel="Theo dõi trạng thái bài đăng"
+          primaryActionLabel="Theo dõi trạng thái"
           primaryActionHref="/quan-li-tai-khoan/cho-thue"
-          secondaryActionLabel="Đăng tin khác"
-          secondaryActionHref="/dang-tin/cho-thue"
+          secondaryActionLabel="Xem nhu cầu thuê"
+          secondaryActionHref="/can-thue"
         />
       ) : null}
     </>

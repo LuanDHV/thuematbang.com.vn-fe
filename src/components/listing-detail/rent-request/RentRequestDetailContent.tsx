@@ -119,6 +119,8 @@ export default function RentRequestDetailContent({
                     fallback: "Đang cập nhật",
                     amount: rentRequest.budgetAmount,
                     unit: rentRequest.budgetUnit,
+                    negotiable: rentRequest.isNegotiable,
+                    negotiableLabel: "Thỏa thuận",
                   })}
                 </p>
               </div>

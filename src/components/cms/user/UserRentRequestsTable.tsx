@@ -107,6 +107,8 @@ function RentRequestMobileCard({
               fallback: "Đang cập nhật",
               amount: item.budgetAmount,
               unit: item.budgetUnit,
+              negotiable: item.isNegotiable,
+              negotiableLabel: "Thỏa thuận",
             })}
           </p>
         </div>
@@ -257,6 +259,8 @@ export default function UserRentRequestsTable({
                         fallback: "Đang cập nhật",
                         amount: item.budgetAmount,
                         unit: item.budgetUnit,
+                        negotiable: item.isNegotiable,
+                        negotiableLabel: "Thỏa thuận",
                       })}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">

@@ -84,6 +84,8 @@ export function RentRequestCard({
               fallback: "Đang cập nhật",
               amount: request.budgetAmount,
               unit: request.budgetUnit,
+              negotiable: request.isNegotiable,
+              negotiableLabel: "Thỏa thuận",
             })}
           </p>
 

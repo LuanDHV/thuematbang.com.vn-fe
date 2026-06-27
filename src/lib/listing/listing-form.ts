@@ -128,5 +128,6 @@ export function normalizeRentRequestFormDefaults(
     desiredWardId: toOptionalNumber(defaultValues.desiredWardId),
     userId: toOptionalNumber(defaultValues.userId),
     isMatched: Boolean(defaultValues.isMatched),
+    isNegotiable: Boolean(defaultValues.isNegotiable),
   };
 }

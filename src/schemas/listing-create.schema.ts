@@ -200,16 +200,8 @@ export const rentRequestCreateFormSchema = z.object({
     positiveMessage: "Vui lòng chọn danh mục",
     integer: true,
   }),
-  budgetAmount: requiredNumberSchema({
-    requiredMessage: "Vui lòng nhập ngân sách",
-    invalidMessage: "Ngân sách không hợp lệ",
-    positiveMessage: "Vui lòng nhập ngân sách hợp lệ",
-    max: Number.MAX_SAFE_INTEGER,
-    maxMessage: "Ngân sách không hợp lệ",
-  }),
-  budgetUnit: z.enum(PRICE_UNIT_VALUES, {
-    message: "Vui lòng chọn đơn vị giá",
-  }),
+  budgetAmount: optionalNumberSchema,
+  budgetUnit: z.enum(PRICE_UNIT_VALUES).optional(),
   budget: optionalNumberSchema,
   desiredArea: requiredNumberSchema({
     requiredMessage: "Vui lòng nhập diện tích mong muốn",
@@ -243,9 +235,52 @@ export const rentRequestCreateFormSchema = z.object({
   userId: optionalIntegerSchema,
   status: z.enum(RENT_REQUEST_STATUS_VALUES).nullable().optional(),
   isMatched: z.boolean().default(false).optional(),
+  isNegotiable: z.boolean().default(false),
   isExpress: z.boolean().default(false).optional(),
   duration: z.enum(EXPRESS_DURATION_VALUES).nullable().optional(),
   expressExpiresAt: z.string().datetime().nullable().optional(),
+}).superRefine((value, ctx) => {
+  if (value.isNegotiable) {
+    return;
+  }
+
+  const hasCanonicalBudget = typeof value.budget === "number";
+  const hasBudgetAmount = typeof value.budgetAmount === "number";
+
+  if (!hasCanonicalBudget && !hasBudgetAmount) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["budgetAmount"],
+      message: "Vui lòng nhập ngân sách",
+    });
+  }
+
+  const budgetAmount = value.budgetAmount;
+  const budget = value.budget;
+
+  if (typeof budgetAmount === "number" && budgetAmount <= 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["budgetAmount"],
+      message: "Vui lòng nhập ngân sách hợp lệ",
+    });
+  }
+
+  if (typeof budgetAmount === "number" && !value.budgetUnit) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["budgetUnit"],
+      message: "Vui lòng chọn đơn vị giá",
+    });
+  }
+
+  if (typeof budget === "number" && budget <= 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["budget"],
+      message: "Vui lòng nhập ngân sách hợp lệ",
+    });
+  }
 });
 
 export type PropertyCreateFormValues = z.infer<typeof propertyCreateFormSchema>;

@@ -53,6 +53,7 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
   budgetAmount: undefined,
   budgetUnit: "MILLION",
   budget: undefined,
+  isNegotiable: false,
   desiredArea: undefined,
   bedrooms: undefined,
   bathrooms: undefined,
@@ -121,6 +122,10 @@ export function RentRequestCreateForm({
     control: form.control,
     name: "slug",
   });
+  const isNegotiableValue = useWatch({
+    control: form.control,
+    name: "isNegotiable",
+  });
 
   useEffect(() => {
     form.reset(normalizedDefaults);
@@ -188,6 +193,10 @@ export function RentRequestCreateForm({
     const payload: RentRequestUpsertPayload = {
       ...values,
       slug: buildListingSlug(values.title),
+      budgetAmount: values.isNegotiable ? undefined : values.budgetAmount,
+      budgetUnit: values.isNegotiable ? undefined : values.budgetUnit,
+      budget: values.isNegotiable ? undefined : values.budget,
+      isNegotiable: values.isNegotiable,
     };
 
     try {
@@ -263,18 +272,25 @@ export function RentRequestCreateForm({
           options={categoryOptions}
         />
 
-        <ListingPriceField
-          name="budget"
-          amountName="budgetAmount"
-          unitName="budgetUnit"
-          label="Ngân sách"
-          required
-          placeholder="Nhập ngân sách"
-          inputMode="numeric"
-          min={0}
-          step="1"
-          format="currency"
-        />
+        {isNegotiableValue ? (
+          <div className="border-hairline bg-surface text-secondary rounded-xl border px-4 py-3 text-sm shadow-lg">
+            Tin đăng được đánh dấu là thương lượng.
+          </div>
+        ) : (
+          <ListingPriceField
+            name="budget"
+            amountName="budgetAmount"
+            unitName="budgetUnit"
+            label="Ngân sách"
+            required
+            placeholder="Nhập ngân sách"
+            inputMode="numeric"
+            min={0}
+            step="1"
+            format="currency"
+          />
+        )}
+        <ListingCheckboxField name="isNegotiable" label="Thương lượng" />
 
         <div className="grid gap-4 md:grid-cols-2">
           <ListingNumberField
@@ -365,10 +381,10 @@ export function RentRequestCreateForm({
           onOpenChange={setSuccessOpen}
           title="Tin đã được gửi"
           description="Tin đăng đang đợi duyệt trước khi hiển thị công khai."
-          primaryActionLabel="Theo dõi trạng thái bài đăng"
+          primaryActionLabel="Theo dõi trạng thái"
           primaryActionHref="/quan-li-tai-khoan/cau-thue"
-          secondaryActionLabel="Đăng tin khác"
-          secondaryActionHref="/dang-tin/can-thue"
+          secondaryActionLabel="Xem tin cho thuê"
+          secondaryActionHref="/dang-tin/cho-thue"
         />
       ) : null}
     </>

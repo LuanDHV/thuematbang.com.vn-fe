@@ -65,8 +65,8 @@ export type RentRequestUpsertPayload = {
   title: string;
   slug: string;
   categoryId: number;
-  budgetAmount: number;
-  budgetUnit: string;
+  budgetAmount?: number;
+  budgetUnit?: string;
   budget?: number;
   desiredArea: number;
   bedrooms?: number;
@@ -81,6 +81,7 @@ export type RentRequestUpsertPayload = {
   userId?: number;
   status?: PublishStatus | null;
   isMatched?: boolean;
+  isNegotiable?: boolean;
   isExpress?: boolean;
   duration?: ExpressDuration | null;
   expressExpiresAt?: string | null;

@@ -16,7 +16,7 @@ export interface RentRequest {
   categoryId: number;
   desiredProvinceId: number;
   desiredWardId: number | null;
-  budget: number;
+  budget: number | null;
   budgetAmount?: number | null;
   budgetUnit?: PriceUnit | null;
   desiredArea: number;
@@ -29,6 +29,7 @@ export interface RentRequest {
   contactPhone: string;
   status: PublishStatus;
   isMatched: boolean;
+  isNegotiable: boolean;
   isExpress: boolean;
   duration?: ExpressDuration | null;
   expressExpiresAt?: Date | string | null;

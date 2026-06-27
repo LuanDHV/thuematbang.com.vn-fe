@@ -106,6 +106,8 @@ export default function AdminRentRequestsTable({
             fallback: "Đang cập nhật",
             amount: item.budgetAmount,
             unit: item.budgetUnit,
+            negotiable: item.isNegotiable,
+            negotiableLabel: "Thỏa thuận",
           }),
       },
       {

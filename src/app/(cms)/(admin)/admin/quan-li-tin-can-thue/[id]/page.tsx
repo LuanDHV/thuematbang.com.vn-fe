@@ -62,6 +62,8 @@ export default async function AdminRentRequestEditPage({ params }: PageProps) {
           categoryId: rentRequest.categoryId,
           budgetAmount: rentRequest.budgetAmount ?? undefined,
           budgetUnit: rentRequest.budgetUnit ?? "MILLION",
+          budget: rentRequest.budget ?? undefined,
+          isNegotiable: rentRequest.isNegotiable,
           desiredArea: rentRequest.desiredArea,
           bedrooms: rentRequest.bedrooms ?? undefined,
           bathrooms: rentRequest.bathrooms ?? undefined,

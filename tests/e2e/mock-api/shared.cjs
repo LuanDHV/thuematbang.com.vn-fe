@@ -170,6 +170,7 @@ function createSharedHelpers(state) {
   function makeRentRequest(payload, owner) {
     const id = state.nextRentRequestId++;
     const slug = payload.slug || `rent-request-${id}`;
+    const isNegotiable = Boolean(payload.isNegotiable);
     const category = state.categories.find(
       (item) => item.id === Number(payload.categoryId),
     );
@@ -207,9 +208,10 @@ function createSharedHelpers(state) {
             slug: ward.slug,
           }
         : null,
-      budget: Number(payload.budget ?? payload.budgetAmount ?? 0),
-      budgetAmount: Number(payload.budgetAmount ?? 0),
-      budgetUnit: payload.budgetUnit || "MILLION",
+      budget: isNegotiable ? null : Number(payload.budget ?? payload.budgetAmount ?? 0),
+      budgetAmount: isNegotiable ? null : Number(payload.budgetAmount ?? 0),
+      budgetUnit: isNegotiable ? null : (payload.budgetUnit || "MILLION"),
+      isNegotiable,
       desiredArea: Number(payload.desiredArea ?? 0),
       bedrooms: Number(payload.bedrooms ?? 0),
       bathrooms: Number(payload.bathrooms ?? 0),
