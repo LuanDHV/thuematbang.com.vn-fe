@@ -176,23 +176,21 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
               </Link>
             </Button>
-
             <Button
               asChild
-              variant="outline"
               size="lg"
-              className="h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/20 bg-white px-4 py-3 text-left text-sm font-bold text-black shadow-2xl transition-colors duration-300 hover:bg-white/95 hover:text-black sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+              className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
             >
               <Link href="/dang-tin/can-thue">
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
                   <span className="text-lg font-semibold">
                     Đăng nhu cầu thuê
                   </span>
-                  <span className="text-xs font-medium text-black/60">
+                  <span className="text-xs font-medium text-white/75">
                     Tiếp cận đơn vị cho thuê nhanh chóng
                   </span>
                 </span>
-                <CirclePlus className="size-4 shrink-0 opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
+                <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
               </Link>
             </Button>
           </div>
@@ -206,13 +204,18 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 asChild
                 variant="ghost"
                 size="lg"
-                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
+                className="group border-border-subtle bg-surface-alt text-body hover:border-border-strong hover:bg-surface hover:text-heading h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-bold shadow-xl backdrop-blur-md transition-colors duration-300 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
               >
                 <Link href="/cho-thue">
-                  <span className="flex min-w-0 flex-1 items-center">
-                    Xem bất động sản đang cho thuê
+                  <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
+                    <span className="text-lg font-semibold">
+                      Xem bất động sản đang cho thuê
+                    </span>
+                    <span className="text-secondary text-xs font-medium">
+                      Khám phá nguồn hàng sẵn có
+                    </span>
                   </span>
-                  <ArrowRight className="size-3.5 shrink-0 opacity-60 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-4" />
+                  <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
                 </Link>
               </Button>
 
@@ -220,13 +223,18 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 asChild
                 variant="ghost"
                 size="lg"
-                className="group h-12 w-full justify-between rounded-full border border-white/25 bg-white px-4 text-xs font-semibold text-black shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-white/95 hover:text-black lg:h-14 lg:px-6 lg:text-sm"
+                className="group border-border-subtle bg-surface-alt text-body hover:border-border-strong hover:bg-surface hover:text-heading h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-bold shadow-xl backdrop-blur-md transition-colors duration-300 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
               >
                 <Link href="/can-thue">
-                  <span className="flex min-w-0 flex-1 items-center">
-                    Xem nhu cầu cần thuê mới nhất
+                  <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
+                    <span className="text-lg font-semibold">
+                      Xem nhu cầu cần thuê mới nhất
+                    </span>
+                    <span className="text-secondary text-xs font-medium">
+                      Cập nhật nhu cầu đang tìm thuê
+                    </span>
                   </span>
-                  <ArrowRight className="size-3.5 shrink-0 opacity-60 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-4" />
+                  <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
                 </Link>
               </Button>
             </div>

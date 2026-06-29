@@ -16,8 +16,8 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
 const HEADER_ITEMS = [
-  { id: "cho-thue", name: "Cho thuê", href: "/dang-tin/cho-thue" },
-  { id: "can-thue", name: "Cần thuê", href: "/dang-tin/can-thue" },
+  { id: "cho-thue", name: "Đăng cho thuê", href: "/dang-tin/cho-thue" },
+  { id: "can-thue", name: "Đăng cần thuê", href: "/dang-tin/can-thue" },
   { id: "du-an", name: "Dự án", href: "/du-an" },
   { id: "tin-tuc", name: "Tin tức", href: "/tin-tuc" },
 ];
