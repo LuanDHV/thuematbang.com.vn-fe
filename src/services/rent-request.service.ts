@@ -142,6 +142,7 @@ export const rentRequestService = {
       {
         cache: "no-store",
         tags: ["rent-request-detail", slug],
+        viewTrackingSource: "public",
       },
     );
     return response.data;

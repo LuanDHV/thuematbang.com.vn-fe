@@ -93,6 +93,7 @@ export const newsService = {
       {
         cache: "no-store",
         tags: ["news-detail", slug],
+        viewTrackingSource: "public",
       },
     );
     return response.data;

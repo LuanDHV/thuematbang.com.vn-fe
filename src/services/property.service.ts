@@ -151,6 +151,7 @@ export const propertyService = {
       {
         cache: "no-store",
         tags: ["property-detail", slug],
+        viewTrackingSource: "public",
       },
     );
     return response.data;

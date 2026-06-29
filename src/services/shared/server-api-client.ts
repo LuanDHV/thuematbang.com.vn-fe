@@ -21,6 +21,7 @@ type ServerApiClientOptions = {
   headers?: HeadersInit;
   body?: BodyInit | null;
   mutateAuthCookies?: boolean;
+  viewTrackingSource?: "public" | "internal";
 };
 
 // All server-side services should go through this URL builder so auth refresh,
@@ -80,9 +81,14 @@ async function buildRequestHeaders(
   auth: "none" | "required",
   headers?: HeadersInit,
   accessToken?: string | null,
+  viewTrackingSource?: "public" | "internal",
 ) {
   const resolvedHeaders = new Headers(headers);
   resolvedHeaders.set("Accept", "application/json");
+
+  if (viewTrackingSource) {
+    resolvedHeaders.set("X-View-Source", viewTrackingSource);
+  }
 
   if (auth === "required" && accessToken) {
     resolvedHeaders.set("Authorization", `Bearer ${accessToken}`);
@@ -111,6 +117,7 @@ async function executeServerRequest(
       options.auth ?? "none",
       options.headers,
       accessToken,
+      options.viewTrackingSource,
     ),
     body: options.body,
   });

@@ -118,6 +118,7 @@ export const projectService = {
       {
         cache: "no-store",
         tags: ["project-detail", slug],
+        viewTrackingSource: "public",
       },
     );
     return response.data;
