@@ -21,7 +21,7 @@ export default async function NewsSection() {
             <Title
               eyebrow="Cập nhật"
               title="Cẩm nang & Xu hướng thị trường"
-              description="Tổng hợp xu hướng giá thuê, kinh nghiệm tìm mặt bằng kinh doanh cho người thuê và giải pháp tối ưu dòng tiền, vận hành cho chủ bất động sản."
+              description="Cập nhật xu hướng giá thuê, kinh nghiệm tìm mặt bằng và giải pháp tối ưu vận hành bất động sản."
               variant="home"
             />
           </div>

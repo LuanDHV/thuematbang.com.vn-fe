@@ -155,8 +155,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
           <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-xl md:text-4xl lg:text-5xl">
-            Sàn Thương Mại Bất Động Sản Kết Nối Nhu Cầu Thuê - Cho Thuê Toàn
-            Quốc
+            Nền tảng kết nối bất động sản cho thuê toàn quốc
           </h1>
 
           <div className="mt-8 grid w-full max-w-4xl grid-cols-1 gap-3 md:grid-cols-2 xl:mt-10 xl:gap-4">
@@ -168,7 +167,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               <Link href="/dang-tin/cho-thue">
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
                   <span className="text-lg font-semibold">
-                    Đăng tin cho thuê ngay
+                    Đăng tin cho thuê
                   </span>
                   <span className="text-xs font-medium text-white/75">
                     Tiếp cận khách hàng tiềm năng
@@ -187,7 +186,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               <Link href="/dang-tin/can-thue">
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
                   <span className="text-lg font-semibold">
-                    Đăng nhu cầu cần thuê ngay
+                    Đăng nhu cầu thuê
                   </span>
                   <span className="text-xs font-medium text-black/60">
                     Tiếp cận đơn vị cho thuê nhanh chóng

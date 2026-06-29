@@ -33,7 +33,7 @@ export default async function DangTinCanThuePage() {
         provinces={provinces}
         submitAction={createRentRequestAction}
         title="Thông tin nhu cầu cần thuê"
-        description="Hãy mô tả rõ nhu cầu để tin cần thuê dễ được đối tác phù hợp nhìn thấy."
+        description="Cung cấp thông tin nhu cầu thuê chi tiết để tăng khả năng kết nối với đối tác phù hợp."
         submitLabel="Đăng yêu cầu thuê"
       />
     </section>

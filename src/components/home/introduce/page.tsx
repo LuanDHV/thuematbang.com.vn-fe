@@ -22,8 +22,7 @@ const features = [
   {
     icon: <Layers className="text-primary h-8 w-8" />,
     title: "Danh Mục Đa Dạng",
-    description:
-      "Hơn 10,000+ bất động sản chất lượng cao được cập nhật liên tục.",
+    description: "Kho bất động sản chất lượng cao, cập nhật liên tục.",
   },
   {
     icon: <ShieldCheck className="text-primary h-8 w-8" />,
@@ -36,7 +35,7 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
   return (
     <Link
       href="/gioi-thieu"
-      className="group border-hairline bg-surface relative flex min-h-56 flex-col items-center rounded-xl border p-5 text-center shadow-(--shadow-card) transition-[border-color,box-shadow] duration-300 ease-in-out hover:border-primary/20 hover:shadow-(--shadow-float)"
+      className="group border-hairline bg-surface hover:border-primary/20 relative flex min-h-56 flex-col items-center rounded-xl border p-5 text-center shadow-(--shadow-card) transition-[border-color,box-shadow] duration-300 ease-in-out hover:shadow-(--shadow-float)"
     >
       <div className="bg-primary/5 group-hover:border-primary/10 mb-4 rounded-full border border-transparent p-4 transition-colors duration-300">
         {feature.icon}

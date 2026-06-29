@@ -33,7 +33,7 @@ export default async function DangTinChoThuePage() {
         provinces={provinces}
         submitAction={createPropertyAction}
         title="Thông tin tin cho thuê"
-        description="Hãy nhập đầy đủ thông tin cơ bản để tin đăng hiển thị rõ ràng hơn trên trang tìm kiếm."
+        description="Cung cấp thông tin cho thuê chi tiết để tăng khả năng kết nối với đối tác phù hợp."
         submitLabel="Đăng tin cho thuê"
       />
     </section>
