@@ -154,7 +154,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
-          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-xl md:text-4xl lg:text-5xl">
+          <h1 className="mt-6 max-w-4xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-xl md:text-4xl lg:text-5xl">
             Nền tảng kết nối bất động sản cho thuê toàn quốc
           </h1>
 
@@ -170,7 +170,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                     Đăng tin cho thuê
                   </span>
                   <span className="text-xs font-medium text-white/75">
-                    Tiếp cận khách hàng tiềm năng
+                    Kết nối mạng lưới khách thuê nhanh chóng
                   </span>
                 </span>
                 <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
@@ -187,7 +187,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                     Đăng nhu cầu thuê
                   </span>
                   <span className="text-xs font-medium text-white/75">
-                    Tiếp cận đơn vị cho thuê nhanh chóng
+                    Tiếp cận nguồn cung phù hợp
                   </span>
                 </span>
                 <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
@@ -196,9 +196,6 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
           </div>
 
           <div className="mt-4 w-full max-w-4xl lg:mt-5">
-            <div className="mb-2 text-center text-xs font-semibold tracking-[0.24em] text-white/70 uppercase">
-              Khám phá nhanh
-            </div>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:gap-3">
               <Button
                 asChild
@@ -212,7 +209,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                       Xem bất động sản đang cho thuê
                     </span>
                     <span className="text-secondary text-xs font-medium">
-                      Khám phá nguồn hàng sẵn có
+                      Khám phá các lựa chọn đa dạng
                     </span>
                   </span>
                   <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
@@ -231,7 +228,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                       Xem nhu cầu cần thuê mới nhất
                     </span>
                     <span className="text-secondary text-xs font-medium">
-                      Cập nhật nhu cầu đang tìm thuê
+                      Nắm bắt nhu cầu của thị trường
                     </span>
                   </span>
                   <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
