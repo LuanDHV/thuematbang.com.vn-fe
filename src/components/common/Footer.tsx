@@ -1,4 +1,4 @@
-import { MapPin } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -53,6 +53,11 @@ export default function Footer() {
                   708-710-712 Cách Mạng Tháng 8, P. Tân Sơn Nhất, Q. Tân Bình,
                   TP. HCM
                 </span>
+              </div>
+
+              <div className="text-footer-body flex items-start gap-2 text-sm leading-7">
+                <Phone size={18} className="text-primary mt-1 shrink-0" />
+                <span>0968 68 80 81</span>
               </div>
             </div>
           </div>
