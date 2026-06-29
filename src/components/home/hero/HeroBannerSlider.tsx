@@ -68,6 +68,67 @@ function SlideLink({ href, children }: { href: string; children: ReactNode }) {
   );
 }
 
+type HeroActionCardProps = {
+  primaryHref: string;
+  primaryLabel: string;
+  primaryDescription: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+  secondaryDescription: string;
+  primaryIcon: ReactNode;
+  secondaryIcon: ReactNode;
+};
+
+function HeroActionCard({
+  primaryHref,
+  primaryLabel,
+  primaryDescription,
+  secondaryHref,
+  secondaryLabel,
+  secondaryDescription,
+  primaryIcon,
+  secondaryIcon,
+}: HeroActionCardProps) {
+  return (
+    <div className="flex flex-col gap-3">
+      <Button
+        asChild
+        size="lg"
+        className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[background-color,border-color,filter] duration-500 ease-out hover:border-white/25 hover:brightness-105 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+      >
+        <Link href={primaryHref}>
+          <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
+            <span className="text-lg font-semibold">{primaryLabel}</span>
+            <span className="text-xs font-medium text-white/75">
+              {primaryDescription}
+            </span>
+          </span>
+          {primaryIcon}
+        </Link>
+      </Button>
+
+      <Button
+        asChild
+        variant="ghost"
+        size="lg"
+        className="group border-border-subtle text-heading mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-left text-sm font-bold shadow-lg transition-[background-color,border-color,filter] duration-500 ease-out hover:border-border-strong hover:bg-surface hover:brightness-[1.02] sm:px-5 sm:py-4 lg:min-h-16 lg:px-6 lg:text-base"
+      >
+        <Link href={secondaryHref}>
+          <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
+            <span className="text-base font-semibold sm:text-lg">
+              {secondaryLabel}
+            </span>
+            <span className="text-secondary text-xs font-medium">
+              {secondaryDescription}
+            </span>
+          </span>
+          {secondaryIcon}
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
 export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
   const slides = useMemo(() => getSlides(banners), [banners]);
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -154,87 +215,40 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
-          <h1 className="mt-6 max-w-4xl text-3xl leading-tight font-extrabold tracking-[-0.04em] text-white drop-shadow-xl md:text-4xl lg:text-5xl">
+          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-bold tracking-[-0.04em] text-white uppercase drop-shadow-xl md:text-4xl lg:text-6xl">
             Nền tảng kết nối bất động sản cho thuê toàn quốc
           </h1>
 
-          <div className="mt-8 grid w-full max-w-4xl grid-cols-1 gap-3 md:grid-cols-2 xl:mt-10 xl:gap-4">
-            <Button
-              asChild
-              size="lg"
-              className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
-            >
-              <Link href="/dang-tin/cho-thue">
-                <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                  <span className="text-lg font-semibold">
-                    Đăng tin cho thuê
-                  </span>
-                  <span className="text-xs font-medium text-white/75">
-                    Kết nối mạng lưới khách thuê nhanh chóng
-                  </span>
-                </span>
-                <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
-            >
-              <Link href="/dang-tin/can-thue">
-                <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                  <span className="text-lg font-semibold">
-                    Đăng nhu cầu thuê
-                  </span>
-                  <span className="text-xs font-medium text-white/75">
-                    Tiếp cận nguồn cung phù hợp
-                  </span>
-                </span>
-                <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
-              </Link>
-            </Button>
-          </div>
+          <div className="mt-8 grid w-full max-w-5xl grid-cols-1 gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5">
+            <HeroActionCard
+              primaryHref="/dang-tin/cho-thue"
+              primaryLabel="Đăng tin cho thuê"
+              primaryDescription="Kết nối mạng lưới khách thuê nhanh chóng"
+              secondaryHref="/can-thue"
+              secondaryLabel="Xem nhu cầu cần thuê mới nhất"
+              secondaryDescription="Nắm bắt nhu cầu của thị trường"
+              primaryIcon={
+                <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+              }
+              secondaryIcon={
+                <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+              }
+            />
 
-          <div className="mt-4 w-full max-w-4xl lg:mt-5">
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:gap-3">
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="group border-border-subtle bg-surface-alt text-body hover:border-border-strong hover:bg-surface hover:text-heading h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-bold shadow-xl backdrop-blur-md transition-colors duration-300 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
-              >
-                <Link href="/cho-thue">
-                  <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                    <span className="text-lg font-semibold">
-                      Xem bất động sản đang cho thuê
-                    </span>
-                    <span className="text-secondary text-xs font-medium">
-                      Khám phá các lựa chọn đa dạng
-                    </span>
-                  </span>
-                  <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
-                </Link>
-              </Button>
-
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="group border-border-subtle bg-surface-alt text-body hover:border-border-strong hover:bg-surface hover:text-heading h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-bold shadow-xl backdrop-blur-md transition-colors duration-300 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
-              >
-                <Link href="/can-thue">
-                  <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                    <span className="text-lg font-semibold">
-                      Xem nhu cầu cần thuê mới nhất
-                    </span>
-                    <span className="text-secondary text-xs font-medium">
-                      Nắm bắt nhu cầu của thị trường
-                    </span>
-                  </span>
-                  <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 lg:size-5" />
-                </Link>
-              </Button>
-            </div>
+            <HeroActionCard
+              primaryHref="/dang-tin/can-thue"
+              primaryLabel="Đăng nhu cầu thuê"
+              primaryDescription="Tiếp cận nguồn cung phù hợp"
+              secondaryHref="/cho-thue"
+              secondaryLabel="Xem bất động sản đang cho thuê"
+              secondaryDescription="Khám phá các lựa chọn đa dạng"
+              primaryIcon={
+                <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+              }
+              secondaryIcon={
+                <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+              }
+            />
           </div>
         </div>
       </div>
@@ -248,10 +262,10 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                 type="button"
                 onClick={() => emblaApi?.scrollTo(index)}
                 className={cn(
-                  "h-2.5 cursor-pointer rounded-full transition-all duration-300",
+                  "h-2.5 cursor-pointer rounded-full transition-all duration-500 ease-out",
                   index === selectedIndex
                     ? "bg-primary w-8 shadow-lg"
-                    : "bg-surface/45 hover:bg-surface/70 w-2.5",
+                    : "bg-surface/45 hover:bg-surface/60 w-2.5",
                 )}
                 aria-label={`Chuyển đến banner ${index + 1}`}
                 aria-pressed={index === selectedIndex}
