@@ -201,7 +201,6 @@ export function ListingImageField({
         {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <FieldDescription>{description}</FieldDescription>
-
       <label className="surface-card hover:border-primary/25 hover:bg-primary/4 flex cursor-pointer flex-col gap-4 border-dashed p-4 transition-colors">
         <div className="flex items-center gap-3">
           <div className="border-border-subtle text-primary flex size-11 items-center justify-center rounded-full">
@@ -211,10 +210,11 @@ export function ListingImageField({
             <p className="text-body text-sm font-medium">
               {isUploading ? "Đang tải ảnh lên..." : "Tải ảnh lên"}
             </p>
+
             <p className="text-secondary text-xs">
-              Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP.
-              <br />
-              Tối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB.
+              Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP. <br />
+              Tối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB. <br />
+              Hình ảnh không đính kèm logo, watermark hoặc số điện thoại
             </p>
             {isUploading ? (
               <div className="mt-3 space-y-2">

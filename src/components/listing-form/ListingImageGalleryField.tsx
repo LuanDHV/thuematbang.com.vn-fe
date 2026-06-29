@@ -16,6 +16,7 @@ import {
   deleteCloudinaryImages,
   uploadCloudinaryImagesSettled,
 } from "@/lib/cloudinary-upload";
+
 import { cn } from "@/lib/utils";
 import type {
   CloudinaryUploadResourceType,
@@ -258,7 +259,6 @@ export function ListingImageGalleryField({
         {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <FieldDescription>{description}</FieldDescription>
-
       <label
         className={cn(
           "surface-card flex flex-col gap-4 border-dashed p-4 transition-colors",
@@ -273,13 +273,21 @@ export function ListingImageGalleryField({
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-body text-sm font-medium">
-              {disabled ? "Chỉ xem ảnh" : isUploading ? "Đang tải ảnh lên..." : "Tải ảnh lên"}
-            </p>
-            <p className="text-secondary text-xs">
               {disabled
-                ? "Tin đang ở chế độ chỉ xem."
-                : "Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP.\nTối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB."}
+                ? "Chỉ xem ảnh"
+                : isUploading
+                  ? "Đang tải ảnh lên..."
+                  : "Tải ảnh lên"}
             </p>
+            {disabled ? (
+              <p className="text-secondary text-xs">Tin đang ở chế độ chỉ xem.</p>
+            ) : (
+              <p className="text-secondary text-xs">
+                Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP. <br />
+                Tối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB. <br />
+                Hình ảnh không đính kèm logo, watermark hoặc số điện thoại
+              </p>
+            )}
 
             {isUploading ? (
               <div className="mt-3 space-y-2">

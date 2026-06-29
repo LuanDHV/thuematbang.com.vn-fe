@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-
 import { cn } from "@/lib/utils";
 import type { CloudinaryUploadResourceType } from "@/types/cloudinary";
 import styles from "./LightRichTextEditor.module.css";
@@ -33,6 +32,13 @@ export function LightRichTextEditor(props: LightRichTextEditorProps) {
   return (
     <div className={cn(styles.shell, props.className)}>
       <CKEditorLightRichTextEditor {...props} />
+      {props.imageUpload ? (
+        <p className="text-secondary text-xs">
+          Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP. <br />
+          Tối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB. <br />
+          Hình ảnh không đính kèm logo, watermark hoặc số điện thoại
+        </p>
+      ) : null}
     </div>
   );
 }
