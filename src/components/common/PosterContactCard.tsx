@@ -60,7 +60,7 @@ export default function PosterContactCard({
               alt={fullName || "Người đăng"}
               fill
               sizes="48px"
-              cldQuality="auto:best"
+              cldQuality="auto:good"
               className="object-cover"
             />
           </div>

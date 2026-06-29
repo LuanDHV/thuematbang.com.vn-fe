@@ -33,7 +33,6 @@ export default function CloudinaryImage({
         crop={crop}
         gravity={gravity}
         format={format}
-        dpr="auto"
         alt={alt ?? ""}
         title={resolvedTitle}
         loading={resolvedLoading}

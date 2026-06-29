@@ -153,7 +153,7 @@ function FeaturedCard({
           priority={priority}
           sizes="(max-width: 768px) 100vw, 50vw"
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          cldQuality="auto:best"
+          cldQuality="auto:good"
         />
       </div>
 
@@ -207,7 +207,7 @@ function PremiumCard({
             priority={priority}
             sizes="(max-width: 768px) 100vw, 50vw"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            cldQuality="auto:best"
+            cldQuality="auto:good"
           />
         </div>
 
@@ -222,7 +222,7 @@ function PremiumCard({
                   height={600}
                   sizes="(max-width: 768px) 40vw, 20vw"
                   className="h-full w-full object-cover"
-                  cldQuality="auto:best"
+                  cldQuality="auto:good"
                 />
               </div>
             ) : sideLayout === "split" ? (
@@ -235,7 +235,7 @@ function PremiumCard({
                     height={600}
                     sizes="(max-width: 768px) 40vw, 20vw"
                     className="h-full w-full object-cover"
-                    cldQuality="auto:best"
+                    cldQuality="auto:good"
                   />
                 </div>
                 <div className="relative h-1/2 w-full overflow-hidden">
@@ -246,7 +246,7 @@ function PremiumCard({
                     height={600}
                     sizes="(max-width: 768px) 40vw, 20vw"
                     className="h-full w-full object-cover"
-                    cldQuality="auto:best"
+                    cldQuality="auto:good"
                   />
                 </div>
               </>
@@ -260,7 +260,7 @@ function PremiumCard({
                     height={600}
                     sizes="(max-width: 768px) 40vw, 20vw"
                     className="h-full w-full object-cover"
-                    cldQuality="auto:best"
+                    cldQuality="auto:good"
                   />
                 </div>
                 <div className="flex h-1/2 w-full gap-0.5">
@@ -272,7 +272,7 @@ function PremiumCard({
                       height={600}
                       sizes="(max-width: 768px) 30vw, 15vw"
                       className="h-full w-full object-cover"
-                      cldQuality="auto:best"
+                      cldQuality="auto:good"
                     />
                   </div>
                   <div className="relative h-full w-1/2 overflow-hidden">
@@ -283,7 +283,7 @@ function PremiumCard({
                       height={600}
                       sizes="(max-width: 768px) 30vw, 15vw"
                       className="h-full w-full object-cover"
-                      cldQuality="auto:best"
+                      cldQuality="auto:good"
                     />
                   </div>
                 </div>
@@ -335,7 +335,7 @@ function StandardCard({
             priority={priority}
             sizes="(max-width: 768px) 100vw, 33vw"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            cldQuality="auto:best"
+            cldQuality="auto:good"
           />
         </div>
 
@@ -350,7 +350,7 @@ function StandardCard({
                   height={600}
                   sizes="(max-width: 768px) 30vw, 15vw"
                   className="h-full w-full object-cover"
-                  cldQuality="auto:best"
+                  cldQuality="auto:good"
                 />
               </div>
             ) : (
@@ -366,7 +366,7 @@ function StandardCard({
                     height={600}
                     sizes="(max-width: 768px) 30vw, 15vw"
                     className="h-full w-full object-cover"
-                    cldQuality="auto:best"
+                    cldQuality="auto:good"
                   />
                 </div>
               ))
@@ -410,7 +410,7 @@ function FreeCard({
           priority={priority}
           sizes="(max-width: 768px) 50vw, 25vw"
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          cldQuality="auto:best"
+          cldQuality="auto:good"
         />
         <TierBadge tone="FREE" />
       </div>

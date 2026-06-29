@@ -94,14 +94,14 @@ export default function Header() {
                   >
                     <span className="bg-surface ring-hairline flex size-9 items-center justify-center overflow-hidden rounded-full ring-1">
                       {avatarUrl ? (
-                        <CloudinaryImage
-                          src={avatarUrl}
-                          alt={displayName}
-                          width={32}
-                          height={32}
-                          cldQuality="auto:best"
-                          className="size-8 rounded-full object-cover"
-                        />
+                          <CloudinaryImage
+                            src={avatarUrl}
+                            alt={displayName}
+                            width={32}
+                            height={32}
+                          cldQuality="auto:good"
+                            className="size-8 rounded-full object-cover"
+                          />
                       ) : (
                         <User className="text-primary size-4" />
                       )}

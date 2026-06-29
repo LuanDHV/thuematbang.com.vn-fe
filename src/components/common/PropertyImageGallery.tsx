@@ -155,7 +155,7 @@ export default function PropertyImageGallery({
               width={1200}
               height={800}
               sizes="(max-width: 1024px) 100vw, 66vw"
-              cldQuality="auto:best"
+              cldQuality="auto:good"
               crop={activeImageCrop}
               priority={activeIndex === 0}
               className={`h-full w-full ${activeImageClassName}`}

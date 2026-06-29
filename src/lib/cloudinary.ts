@@ -115,8 +115,8 @@ const CLOUDINARY_PRESETS: Record<CloudinaryPresetName, CloudinaryImageOptions> =
   avatarSm: { width: 96, height: 96, quality: "auto:best" },
   avatarMd: { width: 176, height: 176, quality: "auto:best" },
   avatarLg: { width: 192, height: 192, quality: "auto:best" },
-  listingCard: { width: 1200, height: 760, quality: "auto:best" },
-  listingGalleryMain: { width: 1600, height: 1000, quality: "auto:best" },
+  listingCard: { width: 1200, height: 760, quality: "auto:good" },
+  listingGalleryMain: { width: 1600, height: 1000, quality: "auto:good" },
   listingGalleryThumb: { width: 220, height: 140, quality: "auto:good" },
 };
 

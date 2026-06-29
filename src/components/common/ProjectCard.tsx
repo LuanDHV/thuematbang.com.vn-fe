@@ -69,12 +69,12 @@ export function ProjectCard({ project }: { project: Project }) {
           <CloudinaryImage
             src={thumbnailImageUrl}
             alt={project.name}
-            width={1200}
-            height={900}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            cldQuality="auto:best"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
+          width={1200}
+          height={900}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          cldQuality="auto:good"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
         </div>
 
         <div className="flex h-full flex-1 flex-col p-4">

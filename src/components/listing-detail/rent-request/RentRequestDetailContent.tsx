@@ -50,15 +50,15 @@ export default function RentRequestDetailContent({
         <section>
           <div className="bg-surface-alt relative aspect-video w-full overflow-hidden rounded-2xl">
             <CloudinaryImage
-              src={RENT_REQUEST_COVER_IMAGE}
-              alt={rentRequest.title}
-              width={1600}
-              height={900}
-              sizes="(max-width: 1024px) 100vw, 75vw"
-              cldQuality="auto:best"
-              className="h-full w-full object-cover"
-              priority
-            />
+            src={RENT_REQUEST_COVER_IMAGE}
+            alt={rentRequest.title}
+            width={1600}
+            height={900}
+            sizes="(max-width: 1024px) 100vw, 75vw"
+            cldQuality="auto:good"
+            className="h-full w-full object-cover"
+            priority
+          />
           </div>
         </section>
 

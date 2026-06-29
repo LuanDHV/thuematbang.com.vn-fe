@@ -122,7 +122,7 @@ export default function CmsSidebar({
       alt={`Ảnh đại diện của ${accountLabel}`}
       width={48}
       height={48}
-      cldQuality="auto:best"
+      cldQuality="auto:good"
       className="border-hairline size-12 shrink-0 rounded-full border object-cover"
     />
   ) : (

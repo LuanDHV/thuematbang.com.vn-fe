@@ -64,7 +64,7 @@ export function RentRequestCard({
             width={1200}
             height={800}
             sizes="(max-width: 768px) 100vw, 33vw"
-            cldQuality="auto:best"
+            cldQuality="auto:good"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </div>

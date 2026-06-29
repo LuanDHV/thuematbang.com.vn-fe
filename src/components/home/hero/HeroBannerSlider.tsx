@@ -187,7 +187,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                     height={900}
                     priority={slide.id === slides[0]?.id}
                     sizes="100vw"
-                    cldQuality="auto:best"
+                    cldQuality="auto:good"
                     className="h-full w-full object-cover object-center"
                   />
                   <div className="absolute inset-0 bg-black/20" />
