@@ -14,7 +14,7 @@ import { ListingRichTextField } from "@/components/listing-form/ListingRichTextF
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
-import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
+import { CONTENT_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
 import {
   normalizeGalleryImages,
@@ -320,7 +320,7 @@ function AdminProjectFormContent({
       <ListingSelectField
         name="status"
         label="Trạng thái"
-        options={PUBLISH_STATUS_OPTIONS}
+        options={CONTENT_STATUS_OPTIONS}
       />
 
       <ListingRichTextField

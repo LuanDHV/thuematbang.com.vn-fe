@@ -41,6 +41,7 @@ type ListingImageGalleryFieldProps = {
   draftId: string;
   resourceId?: number | string;
   className?: string;
+  disabled?: boolean;
 };
 
 const DEFAULT_MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
@@ -97,6 +98,7 @@ export function ListingImageGalleryField({
   draftId,
   resourceId,
   className,
+  disabled = false,
 }: ListingImageGalleryFieldProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const currentImagesRef = useRef<UploadedCloudinaryImage[]>(images);
@@ -257,19 +259,26 @@ export function ListingImageGalleryField({
       </FieldLabel>
       <FieldDescription>{description}</FieldDescription>
 
-      <label className="surface-card hover:border-primary/25 hover:bg-primary/4 flex cursor-pointer flex-col gap-4 border-dashed p-4 transition-colors">
+      <label
+        className={cn(
+          "surface-card flex flex-col gap-4 border-dashed p-4 transition-colors",
+          disabled
+            ? "cursor-not-allowed opacity-70"
+            : "hover:border-primary/25 hover:bg-primary/4 cursor-pointer",
+        )}
+      >
         <div className="flex items-center gap-3">
           <div className="border-border-subtle text-primary flex size-11 items-center justify-center rounded-full border">
             <CloudUpload className="size-5" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-body text-sm font-medium">
-              {isUploading ? "Đang tải ảnh lên..." : "Tải ảnh lên"}
+              {disabled ? "Chỉ xem ảnh" : isUploading ? "Đang tải ảnh lên..." : "Tải ảnh lên"}
             </p>
             <p className="text-secondary text-xs">
-              Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP.
-              <br />
-              Tối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB.
+              {disabled
+                ? "Tin đang ở chế độ chỉ xem."
+                : "Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP.\nTối đa 25 ảnh, kích thước mỗi ảnh không vượt quá 2MB."}
             </p>
 
             {isUploading ? (
@@ -291,15 +300,17 @@ export function ListingImageGalleryField({
           </div>
         </div>
 
-        <input
-          ref={inputRef}
-          id="listing-gallery-images"
-          type="file"
-          accept="image/jpeg,image/jpg,image/png,image/webp"
-          multiple
-          className="hidden"
-          onChange={handleFilesChange}
-        />
+        {disabled ? null : (
+          <input
+            ref={inputRef}
+            id="listing-gallery-images"
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            multiple
+            className="hidden"
+            onChange={handleFilesChange}
+          />
+        )}
       </label>
 
       {existingImages.length > 0 ? (
@@ -328,7 +339,7 @@ export function ListingImageGalleryField({
                       type="button"
                       variant="ghost"
                       size="icon-sm"
-                      disabled={index === 0}
+                      disabled={disabled || index === 0}
                       onClick={() => handleMove(index, -1)}
                     >
                       <ArrowLeft className="size-4" />
@@ -337,7 +348,7 @@ export function ListingImageGalleryField({
                       type="button"
                       variant="ghost"
                       size="icon-sm"
-                      disabled={index === existingImages.length - 1}
+                      disabled={disabled || index === existingImages.length - 1}
                       onClick={() => handleMove(index, 1)}
                     >
                       <ArrowRight className="size-4" />
@@ -346,6 +357,7 @@ export function ListingImageGalleryField({
                       type="button"
                       variant="ghost"
                       size="icon-sm"
+                      disabled={disabled}
                       onClick={() => handleRemoveExisting(image.id)}
                     >
                       <Trash2 className="size-4" />
@@ -386,7 +398,7 @@ export function ListingImageGalleryField({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    disabled={isUploading}
+                    disabled={disabled || isUploading}
                     onClick={() => void handleRemoveUploaded(index)}
                   >
                     <Trash2 className="size-4" />

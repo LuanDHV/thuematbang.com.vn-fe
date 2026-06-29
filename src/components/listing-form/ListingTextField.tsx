@@ -20,6 +20,7 @@ type ListingTextFieldProps = {
   autoComplete?: string;
   className?: string;
   readOnly?: boolean;
+  disabled?: boolean;
 };
 
 export function ListingTextField({
@@ -36,6 +37,7 @@ export function ListingTextField({
   autoComplete,
   className,
   readOnly,
+  disabled,
 }: ListingTextFieldProps) {
   const {
     register,
@@ -60,6 +62,7 @@ export function ListingTextField({
         autoComplete={autoComplete}
         placeholder={placeholder}
         readOnly={readOnly}
+        disabled={disabled}
         {...register(name)}
       />
       {description ? <FieldDescription>{description}</FieldDescription> : null}
@@ -67,4 +70,3 @@ export function ListingTextField({
     </Field>
   );
 }
-

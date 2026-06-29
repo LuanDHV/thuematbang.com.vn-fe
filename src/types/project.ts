@@ -1,5 +1,5 @@
 import { Category } from "./category";
-import { PriceUnit, PublishStatus } from "./enums";
+import { ContentStatus, PriceUnit } from "./enums";
 import { Province, Ward } from "./location";
 import { ProjectImage } from "./media";
 
@@ -21,7 +21,7 @@ export interface Project {
   isNegotiable: boolean;
   content?: string | null;
   viewCount: number;
-  status: PublishStatus;
+  status: ContentStatus;
   createdAt: Date | string;
   updatedAt: Date | string;
   category?: Category | null;

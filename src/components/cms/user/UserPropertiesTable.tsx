@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { updatePropertyAction } from "@/actions/property.actions";
 import {
   PROPERTY_PRIORITY_LABEL_MAP,
   PUBLISH_STATUS_LABEL_MAP,
 } from "@/constants/enum-options";
-import { Copy, ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
+import { ExternalLink, EyeOff, MoreHorizontal, Pencil } from "lucide-react";
 
 import AdminPriorityBadge, {
   type AdminPriorityTone,
@@ -15,7 +16,10 @@ import AdminPriorityBadge, {
 import AdminStatusBadge, {
   publishStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
-import { Pagination, TablePaginationFooter } from "@/components/common/Pagination";
+import {
+  Pagination,
+  TablePaginationFooter,
+} from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -128,8 +132,6 @@ function PropertyMobileCard({
 
 function PropertyActions({
   item,
-  copied,
-  onCopy,
 }: {
   item: Property;
   copied: boolean;
@@ -147,22 +149,42 @@ function PropertyActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <Link href={`/quan-li-tai-khoan/cho-thue/${item.id}`}>
-            <Pencil className="size-4" />
-            Chỉnh sửa
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
-            <ExternalLink className="size-4" />
-            Mở trang public
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => onCopy(item)}>
-          <Copy className="size-4" />
-          {copied ? "Đã sao chép" : "Sao chép link"}
-        </DropdownMenuItem>
+        {item.status === "PUBLISHED" ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
+                <ExternalLink className="size-4" />
+                Xem bài public
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={async () => {
+                await updatePropertyAction(item.id, { status: "ARCHIVED" });
+                window.location.reload();
+              }}
+            >
+              <EyeOff className="size-4" />
+              Ẩn tin
+            </DropdownMenuItem>
+          </>
+        ) : null}
+        {item.status === "REJECTED" ? (
+          <DropdownMenuItem asChild>
+            <Link href={`/quan-li-tai-khoan/cho-thue/${item.id}`}>
+              <Pencil className="size-4" />
+              Chỉnh sửa
+            </Link>
+          </DropdownMenuItem>
+        ) : item.status === "PENDING" ||
+          item.status === "ARCHIVED" ||
+          item.status === "DRAFT" ? (
+          <DropdownMenuItem asChild>
+            <Link href={`/quan-li-tai-khoan/cho-thue/${item.id}`}>
+              <Pencil className="size-4" />
+              Xem chi tiết
+            </Link>
+          </DropdownMenuItem>
+        ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -329,7 +351,11 @@ export default function UserPropertiesTable({
 
         {totalPages > 1 ? (
           <div className="pt-2">
-            <Pagination page={currentPage} totalPages={totalPages} onChange={handlePageChange} />
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={handlePageChange}
+            />
           </div>
         ) : null}
       </div>

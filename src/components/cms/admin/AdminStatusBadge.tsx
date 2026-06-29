@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type {
   LeadStatus,
   PaymentStatus,
-  PublishStatus,
+  ListingStatus,
 } from "@/types/enums";
 
 const adminStatusBadgeVariants = cva(
@@ -33,11 +33,12 @@ export type AdminBadgeTone = NonNullable<
   VariantProps<typeof adminStatusBadgeVariants>["tone"]
 >;
 
-export const publishStatusBadgeToneMap: Record<PublishStatus, AdminBadgeTone> =
+export const publishStatusBadgeToneMap: Record<ListingStatus, AdminBadgeTone> =
   {
     DRAFT: "muted",
     PENDING: "warning",
     PUBLISHED: "success",
+    REJECTED: "danger",
     ARCHIVED: "neutral",
   };
 

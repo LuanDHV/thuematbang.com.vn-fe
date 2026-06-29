@@ -260,7 +260,7 @@ export async function deleteProjectAction(id: string | number) {
 // Rent request
 export async function updateRentRequestAction(
   id: string | number,
-  payload: RentRequestUpsertPayload,
+  payload: Partial<RentRequestUpsertPayload>,
 ) {
   const rentRequestId = toPositiveId(id);
   const result = await rentRequestService.update(rentRequestId, payload);

@@ -19,14 +19,14 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
 
   const result = await rentRequestService
     .getAll({
-      page: currentPage,
-      limit,
-      filters: {
-        q: searchQuery,
-        sortBy: "createdAt",
-        sortOrder: "desc",
-      },
-    })
+        page: currentPage,
+        limit,
+        filters: {
+          q: searchQuery,
+          sortBy: "viewCount",
+          sortOrder: "desc",
+        },
+      })
     .catch(() => ({ data: [], meta: undefined }));
 
   const items = result.data ?? [];

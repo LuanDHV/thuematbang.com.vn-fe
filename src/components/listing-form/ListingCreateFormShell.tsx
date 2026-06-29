@@ -23,6 +23,8 @@ type ListingCreateFormShellProps<TFormValues extends FieldValues> = {
   submitLabel: string;
   submitPendingLabel?: string;
   submitError?: string | null;
+  submitHidden?: boolean;
+  headerAddon?: ReactNode;
   children: ReactNode;
   className?: string;
 };
@@ -35,6 +37,8 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
   submitLabel,
   submitPendingLabel = "Đang gửi...",
   submitError,
+  submitHidden = false,
+  headerAddon,
   children,
   className,
 }: ListingCreateFormShellProps<TFormValues>) {
@@ -100,7 +104,12 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
           className,
         )}
       >
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={
+            submitHidden ? (event) => event.preventDefault() : form.handleSubmit(onSubmit)
+          }
+          className="space-y-4"
+        >
           <CardHeader className="px-0 pt-0">
             <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
               {title}
@@ -109,26 +118,28 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
               {description}
             </CardDescription>
           </CardHeader>
-
+          {headerAddon ? <div className="space-y-4">{headerAddon}</div> : null}
           <CardContent className="px-0">
             <div className="space-y-4">{children}</div>
           </CardContent>
 
-          {submitError ? (
+          {submitError && !submitHidden ? (
             <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
               {submitError}
             </p>
           ) : null}
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              size="lg"
-              disabled={form.formState.isSubmitting}
-              className="min-w-36"
-            >
-              {form.formState.isSubmitting ? submitPendingLabel : submitLabel}
-            </Button>
-          </div>
+          {!submitHidden ? (
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                size="lg"
+                disabled={form.formState.isSubmitting}
+                className="min-w-36"
+              >
+                {form.formState.isSubmitting ? submitPendingLabel : submitLabel}
+              </Button>
+            </div>
+          ) : null}
         </form>
       </section>
     </FormProvider>

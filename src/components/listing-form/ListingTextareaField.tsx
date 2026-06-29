@@ -14,6 +14,7 @@ type ListingTextareaFieldProps = {
   rows?: number;
   className?: string;
   required?: boolean;
+  disabled?: boolean;
 };
 
 export function ListingTextareaField({
@@ -24,6 +25,7 @@ export function ListingTextareaField({
   rows = 6,
   className,
   required = false,
+  disabled,
 }: ListingTextareaFieldProps) {
   const {
     register,
@@ -42,6 +44,7 @@ export function ListingTextareaField({
         id={name}
         rows={rows}
         placeholder={placeholder}
+        disabled={disabled}
         {...register(name)}
       />
       {description ? <FieldDescription>{description}</FieldDescription> : null}
@@ -49,4 +52,3 @@ export function ListingTextareaField({
     </Field>
   );
 }
-

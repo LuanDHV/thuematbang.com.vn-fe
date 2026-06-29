@@ -5,7 +5,7 @@ import {
   LEAD_STATUS_VALUES,
   PAGE_VALUES,
   PRICE_UNIT_VALUES,
-  PUBLISH_STATUS_VALUES,
+  CONTENT_STATUS_VALUES,
 } from "@/constants/enum-values";
 
 const slugSchema = z
@@ -175,7 +175,7 @@ export const newsFormSchema = z.object({
   summary: optionalTextSchema,
   content: optionalTextSchema,
   status: z
-    .enum(PUBLISH_STATUS_VALUES, {
+    .enum(CONTENT_STATUS_VALUES, {
       message: "Vui lòng chọn trạng thái",
     })
     .nullable()
@@ -218,7 +218,7 @@ export const projectFormSchema = z.object({
   isNegotiable: z.boolean().default(false),
   content: optionalTextSchema,
   status: z
-    .enum(PUBLISH_STATUS_VALUES, {
+    .enum(CONTENT_STATUS_VALUES, {
       message: "Vui lòng chọn trạng thái",
     })
     .nullable()

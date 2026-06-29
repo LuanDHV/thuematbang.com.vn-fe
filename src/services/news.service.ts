@@ -1,7 +1,7 @@
 import "server-only";
 
 import { News } from "@/types/news";
-import { PublishStatus } from "@/types/enums";
+import { ContentStatus } from "@/types/enums";
 import { requestServerApi } from "./shared/server-api-client";
 import {
   buildListPath,
@@ -15,7 +15,7 @@ export type NewsListFilters = {
   categoryId?: number;
   categorySlug?: string;
   q?: string;
-  status?: PublishStatus;
+  status?: ContentStatus;
   slug?: string;
   title?: string;
   isFeatured?: boolean;
@@ -36,7 +36,7 @@ export type NewsUpsertPayload = {
   slug: string;
   summary?: string;
   content?: string;
-  status?: PublishStatus | null;
+  status?: ContentStatus | null;
   isFeatured?: boolean;
   imageUrl?: string | null;
   imagePublicId?: string | null;

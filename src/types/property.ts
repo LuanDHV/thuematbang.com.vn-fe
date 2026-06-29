@@ -3,8 +3,8 @@ import { PropertyBoostOrder, PropertyPackageOrder } from "./commerce";
 import {
   PropertyDirection,
   PropertyPriority,
+  ListingStatus,
   PublishSource,
-  PublishStatus,
 } from "./enums";
 import { Lead } from "./lead";
 import { Province, Ward } from "./location";
@@ -32,8 +32,8 @@ export interface Property {
   isBoosted: boolean;
   boostCount: number;
   lastBoostedAt?: Date | string | null;
-  listingExpiresAt?: Date | string | null;
   boostExpiresAt?: Date | string | null;
+  rejectReason?: string | null;
   provinceId: number;
   wardId: number | null;
   addressDetail?: string | null;
@@ -43,7 +43,7 @@ export interface Property {
   contactPhone: string;
   content?: string | null;
   viewCount: number;
-  status: PublishStatus;
+  status: ListingStatus;
   createdAt: Date | string;
   updatedAt: Date | string;
   propertyPackageOrderId?: number | null;

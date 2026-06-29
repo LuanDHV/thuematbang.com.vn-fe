@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -32,7 +32,8 @@ import type { RentRequestUpsertPayload } from "@/services/rent-request.service";
 type RentRequestCreateFormMode =
   | "public-create"
   | "admin-edit-full"
-  | "user-edit-limited";
+  | "user-edit-limited"
+  | "view-only";
 
 type RentRequestCreateFormProps = {
   categories: Category[];
@@ -44,6 +45,7 @@ type RentRequestCreateFormProps = {
   defaultValues?: Partial<RentRequestCreateFormValues>;
   mode?: RentRequestCreateFormMode;
   showSuccessDialog?: boolean;
+  headerAddon?: ReactNode;
 };
 
 const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
@@ -72,6 +74,7 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
 function getVisibleModeFields(mode: RentRequestCreateFormMode) {
   return {
     showAdminOnly: mode === "admin-edit-full",
+    isViewOnly: mode === "view-only",
   };
 }
 
@@ -85,6 +88,7 @@ export function RentRequestCreateForm({
   defaultValues,
   mode = "public-create",
   showSuccessDialog = true,
+  headerAddon,
 }: RentRequestCreateFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
@@ -117,6 +121,10 @@ export function RentRequestCreateForm({
   const titleValue = useWatch({
     control: form.control,
     name: "title",
+  });
+  const statusValue = useWatch({
+    control: form.control,
+    name: "status",
   });
   const slugValue = useWatch({
     control: form.control,
@@ -182,13 +190,16 @@ export function RentRequestCreateForm({
     [],
   );
 
-  const { showAdminOnly } = getVisibleModeFields(mode);
+  const { showAdminOnly, isViewOnly } = getVisibleModeFields(mode);
 
   const onSubmit: SubmitHandler<RentRequestCreateFormValues> = async (
     values,
   ) => {
     setSubmitError(null);
     setSuccessOpen(false);
+
+    const resolvedStatus =
+      mode === "user-edit-limited" ? "PENDING" : values.status;
 
     const payload: RentRequestUpsertPayload = {
       ...values,
@@ -197,6 +208,7 @@ export function RentRequestCreateForm({
       budgetUnit: values.isNegotiable ? undefined : values.budgetUnit,
       budget: values.isNegotiable ? undefined : values.budget,
       isNegotiable: values.isNegotiable,
+      status: resolvedStatus,
     };
 
     try {
@@ -232,6 +244,8 @@ export function RentRequestCreateForm({
         submitLabel={submitLabel}
         submitPendingLabel="Đang lưu..."
         submitError={submitError}
+        submitHidden={isViewOnly}
+        headerAddon={headerAddon}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <ListingTextField
@@ -240,6 +254,7 @@ export function RentRequestCreateForm({
             required
             placeholder="Nguyễn Văn A"
             autoComplete="name"
+            disabled={isViewOnly}
           />
           <ListingTextField
             name="contactPhone"
@@ -249,6 +264,7 @@ export function RentRequestCreateForm({
             autoComplete="tel"
             type="tel"
             inputMode="tel"
+            disabled={isViewOnly}
           />
         </div>
 
@@ -258,10 +274,17 @@ export function RentRequestCreateForm({
           required
           placeholder="Ví dụ: Cần thuê mặt bằng quận 3"
           autoComplete="off"
+          disabled={isViewOnly}
         />
 
         {showAdminOnly ? (
-          <ListingTextField name="slug" label="Slug" required readOnly />
+          <ListingTextField
+            name="slug"
+            label="Slug"
+            required
+            readOnly
+            disabled={isViewOnly}
+          />
         ) : null}
 
         <ListingSelectField
@@ -270,6 +293,7 @@ export function RentRequestCreateForm({
           required
           placeholder="Chọn danh mục"
           options={categoryOptions}
+          disabled={isViewOnly}
         />
 
         {isNegotiableValue ? (
@@ -288,9 +312,14 @@ export function RentRequestCreateForm({
             min={0}
             step="1"
             format="currency"
+            disabled={isViewOnly}
           />
         )}
-        <ListingCheckboxField name="isNegotiable" label="Thương lượng" />
+        <ListingCheckboxField
+          name="isNegotiable"
+          label="Thương lượng"
+          disabled={isViewOnly}
+        />
 
         <div className="grid gap-4 md:grid-cols-2">
           <ListingNumberField
@@ -302,6 +331,7 @@ export function RentRequestCreateForm({
             min={0}
             step="0.1"
             format="area"
+            disabled={isViewOnly}
           />
 
           <ListingSelectField
@@ -310,6 +340,7 @@ export function RentRequestCreateForm({
             placeholder="Chọn hướng"
             options={directionOptions}
             allowEmptySelection
+            disabled={isViewOnly}
           />
         </div>
 
@@ -320,6 +351,7 @@ export function RentRequestCreateForm({
           labelProvince="Khu vực mong muốn"
           labelWard="Phường/xã mong muốn"
           requiredProvince
+          disabled={isViewOnly}
         />
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -330,6 +362,7 @@ export function RentRequestCreateForm({
             inputMode="numeric"
             min={0}
             step="1"
+            disabled={isViewOnly}
           />
           <ListingNumberField
             name="bathrooms"
@@ -338,6 +371,7 @@ export function RentRequestCreateForm({
             inputMode="numeric"
             min={0}
             step="1"
+            disabled={isViewOnly}
           />
           <ListingNumberField
             name="floors"
@@ -346,6 +380,7 @@ export function RentRequestCreateForm({
             inputMode="numeric"
             min={0}
             step="1"
+            disabled={isViewOnly}
           />
         </div>
 
@@ -355,9 +390,24 @@ export function RentRequestCreateForm({
               name="status"
               label="Trạng thái"
               options={RENT_REQUEST_STATUS_OPTIONS}
+              disabled={isViewOnly}
             />
-            <ListingCheckboxField name="isMatched" label="Đã khớp nhu cầu" />
+            <ListingCheckboxField
+              name="isMatched"
+              label="Đã khớp nhu cầu"
+              disabled={isViewOnly}
+            />
           </div>
+        ) : null}
+
+        {showAdminOnly && statusValue === "REJECTED" ? (
+          <ListingTextareaField
+            name="rejectReason"
+            label="Lý do từ chối"
+            required
+            placeholder="Nhập lý do từ chối để người đăng biết cần chỉnh sửa gì"
+            disabled={isViewOnly}
+          />
         ) : null}
 
         {mode === "public-create" ? (
@@ -365,12 +415,14 @@ export function RentRequestCreateForm({
             name="requirementText"
             label="Mô tả thêm"
             placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
+            disabled={isViewOnly}
           />
         ) : (
           <ListingRichTextField
             name="requirementText"
             label="Mô tả thêm"
             placeholder="Mô tả rõ hơn nhu cầu cần thuê..."
+            readOnly={isViewOnly}
           />
         )}
       </ListingCreateFormShell>

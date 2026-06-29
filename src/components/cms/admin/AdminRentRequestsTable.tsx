@@ -21,7 +21,7 @@ import {
   formatListingPrice,
 } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
-import type { PublishStatus } from "@/types/enums";
+import type { ListingStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
 
 type AdminRentRequestsTableProps = {
@@ -31,10 +31,11 @@ type AdminRentRequestsTableProps = {
   toolbar?: AdminTableToolbar;
 };
 
-const statusToneMap: Record<PublishStatus, AdminBadgeTone> = {
+const statusToneMap: Record<ListingStatus, AdminBadgeTone> = {
   DRAFT: "muted",
   PENDING: "warning",
   PUBLISHED: "success",
+  REJECTED: "danger",
   ARCHIVED: "neutral",
 };
 

@@ -11,6 +11,7 @@ type ListingCheckboxFieldProps = {
   description?: string;
   className?: string;
   required?: boolean;
+  disabled?: boolean;
 };
 
 export function ListingCheckboxField({
@@ -19,6 +20,7 @@ export function ListingCheckboxField({
   description,
   className,
   required = false,
+  disabled,
 }: ListingCheckboxFieldProps) {
   const {
     register,
@@ -38,6 +40,7 @@ export function ListingCheckboxField({
             id={name}
             type="checkbox"
             className="accent-primary text-primary focus:ring-primary/12 border-hairline-strong h-4 w-4 shrink-0 rounded shadow-sm focus:ring-4"
+            disabled={disabled}
             {...register(name)}
           />
           <div className="flex flex-1 flex-col gap-1">

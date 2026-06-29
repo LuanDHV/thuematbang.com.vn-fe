@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -45,7 +45,8 @@ import {
 type PropertyCreateFormMode =
   | "public-create"
   | "admin-edit-full"
-  | "user-edit-limited";
+  | "user-edit-limited"
+  | "view-only";
 
 type PropertyUpsertPayload = PropertyCreateFormValues & {
   removeImageIds?: number[];
@@ -54,7 +55,7 @@ type PropertyUpsertPayload = PropertyCreateFormValues & {
 };
 
 type PropertyCreateFormProps = {
-  categories: Category[];
+  categories: Category[];  
   provinces: Province[];
   submitAction: (payload: PropertyUpsertPayload) => Promise<Property>;
   title: string;
@@ -65,6 +66,7 @@ type PropertyCreateFormProps = {
   existingImages?: ExistingGalleryImage[];
   resourceId?: number | string;
   showSuccessDialog?: boolean;
+  headerAddon?: ReactNode;
 };
 
 const EMPTY_EXISTING_IMAGES: ExistingGalleryImage[] = [];
@@ -101,6 +103,7 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
 function getVisibleModeFields(mode: PropertyCreateFormMode) {
   return {
     showAdminOnly: mode === "admin-edit-full",
+    isViewOnly: mode === "view-only",
   };
 }
 
@@ -143,6 +146,7 @@ export function PropertyCreateForm({
   existingImages,
   resourceId,
   showSuccessDialog = true,
+  headerAddon,
 }: PropertyCreateFormProps) {
   const resolvedDefaults = useMemo(
     () =>
@@ -193,6 +197,7 @@ export function PropertyCreateForm({
       resourceId={resourceId}
       mode={mode}
       showSuccessDialog={showSuccessDialog}
+      headerAddon={headerAddon}
     />
   );
 }
@@ -214,6 +219,7 @@ function PropertyCreateFormContent({
   resourceId,
   mode = "public-create",
   showSuccessDialog = true,
+  headerAddon,
 }: PropertyCreateFormContentProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [imagesError, setImagesError] = useState<string | null>(null);
@@ -238,6 +244,10 @@ function PropertyCreateFormContent({
   const titleValue = useWatch({
     control: form.control,
     name: "title",
+  });
+  const statusValue = useWatch({
+    control: form.control,
+    name: "status",
   });
   const slugValue = useWatch({
     control: form.control,
@@ -299,7 +309,7 @@ function PropertyCreateFormContent({
     [],
   );
 
-  const { showAdminOnly } = getVisibleModeFields(mode);
+  const { showAdminOnly, isViewOnly } = getVisibleModeFields(mode);
 
   const onSubmit: SubmitHandler<PropertyCreateFormValues> = async (values) => {
     setSubmitError(null);
@@ -327,6 +337,9 @@ function PropertyCreateFormContent({
       )
       .map((image) => image.id);
 
+    const resolvedStatus =
+      mode === "user-edit-limited" ? "PENDING" : values.status;
+
     const basePayload = {
       ...values,
       slug: buildListingSlug(values.title),
@@ -334,7 +347,7 @@ function PropertyCreateFormContent({
       publishSource: showAdminOnly ? values.publishSource : undefined,
       isBoosted: showAdminOnly ? Boolean(values.isBoosted) : undefined,
       boostCount: showAdminOnly ? values.boostCount : undefined,
-      status: values.status,
+      status: resolvedStatus,
       longitude: showAdminOnly ? values.longitude : undefined,
       latitude: showAdminOnly ? values.latitude : undefined,
       userId: values.userId,
@@ -381,10 +394,12 @@ function PropertyCreateFormContent({
         onSubmit={onSubmit}
         title={title}
         description={description}
-        submitLabel={submitLabel}
-        submitPendingLabel="Đang lưu..."
-        submitError={submitError}
-      >
+      submitLabel={submitLabel}
+      submitPendingLabel="Đang lưu..."
+      submitError={submitError}
+      submitHidden={isViewOnly}
+      headerAddon={headerAddon}
+    >
         <div className="grid gap-4 md:grid-cols-2">
           <ListingTextField
             name="contactName"
@@ -392,6 +407,7 @@ function PropertyCreateFormContent({
             required
             placeholder="Nguyễn Văn A"
             autoComplete="name"
+            disabled={isViewOnly}
           />
           <ListingTextField
             name="contactPhone"
@@ -401,6 +417,7 @@ function PropertyCreateFormContent({
             autoComplete="tel"
             type="tel"
             inputMode="tel"
+            disabled={isViewOnly}
           />
         </div>
 
@@ -410,10 +427,17 @@ function PropertyCreateFormContent({
           required
           placeholder="Ví dụ: Mặt bằng kinh doanh quận 1"
           autoComplete="off"
+          disabled={isViewOnly}
         />
 
         {showAdminOnly ? (
-          <ListingTextField name="slug" label="Slug" required readOnly />
+          <ListingTextField
+            name="slug"
+            label="Slug"
+            required
+            readOnly
+            disabled={isViewOnly}
+          />
         ) : null}
 
         <ListingSelectField
@@ -422,6 +446,7 @@ function PropertyCreateFormContent({
           required
           placeholder="Chọn danh mục"
           options={categoryOptions}
+          disabled={isViewOnly}
         />
 
         {isNegotiableValue ? (
@@ -440,9 +465,14 @@ function PropertyCreateFormContent({
             min={0}
             step="1"
             format="currency"
+            disabled={isViewOnly}
           />
         )}
-        <ListingCheckboxField name="isNegotiable" label="Thương lượng" />
+        <ListingCheckboxField
+          name="isNegotiable"
+          label="Thương lượng"
+          disabled={isViewOnly}
+        />
 
         <div className="grid gap-4 md:grid-cols-2">
           <ListingNumberField
@@ -454,6 +484,7 @@ function PropertyCreateFormContent({
             min={0}
             step="0.1"
             format="area"
+            disabled={isViewOnly}
           />
           <ListingSelectField
             name="direction"
@@ -461,6 +492,7 @@ function PropertyCreateFormContent({
             placeholder="Chọn hướng"
             options={directionOptions}
             allowEmptySelection
+            disabled={isViewOnly}
           />
         </div>
         <ListingLocationField
@@ -468,39 +500,44 @@ function PropertyCreateFormContent({
           wardName="wardId"
           provinces={provinces}
           requiredProvince
+          disabled={isViewOnly}
         />
 
         <ListingTextField
           name="addressDetail"
           label="Địa chỉ chi tiết"
           placeholder="Số nhà, tên tòa nhà, hẻm..."
+          disabled={isViewOnly}
         />
 
         <div className="grid gap-4 md:grid-cols-3">
           <ListingNumberField
             name="bedrooms"
-            label="Số phòng ngủ"
-            placeholder="Ví dụ: 2"
-            inputMode="numeric"
-            min={0}
-            step="1"
-          />
+              label="Số phòng ngủ"
+              placeholder="Ví dụ: 2"
+              inputMode="numeric"
+              min={0}
+              step="1"
+              disabled={isViewOnly}
+            />
           <ListingNumberField
             name="bathrooms"
-            label="Số phòng tắm"
-            placeholder="Ví dụ: 1"
-            inputMode="numeric"
-            min={0}
-            step="1"
-          />
+              label="Số phòng tắm"
+              placeholder="Ví dụ: 1"
+              inputMode="numeric"
+              min={0}
+              step="1"
+              disabled={isViewOnly}
+            />
           <ListingNumberField
             name="floors"
-            label="Số tầng"
-            placeholder="Ví dụ: 3"
-            inputMode="numeric"
-            min={0}
-            step="1"
-          />
+              label="Số tầng"
+              placeholder="Ví dụ: 3"
+              inputMode="numeric"
+              min={0}
+              step="1"
+              disabled={isViewOnly}
+            />
         </div>
 
         {showAdminOnly ? (
@@ -510,12 +547,14 @@ function PropertyCreateFormContent({
               label="Kinh độ"
               inputMode="decimal"
               step="0.000001"
+              disabled={isViewOnly}
             />
             <ListingNumberField
               name="latitude"
               label="Vĩ độ"
               inputMode="decimal"
               step="0.000001"
+              disabled={isViewOnly}
             />
           </div>
         ) : null}
@@ -525,12 +564,14 @@ function PropertyCreateFormContent({
             name="content"
             label="Mô tả thêm"
             placeholder="Mô tả chi tiết về tin đăng..."
+            disabled={isViewOnly}
           />
         ) : (
           <ListingRichTextField
             name="content"
             label="Mô tả thêm"
             placeholder="Mô tả chi tiết về tin đăng..."
+            readOnly={isViewOnly}
           />
         )}
 
@@ -541,11 +582,13 @@ function PropertyCreateFormContent({
                 name="priorityStatus"
                 label="Loại tin"
                 options={PROPERTY_PRIORITY_OPTIONS}
+                disabled={isViewOnly}
               />
               <ListingSelectField
                 name="publishSource"
                 label="Nguồn xuất bản"
                 options={PUBLISH_SOURCE_OPTIONS}
+                disabled={isViewOnly}
               />
             </div>
 
@@ -554,6 +597,7 @@ function PropertyCreateFormContent({
                 name="status"
                 label="Trạng thái"
                 options={PUBLISH_STATUS_OPTIONS}
+                disabled={isViewOnly}
               />
 
               <ListingNumberField
@@ -561,11 +605,26 @@ function PropertyCreateFormContent({
                 label="Số lần boost"
                 min={0}
                 step="1"
+                disabled={isViewOnly}
               />
             </div>
 
+            {statusValue === "REJECTED" ? (
+              <ListingTextareaField
+                name="rejectReason"
+                label="Lý do từ chối"
+                required
+                placeholder="Nhập lý do từ chối để chủ tin biết cần chỉnh sửa gì"
+                disabled={isViewOnly}
+              />
+            ) : null}
+
             <div className="grid gap-4 md:grid-cols-2">
-              <ListingCheckboxField name="isBoosted" label="Đã boost" />
+              <ListingCheckboxField
+                name="isBoosted"
+                label="Đã boost"
+                disabled={isViewOnly}
+              />
             </div>
           </>
         ) : null}
@@ -590,6 +649,7 @@ function PropertyCreateFormContent({
           resourceType="properties"
           draftId={draftId}
           resourceId={resourceId}
+          disabled={isViewOnly}
         />
       </ListingCreateFormShell>
 

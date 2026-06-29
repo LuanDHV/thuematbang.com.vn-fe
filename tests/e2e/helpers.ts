@@ -10,25 +10,70 @@ export function uniqueValue(prefix: string) {
 }
 
 export async function loginAsCustomer(page: Page) {
-  await page.goto("/dang-nhap");
-  await page.getByLabel("Số điện thoại hoặc email").fill("customer@example.com");
-  await page.getByLabel("Mật khẩu").fill("Password123!");
-  await Promise.all([
-    page.waitForURL("/"),
-    page.getByRole("button", { name: "Đăng nhập" }).click(),
-  ]);
+  const token = uniqueValue("customer");
+  const response = await page.request.post("/api/v1/auth/register", {
+    data: {
+      fullName: `Customer ${token}`,
+      email: `${token}@example.com`,
+      phone: `0901${String(Date.now()).slice(-6)}`,
+      password: "Password123!",
+    },
+  });
+  expect(response.ok()).toBeTruthy();
+  const payload = (await response.json()) as {
+    accessToken?: string;
+    refreshToken?: string;
+  };
+
+  await page.context().addCookies(
+    ["accessToken", "refreshToken"].flatMap((name) => {
+      const value = payload[name as "accessToken" | "refreshToken"];
+      return value
+        ? [
+            {
+              name,
+              value,
+              domain: "127.0.0.1",
+              path: "/",
+            },
+          ]
+        : [];
+    }),
+  );
+
+  await page.goto("/");
 }
 
 export async function loginAsAdmin(page: Page, nextPath = "/admin") {
-  await page.goto(`/dang-nhap-admin?next=${encodeURIComponent(nextPath)}`);
-  await page.getByLabel("Số điện thoại hoặc email").fill("admin@example.com");
-  await page.getByLabel("Mật khẩu").fill("Admin123!");
-  await Promise.all([
-    page.waitForURL(
-      new RegExp(`${nextPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`),
-    ),
-    page.getByRole("button", { name: "Đăng nhập" }).click(),
-  ]);
+  const response = await page.request.post("/api/v1/auth/login", {
+    data: {
+      identifier: "admin@example.com",
+      password: "Admin123!",
+    },
+  });
+  expect(response.ok()).toBeTruthy();
+  const payload = (await response.json()) as {
+    accessToken?: string;
+    refreshToken?: string;
+  };
+
+  await page.context().addCookies(
+    ["accessToken", "refreshToken"].flatMap((name) => {
+      const value = payload[name as "accessToken" | "refreshToken"];
+      return value
+        ? [
+            {
+              name,
+              value,
+              domain: "127.0.0.1",
+              path: "/",
+            },
+          ]
+        : [];
+    }),
+  );
+
+  await page.goto(nextPath);
 }
 
 export async function registerUser(page: Page, suffix?: string) {

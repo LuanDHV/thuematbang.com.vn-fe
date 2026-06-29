@@ -22,6 +22,7 @@ type ListingLocationFieldProps = {
   labelWard?: string;
   description?: string;
   requiredProvince?: boolean;
+  disabled?: boolean;
 };
 
 export function ListingLocationField({
@@ -32,6 +33,7 @@ export function ListingLocationField({
   labelWard = "Phường/xã",
   description,
   requiredProvince = false,
+  disabled = false,
 }: ListingLocationFieldProps) {
   const {
     control,
@@ -98,9 +100,7 @@ export function ListingLocationField({
           className="text-heading font-semibold"
         >
           <span>{labelProvince}</span>
-          {requiredProvince ? (
-            <span className="ml-1 text-red-500">*</span>
-          ) : null}
+          {requiredProvince ? <span className="ml-1 text-red-500">*</span> : null}
         </FieldLabel>
         <Controller
           control={control}
@@ -113,6 +113,7 @@ export function ListingLocationField({
               options={provinceOptions}
               placeholder="Chọn tỉnh/thành"
               searchPlaceholder="Tìm tỉnh/thành..."
+              disabled={disabled}
             />
           )}
         />
@@ -142,7 +143,7 @@ export function ListingLocationField({
               searchPlaceholder="Tìm phường/xã..."
               allowClear
               emptyLabel="Không chọn phường/xã"
-              disabled={!provinceIdNumber || isFetching}
+              disabled={disabled || !provinceIdNumber || isFetching}
             />
           )}
         />

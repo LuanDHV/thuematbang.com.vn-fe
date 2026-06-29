@@ -1,14 +1,15 @@
 import type {
   AuthProvider,
   CategoryType,
+  ContentStatus,
   LeadStatus,
   OrderStatus,
+  ListingStatus,
   ExpressDuration,
   PropertyDirection,
   PropertyPriority,
   PropertyListingDuration,
   PublishSource,
-  PublishStatus,
   PriceUnit,
   PurchaseType,
   UserRole,
@@ -43,14 +44,23 @@ export const PRICE_UNIT_VALUES = [
   "MILLION_PER_M2",
 ] as const satisfies readonly PriceUnit[];
 
-export const PUBLISH_STATUS_VALUES = [
+export const LISTING_STATUS_VALUES = [
   "DRAFT",
   "PENDING",
   "PUBLISHED",
+  "REJECTED",
   "ARCHIVED",
-] as const satisfies readonly PublishStatus[];
+] as const satisfies readonly ListingStatus[];
 
-export const RENT_REQUEST_STATUS_VALUES = PUBLISH_STATUS_VALUES;
+export const CONTENT_STATUS_VALUES = [
+  "DRAFT",
+  "PUBLISHED",
+  "ARCHIVED",
+] as const satisfies readonly ContentStatus[];
+
+export const PUBLISH_STATUS_VALUES = LISTING_STATUS_VALUES;
+
+export const RENT_REQUEST_STATUS_VALUES = LISTING_STATUS_VALUES;
 
 export const CATEGORY_TYPE_VALUES = [
   "PROPERTY",

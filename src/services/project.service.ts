@@ -1,7 +1,7 @@
 import "server-only";
 
 import { Project } from "@/types/project";
-import { PublishStatus } from "@/types/enums";
+import { ContentStatus } from "@/types/enums";
 import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import { requestServerApi } from "./shared/server-api-client";
 import {
@@ -25,7 +25,7 @@ export type ProjectListFilters = {
   maxPrice?: number;
   minArea?: number;
   maxArea?: number;
-  status?: PublishStatus;
+  status?: ContentStatus;
   sortBy?: ProjectSortBy;
   sortOrder?: "asc" | "desc";
 };
@@ -53,7 +53,7 @@ export type ProjectUpsertPayload = {
   price?: number;
   isNegotiable?: boolean;
   content?: string;
-  status?: PublishStatus | null;
+  status?: ContentStatus | null;
   images?: UploadedCloudinaryImage[];
 };
 

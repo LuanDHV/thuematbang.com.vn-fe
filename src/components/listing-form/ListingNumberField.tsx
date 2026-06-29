@@ -26,6 +26,7 @@ type ListingNumberFieldProps = {
   step?: string;
   suffix?: string;
   format?: NumberFieldFormat;
+  disabled?: boolean;
 };
 
 export function ListingNumberField({
@@ -41,6 +42,7 @@ export function ListingNumberField({
   step,
   suffix,
   format = "number",
+  disabled,
 }: ListingNumberFieldProps) {
   const {
     control,
@@ -79,6 +81,7 @@ export function ListingNumberField({
             format={format}
             onChange={field.onChange}
             onBlur={field.onBlur}
+            disabled={disabled}
           />
         )}
       />
@@ -91,7 +94,14 @@ export function ListingNumberField({
 
 type NumberInputControlProps = Pick<
   ListingNumberFieldProps,
-  "name" | "inputMode" | "min" | "max" | "step" | "placeholder" | "format"
+  | "name"
+  | "inputMode"
+  | "min"
+  | "max"
+  | "step"
+  | "placeholder"
+  | "format"
+  | "disabled"
 > & {
   value: number | undefined;
   suffixText: string;
@@ -111,6 +121,7 @@ function NumberInputControl({
   value,
   onChange,
   onBlur,
+  disabled,
 }: NumberInputControlProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [draftValue, setDraftValue] = useState("");
@@ -135,6 +146,7 @@ function NumberInputControl({
         step={step}
         placeholder={placeholder}
         className={suffixText ? "pr-20" : undefined}
+        disabled={disabled}
         value={displayValue}
         onFocus={() => {
           setIsFocused(true);
@@ -160,4 +172,3 @@ function NumberInputControl({
     </div>
   );
 }
-

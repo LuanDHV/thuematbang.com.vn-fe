@@ -1,13 +1,14 @@
 import type {
   AuthProvider,
   CategoryType,
+  ContentStatus,
   LeadStatus,
+  ListingStatus,
   OrderStatus,
+  PriceUnit,
   PropertyDirection,
   PropertyPriority,
   PublishSource,
-  PublishStatus,
-  PriceUnit,
   PurchaseType,
   UserRole,
 } from "@/types/enums";
@@ -16,14 +17,15 @@ import {
   AUTH_PROVIDER_VALUES,
   BANNER_POSITION_VALUES,
   CATEGORY_TYPE_VALUES,
+  CONTENT_STATUS_VALUES,
   LEAD_STATUS_VALUES,
+  LISTING_STATUS_VALUES,
   ORDER_STATUS_VALUES,
   PAGE_VALUES,
+  PRICE_UNIT_VALUES,
   PROPERTY_DIRECTION_VALUES,
   PROPERTY_PRIORITY_VALUES,
   PUBLISH_SOURCE_VALUES,
-  PUBLISH_STATUS_VALUES,
-  PRICE_UNIT_VALUES,
   PURCHASE_TYPE_VALUES,
   USER_ROLE_VALUES,
 } from "@/constants/enum-values";
@@ -84,11 +86,23 @@ export const PRICE_UNIT_OPTIONS: EnumOption<PriceUnit>[] = PRICE_UNIT_VALUES.map
   },
 );
 
-export const PUBLISH_STATUS_OPTIONS: EnumOption<PublishStatus>[] =
-  PUBLISH_STATUS_VALUES.map((value) => {
-    const labels: Record<PublishStatus, string> = {
+export const PUBLISH_STATUS_OPTIONS: EnumOption<ListingStatus>[] =
+  LISTING_STATUS_VALUES.map((value) => {
+    const labels: Record<ListingStatus, string> = {
       DRAFT: "Nháp",
       PENDING: "Chờ duyệt",
+      PUBLISHED: "Đã đăng",
+      REJECTED: "Từ chối",
+      ARCHIVED: "Lưu trữ",
+    };
+
+    return { value, label: labels[value] };
+  });
+
+export const CONTENT_STATUS_OPTIONS: EnumOption<ContentStatus>[] =
+  CONTENT_STATUS_VALUES.map((value) => {
+    const labels: Record<ContentStatus, string> = {
+      DRAFT: "Nháp",
       PUBLISHED: "Đã đăng",
       ARCHIVED: "Lưu trữ",
     };
@@ -96,7 +110,7 @@ export const PUBLISH_STATUS_OPTIONS: EnumOption<PublishStatus>[] =
     return { value, label: labels[value] };
   });
 
-export const RENT_REQUEST_STATUS_OPTIONS: EnumOption<PublishStatus>[] =
+export const RENT_REQUEST_STATUS_OPTIONS: EnumOption<ListingStatus>[] =
   PUBLISH_STATUS_OPTIONS;
 
 export const CATEGORY_TYPE_OPTIONS: EnumOption<CategoryType>[] =
@@ -206,10 +220,15 @@ export const PROPERTY_PRIORITY_LABEL_MAP: Record<PropertyPriority, string> =
     PROPERTY_PRIORITY_OPTIONS.map((option) => [option.value, option.label]),
   ) as Record<PropertyPriority, string>;
 
-export const PUBLISH_STATUS_LABEL_MAP: Record<PublishStatus, string> =
+export const PUBLISH_STATUS_LABEL_MAP: Record<ListingStatus, string> =
   Object.fromEntries(
     PUBLISH_STATUS_OPTIONS.map((option) => [option.value, option.label]),
-  ) as Record<PublishStatus, string>;
+  ) as Record<ListingStatus, string>;
+
+export const CONTENT_STATUS_LABEL_MAP: Record<ContentStatus, string> =
+  Object.fromEntries(
+    CONTENT_STATUS_OPTIONS.map((option) => [option.value, option.label]),
+  ) as Record<ContentStatus, string>;
 
 export const LEAD_STATUS_LABEL_MAP: Record<LeadStatus, string> =
   Object.fromEntries(

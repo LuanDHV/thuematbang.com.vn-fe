@@ -6,7 +6,7 @@ import {
   PROPERTY_PRIORITY_VALUES,
   PRICE_UNIT_VALUES,
   PUBLISH_SOURCE_VALUES,
-  PUBLISH_STATUS_VALUES,
+  LISTING_STATUS_VALUES,
   RENT_REQUEST_STATUS_VALUES,
 } from "@/constants/enum-values";
 
@@ -140,10 +140,19 @@ export const propertyCreateFormSchema = z
     publishSource: z.enum(PUBLISH_SOURCE_VALUES).nullable().optional(),
     isBoosted: z.boolean().default(false).optional(),
     boostCount: optionalIntegerSchema,
-    status: z.enum(PUBLISH_STATUS_VALUES).nullable().optional(),
+    status: z.enum(LISTING_STATUS_VALUES).nullable().optional(),
+    rejectReason: optionalTextSchema,
     userId: optionalIntegerSchema,
   })
   .superRefine((value, ctx) => {
+    if (value.status === "REJECTED" && !String(value.rejectReason ?? "").trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["rejectReason"],
+        message: "Vui lòng nhập lý do từ chối",
+      });
+    }
+
     if (value.isNegotiable) {
       return;
     }
@@ -234,12 +243,21 @@ export const rentRequestCreateFormSchema = z.object({
   requirementText: optionalTextSchema,
   userId: optionalIntegerSchema,
   status: z.enum(RENT_REQUEST_STATUS_VALUES).nullable().optional(),
+  rejectReason: optionalTextSchema,
   isMatched: z.boolean().default(false).optional(),
   isNegotiable: z.boolean().default(false),
   isExpress: z.boolean().default(false).optional(),
   duration: z.enum(EXPRESS_DURATION_VALUES).nullable().optional(),
   expressExpiresAt: z.string().datetime().nullable().optional(),
 }).superRefine((value, ctx) => {
+  if (value.status === "REJECTED" && !String(value.rejectReason ?? "").trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["rejectReason"],
+      message: "Vui lòng nhập lý do từ chối",
+    });
+  }
+
   if (value.isNegotiable) {
     return;
   }

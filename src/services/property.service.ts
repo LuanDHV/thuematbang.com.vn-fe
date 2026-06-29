@@ -4,8 +4,8 @@ import { Property } from "@/types/property";
 import {
   PropertyDirection,
   PropertyPriority,
+  ListingStatus,
   PublishSource,
-  PublishStatus,
 } from "@/types/enums";
 import type { UploadedCloudinaryImage } from "@/types/cloudinary";
 import { requestServerApi } from "./shared/server-api-client";
@@ -46,7 +46,7 @@ export type PropertyListFilters = {
   priorityStatus?: PropertyPriority;
   publishSource?: PublishSource;
   isBoosted?: boolean;
-  status?: PublishStatus;
+  status?: ListingStatus;
   sortBy?: PropertySortBy;
   sortOrder?: "asc" | "desc";
 };
@@ -93,7 +93,7 @@ export type PropertyUpsertPayload = {
   publishSource?: PublishSource | null;
   isBoosted?: boolean;
   boostCount?: number;
-  status?: PublishStatus | null;
+  status?: ListingStatus | null;
   userId?: number;
   images?: UploadedCloudinaryImage[];
 };
@@ -103,7 +103,7 @@ export type PropertyCreatePayload = Omit<
   "removeImageIds" | "orderedExistingImageIds"
 >;
 
-export type PropertyUpdatePayload = PropertyUpsertPayload & {
+export type PropertyUpdatePayload = Partial<PropertyUpsertPayload> & {
   removeImageIds?: number[];
   orderedExistingImageIds?: number[];
 };
@@ -111,13 +111,21 @@ export type PropertyUpdatePayload = PropertyUpsertPayload & {
 export const propertyService = {
   // Fetch one paginated property list with the filter contract used across public and CMS pages.
   getAll: async (params: PropertyGetAllParams = {}) =>
-    requestServerApi<Property[]>(buildListPath("/properties", params), {
-      cache: "no-store",
-      tags: buildListTags("properties", {
-        page: params.page,
-        limit: params.limit,
+    requestServerApi<Property[]>(
+      buildListPath("/properties", {
+        ...params,
+        filters: {
+          ...params.filters,
+        },
       }),
-    }),
+      {
+        cache: "no-store",
+        tags: buildListTags("properties", {
+          page: params.page,
+          limit: params.limit,
+        }),
+      },
+    ),
 
   // Fetch the property list resolved from one flat-url slug produced by the listing filters.
   getAllByFlatSlug: async (params: PropertyGetByFlatSlugParams) =>

@@ -1,5 +1,5 @@
 import { Category } from "./category";
-import { PublishStatus } from "./enums";
+import { ContentStatus } from "./enums";
 
 export interface News {
   id: number;
@@ -11,7 +11,7 @@ export interface News {
   summary?: string | null;
   content?: string | null;
   viewCount: number;
-  status: PublishStatus;
+  status: ContentStatus;
   isFeatured: boolean;
   createdAt: Date | string;
   updatedAt: Date | string;

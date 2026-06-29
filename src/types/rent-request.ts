@@ -1,9 +1,9 @@
 import { Category } from "./category";
 import {
   ExpressDuration,
+  ListingStatus,
   PriceUnit,
   PropertyDirection,
-  PublishStatus,
 } from "./enums";
 import { Province, Ward } from "./location";
 import { User } from "./user";
@@ -27,7 +27,8 @@ export interface RentRequest {
   requirementText?: string | null;
   contactName: string;
   contactPhone: string;
-  status: PublishStatus;
+  status: ListingStatus;
+  rejectReason?: string | null;
   isMatched: boolean;
   isNegotiable: boolean;
   isExpress: boolean;

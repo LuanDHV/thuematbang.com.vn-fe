@@ -1,10 +1,10 @@
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { updatePropertyAction } from "@/actions/property.actions";
 import { PropertyCreateForm } from "@/components/listing-form/PropertyCreateForm";
-import { mapPropertyImagesToGalleryImages } from "@/lib/listing/listing-form";
 import { createPageMetadata } from "@/lib/metadata";
+import { mapPropertyImagesToGalleryImages } from "@/lib/listing/listing-form";
 import { categoryService } from "@/services/category.service";
 import { locationService } from "@/services/location.service";
 import { propertyService } from "@/services/property.service";
@@ -14,8 +14,8 @@ type PageProps = {
 };
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Chỉnh sửa tin cho thuê",
-  description: "Cập nhật tin cho thuê của bạn.",
+  title: "Chi tiết tin cho thuê",
+  description: "Xem và chỉnh sửa tin cho thuê của bạn.",
   pathname: "/quan-li-tai-khoan/cho-thue",
 });
 
@@ -45,19 +45,34 @@ export default async function UserPropertyEditPage({ params }: PageProps) {
   ]);
 
   const categories = categoriesResponse.data ?? [];
+  const isRejected = property.status === "REJECTED";
+  const formMode = isRejected ? "user-edit-limited" : "view-only";
+  const formTitle = isRejected
+    ? `Chỉnh sửa tin cho thuê #${property.id}`
+    : `Chi tiết tin cho thuê #${property.id}`;
+  const formDescription = isRejected
+    ? "Chỉnh sửa tin đăng bị từ chối và gửi lại duyệt."
+    : "Chế độ xem chi tiết, không thể chỉnh sửa.";
+  const headerAddon = isRejected ? (
+    <div className="border-danger/20 bg-danger/5 text-danger rounded-xl border p-4 text-sm">
+      <p className="font-semibold">Lý do từ chối</p>
+      <p className="mt-1 whitespace-pre-line">{property.rejectReason}</p>
+    </div>
+  ) : null;
 
   return (
-    <section className="layout-container layout-section-sm">
+    <section className="layout-container layout-section-sm space-y-6">
       <PropertyCreateForm
         categories={categories}
         provinces={provinces}
         submitAction={updatePropertyAction.bind(null, property.id)}
-        title={`Chỉnh sửa tin cho thuê #${property.id}`}
-        description="Chỉnh sửa tin đăng của bạn với bộ field giới hạn."
-        submitLabel="Lưu thay đổi"
-        mode="user-edit-limited"
+        title={formTitle}
+        description={formDescription}
+        submitLabel={isRejected ? "Gửi lại duyệt" : "Lưu thay đổi"}
+        mode={formMode}
         showSuccessDialog={false}
         resourceId={property.id}
+        headerAddon={headerAddon}
         existingImages={mapPropertyImagesToGalleryImages(property.images)}
         defaultValues={{
           title: property.title,
@@ -79,6 +94,8 @@ export default async function UserPropertyEditPage({ params }: PageProps) {
           longitude: property.longitude ?? undefined,
           latitude: property.latitude ?? undefined,
           content: property.content ?? "",
+          status: property.status,
+          rejectReason: property.rejectReason ?? "",
         }}
       />
     </section>

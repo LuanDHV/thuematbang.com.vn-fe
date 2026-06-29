@@ -181,6 +181,37 @@ module.exports = async function handleListingsRoutes(context) {
     return true;
   }
 
+  if (requestUrl.pathname.match(/^\/api\/v1\/properties\/\d+$/) && req.method === "PATCH") {
+    const id = Number(requestUrl.pathname.split("/").pop());
+    const item = state.properties.find((candidate) => candidate.id === id);
+    if (!item) {
+      sendJson(context.res, 404, { message: "Property not found" }, origin);
+      return true;
+    }
+    const body = await context.parseBody(req);
+    Object.assign(item, {
+      ...body,
+      status: body.status || item.status,
+      rejectReason:
+        Object.prototype.hasOwnProperty.call(body, "rejectReason") ? body.rejectReason : item.rejectReason,
+      updatedAt: new Date().toISOString(),
+    });
+    sendJson(context.res, 200, envelope(clone(item)), origin);
+    return true;
+  }
+
+  if (requestUrl.pathname.match(/^\/api\/v1\/properties\/\d+$/) && req.method === "DELETE") {
+    const id = Number(requestUrl.pathname.split("/").pop());
+    const index = state.properties.findIndex((candidate) => candidate.id === id);
+    if (index < 0) {
+      sendJson(context.res, 404, { message: "Property not found" }, origin);
+      return true;
+    }
+    const [removed] = state.properties.splice(index, 1);
+    sendJson(context.res, 200, envelope(clone(removed)), origin);
+    return true;
+  }
+
   if (requestUrl.pathname === "/api/v1/rent-requests" && req.method === "GET") {
     const items = state.rentRequests.filter(matchesRentRequestFilters);
     const sortBy = normalizeText(requestUrl.searchParams.get("sortBy"));
@@ -244,6 +275,37 @@ module.exports = async function handleListingsRoutes(context) {
       return true;
     }
     sendJson(context.res, 200, envelope(clone(item)), origin);
+    return true;
+  }
+
+  if (requestUrl.pathname.match(/^\/api\/v1\/rent-requests\/\d+$/) && req.method === "PATCH") {
+    const id = Number(requestUrl.pathname.split("/").pop());
+    const item = state.rentRequests.find((candidate) => candidate.id === id);
+    if (!item) {
+      sendJson(context.res, 404, { message: "Rent request not found" }, origin);
+      return true;
+    }
+    const body = await context.parseBody(req);
+    Object.assign(item, {
+      ...body,
+      status: body.status || item.status,
+      rejectReason:
+        Object.prototype.hasOwnProperty.call(body, "rejectReason") ? body.rejectReason : item.rejectReason,
+      updatedAt: new Date().toISOString(),
+    });
+    sendJson(context.res, 200, envelope(clone(item)), origin);
+    return true;
+  }
+
+  if (requestUrl.pathname.match(/^\/api\/v1\/rent-requests\/\d+$/) && req.method === "DELETE") {
+    const id = Number(requestUrl.pathname.split("/").pop());
+    const index = state.rentRequests.findIndex((candidate) => candidate.id === id);
+    if (index < 0) {
+      sendJson(context.res, 404, { message: "Rent request not found" }, origin);
+      return true;
+    }
+    const [removed] = state.rentRequests.splice(index, 1);
+    sendJson(context.res, 200, envelope(clone(removed)), origin);
     return true;
   }
 

@@ -1,10 +1,11 @@
 "use client";
 
+import { updateRentRequestAction } from "@/actions/admin-crud.actions";
+import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
+import { ExternalLink, EyeOff, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
-import { Copy, ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 
 import AdminStatusBadge, {
   type AdminBadgeTone,
@@ -29,14 +30,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  formatAreaValue,
   formatDateDisplay,
   formatLocationParts,
-  formatAreaValue,
   formatListingPrice,
 } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
+import type { ListingStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
-import type { PublishStatus } from "@/types/enums";
 
 type UserRentRequestsTableProps = {
   items: RentRequest[];
@@ -44,10 +45,11 @@ type UserRentRequestsTableProps = {
   totalPages: number;
 };
 
-const statusToneMap: Record<PublishStatus, AdminBadgeTone> = {
+const statusToneMap: Record<ListingStatus, AdminBadgeTone> = {
   DRAFT: "muted",
   PENDING: "warning",
   PUBLISHED: "success",
+  REJECTED: "danger",
   ARCHIVED: "neutral",
 };
 
@@ -91,7 +93,9 @@ function RentRequestMobileCard({
         </div>
 
         <div className="space-y-1">
-          <p className="text-secondary text-xs font-medium">Khu vực</p>
+          <p className="text-secondary text-xs font-medium">
+            Khu vực mong muốn
+          </p>
           <p className="text-body">
             {formatLocationParts([
               item.desiredWard?.name,
@@ -138,8 +142,6 @@ function RentRequestMobileCard({
 
 function RentRequestActions({
   item,
-  copied,
-  onCopy,
 }: {
   item: RentRequest;
   copied: boolean;
@@ -157,22 +159,42 @@ function RentRequestActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <Link href={`/quan-li-tai-khoan/cau-thue/${item.id}`}>
-            <Pencil className="size-4" />
-            Chỉnh sửa
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
-            <ExternalLink className="size-4" />
-            Mở trang public
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => onCopy(item)}>
-          <Copy className="size-4" />
-          {copied ? "Đã sao chép" : "Sao chép link"}
-        </DropdownMenuItem>
+        {item.status === "PUBLISHED" ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
+                <ExternalLink className="size-4" />
+                Xem bài public
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={async () => {
+                await updateRentRequestAction(item.id, { status: "ARCHIVED" });
+                window.location.reload();
+              }}
+            >
+              <EyeOff className="size-4" />
+              Ẩn tin
+            </DropdownMenuItem>
+          </>
+        ) : null}
+        {item.status === "REJECTED" ? (
+          <DropdownMenuItem asChild>
+            <Link href={`/quan-li-tai-khoan/cau-thue/${item.id}`}>
+              <Pencil className="size-4" />
+              Chỉnh sửa
+            </Link>
+          </DropdownMenuItem>
+        ) : item.status === "PENDING" ||
+          item.status === "ARCHIVED" ||
+          item.status === "DRAFT" ? (
+          <DropdownMenuItem asChild>
+            <Link href={`/quan-li-tai-khoan/cau-thue/${item.id}`}>
+              <Pencil className="size-4" />
+              Xem chi tiết
+            </Link>
+          </DropdownMenuItem>
+        ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -321,7 +343,6 @@ export default function UserRentRequestsTable({
         {items.length > 0 ? (
           items.map((item) => {
             const isCopied = copiedSlug === item.slug;
-
             return (
               <RentRequestMobileCard
                 key={item.id}

@@ -13,7 +13,7 @@ import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { useToast } from "@/components/ui/use-toast";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
-import { PUBLISH_STATUS_OPTIONS } from "@/constants/enum-options";
+import { CONTENT_STATUS_OPTIONS } from "@/constants/enum-options";
 import type { Category } from "@/types/category";
 import type { News } from "@/types/news";
 import type { UploadedCloudinaryImage } from "@/types/cloudinary";
@@ -249,7 +249,7 @@ function AdminNewsFormContent({
       <ListingSelectField
         name="status"
         label="Trạng thái"
-        options={PUBLISH_STATUS_OPTIONS}
+        options={CONTENT_STATUS_OPTIONS}
       />
       <ListingCheckboxField name="isFeatured" label="Bài nổi bật" />
 

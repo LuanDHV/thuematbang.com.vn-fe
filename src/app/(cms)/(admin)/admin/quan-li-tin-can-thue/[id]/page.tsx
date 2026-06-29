@@ -76,6 +76,7 @@ export default async function AdminRentRequestEditPage({ params }: PageProps) {
           requirementText: rentRequest.requirementText ?? "",
           userId: rentRequest.userId ?? undefined,
           status: rentRequest.status,
+          rejectReason: rentRequest.rejectReason ?? "",
           isMatched: rentRequest.isMatched,
         }}
       />

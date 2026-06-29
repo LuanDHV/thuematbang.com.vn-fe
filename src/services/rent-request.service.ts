@@ -4,7 +4,7 @@ import { RentRequest } from "@/types/rent-request";
 import {
   ExpressDuration,
   PropertyDirection,
-  PublishStatus,
+  ListingStatus,
 } from "@/types/enums";
 import { requestServerApi } from "./shared/server-api-client";
 import {
@@ -35,7 +35,7 @@ export type RentRequestListFilters = {
   minDesiredArea?: number;
   maxDesiredArea?: number;
   desiredDirection?: PropertyDirection | null;
-  status?: PublishStatus;
+  status?: ListingStatus;
   isMatched?: boolean;
   isExpress?: boolean;
   duration?: ExpressDuration | null;
@@ -79,7 +79,7 @@ export type RentRequestUpsertPayload = {
   contactPhone: string;
   requirementText?: string;
   userId?: number;
-  status?: PublishStatus | null;
+  status?: ListingStatus | null;
   isMatched?: boolean;
   isNegotiable?: boolean;
   isExpress?: boolean;
@@ -90,13 +90,21 @@ export type RentRequestUpsertPayload = {
 export const rentRequestService = {
   // Fetch one paginated rent-request list with the filter contract used by listings and CMS.
   getAll: async (params: RentRequestGetAllParams = {}) =>
-    requestServerApi<RentRequest[]>(buildListPath("/rent-requests", params), {
-      cache: "no-store",
-      tags: buildListTags("rent-requests", {
-        page: params.page,
-        limit: params.limit,
+    requestServerApi<RentRequest[]>(
+      buildListPath("/rent-requests", {
+        ...params,
+        filters: {
+          ...params.filters,
+        },
       }),
-    }),
+      {
+        cache: "no-store",
+        tags: buildListTags("rent-requests", {
+          page: params.page,
+          limit: params.limit,
+        }),
+      },
+    ),
 
   // Fetch rent requests resolved from one flat-url slug produced by the demand filters.
   getAllByFlatSlug: async (params: RentRequestGetByFlatSlugParams) =>
@@ -166,7 +174,7 @@ export const rentRequestService = {
   },
 
   // Update one rent request through the authenticated CMS mutation contract.
-  update: async (id: number, payload: RentRequestUpsertPayload) => {
+  update: async (id: number, payload: Partial<RentRequestUpsertPayload>) => {
     const response = await requestServerApi<RentRequest>(
       `/rent-requests/${id}`,
       {

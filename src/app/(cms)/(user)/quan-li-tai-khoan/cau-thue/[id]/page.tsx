@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { updateRentRequestAction } from "@/actions/admin-crud.actions";
 import { RentRequestCreateForm } from "@/components/listing-form/RentRequestCreateForm";
@@ -13,8 +13,8 @@ type PageProps = {
 };
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Chỉnh sửa tin cần thuê",
-  description: "Cập nhật tin cần thuê của bạn.",
+  title: "Chi tiết tin cần thuê",
+  description: "Xem và chỉnh sửa tin cần thuê của bạn.",
   pathname: "/quan-li-tai-khoan/cau-thue",
 });
 
@@ -44,18 +44,33 @@ export default async function UserRentRequestEditPage({ params }: PageProps) {
   ]);
 
   const categories = categoriesResponse.data ?? [];
+  const isRejected = rentRequest.status === "REJECTED";
+  const formMode = isRejected ? "user-edit-limited" : "view-only";
+  const formTitle = isRejected
+    ? `Chỉnh sửa tin cần thuê #${rentRequest.id}`
+    : `Chi tiết tin cần thuê #${rentRequest.id}`;
+  const formDescription = isRejected
+    ? "Chỉnh sửa nhu cầu thuê bị từ chối và gửi lại duyệt."
+    : "Chế độ xem chi tiết, không thể chỉnh sửa.";
+  const headerAddon = isRejected ? (
+    <div className="border-danger/20 bg-danger/5 text-danger rounded-xl border p-4 text-sm">
+      <p className="font-semibold">Lý do từ chối</p>
+      <p className="mt-1 whitespace-pre-line">{rentRequest.rejectReason}</p>
+    </div>
+  ) : null;
 
   return (
-    <section className="layout-container layout-section-sm">
+    <section className="layout-container layout-section-sm space-y-6">
       <RentRequestCreateForm
         categories={categories}
         provinces={provinces}
         submitAction={updateRentRequestAction.bind(null, rentRequest.id)}
-        title={`Chỉnh sửa tin cần thuê #${rentRequest.id}`}
-        description="Chỉnh sửa nhu cầu thuê của bạn."
-        submitLabel="Lưu thay đổi"
-        mode="user-edit-limited"
+        title={formTitle}
+        description={formDescription}
+        submitLabel={isRejected ? "Gửi lại duyệt" : "Lưu thay đổi"}
+        mode={formMode}
         showSuccessDialog={false}
+        headerAddon={headerAddon}
         defaultValues={{
           title: rentRequest.title,
           slug: rentRequest.slug,
@@ -76,6 +91,7 @@ export default async function UserRentRequestEditPage({ params }: PageProps) {
           requirementText: rentRequest.requirementText ?? "",
           status: rentRequest.status,
           isMatched: rentRequest.isMatched,
+          rejectReason: rentRequest.rejectReason ?? "",
         }}
       />
     </section>
