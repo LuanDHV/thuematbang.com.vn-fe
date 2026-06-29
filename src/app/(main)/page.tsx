@@ -7,7 +7,8 @@ import ProjectSection from "@/components/home/project/page";
 import RentRequestExpressSection from "@/components/home/rent-request-express/page";
 import { buildPageTitle, createPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
-import { connection } from "next/server";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = createPageMetadata({
   title: buildPageTitle("Sàn bất động sản kết nối nhu cầu thuê và cho thuê"),
@@ -16,7 +17,6 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function HomePage() {
-  await connection();
 
   return (
     <>
