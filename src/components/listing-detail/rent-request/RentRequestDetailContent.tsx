@@ -50,15 +50,15 @@ export default function RentRequestDetailContent({
         <section>
           <div className="bg-surface-alt relative aspect-video w-full overflow-hidden rounded-2xl">
             <CloudinaryImage
-            src={RENT_REQUEST_COVER_IMAGE}
-            alt={rentRequest.title}
-            width={1600}
-            height={900}
-            sizes="(max-width: 1024px) 100vw, 75vw"
-            cldQuality="auto:good"
-            className="h-full w-full object-cover"
-            priority
-          />
+              src={RENT_REQUEST_COVER_IMAGE}
+              alt={rentRequest.title}
+              width={1600}
+              height={900}
+              sizes="(max-width: 1024px) 100vw, 75vw"
+              cldQuality="auto:good"
+              className="h-full w-full object-cover"
+              priority
+            />
           </div>
         </section>
 
@@ -165,9 +165,17 @@ export default function RentRequestDetailContent({
               Thông tin mô tả
             </h2>
           </div>
-          <p className="text-body whitespace-pre-line">
-            {rentRequest.requirementText || "Đang cập nhật thông tin mô tả."}
-          </p>
+          {rentRequest.requirementText ? (
+            <div
+              className="premium-prose prose prose-sm prose-p:leading-8 prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-[-0.02em] text-body max-w-none"
+              suppressHydrationWarning
+              dangerouslySetInnerHTML={{ __html: rentRequest.requirementText }}
+            />
+          ) : (
+            <p className="text-secondary text-sm">
+              Đang cập nhật thông tin mô tả.
+            </p>
+          )}
         </section>
       </div>
 
