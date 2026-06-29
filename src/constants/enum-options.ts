@@ -142,7 +142,7 @@ export const USER_ROLE_OPTIONS: EnumOption<UserRole>[] = USER_ROLE_VALUES.map(
     const labels: Record<UserRole, string> = {
       CUSTOMER: "Khách hàng",
       AGENT: "Môi giới",
-      ADMIN: "Quản trị",
+      ADMIN: "Quản trị viên",
     };
 
     return { value, label: labels[value] };

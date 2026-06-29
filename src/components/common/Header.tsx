@@ -5,6 +5,7 @@ import { ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { USER_ROLE_LABEL_MAP } from "@/constants/enum-options";
 import { useAuthMe, useLogoutMutation } from "@/hooks/use-auth";
 import { useUIStore } from "@/stores/ui-store";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,9 @@ export default function Header() {
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   const displayName = authUser?.fullName || authUser?.email || "Người dùng";
   const avatarUrl = authUser?.avatarUrl?.trim() || "";
-  const userRole = authUser?.role || "Người dùng";
+  const userRole = authUser?.role
+    ? USER_ROLE_LABEL_MAP[authUser.role]
+    : "Người dùng";
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const setMobileMenuOpen = useUIStore((state) => state.setMobileMenuOpen);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
@@ -104,10 +107,12 @@ export default function Header() {
                       )}
                     </span>
                     <span className="flex min-w-0 flex-col items-start leading-tight">
+                      <span className="text-primary text-xs font-semibold">
+                        {userRole}
+                      </span>
                       <span className="text-heading max-w-42 truncate text-sm font-medium">
                         {displayName}
                       </span>
-                      <span className="text-secondary text-xs">{userRole}</span>
                     </span>
                     <ChevronDown className="text-secondary size-3.5 shrink-0" />
                   </Button>

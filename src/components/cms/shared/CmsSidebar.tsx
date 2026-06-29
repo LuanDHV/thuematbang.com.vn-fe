@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { Button } from "@/components/ui/button";
+import { USER_ROLE_LABEL_MAP } from "@/constants/enum-options";
 import {
   Tooltip,
   TooltipContent,
@@ -85,7 +86,7 @@ export default function CmsSidebar({
     ? false
     : !isDesktopViewport || isCmsSidebarCollapsed;
   const accountLabel = user.fullName || "Người dùng";
-  const accountDescription = user.email || user.role;
+  const accountDescription = user.email || USER_ROLE_LABEL_MAP[user.role];
   const accountTooltip = `${accountLabel}${
     accountDescription ? ` - ${accountDescription}` : ""
   }`;
@@ -183,8 +184,8 @@ export default function CmsSidebar({
                 <div className="flex items-center gap-3">
                   {avatar}
                   <div className="min-w-0">
-                    <p className="text-secondary text-xs font-semibold tracking-[0.2em] uppercase">
-                      {user.role}
+                    <p className="text-primary text-xs font-semibold">
+                      {USER_ROLE_LABEL_MAP[user.role]}
                     </p>
                     <p className="text-heading truncate text-sm font-semibold">
                       {accountLabel}
@@ -251,8 +252,8 @@ export default function CmsSidebar({
               <div className="flex items-center gap-3">
                 {avatar}
                 <div className="min-w-0">
-                  <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">
-                    {user.role}
+                  <p className="text-primary text-xs font-semibold">
+                    {USER_ROLE_LABEL_MAP[user.role]}
                   </p>
                   <p className="text-heading truncate text-sm font-semibold">
                     {accountLabel}
@@ -319,7 +320,7 @@ export default function CmsSidebar({
                     "lg:items-center lg:justify-start lg:gap-3 lg:px-3",
                   isActive
                     ? "border-primary/14 bg-white shadow-lg"
-                    : "hover:bg-white hover:text-primary border-transparent",
+                    : "hover:text-primary border-transparent hover:bg-white",
                 )}
               >
                 <Icon

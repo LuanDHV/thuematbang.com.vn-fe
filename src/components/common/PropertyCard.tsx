@@ -63,6 +63,17 @@ function getTierTone(priorityStatus?: string | null): CardTone {
   }
 }
 
+function getTierLabel(tone: CardTone) {
+  switch (tone) {
+    case "PREMIUM":
+      return "Cao cấp";
+    case "STANDARD":
+      return "Tiêu chuẩn";
+    default:
+      return "Miễn phí";
+  }
+}
+
 function CardFooter({ property }: { property: Property }) {
   return (
     <div className="text-secondary border-hairline mt-auto grid grid-cols-2 gap-2 border-t border-dashed pt-3 text-xs">
@@ -89,11 +100,11 @@ function TierBadge({ tone }: { tone: CardTone }) {
 
   return (
     <span
-      className={`absolute top-3 left-0 z-20 inline-flex items-center gap-1 rounded-l-none rounded-r-full px-2 py-0.5 text-xs font-semibold uppercase ${toneClasses}`}
+      className={`absolute top-3 left-0 z-20 inline-flex items-center gap-1 rounded-l-none rounded-r-full px-2 py-0.5 text-xs font-semibold ${toneClasses}`}
     >
       {tone === "PREMIUM" ? <Crown size={iconSize} /> : null}
       {tone === "STANDARD" ? <Star size={iconSize} /> : null}
-      {tone}
+      {getTierLabel(tone)}
     </span>
   );
 }
@@ -131,9 +142,7 @@ function FeaturedCard({
   const tone = getTierTone(property.priorityStatus);
 
   return (
-    <article
-      className={`surface-editorial ${CARD_HOVER_CLASSES}`}
-    >
+    <article className={`surface-editorial ${CARD_HOVER_CLASSES}`}>
       <div className="relative h-52 overflow-hidden">
         <TierBadge tone={tone} />
         <CloudinaryImage
@@ -313,9 +322,7 @@ function StandardCard({
   const hasSideGallery = sideImages.length > 0;
 
   return (
-    <article
-      className={`surface-marketplace ${CARD_HOVER_CLASSES}`}
-    >
+    <article className={`surface-marketplace ${CARD_HOVER_CLASSES}`}>
       <div className="relative flex h-56 w-full gap-0.5 overflow-hidden">
         <div
           className={`relative overflow-hidden ${hasSideGallery ? "w-2/3" : "w-full"}`}
@@ -393,9 +400,7 @@ function FreeCard({
   const image = getPropertyThumbnailUrl(property);
 
   return (
-    <article
-      className={`surface-utility ${CARD_HOVER_CLASSES}`}
-    >
+    <article className={`surface-utility ${CARD_HOVER_CLASSES}`}>
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage
           src={image}
