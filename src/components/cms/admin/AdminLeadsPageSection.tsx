@@ -1,17 +1,33 @@
 import AdminLeadsTable from "@/components/cms/admin/AdminLeadsTable";
 import {
   resolvePaginationServer,
-  resolveSearchQueryValue,
   resolveSearchParamValue,
+  resolveSearchQueryValue,
 } from "@/lib/server/server-side";
 import { leadService } from "@/services/lead.service";
+import type { LeadSourceFilter } from "@/types/lead";
 import type { LeadStatus } from "@/types/enums";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function AdminLeadsPage({ searchParams }: PageProps) {
+type AdminLeadsPageSectionProps = {
+  source: LeadSourceFilter;
+  pageTitle: string;
+  tableTitle: string;
+  pageDescription: string;
+  searchPlaceholder: string;
+};
+
+export default async function AdminLeadsPageSection({
+  source,
+  pageTitle,
+  tableTitle,
+  pageDescription,
+  searchPlaceholder,
+  searchParams,
+}: AdminLeadsPageSectionProps & PageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const searchValue = resolveSearchParamValue(resolvedSearchParams, "q");
@@ -33,6 +49,7 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
       filters: {
         q: searchQuery,
         status,
+        source,
       },
     })
     .catch(() => ({ data: [], meta: undefined }));
@@ -42,13 +59,21 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-5">
+      <header className="space-y-1">
+        <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
+          {pageTitle}
+        </h1>
+        <p className="text-secondary text-sm">{pageDescription}</p>
+      </header>
+
       <AdminLeadsTable
         items={items}
         currentPage={currentPage}
         totalPages={totalPages}
+        source={source}
         toolbar={{
-          title: "Quản lí leads",
-          searchPlaceholder: "Tìm kiếm tên hoặc sđt",
+          title: tableTitle,
+          searchPlaceholder,
           searchValue,
           actionLabel: "Tạo mới",
         }}

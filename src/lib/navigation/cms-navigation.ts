@@ -55,7 +55,7 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
       icon: Signpost,
     },
     {
-      href: "/quan-li-tai-khoan/cau-thue",
+      href: "/quan-li-tai-khoan/can-thue",
       label: "Nhu cầu thuê của tôi",
       icon: ClipboardList,
     },
@@ -76,20 +76,26 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       icon: LayoutDashboard,
       exact: true,
     },
-    {
-      href: "/admin/quan-li-danh-muc",
-      label: "Danh mục",
-      icon: Layers,
-    },
+
     {
       href: "/admin/quan-li-tin-cho-thue",
       label: "Tin cho thuê",
       icon: Signpost,
     },
     {
+      href: "/admin/quan-li-leads/cho-thue",
+      label: "Lead cho thuê",
+      icon: UserStar,
+    },
+    {
       href: "/admin/quan-li-tin-can-thue",
       label: "Tin cần thuê",
       icon: ClipboardList,
+    },
+    {
+      href: "/admin/quan-li-leads/can-thue",
+      label: "Lead cần thuê",
+      icon: UserStar,
     },
     {
       href: "/admin/quan-li-du-an",
@@ -116,21 +122,23 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       label: "Câu hỏi thường gặp",
       icon: BadgeQuestionMark,
     },
+
     {
       href: "/admin/quan-li-noi-dung-seo",
       label: "Nội dung SEO",
       icon: TrendingUp,
     },
     {
+      href: "/admin/quan-li-danh-muc",
+      label: "Danh mục",
+      icon: Layers,
+    },
+    {
       href: "/admin/quan-li-banners",
       label: "Banner",
       icon: Wallpaper,
     },
-    {
-      href: "/admin/quan-li-leads",
-      label: "Lead",
-      icon: UserStar,
-    },
+
     {
       href: "/admin/quan-li-thanh-toan",
       label: "Thanh toán",

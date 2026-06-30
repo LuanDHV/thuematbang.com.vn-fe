@@ -128,7 +128,7 @@ test.describe("listing creation", () => {
     );
 
     await page.getByRole("link", { name: "Theo dõi trạng thái" }).click();
-    await expect(page).toHaveURL("/quan-li-tai-khoan/cau-thue");
+    await expect(page).toHaveURL("/quan-li-tai-khoan/can-thue");
   });
 
   test("customer can submit a negotiable rent-request listing without budget", async ({
@@ -147,6 +147,6 @@ test.describe("listing creation", () => {
 
     await expect(page.getByRole("dialog")).toContainText("Tin đã được gửi");
     await page.getByRole("link", { name: "Theo dõi trạng thái" }).click();
-    await expect(page).toHaveURL("/quan-li-tai-khoan/cau-thue");
+    await expect(page).toHaveURL("/quan-li-tai-khoan/can-thue");
   });
 });

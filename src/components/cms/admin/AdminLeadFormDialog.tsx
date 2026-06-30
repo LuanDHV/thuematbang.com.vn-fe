@@ -14,6 +14,7 @@ import {
   leadFormSchema,
   type LeadFormValues,
 } from "@/schemas/admin-crud.schema";
+import type { LeadSourceFilter } from "@/types/lead";
 import type { Lead } from "@/types/lead";
 
 const DEFAULT_VALUES: LeadFormValues = {
@@ -32,6 +33,7 @@ type LeadFormDialogProps = {
   title: string;
   description?: string;
   submitLabel: string;
+  source: LeadSourceFilter;
   defaultValues?: Partial<LeadFormValues>;
 };
 
@@ -42,6 +44,7 @@ export default function LeadFormDialog({
   title,
   description,
   submitLabel,
+  source,
   defaultValues,
 }: LeadFormDialogProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -107,18 +110,22 @@ export default function LeadFormDialog({
         options={LEAD_STATUS_OPTIONS}
       />
       <ListingNumberField name="userId" label="User ID" min={0} step="1" />
-      <ListingNumberField
-        name="propertyId"
-        label="Property ID"
-        min={0}
-        step="1"
-      />
-      <ListingNumberField
-        name="rentRequestId"
-        label="Rent Request ID"
-        min={0}
-        step="1"
-      />
+      {source === "PROPERTY" ? (
+        <ListingNumberField
+          name="propertyId"
+          label="ID Cho thuê"
+          min={0}
+          step="1"
+        />
+      ) : null}
+      {source === "RENT_REQUEST" ? (
+        <ListingNumberField
+          name="rentRequestId"
+          label="ID Cần thuê"
+          min={0}
+          step="1"
+        />
+      ) : null}
     </AdminCrudDialog>
   );
 }

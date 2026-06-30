@@ -165,7 +165,10 @@ export async function createLeadAction(payload: {
   rentRequestId?: number | null;
 }) {
   const result = await leadService.create(payload);
-  refreshCrudTags(["leads"], ["/admin/quan-li-leads"]);
+  refreshCrudTags(["leads"], [
+    "/admin/quan-li-leads/cho-thue",
+    "/admin/quan-li-leads/can-thue",
+  ]);
   return result;
 }
 
@@ -182,14 +185,20 @@ export async function updateLeadAction(
 ) {
   const leadId = toPositiveId(id);
   const result = await leadService.update(leadId, payload);
-  refreshCrudTags(["leads", "lead-detail"], ["/admin/quan-li-leads"]);
+  refreshCrudTags(["leads", "lead-detail"], [
+    "/admin/quan-li-leads/cho-thue",
+    "/admin/quan-li-leads/can-thue",
+  ]);
   return result;
 }
 
 export async function deleteLeadAction(id: string | number) {
   const leadId = toPositiveId(id);
   const result = await leadService.remove(leadId);
-  refreshCrudTags(["leads", "lead-detail"], ["/admin/quan-li-leads"]);
+  refreshCrudTags(["leads", "lead-detail"], [
+    "/admin/quan-li-leads/cho-thue",
+    "/admin/quan-li-leads/can-thue",
+  ]);
   return result;
 }
 
@@ -262,7 +271,7 @@ export async function updateRentRequestAction(
   const result = await rentRequestService.update(rentRequestId, payload);
   refreshCrudTags(
     ["rent-requests", "rent-request-detail", "my-rent-requests"],
-    ["/admin/quan-li-tin-can-thue", "/quan-li-tai-khoan/cau-thue"],
+    ["/admin/quan-li-tin-can-thue", "/quan-li-tai-khoan/can-thue"],
   );
   return result;
 }
@@ -272,7 +281,7 @@ export async function deleteRentRequestAction(id: string | number) {
   const result = await rentRequestService.remove(rentRequestId);
   refreshCrudTags(
     ["rent-requests", "rent-request-detail", "my-rent-requests"],
-    ["/admin/quan-li-tin-can-thue", "/quan-li-tai-khoan/cau-thue"],
+    ["/admin/quan-li-tin-can-thue", "/quan-li-tai-khoan/can-thue"],
   );
   return result;
 }

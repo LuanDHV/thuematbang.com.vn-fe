@@ -15,7 +15,7 @@ type PageProps = {
 export const metadata: Metadata = createPageMetadata({
   title: "Chi tiết tin cần thuê",
   description: "Xem và chỉnh sửa tin cần thuê của bạn.",
-  pathname: "/quan-li-tai-khoan/cau-thue",
+  pathname: "/quan-li-tai-khoan/can-thue",
 });
 
 export default async function UserRentRequestEditPage({ params }: PageProps) {

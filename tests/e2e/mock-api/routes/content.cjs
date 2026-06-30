@@ -25,15 +25,26 @@ module.exports = async function handleContentRoutes(context) {
       return true;
     }
 
+    const source = requestUrl.searchParams.get("source");
+    const filteredLeads = state.leads.filter((item) => {
+      if (source === "PROPERTY") {
+        return item.propertyId !== null && item.propertyId !== undefined;
+      }
+      if (source === "RENT_REQUEST") {
+        return item.rentRequestId !== null && item.rentRequestId !== undefined;
+      }
+      return true;
+    });
+
     sendJson(
       context.res,
       200,
       {
-        data: clone(state.leads),
+        data: clone(filteredLeads),
         meta: {
-          total: state.leads.length,
+          total: filteredLeads.length,
           currentPage: 1,
-          limit: state.leads.length || 1,
+          limit: filteredLeads.length || 1,
           totalPage: 1,
           hasNextPage: false,
           hasPreviousPage: false,

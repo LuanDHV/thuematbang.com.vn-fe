@@ -434,7 +434,7 @@ export function RentRequestCreateForm({
           title="Tin đã được gửi"
           description="Tin đăng đang đợi duyệt trước khi hiển thị công khai."
           primaryActionLabel="Theo dõi trạng thái"
-          primaryActionHref="/quan-li-tai-khoan/cau-thue"
+          primaryActionHref="/quan-li-tai-khoan/can-thue"
           secondaryActionLabel="Xem tin cho thuê"
           secondaryActionHref="/dang-tin/cho-thue"
         />

@@ -3,12 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { updatePropertyAction } from "@/actions/property.actions";
-import {
-  PROPERTY_PRIORITY_LABEL_MAP,
-  PUBLISH_STATUS_LABEL_MAP,
-} from "@/constants/enum-options";
-import { ExternalLink, EyeOff, MoreHorizontal, Pencil } from "lucide-react";
+import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 
 import AdminPriorityBadge, {
   type AdminPriorityTone,
@@ -35,6 +30,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  PROPERTY_PRIORITY_LABEL_MAP,
+  PUBLISH_STATUS_LABEL_MAP,
+} from "@/constants/enum-options";
 import {
   formatDateDisplay,
   formatLocationParts,
@@ -90,9 +89,7 @@ function PropertyMobileCard({
       <div className="grid gap-3 text-sm sm:grid-cols-2">
         <div className="space-y-1">
           <p className="text-secondary text-xs font-medium">Danh mục</p>
-          <p className="text-body">
-            {item.category?.name || "Chưa có danh mục"}
-          </p>
+          <p className="text-body">{item.category?.name || "Chưa có danh mục"}</p>
         </div>
 
         <div className="space-y-1">
@@ -150,23 +147,12 @@ function PropertyActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {item.status === "PUBLISHED" ? (
-          <>
-            <DropdownMenuItem asChild>
-              <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
-                <ExternalLink className="size-4" />
-                Xem bài public
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={async () => {
-                await updatePropertyAction(item.id, { status: "ARCHIVED" });
-                window.location.reload();
-              }}
-            >
-              <EyeOff className="size-4" />
-              Ẩn tin
-            </DropdownMenuItem>
-          </>
+          <DropdownMenuItem asChild>
+            <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
+              <ExternalLink className="size-4" />
+              Xem bài public
+            </Link>
+          </DropdownMenuItem>
         ) : null}
         {item.status === "REJECTED" ? (
           <DropdownMenuItem asChild>
@@ -175,9 +161,7 @@ function PropertyActions({
               Chỉnh sửa
             </Link>
           </DropdownMenuItem>
-        ) : item.status === "PENDING" ||
-          item.status === "ARCHIVED" ||
-          item.status === "DRAFT" ? (
+        ) : item.status === "PENDING" || item.status === "DRAFT" ? (
           <DropdownMenuItem asChild>
             <Link href={`/quan-li-tai-khoan/cho-thue/${item.id}`}>
               <Pencil className="size-4" />
@@ -260,10 +244,7 @@ export default function UserPropertiesTable({
                       {item.category?.name || "Chưa có danh mục"}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
-                      {formatLocationParts([
-                        item.ward?.name,
-                        item.province?.name,
-                      ])}
+                      {formatLocationParts([item.ward?.name, item.province?.name])}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
                       {formatNegotiablePrice(item.price, item.isNegotiable, {
@@ -272,16 +253,12 @@ export default function UserPropertiesTable({
                       })}
                     </TableCell>
                     <TableCell className="align-top">
-                      <AdminPriorityBadge
-                        tone={priorityToneMap[item.priorityStatus]}
-                      >
+                      <AdminPriorityBadge tone={priorityToneMap[item.priorityStatus]}>
                         {PROPERTY_PRIORITY_LABEL_MAP[item.priorityStatus]}
                       </AdminPriorityBadge>
                     </TableCell>
                     <TableCell className="align-top">
-                      <AdminStatusBadge
-                        tone={publishStatusBadgeToneMap[item.status]}
-                      >
+                      <AdminStatusBadge tone={publishStatusBadgeToneMap[item.status]}>
                         {PUBLISH_STATUS_LABEL_MAP[item.status]}
                       </AdminStatusBadge>
                     </TableCell>
@@ -290,11 +267,7 @@ export default function UserPropertiesTable({
                     </TableCell>
                     <TableCell className="text-right align-top">
                       <div className="flex justify-end">
-                        <PropertyActions
-                          item={item}
-                          copied={isCopied}
-                          onCopy={handleCopy}
-                        />
+                        <PropertyActions item={item} copied={isCopied} onCopy={handleCopy} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -304,12 +277,8 @@ export default function UserPropertiesTable({
               <TableRow>
                 <TableCell colSpan={8} className="py-14 text-center">
                   <div className="space-y-2">
-                    <p className="text-heading text-base font-semibold">
-                      Không có dữ liệu
-                    </p>
-                    <p className="text-secondary text-sm">
-                      Chưa có bản ghi nào.
-                    </p>
+                    <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
+                    <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -328,7 +297,6 @@ export default function UserPropertiesTable({
         {items.length > 0 ? (
           items.map((item) => {
             const isCopied = copiedSlug === item.slug;
-
             return (
               <PropertyMobileCard
                 key={item.id}
@@ -341,9 +309,7 @@ export default function UserPropertiesTable({
         ) : (
           <div className="surface-card px-4">
             <div className="space-y-2 py-14 text-center">
-              <p className="text-heading text-base font-semibold">
-                Không có dữ liệu
-              </p>
+              <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
               <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
             </div>
           </div>
@@ -351,11 +317,7 @@ export default function UserPropertiesTable({
 
         {totalPages > 1 ? (
           <div className="pt-2">
-            <Pagination
-              page={currentPage}
-              totalPages={totalPages}
-              onChange={handlePageChange}
-            />
+            <Pagination page={currentPage} totalPages={totalPages} onChange={handlePageChange} />
           </div>
         ) : null}
       </div>

@@ -1,11 +1,9 @@
 "use client";
 
-import { updateRentRequestAction } from "@/actions/admin-crud.actions";
-import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
-import { ExternalLink, EyeOff, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 
 import AdminStatusBadge, {
   type AdminBadgeTone,
@@ -36,6 +34,7 @@ import {
   formatListingPrice,
 } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
+import { PUBLISH_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import type { ListingStatus } from "@/types/enums";
 import type { RentRequest } from "@/types/rent-request";
 
@@ -87,20 +86,13 @@ function RentRequestMobileCard({
       <div className="grid gap-3 text-sm sm:grid-cols-2">
         <div className="space-y-1">
           <p className="text-secondary text-xs font-medium">Danh mục</p>
-          <p className="text-body">
-            {item.category?.name || "Chưa có danh mục"}
-          </p>
+          <p className="text-body">{item.category?.name || "Chưa có danh mục"}</p>
         </div>
 
         <div className="space-y-1">
-          <p className="text-secondary text-xs font-medium">
-            Khu vực mong muốn
-          </p>
+          <p className="text-secondary text-xs font-medium">Khu vực mong muốn</p>
           <p className="text-body">
-            {formatLocationParts([
-              item.desiredWard?.name,
-              item.desiredProvince?.name,
-            ])}
+            {formatLocationParts([item.desiredWard?.name, item.desiredProvince?.name])}
           </p>
         </div>
 
@@ -160,36 +152,23 @@ function RentRequestActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {item.status === "PUBLISHED" ? (
-          <>
-            <DropdownMenuItem asChild>
-              <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
-                <ExternalLink className="size-4" />
-                Xem bài public
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={async () => {
-                await updateRentRequestAction(item.id, { status: "ARCHIVED" });
-                window.location.reload();
-              }}
-            >
-              <EyeOff className="size-4" />
-              Ẩn tin
-            </DropdownMenuItem>
-          </>
+          <DropdownMenuItem asChild>
+            <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
+              <ExternalLink className="size-4" />
+              Xem bài public
+            </Link>
+          </DropdownMenuItem>
         ) : null}
         {item.status === "REJECTED" ? (
           <DropdownMenuItem asChild>
-            <Link href={`/quan-li-tai-khoan/cau-thue/${item.id}`}>
+            <Link href={`/quan-li-tai-khoan/can-thue/${item.id}`}>
               <Pencil className="size-4" />
               Chỉnh sửa
             </Link>
           </DropdownMenuItem>
-        ) : item.status === "PENDING" ||
-          item.status === "ARCHIVED" ||
-          item.status === "DRAFT" ? (
+        ) : item.status === "PENDING" || item.status === "DRAFT" ? (
           <DropdownMenuItem asChild>
-            <Link href={`/quan-li-tai-khoan/cau-thue/${item.id}`}>
+            <Link href={`/quan-li-tai-khoan/can-thue/${item.id}`}>
               <Pencil className="size-4" />
               Xem chi tiết
             </Link>
@@ -243,7 +222,7 @@ export default function UserRentRequestsTable({
               <TableHead className="w-24">Ngân sách</TableHead>
               <TableHead className="w-24">Diện tích</TableHead>
               <TableHead className="w-24">Trạng thái</TableHead>
-              <TableHead className="w-24">Khớp</TableHead>
+              <TableHead className="w-24">Đã khớp</TableHead>
               <TableHead className="w-24">Ngày tạo</TableHead>
               <TableHead className="text-right">Tác vụ</TableHead>
             </TableRow>
@@ -271,10 +250,7 @@ export default function UserRentRequestsTable({
                       {item.category?.name || "Chưa có danh mục"}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
-                      {formatLocationParts([
-                        item.desiredWard?.name,
-                        item.desiredProvince?.name,
-                      ])}
+                      {formatLocationParts([item.desiredWard?.name, item.desiredProvince?.name])}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
                       {formatListingPrice(item.budget, {
@@ -294,9 +270,7 @@ export default function UserRentRequestsTable({
                       </AdminStatusBadge>
                     </TableCell>
                     <TableCell className="align-top">
-                      <AdminStatusBadge
-                        tone={item.isMatched ? "success" : "muted"}
-                      >
+                      <AdminStatusBadge tone={item.isMatched ? "success" : "muted"}>
                         {item.isMatched ? "Đã khớp" : "Chưa khớp"}
                       </AdminStatusBadge>
                     </TableCell>
@@ -305,11 +279,7 @@ export default function UserRentRequestsTable({
                     </TableCell>
                     <TableCell className="text-right align-top">
                       <div className="flex justify-end">
-                        <RentRequestActions
-                          item={item}
-                          copied={isCopied}
-                          onCopy={handleCopy}
-                        />
+                        <RentRequestActions item={item} copied={isCopied} onCopy={handleCopy} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -319,12 +289,8 @@ export default function UserRentRequestsTable({
               <TableRow>
                 <TableCell colSpan={9} className="py-14 text-center">
                   <div className="space-y-2">
-                    <p className="text-heading text-base font-semibold">
-                      Không có dữ liệu
-                    </p>
-                    <p className="text-secondary text-sm">
-                      Chưa có bản ghi nào.
-                    </p>
+                    <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
+                    <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -355,9 +321,7 @@ export default function UserRentRequestsTable({
         ) : (
           <div className="surface-card px-4">
             <div className="space-y-2 py-14 text-center">
-              <p className="text-heading text-base font-semibold">
-                Không có dữ liệu
-              </p>
+              <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
               <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
             </div>
           </div>
@@ -365,11 +329,7 @@ export default function UserRentRequestsTable({
 
         {totalPages > 1 ? (
           <div className="pt-2">
-            <Pagination
-              page={currentPage}
-              totalPages={totalPages}
-              onChange={handlePageChange}
-            />
+            <Pagination page={currentPage} totalPages={totalPages} onChange={handlePageChange} />
           </div>
         ) : null}
       </div>

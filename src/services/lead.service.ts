@@ -1,6 +1,7 @@
 import "server-only";
 
 import { Lead } from "@/types/lead";
+import type { LeadSourceFilter } from "@/types/lead";
 import { LeadStatus } from "@/types/enums";
 import { HttpError } from "@/lib/http";
 import { readAuthCookies } from "@/lib/server/auth-cookies";
@@ -10,6 +11,7 @@ import { buildListPath } from "./shared/list-service";
 export type LeadListFilters = {
   q?: string;
   status?: LeadStatus;
+  source?: LeadSourceFilter;
   propertyId?: number;
   rentRequestId?: number;
   userId?: number;

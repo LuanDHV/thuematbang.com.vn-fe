@@ -3,6 +3,8 @@ import { Property } from "./property";
 import { RentRequest } from "./rent-request";
 import { User } from "./user";
 
+export type LeadSourceFilter = "PROPERTY" | "RENT_REQUEST";
+
 export interface Lead {
   id: number;
   userId?: number | null;

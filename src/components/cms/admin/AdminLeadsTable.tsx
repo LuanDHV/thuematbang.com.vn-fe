@@ -19,12 +19,13 @@ import AdminDataTable, {
 import { type FieldConfig } from "@/components/cms/admin/ColumnGenerator";
 import { createPaginationChangeHandler } from "@/lib/pagination";
 import { useToast } from "@/components/ui/use-toast";
-import type { Lead } from "@/types/lead";
+import type { Lead, LeadSourceFilter } from "@/types/lead";
 
 type AdminLeadsTableProps = {
   items: Lead[];
   currentPage: number;
   totalPages: number;
+  source: LeadSourceFilter;
   toolbar?: AdminTableToolbar;
 };
 
@@ -32,6 +33,7 @@ export default function AdminLeadsTable({
   items,
   currentPage,
   totalPages,
+  source,
   toolbar,
 }: AdminLeadsTableProps) {
   const router = useRouter();
@@ -63,48 +65,47 @@ export default function AdminLeadsTable({
     () => [
       {
         key: "fullName",
-        header: "Khách hàng",
+        header: "Họ và tên",
         fieldType: "text",
         accessor: (item) => item.fullName,
       },
       {
         key: "phone",
-        header: "Điện thoại",
+        header: "Số điện thoại",
         fieldType: "text",
         accessor: (item) => item.phone,
       },
-      {
-        key: "status",
-        header: "Trạng thái",
-        fieldType: "text",
-        accessor: (item) => item.status,
-        render: ({ row }) => (
-          <AdminStatusBadge tone={leadStatusBadgeToneMap[row.status]}>
-            {LEAD_STATUS_LABEL_MAP[row.status]}
-          </AdminStatusBadge>
-        ),
-      },
-      {
-        key: "propertyId",
-        header: "ID Cho thuê",
-        fieldType: "text",
-        accessor: (item) => item.propertyId ?? "Chưa có",
-      },
-      {
-        key: "rentRequestId",
-        header: "ID Cần thuê",
-        fieldType: "text",
-        accessor: (item) => item.rentRequestId ?? "Chưa có",
-      },
+
+      ...(source === "PROPERTY"
+        ? [
+            {
+              key: "propertyId",
+              header: "ID Cho thuê",
+              fieldType: "text" as const,
+              accessor: (item: Lead) => item.propertyId ?? "Chưa có",
+            },
+          ]
+        : []),
+      ...(source === "RENT_REQUEST"
+        ? [
+            {
+              key: "rentRequestId",
+              header: "ID Cần thuê",
+              fieldType: "text" as const,
+              accessor: (item: Lead) => item.rentRequestId ?? "Chưa có",
+            },
+          ]
+        : []),
       {
         key: "userId",
         header: "ID Tài khoản",
         fieldType: "text",
         accessor: (item) => item.userId ?? "Chưa có",
       },
+
       {
         key: "createdAt",
-        header: "Tạo lúc",
+        header: "Ngày tạo",
         fieldType: "date",
         accessor: (item) => item.createdAt,
       },
@@ -117,8 +118,19 @@ export default function AdminLeadsTable({
         },
         onDelete: handleDeleteLead,
       },
+      {
+        key: "status",
+        header: "Trạng thái",
+        fieldType: "text",
+        accessor: (item) => item.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={leadStatusBadgeToneMap[row.status]}>
+            {LEAD_STATUS_LABEL_MAP[row.status]}
+          </AdminStatusBadge>
+        ),
+      },
     ],
-    [handleDeleteLead],
+    [handleDeleteLead, source],
   );
 
   const toolbarConfig = toolbar
@@ -154,6 +166,7 @@ export default function AdminLeadsTable({
         title={editingLead ? "Chỉnh sửa lead" : "Tạo lead"}
         description="Quản lý lead từ CMS."
         submitLabel={editingLead ? "Cập nhật" : "Tạo mới"}
+        source={source}
         defaultValues={
           editingLead
             ? {
@@ -161,8 +174,14 @@ export default function AdminLeadsTable({
                 phone: editingLead.phone,
                 status: editingLead.status,
                 userId: editingLead.userId ?? undefined,
-                propertyId: editingLead.propertyId ?? undefined,
-                rentRequestId: editingLead.rentRequestId ?? undefined,
+                propertyId:
+                  source === "PROPERTY"
+                    ? (editingLead.propertyId ?? undefined)
+                    : undefined,
+                rentRequestId:
+                  source === "RENT_REQUEST"
+                    ? (editingLead.rentRequestId ?? undefined)
+                    : undefined,
               }
             : undefined
         }

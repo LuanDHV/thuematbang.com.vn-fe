@@ -51,10 +51,9 @@ describe("PosterContactCard", () => {
       });
     });
 
+    expect(await screen.findByText("Đã nhận thông tin")).toBeInTheDocument();
     expect(
-      await screen.findByText(
-        "Chúng tôi đã nhận được thông tin và sẽ liên hệ lại qua số điện thoại:",
-      ),
+      await screen.findByText(/Chúng tôi đã nhận được thông tin và sẽ liên hệ lại qua số điện thoại/i),
     ).toBeInTheDocument();
     expect(screen.getByText("0901234567")).toBeInTheDocument();
   });

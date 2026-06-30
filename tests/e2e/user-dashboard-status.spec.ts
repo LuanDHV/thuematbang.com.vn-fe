@@ -113,7 +113,7 @@ async function createRentRequest(page: Page, title: string) {
 }
 
 test.describe("user dashboard status flows", () => {
-  test("property detail shows reject reason, allows resubmit, and hides actions by status", async ({
+  test("property detail shows reject reason and allows resubmit", async ({
     page,
   }) => {
     await registerUser(page, uniqueValue("customer-property"));
@@ -156,30 +156,9 @@ test.describe("user dashboard status flows", () => {
     });
     await page.goto(`/quan-li-tai-khoan/cho-thue/${item.id}`);
     await expect(page.getByRole("button", { name: "Gửi lại duyệt" })).toHaveCount(0);
-
-    await page.goto("/quan-li-tai-khoan/cho-thue");
-    await page.getByRole("button", { name: `Tác vụ cho ${title}` }).click();
-    await page.getByRole("menuitem", { name: "Ẩn tin" }).click();
-    await page.waitForLoadState("networkidle");
-
-    const archived = await page.evaluate(async (id) => {
-      const response = await fetch(`/api/v1/properties/${id}`, {
-        credentials: "include",
-      });
-      return {
-        ok: response.ok,
-        json: await response.json(),
-      };
-    }, item.id);
-    expect(archived.ok).toBeTruthy();
-    const archivedBody = archived.json as { data?: { status?: string } };
-    expect(archivedBody.data?.status).toBe("ARCHIVED");
-
-    await page.goto(`/quan-li-tai-khoan/cho-thue/${item.id}`);
-    await expect(page.getByRole("button", { name: "Gửi lại duyệt" })).toHaveCount(0);
   });
 
-  test("rent request detail shows reject reason, allows resubmit, and hides actions by status", async ({
+  test("rent request detail shows reject reason and allows resubmit", async ({
     page,
   }) => {
     await registerUser(page, uniqueValue("customer-rent"));
@@ -193,7 +172,7 @@ test.describe("user dashboard status flows", () => {
       rejectReason,
     });
 
-    await page.goto(`/quan-li-tai-khoan/cau-thue/${item.id}`);
+    await page.goto(`/quan-li-tai-khoan/can-thue/${item.id}`);
     await expect(page.getByText(rejectReason)).toBeVisible();
     await expect(page.getByRole("button", { name: "Gửi lại duyệt" })).toBeVisible();
 
@@ -214,34 +193,13 @@ test.describe("user dashboard status flows", () => {
     };
     expect(resubmittedBody.data?.status).toBe("PENDING");
 
-    await page.goto(`/quan-li-tai-khoan/cau-thue/${item.id}`);
+    await page.goto(`/quan-li-tai-khoan/can-thue/${item.id}`);
     await expect(page.getByRole("button", { name: "Gửi lại duyệt" })).toHaveCount(0);
 
     await patchListing(page, "rent-requests", item.id, {
       status: "PUBLISHED",
     });
-    await page.goto(`/quan-li-tai-khoan/cau-thue/${item.id}`);
-    await expect(page.getByRole("button", { name: "Gửi lại duyệt" })).toHaveCount(0);
-
-    await page.goto("/quan-li-tai-khoan/cau-thue");
-    await page.getByRole("button", { name: `Tác vụ cho ${title}` }).click();
-    await page.getByRole("menuitem", { name: "Ẩn tin" }).click();
-    await page.waitForLoadState("networkidle");
-
-    const archived = await page.evaluate(async (id) => {
-      const response = await fetch(`/api/v1/rent-requests/${id}`, {
-        credentials: "include",
-      });
-      return {
-        ok: response.ok,
-        json: await response.json(),
-      };
-    }, item.id);
-    expect(archived.ok).toBeTruthy();
-    const archivedBody = archived.json as { data?: { status?: string } };
-    expect(archivedBody.data?.status).toBe("ARCHIVED");
-
-    await page.goto(`/quan-li-tai-khoan/cau-thue/${item.id}`);
+    await page.goto(`/quan-li-tai-khoan/can-thue/${item.id}`);
     await expect(page.getByRole("button", { name: "Gửi lại duyệt" })).toHaveCount(0);
   });
 });
