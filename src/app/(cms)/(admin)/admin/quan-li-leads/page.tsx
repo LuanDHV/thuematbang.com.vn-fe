@@ -56,4 +56,3 @@ export default async function AdminLeadsPage({ searchParams }: PageProps) {
     </section>
   );
 }
-

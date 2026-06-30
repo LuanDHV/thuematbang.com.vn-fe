@@ -3,17 +3,15 @@ import Link from "next/link";
 import PosterContactCard from "@/components/common/PosterContactCard";
 import { RentRequest } from "@/types/rent-request";
 
-const RENT_REQUEST_CONTACT_PHONE = "09686880818";
-
 type RentRequestDetailSidebarProps = {
   contactName?: string | null;
-  isLoggedIn: boolean;
-  latestWantedProperties: RentRequest[];
+  rentRequestId: number;
+  latestWantedProperties: RentRequest[]; 
 };
 
 export default function RentRequestDetailSidebar({
   contactName,
-  isLoggedIn,
+  rentRequestId,
   latestWantedProperties,
 }: RentRequestDetailSidebarProps) {
   return (
@@ -24,8 +22,7 @@ export default function RentRequestDetailSidebar({
       >
         <PosterContactCard
           fullName={contactName}
-          phone={RENT_REQUEST_CONTACT_PHONE}
-          canRevealPhone={isLoggedIn}
+          rentRequestId={rentRequestId}
         />
       </div>
 

@@ -22,7 +22,6 @@ import {
   createPageMetadata,
 } from "@/lib/metadata";
 import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
-import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
 import { Property } from "@/types/property";
 import { propertyService } from "@/services/property.service";
@@ -142,8 +141,6 @@ export async function generateMetadata({
 export default async function DynamicChoThuePage({ params }: PageProps) {
   const { slug } = await params;
   const { rawSlug, page } = parseListingPagedSlugSegments(slug);
-  const { accessToken } = await readAuthCookies();
-  const isLoggedIn = Boolean(accessToken);
 
   const [seoRes, faqRes] = await Promise.all([
     seoContentService.getByPage("cho-thue").catch(() => ({ data: null })),
@@ -257,8 +254,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           aside={
             <PropertyDetailSidebar
               contactName={property.contactName}
-              contactPhone={property.contactPhone}
-              isLoggedIn={isLoggedIn}
+              propertyId={property.id}
               relatedCategoryProvinceLinks={relatedCategoryProvinceLinks}
             />
           }

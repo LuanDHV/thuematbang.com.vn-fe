@@ -111,7 +111,7 @@ function HeroActionCard({
         asChild
         variant="ghost"
         size="lg"
-        className="group border-border-subtle text-heading mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-left text-sm font-bold shadow-lg transition-[background-color,border-color,filter] duration-500 ease-out hover:border-border-strong hover:bg-surface hover:brightness-[1.02] sm:px-5 sm:py-4 lg:min-h-16 lg:px-6 lg:text-base"
+        className="group border-border-subtle text-heading hover:border-border-strong hover:bg-surface mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-left text-sm font-bold shadow-lg transition-[background-color,border-color,filter] duration-500 ease-out hover:brightness-[1.02] sm:px-5 sm:py-4 lg:min-h-16 lg:px-6 lg:text-base"
       >
         <Link href={secondaryHref}>
           <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -215,8 +215,8 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
-          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-bold tracking-[-0.04em] text-white uppercase drop-shadow-xl md:text-4xl lg:text-6xl">
-            Nền tảng kết nối bất động sản cho thuê toàn quốc
+          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-bold tracking-[-0.04em] text-white uppercase drop-shadow-xl md:text-4xl lg:text-5xl">
+            Nền tảng kết nối <br /> bất động sản cho thuê toàn quốc
           </h1>
 
           <div className="mt-8 grid w-full max-w-5xl grid-cols-1 gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5">
@@ -237,7 +237,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
             <HeroActionCard
               primaryHref="/dang-tin/can-thue"
-              primaryLabel="Đăng nhu cầu thuê"
+              primaryLabel="Đăng tin cần thuê"
               primaryDescription="Tiếp cận nguồn cung phù hợp"
               secondaryHref="/cho-thue"
               secondaryLabel="Xem bất động sản đang cho thuê"

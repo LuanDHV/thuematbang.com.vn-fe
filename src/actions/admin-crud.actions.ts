@@ -13,11 +13,7 @@ import { userService } from "@/services/user.service";
 import { USER_ROLE_VALUES } from "@/constants/enum-values";
 import { toPositiveId } from "@/lib/form/form-normalize";
 import { refreshCrudTags } from "@/lib/server/revalidate";
-import type {
-  CategoryType,
-  LeadStatus,
-  UserRole,
-} from "@/types/enums";
+import type { CategoryType, LeadStatus, UserRole } from "@/types/enums";
 import type { BannerUpsertPayload } from "@/services/banners.service";
 import type { NewsUpsertPayload } from "@/services/news.service";
 import type { ProjectUpsertPayload } from "@/services/project.service";
@@ -163,10 +159,10 @@ export async function deleteSeoContentAction(id: string | number) {
 export async function createLeadAction(payload: {
   fullName: string;
   phone: string;
-  message?: string;
   status?: LeadStatus | null;
   userId?: number | null;
   propertyId?: number | null;
+  rentRequestId?: number | null;
 }) {
   const result = await leadService.create(payload);
   refreshCrudTags(["leads"], ["/admin/quan-li-leads"]);
@@ -178,10 +174,10 @@ export async function updateLeadAction(
   payload: Partial<{
     fullName: string;
     phone: string;
-    message?: string;
     status?: LeadStatus | null;
     userId?: number | null;
     propertyId?: number | null;
+    rentRequestId?: number | null;
   }>,
 ) {
   const leadId = toPositiveId(id);

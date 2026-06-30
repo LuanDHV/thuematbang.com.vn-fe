@@ -9,15 +9,13 @@ type RelatedCategoryProvinceLink = {
 
 type PropertyDetailSidebarProps = {
   contactName?: string | null;
-  contactPhone?: string | null;
-  isLoggedIn: boolean;
+  propertyId: number;
   relatedCategoryProvinceLinks: RelatedCategoryProvinceLink[];
 };
 
 export default function PropertyDetailSidebar({
   contactName,
-  contactPhone,
-  isLoggedIn,
+  propertyId,
   relatedCategoryProvinceLinks,
 }: PropertyDetailSidebarProps) {
   return (
@@ -26,11 +24,7 @@ export default function PropertyDetailSidebar({
         id="detail-contact-card"
         className="surface-utility relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-22"
       >
-        <PosterContactCard
-          fullName={contactName}
-          phone={contactPhone}
-          canRevealPhone={isLoggedIn}
-        />
+        <PosterContactCard fullName={contactName} propertyId={propertyId} />
       </div>
 
       <section className="surface-utility hidden p-5 lg:block">

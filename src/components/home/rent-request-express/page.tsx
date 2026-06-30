@@ -18,7 +18,7 @@ export default async function RentRequestExpressSection() {
           <div className="section-intro-tight">
             <Title
               eyebrow="Nhu cầu"
-              title="Nhu cầu thuê mới nhất"
+              title="Nhu cầu thuê mới"
               description="Tập hợp các nhu cầu thuê xác thực, giúp kết nối nhanh giữa người thuê và chủ bất động sản."
               variant="home"
             />

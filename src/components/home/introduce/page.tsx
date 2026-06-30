@@ -58,7 +58,7 @@ export default function IntroduceSection() {
         <div className="layout-container w-full">
           <Title
             eyebrow="Về chúng tôi"
-            title="Giải pháp tối ưu cho nhu cầu thuê và cho thuê"
+            title="Giải pháp tối ưu cho thuê và cần thuê"
             description="Nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. "
             variant="home"
           />

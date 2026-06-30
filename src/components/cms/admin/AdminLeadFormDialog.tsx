@@ -9,7 +9,6 @@ import AdminCrudDialog from "@/components/cms/admin/AdminCrudDialog";
 import { ListingNumberField } from "@/components/listing-form/ListingNumberField";
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
-import { ListingTextareaField } from "@/components/listing-form/ListingTextareaField";
 import { useToast } from "@/components/ui/use-toast";
 import {
   leadFormSchema,
@@ -20,10 +19,10 @@ import type { Lead } from "@/types/lead";
 const DEFAULT_VALUES: LeadFormValues = {
   fullName: "",
   phone: "",
-  message: "",
   status: "NEW",
   userId: undefined,
   propertyId: undefined,
+  rentRequestId: undefined,
 };
 
 type LeadFormDialogProps = {
@@ -114,7 +113,12 @@ export default function LeadFormDialog({
         min={0}
         step="1"
       />
-      <ListingTextareaField name="message" label="Ghi chú" rows={4} />
+      <ListingNumberField
+        name="rentRequestId"
+        label="Rent Request ID"
+        min={0}
+        step="1"
+      />
     </AdminCrudDialog>
   );
 }

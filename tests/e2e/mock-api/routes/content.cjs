@@ -14,39 +14,46 @@ module.exports = async function handleContentRoutes(context) {
     return false;
   }
 
-  const user = getCurrentUserFromRequest(req);
-  if (!user) {
-    sendJson(context.res, 401, { message: "Unauthorized" }, origin);
-    return true;
-  }
-  if (user.role !== "ADMIN") {
-    sendJson(context.res, 403, { message: "Forbidden" }, origin);
-    return true;
-  }
-
   if (requestUrl.pathname === "/api/v1/leads" && req.method === "GET") {
-    sendJson(context.res, 200, {
-      data: clone(state.leads),
-      meta: {
-        total: state.leads.length,
-        currentPage: 1,
-        limit: state.leads.length || 1,
-        totalPage: 1,
-        hasNextPage: false,
-        hasPreviousPage: false,
+    const user = getCurrentUserFromRequest(req);
+    if (!user) {
+      sendJson(context.res, 401, { message: "Unauthorized" }, origin);
+      return true;
+    }
+    if (user.role !== "ADMIN") {
+      sendJson(context.res, 403, { message: "Forbidden" }, origin);
+      return true;
+    }
+
+    sendJson(
+      context.res,
+      200,
+      {
+        data: clone(state.leads),
+        meta: {
+          total: state.leads.length,
+          currentPage: 1,
+          limit: state.leads.length || 1,
+          totalPage: 1,
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
       },
-    }, origin);
+      origin,
+    );
     return true;
   }
 
   if (requestUrl.pathname === "/api/v1/leads" && req.method === "POST") {
     const body = await context.parseBody(req);
+    const user = getCurrentUserFromRequest(req);
     const item = {
       id: state.leads.length + 1,
-      fullName: body.fullName || body.name || "Lead Demo",
-      email: body.email || null,
+      fullName: body.fullName || body.name || "Lead demo",
       phone: body.phone || null,
-      message: body.message || body.content || null,
+      userId: user ? user.id : (body.userId ?? null),
+      propertyId: body.propertyId ?? null,
+      rentRequestId: body.rentRequestId ?? null,
       status: body.status || "NEW",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -58,7 +65,9 @@ module.exports = async function handleContentRoutes(context) {
 
   const idMatch = requestUrl.pathname.match(/^\/api\/v1\/leads\/(\d+)$/);
   if (idMatch && req.method === "GET") {
-    const item = state.leads.find((candidate) => candidate.id === Number(idMatch[1]));
+    const item = state.leads.find(
+      (candidate) => candidate.id === Number(idMatch[1]),
+    );
     if (!item) {
       sendJson(context.res, 404, { message: "Lead not found" }, origin);
       return true;
@@ -68,21 +77,48 @@ module.exports = async function handleContentRoutes(context) {
   }
 
   if (idMatch && req.method === "PATCH") {
-    const item = state.leads.find((candidate) => candidate.id === Number(idMatch[1]));
+    const user = getCurrentUserFromRequest(req);
+    if (!user) {
+      sendJson(context.res, 401, { message: "Unauthorized" }, origin);
+      return true;
+    }
+    if (user.role !== "ADMIN") {
+      sendJson(context.res, 403, { message: "Forbidden" }, origin);
+      return true;
+    }
+
+    const item = state.leads.find(
+      (candidate) => candidate.id === Number(idMatch[1]),
+    );
     if (!item) {
       sendJson(context.res, 404, { message: "Lead not found" }, origin);
       return true;
     }
     const body = await context.parseBody(req);
     item.status = body.status || item.status;
-    item.message = body.message || item.message;
+    item.fullName = body.fullName || item.fullName;
+    item.phone = body.phone || item.phone;
+    item.propertyId = body.propertyId ?? item.propertyId ?? null;
+    item.rentRequestId = body.rentRequestId ?? item.rentRequestId ?? null;
     item.updatedAt = new Date().toISOString();
     sendJson(context.res, 200, envelope(clone(item)), origin);
     return true;
   }
 
   if (idMatch && req.method === "DELETE") {
-    const index = state.leads.findIndex((candidate) => candidate.id === Number(idMatch[1]));
+    const user = getCurrentUserFromRequest(req);
+    if (!user) {
+      sendJson(context.res, 401, { message: "Unauthorized" }, origin);
+      return true;
+    }
+    if (user.role !== "ADMIN") {
+      sendJson(context.res, 403, { message: "Forbidden" }, origin);
+      return true;
+    }
+
+    const index = state.leads.findIndex(
+      (candidate) => candidate.id === Number(idMatch[1]),
+    );
     if (index < 0) {
       sendJson(context.res, 404, { message: "Lead not found" }, origin);
       return true;

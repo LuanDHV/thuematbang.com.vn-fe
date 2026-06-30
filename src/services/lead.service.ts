@@ -2,6 +2,8 @@ import "server-only";
 
 import { Lead } from "@/types/lead";
 import { LeadStatus } from "@/types/enums";
+import { HttpError } from "@/lib/http";
+import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { requestServerApi } from "./shared/server-api-client";
 import { buildListPath } from "./shared/list-service";
 
@@ -9,6 +11,7 @@ export type LeadListFilters = {
   q?: string;
   status?: LeadStatus;
   propertyId?: number;
+  rentRequestId?: number;
   userId?: number;
 };
 
@@ -21,10 +24,10 @@ export type LeadGetAllParams = {
 export type LeadUpsertPayload = {
   fullName: string;
   phone: string;
-  message?: string;
   status?: LeadStatus | null;
   userId?: number | null;
   propertyId?: number | null;
+  rentRequestId?: number | null;
 };
 
 export const leadService = {
@@ -54,6 +57,36 @@ export const leadService = {
       body: JSON.stringify(payload),
     });
     return response.data;
+  },
+
+  createPublic: async (payload: LeadUpsertPayload) => {
+    const { accessToken, refreshToken } = await readAuthCookies();
+    const hasAuthCookies = Boolean(accessToken || refreshToken);
+
+    const submit = async (auth: "none" | "required") => {
+      const response = await requestServerApi<Lead>("/leads", {
+        method: "POST",
+        auth,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      return response.data;
+    };
+
+    if (!hasAuthCookies) {
+      return submit("none");
+    }
+
+    try {
+      return await submit("required");
+    } catch (error) {
+      if (error instanceof HttpError && error.status === 401) {
+        return submit("none");
+      }
+      throw error;
+    }
   },
 
   update: async (id: number, payload: Partial<LeadUpsertPayload>) => {

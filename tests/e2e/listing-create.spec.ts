@@ -51,7 +51,7 @@ async function uploadSingleImage(page: Page) {
 
 async function fillPropertyCreateForm(page: Page, title: string) {
   await page.getByLabel("Họ và tên").fill("Nguyễn Văn A");
-  await page.getByLabel("Số điện thoại").fill("0901234567");
+  await page.getByRole("textbox", { name: /^Số điện thoại/ }).fill("0901234567");
   await page.locator("#title").fill(title);
   await selectRadixOption(page, "Danh mục", "Mặt bằng");
   await page.getByLabel("Thương lượng").check();
@@ -60,11 +60,12 @@ async function fillPropertyCreateForm(page: Page, title: string) {
   await selectSearchableSelect(page, "Phường/xã", "Quận 1");
   await page.getByLabel("Địa chỉ chi tiết").fill("123 Lê Lợi");
   await uploadSingleImage(page);
+  await expect(page.getByText("Đang tải ảnh lên...")).not.toBeVisible();
 }
 
 async function fillRentRequestCreateForm(page: Page, title: string) {
   await page.getByLabel("Họ và tên").fill("Nguyễn Văn B");
-  await page.getByLabel("Số điện thoại").fill("0907654321");
+  await page.getByRole("textbox", { name: /^Số điện thoại/ }).fill("0907654321");
   await page.locator("#title").fill(title);
   await selectRadixOption(page, "Danh mục", "Căn hộ chung cư");
   await page.locator("#budgetAmount").fill("15000000");
@@ -80,7 +81,7 @@ async function fillNegotiableRentRequestCreateForm(
   title: string,
 ) {
   await page.getByLabel("Họ và tên").fill("Nguyễn Văn B");
-  await page.getByLabel("Số điện thoại").fill("0907654321");
+  await page.getByRole("textbox", { name: /^Số điện thoại/ }).fill("0907654321");
   await page.locator("#title").fill(title);
   await selectRadixOption(page, "Danh mục", "Căn hộ chung cư");
   await page.getByLabel("Thương lượng").check();

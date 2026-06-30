@@ -86,21 +86,21 @@ export default function AdminLeadsTable({
       },
       {
         key: "propertyId",
-        header: "Property",
+        header: "ID Cho thuê",
         fieldType: "text",
         accessor: (item) => item.propertyId ?? "Chưa có",
       },
       {
-        key: "userId",
-        header: "User",
+        key: "rentRequestId",
+        header: "ID Cần thuê",
         fieldType: "text",
-        accessor: (item) => item.userId ?? "Chưa có",
+        accessor: (item) => item.rentRequestId ?? "Chưa có",
       },
       {
-        key: "message",
-        header: "Ghi chú",
+        key: "userId",
+        header: "ID Tài khoản",
         fieldType: "text",
-        accessor: (item) => item.message ?? "Không có ghi chú",
+        accessor: (item) => item.userId ?? "Chưa có",
       },
       {
         key: "createdAt",
@@ -159,10 +159,10 @@ export default function AdminLeadsTable({
             ? {
                 fullName: editingLead.fullName,
                 phone: editingLead.phone,
-                message: editingLead.message ?? "",
                 status: editingLead.status,
                 userId: editingLead.userId ?? undefined,
                 propertyId: editingLead.propertyId ?? undefined,
+                rentRequestId: editingLead.rentRequestId ?? undefined,
               }
             : undefined
         }
@@ -177,5 +177,3 @@ export default function AdminLeadsTable({
     </>
   );
 }
-
-

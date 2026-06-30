@@ -21,7 +21,6 @@ import {
   createPageMetadata,
 } from "@/lib/metadata";
 import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
-import { readAuthCookies } from "@/lib/server/auth-cookies";
 import { faqService } from "@/services/faq.service";
 import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import { RentRequest } from "@/types/rent-request";
@@ -128,8 +127,6 @@ export async function generateMetadata({
 export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
   const { rawSlug, page } = parseListingPagedSlugSegments(slug);
-  const { accessToken } = await readAuthCookies();
-  const isLoggedIn = Boolean(accessToken);
 
   const [seoRes, faqRes] = await Promise.all([
     seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
@@ -213,7 +210,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
           aside={
             <RentRequestDetailSidebar
               contactName={rentRequest.contactName}
-              isLoggedIn={isLoggedIn}
+              rentRequestId={rentRequest.id}
               latestWantedProperties={latestWantedRequests}
             />
           }

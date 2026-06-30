@@ -24,7 +24,7 @@ export default function Title({
         </p>
       ) : null}
       <HeadingTag
-        className={`text-heading ${isHomeVariant ? "text-3xl font-semibold tracking-[-0.055em] normal-case leading-tight md:text-4xl lg:text-5xl" : "text-2xl font-bold tracking-[-0.04em] uppercase lg:text-3xl"} ${description ? "mb-4" : ""}`}
+        className={`text-heading ${isHomeVariant ? "text-2xl leading-tight font-semibold tracking-[-0.055em] normal-case md:text-4xl lg:text-5xl" : "text-2xl font-bold tracking-[-0.04em] uppercase lg:text-3xl"} ${description ? "mb-4" : ""}`}
       >
         {title}
       </HeadingTag>

@@ -177,10 +177,11 @@ function createInitialState() {
     leads: [
       {
         id: 1,
-        fullName: "Lead Demo",
-        email: "lead@example.com",
+        fullName: "Lead demo",
         phone: "0909000001",
-        message: "Moi lien he demo.",
+        userId: 1,
+        propertyId: 1,
+        rentRequestId: null,
         status: "NEW",
         createdAt: stamp(),
         updatedAt: stamp(),
