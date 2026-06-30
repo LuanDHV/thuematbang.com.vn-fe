@@ -110,15 +110,6 @@ export default function AdminLeadsTable({
         accessor: (item) => item.createdAt,
       },
       {
-        key: "actions",
-        header: "Tác vụ",
-        fieldType: "actions",
-        onEdit: (_id, item) => {
-          setEditingLead(item);
-        },
-        onDelete: handleDeleteLead,
-      },
-      {
         key: "status",
         header: "Trạng thái",
         fieldType: "text",
@@ -128,6 +119,15 @@ export default function AdminLeadsTable({
             {LEAD_STATUS_LABEL_MAP[row.status]}
           </AdminStatusBadge>
         ),
+      },
+      {
+        key: "actions",
+        header: "Tác vụ",
+        fieldType: "actions",
+        onEdit: (_id, item) => {
+          setEditingLead(item);
+        },
+        onDelete: handleDeleteLead,
       },
     ],
     [handleDeleteLead, source],
