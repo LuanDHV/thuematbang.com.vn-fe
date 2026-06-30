@@ -520,7 +520,7 @@ This repository now treats test impact as part of feature completeness.
 - if a change touches render logic, form behavior, hooks, or pure helpers, update or add `Jest + RTL` coverage
 - if a change touches route behavior, auth/session flow, redirect, cookies, or browser journeys, update or add `Playwright` coverage
 - if a change touches request/response behavior, prefer `MSW`-driven component/integration tests over brittle end-to-end mocking
-- do not merge a meaningful FE feature change without checking whether `TEST_COVERAGE.md` needs an update
+- do not merge a meaningful FE feature change without checking whether `docs/testing/frontend-testing.md` and `TEST_COVERAGE.md` need updates
 
 Recommended test layout:
 
@@ -532,6 +532,8 @@ Recommended test layout:
 When a feature is intentionally not covered by a test layer, the PR or change set should say why.
 
 ## 16. Test Coverage Tracking
+
+Frontend testing guidance lives in `docs/testing/frontend-testing.md`.
 
 Keep the live test matrix in `TEST_COVERAGE.md`.
 

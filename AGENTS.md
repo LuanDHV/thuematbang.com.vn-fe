@@ -101,3 +101,7 @@ If the task includes UI, also verify:
 - form validation and submit state when forms are involved
 
 If you did not run a manual UI check, say so clearly.
+
+## Testing Docs
+
+When changing frontend test strategy, suite boundaries, or browser/unit coverage expectations, read and keep `docs/testing/frontend-testing.md` aligned with the codebase. Treat `TEST_COVERAGE.md` as the live matrix and the testing doc as the policy guide.
