@@ -48,8 +48,10 @@ export function PropertyTypeDetailTab({
 }: DetailTabSharedProps & { propertyTypeOptions: string[] }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="hover:text-primary flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white">
-        <span className="text-heading text-sm">Tất cả loại bất động sản</span>
+      <label className="hover:text-primary grid cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-lg p-2.5 hover:bg-white">
+        <span className="text-heading min-w-0 pr-2 text-sm leading-5">
+          Tất cả loại bất động sản
+        </span>
         <input
           type="checkbox"
           name="property-type-single"
@@ -61,15 +63,17 @@ export function PropertyTypeDetailTab({
             }));
             onDone?.();
           }}
-          className="accent-primary size-5 cursor-pointer"
+          className="accent-primary mt-0.5 size-5 shrink-0 cursor-pointer"
         />
       </label>
       {propertyTypeOptions.map((type) => (
         <label
           key={type}
-          className="hover:text-primary flex cursor-pointer items-center justify-between rounded-lg p-2.5 hover:bg-white"
+          className="hover:text-primary grid cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-lg p-2.5 hover:bg-white"
         >
-          <span className="text-heading text-sm">{type}</span>
+          <span className="text-heading min-w-0 pr-2 text-sm leading-5">
+            {type}
+          </span>
           <input
             type="checkbox"
             name="property-type-single"
@@ -84,7 +88,7 @@ export function PropertyTypeDetailTab({
               }));
               onDone?.();
             }}
-            className="accent-primary size-5 cursor-pointer"
+            className="accent-primary mt-0.5 size-5 shrink-0 cursor-pointer"
           />
         </label>
       ))}
@@ -148,7 +152,7 @@ export function PriceDetailTab({
                 negotiable: false,
               }))
             }
-            placeholder="60000"
+            placeholder="10000"
             className="text-body focus:ring-primary/12 border-hairline bg-surface h-11 w-full [appearance:textfield] rounded-lg border px-3.5 text-sm shadow-lg outline-none focus:ring-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>

@@ -48,7 +48,11 @@ describe("ListingFilterToolbar", () => {
       },
     ]);
 
-    renderWithProviders(<ListingFilterToolbar basePath="/cho-thue" />);
+    renderWithProviders(
+      <ListingFilterToolbar
+        basePath="/cho-thue"
+      />,
+    );
 
     await user.type(
       screen.getByPlaceholderText("Bạn muốn thuê ở đâu?"),
@@ -91,5 +95,17 @@ describe("ListingFilterToolbar", () => {
     expect(
       screen.getByRole("button", { name: "Xem kết quả" }),
     ).toBeInTheDocument();
+  });
+
+  it("renders hardcoded property type options", async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <ListingFilterToolbar basePath="/cho-thue" />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Loại BĐS" }));
+
+    expect(await screen.findByText("Biệt thự")).toBeInTheDocument();
   });
 });

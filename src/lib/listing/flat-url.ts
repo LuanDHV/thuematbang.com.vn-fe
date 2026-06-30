@@ -42,6 +42,7 @@ const PROPERTY_CATEGORY_SLUG_TO_LABEL = new Map<string, string>([
   ["mat-bang", "Mặt Bằng"],
   ["kho-xuong-khu-cong-nghiep", "Kho xưởng, khu công nghiệp"],
   ["can-ho-chung-cu", "Căn Hộ, Chung Cư"],
+  ["biet-thu", "Biệt thự"],
   ["trung-tam-thuong-mai", "Trung Tâm Thương Mại"],
   ["nha-tro-phong-tro", "Nhà Trọ, Phòng Trọ"],
 ]);
@@ -154,7 +155,9 @@ function buildDirectionToken(values: string[]) {
 function bedBathValueToSlug(value: string) {
   const normalized = compactSlugToken(value);
   if (!normalized) return "";
-  return normalized === "5+" ? `5${BEDROOM_TOKEN_SUFFIX}` : `${normalized}${BEDROOM_TOKEN_SUFFIX}`;
+  return normalized === "5+"
+    ? `5${BEDROOM_TOKEN_SUFFIX}`
+    : `${normalized}${BEDROOM_TOKEN_SUFFIX}`;
 }
 
 // Build the bedroom token when the filter has a selected value.
@@ -201,8 +204,7 @@ function parseLocationBlock(
   }
 
   const pending = compactSlugToken(block);
-  const locationTokenPattern =
-    `(?:${LOCATION_PROVINCE_PREFIX}[a-z0-9-]+(?:-${LOCATION_WARD_PREFIX}[a-z0-9-]+)?)`;
+  const locationTokenPattern = `(?:${LOCATION_PROVINCE_PREFIX}[a-z0-9-]+(?:-${LOCATION_WARD_PREFIX}[a-z0-9-]+)?)`;
   const locationToken = extractTrailingToken(pending, locationTokenPattern);
 
   let categorySlug = pending || undefined;
@@ -649,7 +651,9 @@ export function isLikelyPropertyFilterSlug(rawSlug?: string) {
 
   return (
     tokenPrefixes.some(
-      (prefix) => (block1 ?? "").startsWith(prefix) || (block1 ?? "").includes(`-${prefix}`),
+      (prefix) =>
+        (block1 ?? "").startsWith(prefix) ||
+        (block1 ?? "").includes(`-${prefix}`),
     ) || Boolean(block2)
   );
 }

@@ -231,7 +231,11 @@ export default function ListingFilterToolbar({
     if (options?.syncUrl !== false) {
       router.replace(
         buildPagedPath(
-          buildPropertyFilterPath(nextBasePath, activeFilters, flatUrlContext),
+          buildPropertyFilterPath(
+            nextBasePath,
+            activeFilters,
+            flatUrlContext,
+          ),
           1,
         ),
         {
@@ -393,7 +397,7 @@ export default function ListingFilterToolbar({
 
             {showSuggestions ? (
               <div className="border-hairline bg-surface absolute top-full left-0 z-50 w-full overflow-hidden rounded-b-lg border-x border-b shadow-xl">
-                <ul className="[&::-webkit-scrollbar-thumb]:bg-primary/30 max-h-80 overflow-y-auto py-1.5 pr-1 [scrollbar-color:theme(colors.primary/30)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
+                <ul className="[&::-webkit-scrollbar-thumb]:bg-primary/30 [scrollbar-color:--theme(--color-primary/30)_transparent] max-h-80 overflow-y-auto py-1.5 pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
                   {suggestions.length > 0 ? (
                     suggestions.map((suggestion, index) => {
                       const isActive = index === activeSuggestionIndex;
@@ -408,8 +412,8 @@ export default function ListingFilterToolbar({
                             onClick={() => navigateToSuggestion(suggestion)}
                             className={`flex w-full items-center px-4 py-2.5 text-left transition-colors ${
                               isActive
-                                ? "bg-white text-primary"
-                                : "text-body hover:bg-white hover:text-primary"
+                                ? "text-primary bg-white"
+                                : "text-body hover:text-primary hover:bg-white"
                             }`}
                           >
                             <span className="min-w-0 flex-1 cursor-pointer truncate text-sm font-medium">
