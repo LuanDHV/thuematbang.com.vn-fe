@@ -7,6 +7,7 @@ import { getCloudinaryPublicId, isCloudinaryImageUrl } from "@/lib/cloudinary";
 type CloudinaryImageProps = Omit<ImageProps, "src"> & {
   src: string;
   cldQuality?: "auto" | "auto:good" | "auto:best";
+  cldDpr?: string | number;
   crop?: "fill" | "fit" | "limit" | "crop";
   gravity?: "auto";
   format?: "auto" | "webp" | "avif" | "jpg" | "png";
@@ -15,6 +16,7 @@ type CloudinaryImageProps = Omit<ImageProps, "src"> & {
 export default function CloudinaryImage({
   src,
   cldQuality = "auto:good",
+  cldDpr = 1,
   crop = "fill",
   gravity = "auto",
   format = "auto",
@@ -30,6 +32,7 @@ export default function CloudinaryImage({
       <CldImage
         src={publicId}
         quality={cldQuality}
+        dpr={cldDpr}
         crop={crop}
         gravity={gravity}
         format={format}

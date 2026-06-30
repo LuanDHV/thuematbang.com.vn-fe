@@ -50,6 +50,12 @@ export type RentRequestGetAllParams = {
   limit?: number;
 };
 
+export type RentRequestListFetchOptions = {
+  cache?: RequestCache;
+  revalidate?: number;
+  tags?: string[];
+};
+
 export type RentRequestGetByFlatSlugParams = {
   flatSlug: string;
   page?: number;
@@ -89,7 +95,10 @@ export type RentRequestUpsertPayload = {
 
 export const rentRequestService = {
   // Fetch one paginated rent-request list with the filter contract used by listings and CMS.
-  getAll: async (params: RentRequestGetAllParams = {}) =>
+  getAll: async (
+    params: RentRequestGetAllParams = {},
+    fetchOptions: RentRequestListFetchOptions = {},
+  ) =>
     requestServerApi<RentRequest[]>(
       buildListPath("/rent-requests", {
         ...params,
@@ -98,11 +107,14 @@ export const rentRequestService = {
         },
       }),
       {
-        cache: "no-store",
-        tags: buildListTags("rent-requests", {
-          page: params.page,
-          limit: params.limit,
-        }),
+        cache: fetchOptions.cache ?? "no-store",
+        revalidate: fetchOptions.revalidate,
+        tags:
+          fetchOptions.tags ??
+          buildListTags("rent-requests", {
+            page: params.page,
+            limit: params.limit,
+          }),
       },
     ),
 

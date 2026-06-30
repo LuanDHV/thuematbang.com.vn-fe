@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import DataErrorCard from "@/components/common/DataErrorCard";
+import { isProductionAppEnv } from "@/lib/app-env";
 import { extractErrorMessage } from "@/lib/server/api-error";
 import { HttpError } from "@/lib/http";
 
@@ -44,12 +45,15 @@ export default async function SafeFetch<T>({
   children,
 }: SafeFetchProps<T>) {
   // Generic server-side fetch guard for page sections.
+  const isProduction = isProductionAppEnv();
   let data: T;
   let hasError = false;
   let errorMessage = fallbackMessage;
 
   try {
-    console.log("[SafeFetch] start", { debugLabel });
+    if (!isProduction) {
+      console.log("[SafeFetch] start", { debugLabel });
+    }
     data = await fetcher;
     if (data && typeof data === "object") {
       // const record = data as Record<string, unknown>;
@@ -59,7 +63,9 @@ export default async function SafeFetch<T>({
       //   data: Array.isArray(record.data) ? record.data : (record.data ?? data),
       // });
     } else {
-      console.log("[SafeFetch] success", { debugLabel, data });
+      if (!isProduction) {
+        console.log("[SafeFetch] success", { debugLabel, data });
+      }
     }
   } catch (error) {
     hasError = true;

@@ -27,6 +27,16 @@ import { Property } from "@/types/property";
 const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
+const FEATURED_CARD_IMAGE_SIZES =
+  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw";
+const TIER_MAIN_IMAGE_SIZES =
+  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, 33vw";
+const TIER_SIDE_IMAGE_SIZES =
+  "(max-width: 767px) 30vw, (max-width: 1023px) 20vw, 15vw";
+const TIER_SIDE_SMALL_IMAGE_SIZES =
+  "(max-width: 767px) 24vw, (max-width: 1023px) 15vw, 12vw";
+const FREE_CARD_IMAGE_SIZES =
+  "(max-width: 767px) 92vw, (max-width: 1023px) 33vw, 25vw";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
@@ -151,7 +161,7 @@ function FeaturedCard({
           width={1200}
           height={800}
           priority={priority}
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes={FEATURED_CARD_IMAGE_SIZES}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           cldQuality="auto:good"
         />
@@ -205,7 +215,7 @@ function PremiumCard({
             width={1200}
             height={800}
             priority={priority}
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes={TIER_MAIN_IMAGE_SIZES}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             cldQuality="auto:good"
           />
@@ -220,7 +230,7 @@ function PremiumCard({
                   alt={`${property.title} - ảnh 2`}
                   width={800}
                   height={600}
-                  sizes="(max-width: 768px) 40vw, 20vw"
+                  sizes={TIER_SIDE_IMAGE_SIZES}
                   className="h-full w-full object-cover"
                   cldQuality="auto:good"
                 />
@@ -233,7 +243,7 @@ function PremiumCard({
                     alt={`${property.title} - ảnh 2`}
                     width={800}
                     height={600}
-                    sizes="(max-width: 768px) 40vw, 20vw"
+                    sizes={TIER_SIDE_IMAGE_SIZES}
                     className="h-full w-full object-cover"
                     cldQuality="auto:good"
                   />
@@ -244,7 +254,7 @@ function PremiumCard({
                     alt={`${property.title} - ảnh 3`}
                     width={800}
                     height={600}
-                    sizes="(max-width: 768px) 40vw, 20vw"
+                    sizes={TIER_SIDE_IMAGE_SIZES}
                     className="h-full w-full object-cover"
                     cldQuality="auto:good"
                   />
@@ -258,7 +268,7 @@ function PremiumCard({
                     alt={`${property.title} - ảnh 2`}
                     width={800}
                     height={600}
-                    sizes="(max-width: 768px) 40vw, 20vw"
+                    sizes={TIER_SIDE_IMAGE_SIZES}
                     className="h-full w-full object-cover"
                     cldQuality="auto:good"
                   />
@@ -270,7 +280,7 @@ function PremiumCard({
                       alt={`${property.title} - ảnh 3`}
                       width={800}
                       height={600}
-                      sizes="(max-width: 768px) 30vw, 15vw"
+                      sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
                       className="h-full w-full object-cover"
                       cldQuality="auto:good"
                     />
@@ -281,7 +291,7 @@ function PremiumCard({
                       alt={`${property.title} - ảnh 4`}
                       width={800}
                       height={600}
-                      sizes="(max-width: 768px) 30vw, 15vw"
+                      sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
                       className="h-full w-full object-cover"
                       cldQuality="auto:good"
                     />
@@ -333,7 +343,7 @@ function StandardCard({
             width={1200}
             height={800}
             priority={priority}
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes={TIER_MAIN_IMAGE_SIZES}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             cldQuality="auto:good"
           />
@@ -348,7 +358,7 @@ function StandardCard({
                   alt={`${property.title} - ảnh phụ 1`}
                   width={800}
                   height={600}
-                  sizes="(max-width: 768px) 30vw, 15vw"
+                  sizes={TIER_SIDE_IMAGE_SIZES}
                   className="h-full w-full object-cover"
                   cldQuality="auto:good"
                 />
@@ -364,7 +374,7 @@ function StandardCard({
                     alt={`${property.title} - ảnh phụ ${index + 1}`}
                     width={800}
                     height={600}
-                    sizes="(max-width: 768px) 30vw, 15vw"
+                    sizes={TIER_SIDE_IMAGE_SIZES}
                     className="h-full w-full object-cover"
                     cldQuality="auto:good"
                   />
@@ -408,7 +418,7 @@ function FreeCard({
           width={1200}
           height={800}
           priority={priority}
-          sizes="(max-width: 768px) 50vw, 25vw"
+          sizes={FREE_CARD_IMAGE_SIZES}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           cldQuality="auto:good"
         />

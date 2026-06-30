@@ -30,6 +30,12 @@ export type NewsGetAllParams = {
   limit?: number;
 };
 
+export type NewsListFetchOptions = {
+  cache?: RequestCache;
+  revalidate?: number;
+  tags?: string[];
+};
+
 export type NewsUpsertPayload = {
   categoryId: number;
   title: string;
@@ -43,7 +49,10 @@ export type NewsUpsertPayload = {
 };
 
 export const newsService = {
-  getAll: async (params: NewsGetAllParams = {}) => {
+  getAll: async (
+    params: NewsGetAllParams = {},
+    fetchOptions: NewsListFetchOptions = {},
+  ) => {
     const filters = {
       ...params.filters,
       categorySlug: params.categorySlug ?? params.filters?.categorySlug,
@@ -56,14 +65,17 @@ export const newsService = {
         limit: params.limit,
       }),
       {
-        cache: "no-store",
-        tags: buildListTags("news", {
-          page: params.page,
-          limit: params.limit,
-          scope: filters.categorySlug
-            ? { key: "category", value: String(filters.categorySlug) }
-            : undefined,
-        }),
+        cache: fetchOptions.cache ?? "no-store",
+        revalidate: fetchOptions.revalidate,
+        tags:
+          fetchOptions.tags ??
+          buildListTags("news", {
+            page: params.page,
+            limit: params.limit,
+            scope: filters.categorySlug
+              ? { key: "category", value: String(filters.categorySlug) }
+              : undefined,
+          }),
       },
     );
   },

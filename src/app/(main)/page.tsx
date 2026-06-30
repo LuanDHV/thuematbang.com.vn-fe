@@ -8,7 +8,7 @@ import RentRequestExpressSection from "@/components/home/rent-request-express/pa
 import { buildPageTitle, createPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 export const metadata: Metadata = createPageMetadata({
   title: buildPageTitle("Sàn bất động sản kết nối nhu cầu thuê và cho thuê"),

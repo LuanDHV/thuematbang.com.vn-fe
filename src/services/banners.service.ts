@@ -20,18 +20,28 @@ export type BannerByPageResponse = {
   banners: Banner[];
 };
 
+export type BannerFetchOptions = {
+  cache?: RequestCache;
+  revalidate?: number;
+  tags?: string[];
+};
+
 export type BannerUpsertPayload = BannerFormValues & {
   imageUrl?: string | null;
   imagePublicId?: string | null;
 };
 
 export const bannersService = {
-  getPublicByPage: async (page: string) =>
+  getPublicByPage: async (
+    page: string,
+    fetchOptions: BannerFetchOptions = {},
+  ) =>
     requestServerApi<BannerByPageResponse>(
       `/banners/page/${encodeURIComponent(page)}`,
       {
-      cache: "no-store",
-      tags: ["banners", `banners-${page}`],
+        cache: fetchOptions.cache ?? "no-store",
+        revalidate: fetchOptions.revalidate,
+        tags: fetchOptions.tags ?? ["banners", `banners-${page}`],
       },
     ),
 

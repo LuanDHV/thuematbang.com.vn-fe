@@ -10,7 +10,25 @@ import HomeCarousel from "@/components/home/HomeCarousel";
 import { rentRequestService } from "@/services/rent-request.service";
 import type { RentRequest } from "@/types/rent-request";
 
+const HOME_RENT_REQUESTS_REVALIDATE_SECONDS = 300;
+
 export default async function RentRequestExpressSection() {
+  const homeRentRequestsFetch = rentRequestService.getAll(
+    {
+      filters: {
+        status: "PUBLISHED",
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      },
+      limit: 8,
+    },
+    {
+      cache: "force-cache",
+      revalidate: HOME_RENT_REQUESTS_REVALIDATE_SECONDS,
+      tags: ["rent-requests", "homepage-rent-requests"],
+    },
+  );
+
   return (
     <SectionBand tone="app">
       <div className="layout-section w-full px-4">
@@ -25,14 +43,7 @@ export default async function RentRequestExpressSection() {
           </div>
 
           <SafeFetch
-            fetcher={rentRequestService.getAll({
-              filters: {
-                status: "PUBLISHED",
-                sortBy: "createdAt",
-                sortOrder: "desc",
-              },
-              limit: 8,
-            })}
+            fetcher={homeRentRequestsFetch}
             debugLabel="Home Rent Requests Response"
           >
             {(response) => {

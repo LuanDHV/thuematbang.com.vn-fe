@@ -10,7 +10,21 @@ import HomeCarousel from "@/components/home/HomeCarousel";
 import { propertyService } from "@/services/property.service";
 import { Property } from "@/types";
 
+const FEATURED_PROPERTIES_REVALIDATE_SECONDS = 300;
+
 export default async function PropertyFeaturedSection() {
+  const featuredPropertiesFetch = propertyService.getAll(
+    {
+      filters: { priorityStatus: "PREMIUM" },
+      limit: 8,
+    },
+    {
+      cache: "force-cache",
+      revalidate: FEATURED_PROPERTIES_REVALIDATE_SECONDS,
+      tags: ["properties", "homepage-featured-properties"],
+    },
+  );
+
   return (
     <SectionBand tone="surface">
       <div className="layout-section w-full px-4">
@@ -25,10 +39,7 @@ export default async function PropertyFeaturedSection() {
           </div>
 
           <SafeFetch
-            fetcher={propertyService.getAll({
-              filters: { priorityStatus: "PREMIUM" },
-              limit: 8,
-            })}
+            fetcher={featuredPropertiesFetch}
             debugLabel="Featured Properties Response"
           >
             {(response) => {

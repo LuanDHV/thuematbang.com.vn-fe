@@ -52,7 +52,6 @@ export function optimizeCloudinaryImage(
   const height = toInteger(options.height);
 
   const transforms = [
-    "dpr_auto",
     `f_${format}`,
     `q_${quality}`,
     width ? `w_${width}` : null,

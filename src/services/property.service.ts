@@ -57,6 +57,12 @@ export type PropertyGetAllParams = {
   limit?: number;
 };
 
+export type PropertyListFetchOptions = {
+  cache?: RequestCache;
+  revalidate?: number;
+  tags?: string[];
+};
+
 export type PropertyGetByFlatSlugParams = {
   flatSlug: string;
   page?: number;
@@ -110,7 +116,10 @@ export type PropertyUpdatePayload = Partial<PropertyUpsertPayload> & {
 
 export const propertyService = {
   // Fetch one paginated property list with the filter contract used across public and CMS pages.
-  getAll: async (params: PropertyGetAllParams = {}) =>
+  getAll: async (
+    params: PropertyGetAllParams = {},
+    fetchOptions: PropertyListFetchOptions = {},
+  ) =>
     requestServerApi<Property[]>(
       buildListPath("/properties", {
         ...params,
@@ -119,11 +128,14 @@ export const propertyService = {
         },
       }),
       {
-        cache: "no-store",
-        tags: buildListTags("properties", {
-          page: params.page,
-          limit: params.limit,
-        }),
+        cache: fetchOptions.cache ?? "no-store",
+        revalidate: fetchOptions.revalidate,
+        tags:
+          fetchOptions.tags ??
+          buildListTags("properties", {
+            page: params.page,
+            limit: params.limit,
+          }),
       },
     ),
 

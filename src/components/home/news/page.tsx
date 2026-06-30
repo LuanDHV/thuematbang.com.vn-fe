@@ -10,8 +10,17 @@ import SectionBand from "@/components/home/SectionBand";
 import { newsService } from "@/services/news.service";
 import { News } from "@/types/news";
 
+const HOME_NEWS_REVALIDATE_SECONDS = 300;
+
 export default async function NewsSection() {
-  const newsFetch = newsService.getAll({ limit: 4 });
+  const newsFetch = newsService.getAll(
+    { limit: 4 },
+    {
+      cache: "force-cache",
+      revalidate: HOME_NEWS_REVALIDATE_SECONDS,
+      tags: ["news", "homepage-news"],
+    },
+  );
 
   return (
     <SectionBand tone="app">
