@@ -94,17 +94,6 @@ export default function AdminNewsTable({
         ),
       },
       {
-        key: "status",
-        header: "Trạng thái",
-        fieldType: "text",
-        accessor: (item) => item.status,
-        render: ({ row }) => (
-          <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
-            {PUBLISH_STATUS_LABEL_MAP[row.status]}
-          </AdminStatusBadge>
-        ),
-      },
-      {
         key: "viewCount",
         header: "Lượt xem",
         fieldType: "text",
@@ -116,6 +105,17 @@ export default function AdminNewsTable({
         fieldType: "date",
         accessor: (item) => item.createdAt,
         mobileHidden: true,
+      },
+      {
+        key: "status",
+        header: "Trạng thái",
+        fieldType: "text",
+        accessor: (item) => item.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "actions",
@@ -140,5 +140,4 @@ export default function AdminNewsTable({
     />
   );
 }
-
 

@@ -125,17 +125,6 @@ export default function AdminPropertiesTable({
         ),
       },
       {
-        key: "status",
-        header: "Trạng thái",
-        fieldType: "text",
-        accessor: (property) => property.status,
-        render: ({ row }) => (
-          <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
-            {PUBLISH_STATUS_LABEL_MAP[row.status]}
-          </AdminStatusBadge>
-        ),
-      },
-      {
         key: "viewCount",
         header: "Lượt xem",
         fieldType: "number",
@@ -148,6 +137,17 @@ export default function AdminPropertiesTable({
         fieldType: "date",
         accessor: (property) => property.createdAt,
         mobileHidden: true,
+      },
+      {
+        key: "status",
+        header: "Trạng thái",
+        fieldType: "text",
+        accessor: (property) => property.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={publishStatusBadgeToneMap[row.status]}>
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "actions",

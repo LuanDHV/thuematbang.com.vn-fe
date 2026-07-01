@@ -118,28 +118,6 @@ export default function AdminRentRequestsTable({
         accessor: (item) => formatAreaValue(item.desiredArea),
       },
       {
-        key: "status",
-        header: "Trạng thái",
-        fieldType: "text",
-        accessor: (item) => item.status,
-        render: ({ row }) => (
-          <AdminStatusBadge tone={statusToneMap[row.status]}>
-            {PUBLISH_STATUS_LABEL_MAP[row.status]}
-          </AdminStatusBadge>
-        ),
-      },
-      {
-        key: "isMatched",
-        header: "Khớp",
-        fieldType: "text",
-        accessor: (item) => item.isMatched,
-        render: ({ row }) => (
-          <AdminStatusBadge tone={row.isMatched ? "success" : "muted"}>
-            {row.isMatched ? "Đã khớp" : "Chưa khớp"}
-          </AdminStatusBadge>
-        ),
-      },
-      {
         key: "viewCount",
         header: "Lượt xem",
         fieldType: "number",
@@ -153,6 +131,29 @@ export default function AdminRentRequestsTable({
         accessor: (item) => item.createdAt,
         mobileHidden: true,
       },
+      {
+        key: "isMatched",
+        header: "Khớp",
+        fieldType: "text",
+        accessor: (item) => item.isMatched,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={row.isMatched ? "success" : "muted"}>
+            {row.isMatched ? "Đã khớp" : "Chưa khớp"}
+          </AdminStatusBadge>
+        ),
+      },
+      {
+        key: "status",
+        header: "Trạng thái",
+        fieldType: "text",
+        accessor: (item) => item.status,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={statusToneMap[row.status]}>
+            {PUBLISH_STATUS_LABEL_MAP[row.status]}
+          </AdminStatusBadge>
+        ),
+      },
+
       {
         key: "actions",
         header: "Tác vụ",

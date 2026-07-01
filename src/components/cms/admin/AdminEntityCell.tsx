@@ -21,7 +21,10 @@ export default function AdminEntityCell({
 }: AdminEntityCellProps) {
   return (
     <div
-      className={cn("flex min-w-0 w-full items-center gap-3 overflow-hidden", className)}
+      className={cn(
+        "flex min-w-0 w-full max-w-[18rem] items-center gap-3 overflow-hidden sm:max-w-[20rem] lg:max-w-[24rem]",
+        className,
+      )}
     >
       <div className="border-hairline bg-subtle relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
         {imageUrl ? (
@@ -39,14 +42,18 @@ export default function AdminEntityCell({
       </div>
 
       <div className="min-w-0 flex-1 overflow-hidden">
-        <p className="text-heading truncate overflow-hidden text-sm font-semibold">
+        <p
+          className="text-heading truncate overflow-hidden text-sm font-semibold"
+          title={title}
+        >
           {title}
         </p>
         {slug ? (
-          <p className="text-muted truncate overflow-hidden text-xs">{slug}</p>
+          <p className="text-muted truncate overflow-hidden text-xs" title={slug}>
+            {slug}
+          </p>
         ) : null}
       </div>
     </div>
   );
 }
-

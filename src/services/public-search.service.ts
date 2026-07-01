@@ -36,12 +36,6 @@ export const publicSearchService = {
       buildPublicSearchSuggestionPath(params),
       {
         cache: "no-store",
-        tags: [
-          "public-search-suggestions",
-          params.contextResource ?? "property",
-          params.keyword.trim(),
-          String(params.limit ?? 10),
-        ],
       },
     ),
 };

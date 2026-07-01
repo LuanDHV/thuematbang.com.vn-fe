@@ -70,6 +70,13 @@ export default function AdminUsersTable({
         accessor: (user) => user.phone || "—",
       },
       {
+        key: "createdAt",
+        header: "Ngày tạo",
+        fieldType: "date",
+        accessor: (user) => user.createdAt,
+        mobileHidden: true,
+      },
+      {
         key: "role",
         header: "Vai trò",
         fieldType: "text",
@@ -95,13 +102,6 @@ export default function AdminUsersTable({
           ),
       },
       {
-        key: "createdAt",
-        header: "Ngày tạo",
-        fieldType: "date",
-        accessor: (user) => user.createdAt,
-        mobileHidden: true,
-      },
-      {
         key: "actions",
         header: "Tác vụ",
         fieldType: "actions",
@@ -124,5 +124,4 @@ export default function AdminUsersTable({
     />
   );
 }
-
 

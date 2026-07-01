@@ -118,17 +118,6 @@ export default function AdminCategoriesTable({
         accessor: (item) => item.priority,
       },
       {
-        key: "isActive",
-        header: "Trạng thái",
-        fieldType: "text",
-        accessor: (item) => item.isActive,
-        render: ({ row }) => (
-          <AdminStatusBadge tone={getActiveTone(row.isActive)}>
-            {getActiveLabel(row.isActive)}
-          </AdminStatusBadge>
-        ),
-      },
-      {
         key: "createdAt",
         header: "Tạo lúc",
         fieldType: "date",
@@ -139,6 +128,17 @@ export default function AdminCategoriesTable({
         header: "Cập nhật",
         fieldType: "date",
         accessor: (item) => item.updatedAt,
+      },
+      {
+        key: "isActive",
+        header: "Trạng thái",
+        fieldType: "text",
+        accessor: (item) => item.isActive,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={getActiveTone(row.isActive)}>
+            {getActiveLabel(row.isActive)}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "actions",

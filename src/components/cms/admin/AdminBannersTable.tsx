@@ -95,17 +95,6 @@ export default function AdminBannersTable({
         accessor: (item) => item.sortOrder,
       },
       {
-        key: "isActive",
-        header: "Trạng thái",
-        fieldType: "text",
-        accessor: (item) => item.isActive,
-        render: ({ row }) => (
-          <AdminStatusBadge tone={getActiveTone(row.isActive)}>
-            {getActiveLabel(row.isActive)}
-          </AdminStatusBadge>
-        ),
-      },
-      {
         key: "targetLink",
         header: "Target link",
         fieldType: "text",
@@ -117,6 +106,17 @@ export default function AdminBannersTable({
         fieldType: "date",
         accessor: (item) => item.createdAt,
         mobileHidden: true,
+      },
+      {
+        key: "isActive",
+        header: "Trạng thái",
+        fieldType: "text",
+        accessor: (item) => item.isActive,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={getActiveTone(row.isActive)}>
+            {getActiveLabel(row.isActive)}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "actions",
@@ -186,5 +186,3 @@ export default function AdminBannersTable({
     </>
   );
 }
-
-
