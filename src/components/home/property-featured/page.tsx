@@ -15,7 +15,12 @@ const FEATURED_PROPERTIES_REVALIDATE_SECONDS = 300;
 export default async function PropertyFeaturedSection() {
   const featuredPropertiesFetch = propertyService.getAll(
     {
-      filters: { priorityStatus: "PREMIUM" },
+      filters: {
+        priorityStatus: "PREMIUM",
+        status: "PUBLISHED",
+        sortBy: "viewCount",
+        sortOrder: "desc",
+      },
       limit: 8,
     },
     {

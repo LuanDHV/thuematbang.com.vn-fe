@@ -158,6 +158,9 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
       const { data } = await propertyService.getAll({
         page: 1,
         limit: 24,
+        filters: {
+          status: "PUBLISHED",
+        },
       });
 
       properties = data ?? [];

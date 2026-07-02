@@ -115,7 +115,6 @@ export default function PropertyImageGallery({
   } as const;
 
   const isPortraitImage = activeImageOrientation === "portrait";
-  const activeImageCrop = isPortraitImage ? "fit" : "fill";
   const activeImageClassName = isPortraitImage
     ? "object-contain"
     : "object-cover";
@@ -156,8 +155,7 @@ export default function PropertyImageGallery({
               height={800}
               sizes="(max-width: 1024px) 100vw, 66vw"
               cldQuality="auto:good"
-              crop={activeImageCrop}
-              priority={activeIndex === 0}
+              priority
               className={`h-full w-full ${activeImageClassName}`}
             />
           </motion.div>

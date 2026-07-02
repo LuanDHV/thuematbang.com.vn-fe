@@ -45,13 +45,17 @@ export default async function UserPropertyEditPage({ params }: PageProps) {
   ]);
 
   const categories = categoriesResponse.data ?? [];
+  const canEdit =
+    property.status === "REJECTED" ||
+    property.status === "PUBLISHED" ||
+    property.status === "ARCHIVED";
   const isRejected = property.status === "REJECTED";
-  const formMode = isRejected ? "user-edit-limited" : "view-only";
-  const formTitle = isRejected
+  const formMode = canEdit ? "user-edit-limited" : "view-only";
+  const formTitle = canEdit
     ? `Chỉnh sửa tin cho thuê #${property.id}`
     : `Chi tiết tin cho thuê #${property.id}`;
-  const formDescription = isRejected
-    ? "Chỉnh sửa tin đăng bị từ chối và gửi lại duyệt."
+  const formDescription = canEdit
+    ? "Chỉnh sửa tin đăng sẽ gửi lại trạng thái chờ duyệt."
     : "Chế độ xem chi tiết, không thể chỉnh sửa.";
   const headerAddon = isRejected ? (
     <div className="border-danger/20 bg-danger/5 text-danger rounded-xl border p-4 text-sm">
@@ -68,7 +72,7 @@ export default async function UserPropertyEditPage({ params }: PageProps) {
         submitAction={updatePropertyAction.bind(null, property.id)}
         title={formTitle}
         description={formDescription}
-        submitLabel={isRejected ? "Gửi lại duyệt" : "Lưu thay đổi"}
+        submitLabel={canEdit ? "Gửi lại duyệt" : "Lưu thay đổi"}
         mode={formMode}
         showSuccessDialog={false}
         resourceId={property.id}

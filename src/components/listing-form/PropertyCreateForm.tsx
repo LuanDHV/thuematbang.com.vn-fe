@@ -371,8 +371,13 @@ function PropertyCreateFormContent({
       if (showSuccessDialog) {
         setSuccessOpen(true);
       } else {
+        const isUserEditResubmit = mode === "user-edit-limited";
         toast({
-          title: showAdminOnly ? "Đã lưu tin thành công" : "Tin đã được gửi",
+          title: showAdminOnly
+            ? "Đã lưu tin thành công"
+            : isUserEditResubmit
+              ? "Tin đã được gửi lại duyệt"
+              : "Tin đã được gửi",
           description: showAdminOnly
             ? "Tin đăng đã được lưu thành công."
             : "Tin đăng đang đợi duyệt trước khi hiển thị công khai.",

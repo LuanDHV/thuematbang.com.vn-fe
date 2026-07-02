@@ -3,8 +3,15 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
+import {
+  ArchiveRestore,
+  EyeOff,
+  ExternalLink,
+  MoreHorizontal,
+  Pencil,
+} from "lucide-react";
 
+import { updatePropertyAction } from "@/actions/property.actions";
 import AdminPriorityBadge, {
   type AdminPriorityTone,
 } from "@/components/cms/admin/AdminPriorityBadge";
@@ -63,10 +70,14 @@ function PropertyMobileCard({
   item,
   copied,
   onCopy,
+  onToggleVisibility,
+  isUpdating,
 }: {
   item: Property;
   copied: boolean;
   onCopy: (item: Property) => void;
+  onToggleVisibility: (item: Property) => Promise<void>;
+  isUpdating: boolean;
 }) {
   return (
     <article className="surface-card space-y-4 p-4">
@@ -83,13 +94,21 @@ function PropertyMobileCard({
           <p className="text-secondary truncate text-xs">{item.slug}</p>
         </div>
 
-        <PropertyActions item={item} copied={copied} onCopy={onCopy} />
+        <PropertyActions
+          item={item}
+          copied={copied}
+          onCopy={onCopy}
+          onToggleVisibility={onToggleVisibility}
+          isUpdating={isUpdating}
+        />
       </div>
 
       <div className="grid gap-3 text-sm sm:grid-cols-2">
         <div className="space-y-1">
           <p className="text-secondary text-xs font-medium">Danh mục</p>
-          <p className="text-body">{item.category?.name || "Chưa có danh mục"}</p>
+          <p className="text-body">
+            {item.category?.name || "Chưa có danh mục"}
+          </p>
         </div>
 
         <div className="space-y-1">
@@ -129,10 +148,14 @@ function PropertyMobileCard({
 
 function PropertyActions({
   item,
+  onToggleVisibility,
+  isUpdating,
 }: {
   item: Property;
   copied: boolean;
   onCopy: (item: Property) => void;
+  onToggleVisibility: (item: Property) => Promise<void>;
+  isUpdating: boolean;
 }) {
   return (
     <DropdownMenu>
@@ -154,7 +177,25 @@ function PropertyActions({
             </Link>
           </DropdownMenuItem>
         ) : null}
-        {item.status === "REJECTED" ? (
+        {item.status === "PUBLISHED" || item.status === "ARCHIVED" ? (
+          <DropdownMenuItem
+            disabled={isUpdating}
+            onSelect={(event) => {
+              event.preventDefault();
+              void onToggleVisibility(item);
+            }}
+          >
+            {item.status === "PUBLISHED" ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <ArchiveRestore className="size-4" />
+            )}
+            {item.status === "PUBLISHED" ? "Ẩn tin" : "Hiện tin"}
+          </DropdownMenuItem>
+        ) : null}
+        {item.status === "REJECTED" ||
+        item.status === "PUBLISHED" ||
+        item.status === "ARCHIVED" ? (
           <DropdownMenuItem asChild>
             <Link href={`/quan-li-tai-khoan/cho-thue/${item.id}`}>
               <Pencil className="size-4" />
@@ -183,6 +224,7 @@ export default function UserPropertiesTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -197,6 +239,18 @@ export default function UserPropertiesTable({
     window.setTimeout(() => {
       setCopiedSlug((current) => (current === item.slug ? null : current));
     }, 1800);
+  };
+
+  const handleToggleVisibility = async (item: Property) => {
+    const nextStatus = item.status === "PUBLISHED" ? "ARCHIVED" : "PUBLISHED";
+
+    setUpdatingId(item.id);
+    try {
+      await updatePropertyAction(item.id, { status: nextStatus });
+      router.refresh();
+    } finally {
+      setUpdatingId((current) => (current === item.id ? null : current));
+    }
   };
 
   return (
@@ -244,7 +298,10 @@ export default function UserPropertiesTable({
                       {item.category?.name || "Chưa có danh mục"}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
-                      {formatLocationParts([item.ward?.name, item.province?.name])}
+                      {formatLocationParts([
+                        item.ward?.name,
+                        item.province?.name,
+                      ])}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
                       {formatNegotiablePrice(item.price, item.isNegotiable, {
@@ -253,12 +310,16 @@ export default function UserPropertiesTable({
                       })}
                     </TableCell>
                     <TableCell className="align-top">
-                      <AdminPriorityBadge tone={priorityToneMap[item.priorityStatus]}>
+                      <AdminPriorityBadge
+                        tone={priorityToneMap[item.priorityStatus]}
+                      >
                         {PROPERTY_PRIORITY_LABEL_MAP[item.priorityStatus]}
                       </AdminPriorityBadge>
                     </TableCell>
                     <TableCell className="align-top">
-                      <AdminStatusBadge tone={publishStatusBadgeToneMap[item.status]}>
+                      <AdminStatusBadge
+                        tone={publishStatusBadgeToneMap[item.status]}
+                      >
                         {PUBLISH_STATUS_LABEL_MAP[item.status]}
                       </AdminStatusBadge>
                     </TableCell>
@@ -267,7 +328,13 @@ export default function UserPropertiesTable({
                     </TableCell>
                     <TableCell className="text-right align-top">
                       <div className="flex justify-end">
-                        <PropertyActions item={item} copied={isCopied} onCopy={handleCopy} />
+                        <PropertyActions
+                          item={item}
+                          copied={isCopied}
+                          onCopy={handleCopy}
+                          onToggleVisibility={handleToggleVisibility}
+                          isUpdating={updatingId === item.id}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -277,8 +344,12 @@ export default function UserPropertiesTable({
               <TableRow>
                 <TableCell colSpan={8} className="py-14 text-center">
                   <div className="space-y-2">
-                    <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
-                    <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
+                    <p className="text-heading text-base font-semibold">
+                      Không có dữ liệu
+                    </p>
+                    <p className="text-secondary text-sm">
+                      Chưa có bản ghi nào.
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -303,13 +374,17 @@ export default function UserPropertiesTable({
                 item={item}
                 copied={isCopied}
                 onCopy={handleCopy}
+                onToggleVisibility={handleToggleVisibility}
+                isUpdating={updatingId === item.id}
               />
             );
           })
         ) : (
           <div className="surface-card px-4">
             <div className="space-y-2 py-14 text-center">
-              <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
+              <p className="text-heading text-base font-semibold">
+                Không có dữ liệu
+              </p>
               <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
             </div>
           </div>
@@ -317,7 +392,11 @@ export default function UserPropertiesTable({
 
         {totalPages > 1 ? (
           <div className="pt-2">
-            <Pagination page={currentPage} totalPages={totalPages} onChange={handlePageChange} />
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={handlePageChange}
+            />
           </div>
         ) : null}
       </div>
