@@ -55,7 +55,7 @@ type PropertyUpsertPayload = PropertyCreateFormValues & {
 };
 
 type PropertyCreateFormProps = {
-  categories: Category[];  
+  categories: Category[];
   provinces: Province[];
   submitAction: (payload: PropertyUpsertPayload) => Promise<Property>;
   title: string;
@@ -96,6 +96,7 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
   publishSource: "FREE_QUOTA",
   isBoosted: false,
   boostCount: 0,
+  isMatched: false,
   status: "PENDING",
   userId: undefined,
 };
@@ -394,12 +395,12 @@ function PropertyCreateFormContent({
         onSubmit={onSubmit}
         title={title}
         description={description}
-      submitLabel={submitLabel}
-      submitPendingLabel="Đang lưu..."
-      submitError={submitError}
-      submitHidden={isViewOnly}
-      headerAddon={headerAddon}
-    >
+        submitLabel={submitLabel}
+        submitPendingLabel="Đang lưu..."
+        submitError={submitError}
+        submitHidden={isViewOnly}
+        headerAddon={headerAddon}
+      >
         <div className="grid gap-4 md:grid-cols-2">
           <ListingTextField
             name="contactName"
@@ -461,9 +462,9 @@ function PropertyCreateFormContent({
             label="Giá"
             required
             placeholder="Nhập giá"
-            inputMode="numeric"
+            inputMode="decimal"
             min={0}
-            step="1"
+            step="0.1"
             format="currency"
             disabled={isViewOnly}
           />
@@ -513,31 +514,31 @@ function PropertyCreateFormContent({
         <div className="grid gap-4 md:grid-cols-3">
           <ListingNumberField
             name="bedrooms"
-              label="Số phòng ngủ"
-              placeholder="Ví dụ: 2"
-              inputMode="numeric"
-              min={0}
-              step="1"
-              disabled={isViewOnly}
-            />
+            label="Số phòng ngủ"
+            placeholder="Ví dụ: 2"
+            inputMode="numeric"
+            min={0}
+            step="1"
+            disabled={isViewOnly}
+          />
           <ListingNumberField
             name="bathrooms"
-              label="Số phòng tắm"
-              placeholder="Ví dụ: 1"
-              inputMode="numeric"
-              min={0}
-              step="1"
-              disabled={isViewOnly}
-            />
+            label="Số phòng tắm"
+            placeholder="Ví dụ: 1"
+            inputMode="numeric"
+            min={0}
+            step="1"
+            disabled={isViewOnly}
+          />
           <ListingNumberField
             name="floors"
-              label="Số tầng"
-              placeholder="Ví dụ: 3"
-              inputMode="numeric"
-              min={0}
-              step="1"
-              disabled={isViewOnly}
-            />
+            label="Số tầng"
+            placeholder="Ví dụ: 3"
+            inputMode="numeric"
+            min={0}
+            step="1"
+            disabled={isViewOnly}
+          />
         </div>
 
         {showAdminOnly ? (
@@ -623,6 +624,11 @@ function PropertyCreateFormContent({
               <ListingCheckboxField
                 name="isBoosted"
                 label="Đã boost"
+                disabled={isViewOnly}
+              />
+              <ListingCheckboxField
+                name="isMatched"
+                label="Đã khớp nhu cầu"
                 disabled={isViewOnly}
               />
             </div>

@@ -140,6 +140,7 @@ export const propertyCreateFormSchema = z
     publishSource: z.enum(PUBLISH_SOURCE_VALUES).nullable().optional(),
     isBoosted: z.boolean().default(false).optional(),
     boostCount: optionalIntegerSchema,
+    isMatched: z.boolean().default(false).optional(),
     status: z.enum(LISTING_STATUS_VALUES).nullable().optional(),
     rejectReason: optionalTextSchema,
     userId: optionalIntegerSchema,

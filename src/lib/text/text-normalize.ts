@@ -5,6 +5,7 @@ const EDGE_DASH_REGEX = /^-+|-+$/g;
 // Normalize Vietnamese text for case-insensitive and accent-insensitive matching.
 export function normalizeVietnameseText(value: string) {
   return value
+    .replace(/[Đđ]/g, "d")
     .normalize("NFD")
     .replace(DIACRITIC_REGEX, "")
     .toLowerCase()

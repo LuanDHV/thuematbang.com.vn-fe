@@ -308,9 +308,9 @@ export function RentRequestCreateForm({
             label="Ngân sách"
             required
             placeholder="Nhập ngân sách"
-            inputMode="numeric"
+            inputMode="decimal"
             min={0}
-            step="1"
+            step="0.1"
             format="currency"
             disabled={isViewOnly}
           />

@@ -83,6 +83,7 @@ export default async function AdminPropertyEditPage({ params }: PageProps) {
           publishSource: property.publishSource,
           isBoosted: property.isBoosted,
           boostCount: property.boostCount,
+          isMatched: Boolean(property.isMatched),
           status: property.status,
           rejectReason: property.rejectReason ?? "",
           userId: property.userId ?? undefined,

@@ -11,6 +11,7 @@ describe("text normalization helpers", () => {
 
   it("creates slug-safe tokens and human readable labels", () => {
     expect(compactSlugToken("Căn hộ Quận 1")).toBe("can-ho-quan-1");
+    expect(compactSlugToken("Đà Nẵng")).toBe("da-nang");
     expect(humanizeSlugToken("can-ho-quan-1")).toBe("Can Ho Quan 1");
     expect(humanizeSlugToken("")).toBe("");
   });

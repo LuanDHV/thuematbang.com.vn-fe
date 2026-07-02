@@ -99,6 +99,7 @@ export type PropertyUpsertPayload = {
   publishSource?: PublishSource | null;
   isBoosted?: boolean;
   boostCount?: number;
+  isMatched?: boolean;
   status?: ListingStatus | null;
   userId?: number;
   images?: UploadedCloudinaryImage[];

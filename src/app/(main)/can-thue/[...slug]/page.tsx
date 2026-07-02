@@ -144,9 +144,18 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
       const { data } = await rentRequestService.getAll({
         page: 1,
         limit: 24,
+        filters: {
+          status: "PUBLISHED",
+        },
       });
 
-      rentRequests = data ?? [];
+      rentRequests = (data ?? [])
+        .filter((item) => item.status === "PUBLISHED")
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt || 0).getTime() -
+            new Date(a.createdAt || 0).getTime(),
+        );
     } catch {
       rentRequests = [];
     }

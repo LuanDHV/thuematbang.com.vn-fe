@@ -287,8 +287,8 @@ function AdminProjectFormContent({
           unitName="priceUnit"
           label="Giá"
           required
-          inputMode="numeric"
-          step="1"
+          inputMode="decimal"
+          step="0.1"
           format="currency"
         />
       )}

@@ -37,7 +37,7 @@ export function formatDisplayNumber(
 ) {
   if (typeof value !== "number" || Number.isNaN(value)) return "";
 
-  const maximumFractionDigits = format === "area" ? 2 : 0;
+  const maximumFractionDigits = format === "area" || format === "currency" ? 2 : 0;
   return new Intl.NumberFormat("vi-VN", {
     maximumFractionDigits,
   }).format(value);

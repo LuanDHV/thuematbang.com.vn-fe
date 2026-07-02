@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -57,7 +58,7 @@ export function ListingPriceField({
   className,
   required = false,
   disabled = false,
-  inputMode = "numeric",
+  inputMode = "decimal",
   min,
   max,
   step,
@@ -75,7 +76,7 @@ export function ListingPriceField({
 
   const resolvedAmountMin = amountMin ?? min;
   const resolvedAmountMax = amountMax ?? max;
-  const resolvedAmountStep = amountStep ?? step ?? "1";
+  const resolvedAmountStep = amountStep ?? step ?? "0.1";
   const amountError = errors[resolvedAmountName];
   const unitError = errors[resolvedUnitName];
 
@@ -94,19 +95,16 @@ export function ListingPriceField({
           control={control}
           name={resolvedAmountName}
           render={({ field }) => (
-            <Input
+            <PriceAmountInput
               id={resolvedAmountName}
-              type="text"
+              value={field.value as number | undefined}
               inputMode={inputMode}
               min={resolvedAmountMin}
               max={resolvedAmountMax}
               step={resolvedAmountStep}
               placeholder={placeholder}
               disabled={disabled}
-              value={field.value ?? ""}
-              onChange={(event) => {
-                field.onChange(normalizeNumberInput(event.target.value));
-              }}
+              onChange={field.onChange}
               onBlur={field.onBlur}
             />
           )}
@@ -142,5 +140,64 @@ export function ListingPriceField({
       {description ? <FieldDescription>{description}</FieldDescription> : null}
       <FieldError errors={[amountError, unitError]} />
     </Field>
+  );
+}
+
+type PriceAmountInputProps = Pick<
+  React.ComponentProps<typeof Input>,
+  "id" | "inputMode" | "min" | "max" | "step" | "placeholder" | "disabled"
+> & {
+  value: number | undefined;
+  onChange: (value: number | undefined) => void;
+  onBlur: () => void;
+};
+
+function PriceAmountInput({
+  id,
+  value,
+  inputMode,
+  min,
+  max,
+  step,
+  placeholder,
+  disabled,
+  onChange,
+  onBlur,
+}: PriceAmountInputProps) {
+  const [isFocused, setIsFocused] = useState(false);
+  const [draftValue, setDraftValue] = useState("");
+
+  const displayValue = isFocused
+    ? draftValue
+    : typeof value === "number"
+      ? value.toString()
+      : "";
+
+  return (
+    <Input
+      id={id}
+      type="text"
+      inputMode={inputMode}
+      min={min}
+      max={max}
+      step={step}
+      placeholder={placeholder}
+      disabled={disabled}
+      value={displayValue}
+      onFocus={() => {
+        setIsFocused(true);
+        setDraftValue(typeof value === "number" ? value.toString() : "");
+      }}
+      onChange={(event) => {
+        setDraftValue(event.target.value);
+      }}
+      onBlur={(event) => {
+        const nextValue = normalizeNumberInput(draftValue);
+        onChange(nextValue);
+        setIsFocused(false);
+        onBlur();
+        event.currentTarget.value = nextValue?.toString() ?? "";
+      }}
+    />
   );
 }
