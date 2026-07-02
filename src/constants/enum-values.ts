@@ -115,6 +115,12 @@ export const ORDER_STATUS_VALUES = [
   "CANCELED",
 ] as const satisfies readonly OrderStatus[];
 
+export const LISTING_MATCH_STATUS_VALUES = [
+  "CANDIDATE",
+  "MATCHED",
+  "REJECTED",
+] as const;
+
 export const PAGE_VALUES = [
   "home",
   "cho-thue",

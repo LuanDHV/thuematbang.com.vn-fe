@@ -7,8 +7,6 @@ const phoneSchema = z.preprocess(
   },
   z
     .string()
-    .min(9, "Vui lòng nhập số điện thoại hợp lệ")
-    .max(20, "Số điện thoại không vượt quá 20 ký tự")
     .regex(/^(0|\+84)[0-9]{9,10}$/, "Số điện thoại không hợp lệ"),
 );
 

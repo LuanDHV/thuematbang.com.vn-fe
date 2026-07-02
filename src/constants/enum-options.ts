@@ -3,6 +3,7 @@ import type {
   CategoryType,
   ContentStatus,
   LeadStatus,
+  ListingMatchStatus,
   ListingStatus,
   OrderStatus,
   PriceUnit,
@@ -19,6 +20,7 @@ import {
   CATEGORY_TYPE_VALUES,
   CONTENT_STATUS_VALUES,
   LEAD_STATUS_VALUES,
+  LISTING_MATCH_STATUS_VALUES,
   LISTING_STATUS_VALUES,
   ORDER_STATUS_VALUES,
   PAGE_VALUES,
@@ -73,8 +75,8 @@ export const PUBLISH_SOURCE_OPTIONS: EnumOption<PublishSource>[] =
     return { value, label: labels[value] };
   });
 
-export const PRICE_UNIT_OPTIONS: EnumOption<PriceUnit>[] = PRICE_UNIT_VALUES.map(
-  (value) => {
+export const PRICE_UNIT_OPTIONS: EnumOption<PriceUnit>[] =
+  PRICE_UNIT_VALUES.map((value) => {
     const labels: Record<PriceUnit, string> = {
       MILLION: "Triệu",
       BILLION: "Tỷ",
@@ -83,8 +85,7 @@ export const PRICE_UNIT_OPTIONS: EnumOption<PriceUnit>[] = PRICE_UNIT_VALUES.map
     };
 
     return { value, label: labels[value] };
-  },
-);
+  });
 
 export const PUBLISH_STATUS_OPTIONS: EnumOption<ListingStatus>[] =
   LISTING_STATUS_VALUES.map((value) => {
@@ -130,7 +131,18 @@ export const LEAD_STATUS_OPTIONS: EnumOption<LeadStatus>[] =
     const labels: Record<LeadStatus, string> = {
       NEW: "Mới",
       CONTACTED: "Đã liên hệ",
-      QUALIFIED: "Đủ điều kiện",
+      QUALIFIED: "Đã phù hợp",
+      REJECTED: "Từ chối",
+    };
+
+    return { value, label: labels[value] };
+  });
+
+export const LISTING_MATCH_STATUS_OPTIONS: EnumOption<ListingMatchStatus>[] =
+  LISTING_MATCH_STATUS_VALUES.map((value) => {
+    const labels: Record<ListingMatchStatus, string> = {
+      CANDIDATE: "Đề xuất ghép",
+      MATCHED: "Đã ghép",
       REJECTED: "Từ chối",
     };
 
@@ -234,6 +246,13 @@ export const LEAD_STATUS_LABEL_MAP: Record<LeadStatus, string> =
   Object.fromEntries(
     LEAD_STATUS_OPTIONS.map((option) => [option.value, option.label]),
   ) as Record<LeadStatus, string>;
+
+export const LISTING_MATCH_STATUS_LABEL_MAP: Record<
+  ListingMatchStatus,
+  string
+> = Object.fromEntries(
+  LISTING_MATCH_STATUS_OPTIONS.map((option) => [option.value, option.label]),
+) as Record<ListingMatchStatus, string>;
 
 export const CATEGORY_TYPE_LABEL_MAP: Record<CategoryType, string> =
   Object.fromEntries(

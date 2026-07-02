@@ -42,6 +42,7 @@ export interface Property {
   contactName: string;
   contactPhone: string;
   content?: string | null;
+  isMatched?: boolean | null;
   viewCount: number;
   status: ListingStatus;
   createdAt: Date | string;

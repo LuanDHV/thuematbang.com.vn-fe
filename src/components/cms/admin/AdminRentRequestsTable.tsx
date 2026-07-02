@@ -133,12 +133,12 @@ export default function AdminRentRequestsTable({
       },
       {
         key: "isMatched",
-        header: "Khớp",
+        header: "Phù hợp",
         fieldType: "text",
         accessor: (item) => item.isMatched,
         render: ({ row }) => (
           <AdminStatusBadge tone={row.isMatched ? "success" : "muted"}>
-            {row.isMatched ? "Đã khớp" : "Chưa khớp"}
+            {row.isMatched ? "Phù hợp" : "Chưa phù hợp"}
           </AdminStatusBadge>
         ),
       },

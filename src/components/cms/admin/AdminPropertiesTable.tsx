@@ -114,6 +114,12 @@ export default function AdminPropertiesTable({
           }),
       },
       {
+        key: "area",
+        header: "Diện tích",
+        fieldType: "text",
+        accessor: (property) => `${property.area}m²`,
+      },
+      {
         key: "priorityStatus",
         header: "Loại tin",
         fieldType: "text",
@@ -137,6 +143,18 @@ export default function AdminPropertiesTable({
         fieldType: "date",
         accessor: (property) => property.createdAt,
         mobileHidden: true,
+      },
+
+      {
+        key: "isMatched",
+        header: "Phù hợp",
+        fieldType: "text",
+        accessor: (property) => property.isMatched,
+        render: ({ row }) => (
+          <AdminStatusBadge tone={row.isMatched ? "success" : "muted"}>
+            {row.isMatched ? "Phù hợp" : "Chưa phù hợp"}
+          </AdminStatusBadge>
+        ),
       },
       {
         key: "status",

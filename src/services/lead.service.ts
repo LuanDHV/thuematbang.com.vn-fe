@@ -30,6 +30,9 @@ export type LeadUpsertPayload = {
   userId?: number | null;
   propertyId?: number | null;
   rentRequestId?: number | null;
+  // Counterpart selection
+  selectedRentRequestIds?: number[];
+  selectedPropertyIds?: number[];
 };
 
 export const leadService = {

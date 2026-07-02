@@ -86,13 +86,20 @@ function RentRequestMobileCard({
       <div className="grid gap-3 text-sm sm:grid-cols-2">
         <div className="space-y-1">
           <p className="text-secondary text-xs font-medium">Danh mục</p>
-          <p className="text-body">{item.category?.name || "Chưa có danh mục"}</p>
+          <p className="text-body">
+            {item.category?.name || "Chưa có danh mục"}
+          </p>
         </div>
 
         <div className="space-y-1">
-          <p className="text-secondary text-xs font-medium">Khu vực mong muốn</p>
+          <p className="text-secondary text-xs font-medium">
+            Khu vực mong muốn
+          </p>
           <p className="text-body">
-            {formatLocationParts([item.desiredWard?.name, item.desiredProvince?.name])}
+            {formatLocationParts([
+              item.desiredWard?.name,
+              item.desiredProvince?.name,
+            ])}
           </p>
         </div>
 
@@ -121,11 +128,11 @@ function RentRequestMobileCard({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <AdminStatusBadge tone={statusToneMap[item.status]}>
-          {PUBLISH_STATUS_LABEL_MAP[item.status]}
-        </AdminStatusBadge>
         <AdminStatusBadge tone={item.isMatched ? "success" : "muted"}>
           {item.isMatched ? "Đã khớp" : "Chưa khớp"}
+        </AdminStatusBadge>
+        <AdminStatusBadge tone={statusToneMap[item.status]}>
+          {PUBLISH_STATUS_LABEL_MAP[item.status]}
         </AdminStatusBadge>
       </div>
     </article>
@@ -221,9 +228,9 @@ export default function UserRentRequestsTable({
               <TableHead className="w-1/6">Khu vực mong muốn</TableHead>
               <TableHead className="w-24">Ngân sách</TableHead>
               <TableHead className="w-24">Diện tích</TableHead>
-              <TableHead className="w-24">Trạng thái</TableHead>
-              <TableHead className="w-24">Đã khớp</TableHead>
               <TableHead className="w-24">Ngày tạo</TableHead>
+              <TableHead className="w-24">Đã khớp</TableHead>
+              <TableHead className="w-24">Trạng thái</TableHead>
               <TableHead className="text-right">Tác vụ</TableHead>
             </TableRow>
           </TableHeader>
@@ -250,7 +257,10 @@ export default function UserRentRequestsTable({
                       {item.category?.name || "Chưa có danh mục"}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
-                      {formatLocationParts([item.desiredWard?.name, item.desiredProvince?.name])}
+                      {formatLocationParts([
+                        item.desiredWard?.name,
+                        item.desiredProvince?.name,
+                      ])}
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
                       {formatListingPrice(item.budget, {
@@ -264,22 +274,29 @@ export default function UserRentRequestsTable({
                     <TableCell className="text-body align-top text-sm">
                       {formatAreaValue(item.desiredArea)}
                     </TableCell>
+                    <TableCell className="text-body align-top text-sm">
+                      {formatDateDisplay(item.createdAt)}
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <AdminStatusBadge
+                        tone={item.isMatched ? "success" : "muted"}
+                      >
+                        {item.isMatched ? "Đã khớp" : "Chưa khớp"}
+                      </AdminStatusBadge>
+                    </TableCell>
                     <TableCell className="align-top">
                       <AdminStatusBadge tone={statusToneMap[item.status]}>
                         {PUBLISH_STATUS_LABEL_MAP[item.status]}
                       </AdminStatusBadge>
                     </TableCell>
-                    <TableCell className="align-top">
-                      <AdminStatusBadge tone={item.isMatched ? "success" : "muted"}>
-                        {item.isMatched ? "Đã khớp" : "Chưa khớp"}
-                      </AdminStatusBadge>
-                    </TableCell>
-                    <TableCell className="text-body align-top text-sm">
-                      {formatDateDisplay(item.createdAt)}
-                    </TableCell>
                     <TableCell className="text-right align-top">
                       <div className="flex justify-end">
-                        <RentRequestActions item={item} copied={isCopied} onCopy={handleCopy} />
+                        <RentRequestActions
+                          item={item}
+                          copied={isCopied}
+                          onCopy={handleCopy}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -289,8 +306,12 @@ export default function UserRentRequestsTable({
               <TableRow>
                 <TableCell colSpan={9} className="py-14 text-center">
                   <div className="space-y-2">
-                    <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
-                    <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
+                    <p className="text-heading text-base font-semibold">
+                      Không có dữ liệu
+                    </p>
+                    <p className="text-secondary text-sm">
+                      Chưa có bản ghi nào.
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -321,7 +342,9 @@ export default function UserRentRequestsTable({
         ) : (
           <div className="surface-card px-4">
             <div className="space-y-2 py-14 text-center">
-              <p className="text-heading text-base font-semibold">Không có dữ liệu</p>
+              <p className="text-heading text-base font-semibold">
+                Không có dữ liệu
+              </p>
               <p className="text-secondary text-sm">Chưa có bản ghi nào.</p>
             </div>
           </div>
@@ -329,7 +352,11 @@ export default function UserRentRequestsTable({
 
         {totalPages > 1 ? (
           <div className="pt-2">
-            <Pagination page={currentPage} totalPages={totalPages} onChange={handlePageChange} />
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={handlePageChange}
+            />
           </div>
         ) : null}
       </div>

@@ -147,8 +147,7 @@ export const leadFormSchema = z.object({
   phone: z
     .string()
     .trim()
-    .min(9, "Vui lòng nhập số điện thoại hợp lệ")
-    .max(20, "Số điện thoại không vượt quá 20 ký tự"),
+    .regex(/^(0|\+84)[0-9]{9,10}$/, "Số điện thoại không hợp lệ"),
   status: z
     .enum(LEAD_STATUS_VALUES, {
       message: "Vui lòng chọn trạng thái",

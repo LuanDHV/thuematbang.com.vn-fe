@@ -87,6 +87,7 @@ export default function PosterContactCard({
       const lead = await createPublicLeadAction({
         fullName: values.fullName,
         phone: values.phone,
+        userId: currentUser?.id ?? null,
         propertyId: propertyId ?? null,
         rentRequestId: rentRequestId ?? null,
       });

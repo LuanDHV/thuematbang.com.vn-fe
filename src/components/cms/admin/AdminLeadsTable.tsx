@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import Link from "next/link";
 import { LEAD_STATUS_LABEL_MAP } from "@/constants/enum-options";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -61,6 +62,11 @@ export default function AdminLeadsTable({
     [toast],
   );
 
+  const detailPrefix =
+    source === "PROPERTY"
+      ? "/admin/quan-li-leads/cho-thue"
+      : "/admin/quan-li-leads/can-thue";
+
   const fields = useMemo<FieldConfig<Lead>[]>(
     () => [
       {
@@ -75,32 +81,27 @@ export default function AdminLeadsTable({
         fieldType: "text",
         accessor: (item) => item.phone,
       },
-
-      ...(source === "PROPERTY"
-        ? [
-            {
-              key: "propertyId",
-              header: "ID Cho thuê",
-              fieldType: "text" as const,
-              accessor: (item: Lead) => item.propertyId ?? "Chưa có",
-            },
-          ]
-        : []),
-      ...(source === "RENT_REQUEST"
-        ? [
-            {
-              key: "rentRequestId",
-              header: "ID Cần thuê",
-              fieldType: "text" as const,
-              accessor: (item: Lead) => item.rentRequestId ?? "Chưa có",
-            },
-          ]
-        : []),
       {
-        key: "userId",
-        header: "ID Tài khoản",
+        key: "sourceId",
+        header: source === "PROPERTY" ? "ID Cho thuê" : "ID Cần thuê",
         fieldType: "text",
-        accessor: (item) => item.userId ?? "Chưa có",
+        accessor: (item) => {
+          if (source === "PROPERTY") return item.propertyId ?? "—";
+          return item.rentRequestId ?? "—";
+        },
+        render: ({ row }) => {
+          const listingId =
+            source === "PROPERTY" ? row.propertyId : row.rentRequestId;
+          if (!listingId) return <span className="text-secondary">—</span>;
+          return (
+            <Link
+              href={`${detailPrefix}/${row.id}`}
+              className="text-primary font-medium hover:underline"
+            >
+              #{listingId}
+            </Link>
+          );
+        },
       },
 
       {
@@ -108,6 +109,12 @@ export default function AdminLeadsTable({
         header: "Ngày tạo",
         fieldType: "date",
         accessor: (item) => item.createdAt,
+      },
+      {
+        key: "userId",
+        header: "ID người dùng",
+        fieldType: "text",
+        accessor: (item) => item.userId,
       },
       {
         key: "status",
@@ -130,7 +137,7 @@ export default function AdminLeadsTable({
         onDelete: handleDeleteLead,
       },
     ],
-    [handleDeleteLead, source],
+    [detailPrefix, handleDeleteLead, source],
   );
 
   const toolbarConfig = toolbar

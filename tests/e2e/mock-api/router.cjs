@@ -11,6 +11,7 @@ const handleFaqRoutes = require("./routes/faqs.cjs");
 const handleSeoContentRoutes = require("./routes/seo-contents.cjs");
 const handleListingsRoutes = require("./routes/listings.cjs");
 const handleMediaRoutes = require("./routes/media.cjs");
+const handleLeadsRoutes = require("./routes/leads.cjs");
 
 const routeHandlers = [
   handleSystemRoutes,
@@ -26,6 +27,7 @@ const routeHandlers = [
   handleSeoContentRoutes,
   handleListingsRoutes,
   handleMediaRoutes,
+  handleLeadsRoutes,
 ];
 
 async function dispatchRequest(context) {

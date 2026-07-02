@@ -48,6 +48,7 @@ describe("PosterContactCard", () => {
         phone: "0901234567",
         propertyId: 12,
         rentRequestId: null,
+        userId: null,
       });
     });
 
@@ -89,6 +90,7 @@ describe("PosterContactCard", () => {
         phone: "0905555666",
         propertyId: null,
         rentRequestId: null,
+        userId: 7,
       });
     });
 
@@ -120,6 +122,7 @@ describe("PosterContactCard", () => {
         phone: "0907777888",
         propertyId: null,
         rentRequestId: 88,
+        userId: null,
       });
     });
   });

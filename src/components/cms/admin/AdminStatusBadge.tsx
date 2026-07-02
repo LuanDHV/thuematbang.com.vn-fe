@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type {
   LeadStatus,
+  ListingMatchStatus,
   PaymentStatus,
   ListingStatus,
 } from "@/types/enums";
@@ -49,14 +50,21 @@ export const leadStatusBadgeToneMap: Record<LeadStatus, AdminBadgeTone> = {
   REJECTED: "danger",
 };
 
-export const paymentStatusBadgeToneMap: Record<
-  PaymentStatus,
+export const paymentStatusBadgeToneMap: Record<PaymentStatus, AdminBadgeTone> =
+  {
+    PENDING: "warning",
+    SUCCESS: "success",
+    FAILED: "danger",
+    CANCELED: "danger",
+  };
+
+export const listingMatchStatusBadgeToneMap: Record<
+  ListingMatchStatus,
   AdminBadgeTone
 > = {
-  PENDING: "warning",
-  SUCCESS: "success",
-  FAILED: "danger",
-  CANCELED: "danger",
+  CANDIDATE: "warning",
+  MATCHED: "success",
+  REJECTED: "danger",
 };
 
 export default function AdminStatusBadge({

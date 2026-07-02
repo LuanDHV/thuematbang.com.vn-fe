@@ -165,10 +165,10 @@ export async function createLeadAction(payload: {
   rentRequestId?: number | null;
 }) {
   const result = await leadService.create(payload);
-  refreshCrudTags(["leads"], [
-    "/admin/quan-li-leads/cho-thue",
-    "/admin/quan-li-leads/can-thue",
-  ]);
+  refreshCrudTags(
+    ["leads"],
+    ["/admin/quan-li-leads/cho-thue", "/admin/quan-li-leads/can-thue"],
+  );
   return result;
 }
 
@@ -181,24 +181,25 @@ export async function updateLeadAction(
     userId?: number | null;
     propertyId?: number | null;
     rentRequestId?: number | null;
+    candidateId?: number | null;
   }>,
 ) {
   const leadId = toPositiveId(id);
   const result = await leadService.update(leadId, payload);
-  refreshCrudTags(["leads", "lead-detail"], [
-    "/admin/quan-li-leads/cho-thue",
-    "/admin/quan-li-leads/can-thue",
-  ]);
+  refreshCrudTags(
+    ["leads", "lead-detail"],
+    ["/admin/quan-li-leads/cho-thue", "/admin/quan-li-leads/can-thue"],
+  );
   return result;
 }
 
 export async function deleteLeadAction(id: string | number) {
   const leadId = toPositiveId(id);
   const result = await leadService.remove(leadId);
-  refreshCrudTags(["leads", "lead-detail"], [
-    "/admin/quan-li-leads/cho-thue",
-    "/admin/quan-li-leads/can-thue",
-  ]);
+  refreshCrudTags(
+    ["leads", "lead-detail"],
+    ["/admin/quan-li-leads/cho-thue", "/admin/quan-li-leads/can-thue"],
+  );
   return result;
 }
 
