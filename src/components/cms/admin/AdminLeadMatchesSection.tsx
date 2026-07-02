@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CheckCircle2, CircleX, Plus, Undo2, X } from "lucide-react";
+import type { ReactNode } from "react";
 
 import AdminStatusBadge, {
   listingMatchStatusBadgeToneMap,
@@ -36,6 +37,19 @@ type AdminLeadMatchesSectionProps = {
   onRemoveCandidate: (matchId: number) => void;
 };
 
+function MetaTile({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="border-hairline bg-app/55 rounded-xl border px-3 py-2.5">
+      <p className="text-secondary text-[11px] font-semibold tracking-[0.16em] uppercase">
+        {label}
+      </p>
+      <p className="text-heading mt-1 text-sm leading-5 font-medium wrap-break-word">
+        {value}
+      </p>
+    </div>
+  );
+}
+
 export default function AdminLeadMatchesSection({
   candidates,
   source,
@@ -48,22 +62,27 @@ export default function AdminLeadMatchesSection({
   onUnmatch,
   onRemoveCandidate,
 }: AdminLeadMatchesSectionProps) {
+  const hasSourceListing = sourceListingTitle && sourceListingTitle !== "—";
+
   return (
-    <section className="surface-panel border-hairline rounded-2xl border">
-      <div className="border-hairline flex flex-wrap items-center justify-between gap-3 border-b px-5 py-4">
+    <section className="surface-panel border-hairline overflow-hidden rounded-2xl border">
+      <div className="border-hairline flex flex-wrap items-start justify-between gap-4 border-b px-5 py-4">
         <div className="space-y-1">
-          <h2 className="text-heading text-base font-semibold">
-            Đề xuất
-            <span className="text-secondary font-normal">
-              ({candidates.length})
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-heading text-base font-semibold tracking-[-0.02em]">
+              Đề xuất
+            </h2>
+            <span className="text-secondary border-hairline bg-subtle rounded-full border px-2.5 py-1 text-xs font-semibold">
+              {candidates.length}
             </span>
-          </h2>
-          <p className="text-secondary text-sm">
-            {sourceListingTitle
-              ? `Danh sách các tin ${counterpartTypeLabel.toLowerCase()} được đề xuất với lead này.`
+          </div>
+          <p className="text-secondary text-sm leading-6">
+            {hasSourceListing
+              ? `Danh sách các tin ${counterpartTypeLabel.toLowerCase()} đang được ghép với lead này.`
               : "Danh sách các đề xuất của lead."}
           </p>
         </div>
+
         <Button
           variant="outline"
           size="sm"
@@ -76,10 +95,15 @@ export default function AdminLeadMatchesSection({
       </div>
 
       {candidates.length === 0 ? (
-        <div className="px-5 py-12 text-center">
-          <p className="text-secondary text-sm">
-            Chưa có đề xuất nào cho lead này.
-          </p>
+        <div className="px-5 py-12">
+          <div className="border-hairline bg-app/40 rounded-2xl border border-dashed px-6 py-10 text-center">
+            <p className="text-heading text-sm font-medium">
+              Chưa có đề xuất nào cho lead này.
+            </p>
+            <p className="text-secondary mt-2 text-sm">
+              Thêm một đề xuất mới để bắt đầu quá trình ghép lead.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="divide-hairline divide-y">
@@ -95,6 +119,10 @@ export default function AdminLeadMatchesSection({
             const isMatched = match.status === "MATCHED";
             const isRejected = match.status === "REJECTED";
             const isCounterpartMatched = counterpart?.isMatched ?? false;
+            const counterpartContactName =
+              counterpart?.contactName ?? "Chưa cập nhật";
+            const counterpartContactPhone =
+              counterpart?.contactPhone ?? "Chưa cập nhật";
 
             return (
               <article key={match.id} className="px-5 py-4">
@@ -107,27 +135,27 @@ export default function AdminLeadMatchesSection({
                         {LISTING_MATCH_STATUS_LABEL_MAP[match.status]}
                       </AdminStatusBadge>
                       {isCandidate && isCounterpartMatched ? (
-                        <span className="text-destructive text-xs font-medium">
+                        <span className="border-destructive/20 bg-danger-soft/70 text-danger rounded-full border px-2.5 py-1 text-xs font-medium">
                           Đã ghép ở lead khác
                         </span>
                       ) : null}
                     </div>
 
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                       {counterpart ? (
                         counterpartHref ? (
                           <Link
                             href={counterpartHref}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-body hover:text-primary inline-flex items-start gap-1 text-base font-semibold hover:underline"
+                            className="text-body hover:text-primary inline-flex items-start gap-1 text-base leading-6 font-semibold hover:underline"
                           >
-                            <span className="min-w-0 flex-1">
+                            <span className="min-w-0 flex-1 wrap-break-word">
                               {counterpart.title}
                             </span>
                           </Link>
                         ) : (
-                          <p className="text-heading text-base font-semibold">
+                          <p className="text-heading text-base leading-6 font-semibold">
                             {counterpart.title}
                           </p>
                         )
@@ -137,33 +165,34 @@ export default function AdminLeadMatchesSection({
                         </p>
                       )}
 
-                      {counterpart && (
-                        <p className="text-secondary text-sm">
-                          ID:{" "}
-                          <span className="text-body">#{counterpart.id}</span>
-                          {" · "}
-                          Họ và tên:{" "}
-                          <span className="text-body">
-                            {counterpart.contactName}
-                          </span>
-                          {" · "}
-                          ĐT:{" "}
-                          <span className="text-body">
-                            {counterpart.contactPhone}
-                          </span>
+                      {counterpart ? (
+                        <p className="text-secondary text-sm leading-6">
+                          {[
+                            `ID #${counterpart.id}`,
+                            counterpartContactName,
+                            counterpartContactPhone,
+                          ].join(" · ")}
                         </p>
-                      )}
+                      ) : null}
                     </div>
 
-                    <div className="text-secondary flex flex-wrap items-center gap-3 text-xs">
-                      <span>Ngày tạo: {formatDate(match.createdAt)}</span>
-                      {match.matchedAt ? (
-                        <span>Phù hợp lúc: {formatDate(match.matchedAt)}</span>
-                      ) : null}
+                    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                      <MetaTile
+                        label="Ngày tạo"
+                        value={formatDate(match.createdAt)}
+                      />
+                      <MetaTile
+                        label="Phù hợp lúc"
+                        value={
+                          match.matchedAt
+                            ? formatDate(match.matchedAt)
+                            : "Chưa xác nhận"
+                        }
+                      />
                     </div>
                   </div>
 
-                  <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <div className="flex shrink-0 flex-wrap gap-2 lg:justify-end">
                     {isCandidate ? (
                       <>
                         <Button
@@ -171,7 +200,7 @@ export default function AdminLeadMatchesSection({
                           variant="default"
                           onClick={() => onPromote(match.id)}
                           disabled={updating || isCounterpartMatched}
-                          className="gap-1"
+                          className="gap-1.5"
                           title={
                             isCounterpartMatched
                               ? `${counterpartTypeLabel} này đã được ghép ở lead khác`
@@ -186,7 +215,7 @@ export default function AdminLeadMatchesSection({
                           variant="outline"
                           onClick={() => onReject(match.id)}
                           disabled={updating}
-                          className="gap-1"
+                          className="gap-1.5"
                         >
                           <CircleX className="size-3.5" />
                           Không phù hợp
@@ -201,16 +230,16 @@ export default function AdminLeadMatchesSection({
                             size="sm"
                             variant="outline"
                             disabled={updating}
-                            className="gap-1"
+                            className="gap-1.5"
                           >
                             <Undo2 className="size-3.5" />
-                            Huỷ ghép
+                            Hủy ghép
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
-                              Huỷ ghép đề xuất này?
+                              Hủy ghép đề xuất này?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
                               Tin cho thuê và tin cần thuê sẽ được bỏ ghép. Lead
@@ -219,13 +248,13 @@ export default function AdminLeadMatchesSection({
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel disabled={updating}>
-                              Huỷ
+                              Hủy
                             </AlertDialogCancel>
                             <AlertDialogAction
                               disabled={updating}
                               onClick={() => onUnmatch(match.id)}
                             >
-                              {updating ? "Đang huỷ..." : "Xác nhận huỷ ghép"}
+                              {updating ? "Đang hủy..." : "Xác nhận hủy ghép"}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -239,31 +268,31 @@ export default function AdminLeadMatchesSection({
                             size="sm"
                             variant="ghost"
                             disabled={updating}
-                            className="text-destructive hover:text-destructive gap-1"
+                            className="text-destructive hover:text-destructive gap-1.5"
                           >
                             <X className="size-3.5" />
-                            Xoá
+                            Xóa
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
-                              Xoá đề xuất này?
+                              Xóa đề xuất này?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Đề xuất ID {match.id} sẽ bị xoá khỏi danh sách.
+                              Đề xuất ID {match.id} sẽ bị xóa khỏi danh sách.
                               Hành động này không thể hoàn tác.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel disabled={updating}>
-                              Huỷ
+                              Hủy
                             </AlertDialogCancel>
                             <AlertDialogAction
                               disabled={updating}
                               onClick={() => onRemoveCandidate(match.id)}
                             >
-                              {updating ? "Đang xoá..." : "Xác nhận xoá"}
+                              {updating ? "Đang xóa..." : "Xác nhận xóa"}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>

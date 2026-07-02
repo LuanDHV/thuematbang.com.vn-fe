@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
+
 import AdminStatusBadge, {
   leadStatusBadgeToneMap,
 } from "@/components/cms/admin/AdminStatusBadge";
@@ -40,6 +42,27 @@ type AdminLeadOverviewCardsProps = {
   onStatusChange: (status: LeadStatus) => void;
 };
 
+function DetailTile({
+  label,
+  value,
+  valueClassName = "text-sm font-medium",
+}: {
+  label: string;
+  value: ReactNode;
+  valueClassName?: string;
+}) {
+  return (
+    <div className="border-hairline bg-app/55 rounded-xl border px-3 py-3">
+      <p className="text-secondary text-[11px] font-semibold tracking-[0.18em] uppercase">
+        {label}
+      </p>
+      <div className={`text-heading mt-2 wrap-break-word ${valueClassName}`}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminLeadOverviewCards({
   lead,
   sourceCardLabel,
@@ -49,47 +72,54 @@ export default function AdminLeadOverviewCards({
   onStatusChange,
 }: AdminLeadOverviewCardsProps) {
   return (
-    <div className="grid gap-4 xl:grid-cols-[1fr_0.95fr_1.15fr]">
-      <section className="surface-panel border-hairline rounded-2xl border p-5">
-        <p className="text-secondary mb-3 text-xs font-semibold uppercase">
-          Thông tin liên hệ
-        </p>
-        <div className="space-y-3">
-          <div>
-            <p className="text-secondary text-xs">ID lead</p>
-            <p className="text-heading mt-1 text-sm font-medium">#{lead.id}</p>
-          </div>
-          <div>
-            <p className="text-secondary text-xs">Họ và tên</p>
-            <p className="text-heading mt-1 text-base font-semibold">
+    <div className="grid gap-4 xl:grid-cols-[1.05fr_0.92fr_1.03fr]">
+      <section className="surface-panel border-hairline overflow-hidden rounded-2xl border">
+        <div className="border-hairline flex items-start justify-between gap-3 border-b px-5 py-4">
+          <div className="space-y-1">
+            <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
+              Thông tin lead
+            </p>
+            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
               {lead.fullName}
-            </p>
+            </h2>
+            <p className="text-secondary text-sm">Lead #{lead.id}</p>
           </div>
-          <div>
-            <p className="text-secondary text-xs">Số điện thoại</p>
-            <p className="text-heading mt-1 text-base font-semibold">
-              {lead.phone}
-            </p>
-          </div>
-          <div>
-            <p className="text-secondary text-xs">Ngày tạo</p>
-            <p className="text-heading mt-1 text-sm font-medium">
-              {formatDate(lead.createdAt, "Chưa cập nhật")}
-            </p>
-          </div>
+          <AdminStatusBadge tone={leadStatusBadgeToneMap[lead.status]}>
+            {LEAD_STATUS_LABEL_MAP[lead.status]}
+          </AdminStatusBadge>
+        </div>
+
+        <div className="grid gap-3 p-5 sm:grid-cols-2">
+          <DetailTile label="Số điện thoại" value={lead.phone} />
+          <DetailTile
+            label="Ngày tạo"
+            value={formatDate(lead.createdAt, "Chưa cập nhật")}
+          />
+          <DetailTile label="ID lead" value={`#${lead.id}`} />
+          <DetailTile
+            label="Trạng thái"
+            value={LEAD_STATUS_LABEL_MAP[lead.status]}
+            valueClassName="text-base font-semibold"
+          />
         </div>
       </section>
 
-      <section className="surface-panel border-hairline rounded-2xl border p-5">
-        <p className="text-secondary mb-3 text-xs font-semibold uppercase">
-          Trạng thái xử lý
-        </p>
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <AdminStatusBadge tone={leadStatusBadgeToneMap[lead.status]}>
-              {LEAD_STATUS_LABEL_MAP[lead.status]}
-            </AdminStatusBadge>
+      <section className="surface-panel border-hairline overflow-hidden rounded-2xl border">
+        <div className="border-hairline flex items-start justify-between gap-3 border-b px-5 py-4">
+          <div className="space-y-1">
+            <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
+              Trạng thái xử lý
+            </p>
+            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
+              Kiểm soát vòng đời lead
+            </h2>
           </div>
+          <AdminStatusBadge tone={leadStatusBadgeToneMap[lead.status]}>
+            {LEAD_STATUS_LABEL_MAP[lead.status]}
+          </AdminStatusBadge>
+        </div>
+
+        <div className="space-y-4 p-5">
           <div className="space-y-2">
             <Label className="text-secondary text-xs">Đổi trạng thái</Label>
             <Select
@@ -109,55 +139,69 @@ export default function AdminLeadOverviewCards({
               </SelectContent>
             </Select>
           </div>
+
+          <p className="text-secondary text-sm leading-6">
+            Chỉ giữ một điểm hành động chính tại đây để thao tác nhanh và tránh
+            phân tán trạng thái.
+          </p>
         </div>
       </section>
 
-      <section className="surface-panel border-hairline rounded-2xl border p-5">
-        <p className="text-secondary mb-3 text-xs font-semibold uppercase">
-          {sourceCardLabel}
-        </p>
-        {sourceListing ? (
-          <div className="space-y-3">
-            {sourceListingHref ? (
-              <Link
-                href={sourceListingHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-body hover:text-primary inline-flex items-center gap-1 text-base font-semibold hover:underline"
-              >
-                <span className="min-w-0 flex-1">{sourceListing.title}</span>
-              </Link>
-            ) : (
-              <p className="text-heading text-base font-semibold">
-                {sourceListing.title}
-              </p>
-            )}
+      <section className="surface-panel border-hairline overflow-hidden rounded-2xl border">
+        <div className="border-hairline flex items-start justify-between gap-3 border-b px-5 py-4">
+          <div className="space-y-1">
+            <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
+              {sourceCardLabel}
+            </p>
+            <h2 className="text-heading text-lg font-semibold tracking-[-0.02em]">
+              Tin gốc
+            </h2>
+          </div>
+        </div>
 
-            <div className="space-y-3">
-              <div>
-                <p className="text-secondary text-xs">ID</p>
-                <p className="text-heading mt-1 text-sm font-medium">
-                  #{sourceListing.id}
+        {sourceListing ? (
+          <div className="space-y-4 p-5">
+            <div className="space-y-2">
+              {sourceListingHref ? (
+                <Link
+                  href={sourceListingHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-body hover:text-primary inline-flex items-start gap-1 text-base leading-6 font-semibold hover:underline"
+                >
+                  <span className="min-w-0 flex-1 wrap-break-word">
+                    {sourceListing.title}
+                  </span>
+                </Link>
+              ) : (
+                <p className="text-heading text-base leading-6 font-semibold">
+                  {sourceListing.title}
                 </p>
-              </div>
-              <div>
-                <p className="text-secondary text-xs">Họ và tên</p>
-                <p className="text-heading mt-1 text-base font-semibold">
-                  {sourceListing.contactName}
-                </p>
-              </div>
-              <div>
-                <p className="text-secondary text-xs">Số điện thoại</p>
-                <p className="text-heading mt-1 text-base font-semibold">
-                  {sourceListing.contactPhone}
-                </p>
-              </div>
+              )}
+              <p className="text-secondary text-sm">
+                Thông tin liên hệ được gom lại thành một cụm ngắn để dễ quét.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <DetailTile label="ID" value={`#${sourceListing.id}`} />
+              <DetailTile
+                label="Người liên hệ"
+                value={sourceListing.contactName}
+              />
+              <DetailTile
+                label="Điện thoại"
+                value={sourceListing.contactPhone}
+                valueClassName="text-base font-semibold"
+              />
             </div>
           </div>
         ) : (
-          <p className="text-secondary text-sm">
-            Không có dữ liệu listing gốc.
-          </p>
+          <div className="px-5 py-6">
+            <p className="text-secondary text-sm">
+              Không có dữ liệu listing gốc.
+            </p>
+          </div>
         )}
       </section>
     </div>

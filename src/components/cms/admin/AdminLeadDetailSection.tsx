@@ -124,7 +124,9 @@ export default function AdminLeadDetailSection({
       toast({
         title: "Lỗi",
         description:
-          error instanceof Error ? error.message : "Không thể xác nhận phù hợp.",
+          error instanceof Error
+            ? error.message
+            : "Không thể xác nhận phù hợp.",
         variant: "destructive",
       });
     } finally {
@@ -155,12 +157,12 @@ export default function AdminLeadDetailSection({
     try {
       await unmatchMatchAction(matchId);
       await invalidate();
-      toast({ title: "Đã huỷ ghép", variant: "success" });
+      toast({ title: "Đã hủy ghép", variant: "success" });
     } catch (error) {
       toast({
         title: "Lỗi",
         description:
-          error instanceof Error ? error.message : "Không thể huỷ ghép.",
+          error instanceof Error ? error.message : "Không thể hủy ghép.",
         variant: "destructive",
       });
     } finally {
@@ -173,12 +175,11 @@ export default function AdminLeadDetailSection({
     try {
       await removeMatchAction(matchId);
       await invalidate();
-      toast({ title: "Đã xoá", variant: "success" });
+      toast({ title: "Đã xóa", variant: "success" });
     } catch (error) {
       toast({
         title: "Lỗi",
-        description:
-          error instanceof Error ? error.message : "Không thể xoá.",
+        description: error instanceof Error ? error.message : "Không thể xóa.",
         variant: "destructive",
       });
     } finally {
@@ -215,20 +216,26 @@ export default function AdminLeadDetailSection({
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-start gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => router.back()}
-          aria-label="Quay lại"
-        >
-          <ArrowLeft className="size-4" />
-        </Button>
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.back()}
+            aria-label="Quay lại"
+            className="shrink-0"
+          >
+            <ArrowLeft className="size-4" />
+          </Button>
 
-        <div className="min-w-0 flex-1 space-y-1">
-          <h1 className="text-heading text-xl font-semibold">
-            Lead #{lead.id}
-          </h1>
+          <div className="min-w-0 space-y-1">
+            <p className="text-secondary text-xs font-semibold tracking-[0.18em] uppercase">
+              Lead detail
+            </p>
+            <h1 className="text-heading text-xl font-semibold tracking-[-0.03em]">
+              Lead #{lead.id}
+            </h1>
+          </div>
         </div>
       </header>
 
