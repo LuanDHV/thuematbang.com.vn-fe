@@ -6,7 +6,6 @@ import { useState } from "react";
 import {
   ArchiveRestore,
   EyeOff,
-  ExternalLink,
   MoreHorizontal,
   Pencil,
 } from "lucide-react";
@@ -169,14 +168,6 @@ function PropertyActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {item.status === "PUBLISHED" ? (
-          <DropdownMenuItem asChild>
-            <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
-              <ExternalLink className="size-4" />
-              Xem bài public
-            </Link>
-          </DropdownMenuItem>
-        ) : null}
         {item.status === "PUBLISHED" || item.status === "ARCHIVED" ? (
           <DropdownMenuItem
             disabled={isUpdating}

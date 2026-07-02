@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
-
+import { ArchiveRestore, EyeOff, MoreHorizontal, Pencil } from "lucide-react";
+import { updateRentRequestAction } from "@/actions/admin-crud.actions";
 import AdminStatusBadge, {
   type AdminBadgeTone,
 } from "@/components/cms/admin/AdminStatusBadge";
@@ -58,12 +58,12 @@ function getPublicPath(item: RentRequest) {
 
 function RentRequestMobileCard({
   item,
-  copied,
-  onCopy,
+  onToggleVisibility,
+  isUpdating,
 }: {
   item: RentRequest;
-  copied: boolean;
-  onCopy: (item: RentRequest) => void;
+  onToggleVisibility: (item: RentRequest) => Promise<void>;
+  isUpdating: boolean;
 }) {
   return (
     <article className="surface-card space-y-4 p-4">
@@ -80,7 +80,11 @@ function RentRequestMobileCard({
           <p className="text-secondary truncate text-xs">{item.slug}</p>
         </div>
 
-        <RentRequestActions item={item} copied={copied} onCopy={onCopy} />
+        <RentRequestActions
+          item={item}
+          onToggleVisibility={onToggleVisibility}
+          isUpdating={isUpdating}
+        />
       </div>
 
       <div className="grid gap-3 text-sm sm:grid-cols-2">
@@ -141,10 +145,12 @@ function RentRequestMobileCard({
 
 function RentRequestActions({
   item,
+  onToggleVisibility,
+  isUpdating,
 }: {
   item: RentRequest;
-  copied: boolean;
-  onCopy: (item: RentRequest) => void;
+  onToggleVisibility: (item: RentRequest) => Promise<void>;
+  isUpdating: boolean;
 }) {
   return (
     <DropdownMenu>
@@ -158,15 +164,25 @@ function RentRequestActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {item.status === "PUBLISHED" ? (
-          <DropdownMenuItem asChild>
-            <Link href={getPublicPath(item)} target="_blank" rel="noreferrer">
-              <ExternalLink className="size-4" />
-              Xem bài public
-            </Link>
+        {item.status === "PUBLISHED" || item.status === "ARCHIVED" ? (
+          <DropdownMenuItem
+            disabled={isUpdating}
+            onSelect={(event) => {
+              event.preventDefault();
+              void onToggleVisibility(item);
+            }}
+          >
+            {item.status === "PUBLISHED" ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <ArchiveRestore className="size-4" />
+            )}
+            {item.status === "PUBLISHED" ? "Ẩn tin" : "Hiện tin"}
           </DropdownMenuItem>
         ) : null}
-        {item.status === "REJECTED" ? (
+        {item.status === "REJECTED" ||
+        item.status === "PUBLISHED" ||
+        item.status === "ARCHIVED" ? (
           <DropdownMenuItem asChild>
             <Link href={`/quan-li-tai-khoan/can-thue/${item.id}`}>
               <Pencil className="size-4" />
@@ -194,7 +210,7 @@ export default function UserRentRequestsTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -202,13 +218,16 @@ export default function UserRentRequestsTable({
     totalPages,
   );
 
-  const handleCopy = async (item: RentRequest) => {
-    const publicUrl = `${window.location.origin}${getPublicPath(item)}`;
-    await navigator.clipboard.writeText(publicUrl);
-    setCopiedSlug(item.slug);
-    window.setTimeout(() => {
-      setCopiedSlug((current) => (current === item.slug ? null : current));
-    }, 1800);
+  const handleToggleVisibility = async (item: RentRequest) => {
+    const nextStatus = item.status === "PUBLISHED" ? "ARCHIVED" : "PUBLISHED";
+
+    setUpdatingId(item.id);
+    try {
+      await updateRentRequestAction(item.id, { status: nextStatus });
+      router.refresh();
+    } finally {
+      setUpdatingId((current) => (current === item.id ? null : current));
+    }
   };
 
   return (
@@ -236,72 +255,68 @@ export default function UserRentRequestsTable({
           </TableHeader>
           <TableBody>
             {items.length > 0 ? (
-              items.map((item) => {
-                const isCopied = copiedSlug === item.slug;
-                return (
-                  <TableRow key={item.id}>
-                    <TableCell className="align-top">
-                      <div className="space-y-1">
-                        <Link
-                          href={getPublicPath(item)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-heading hover:text-primary line-clamp-2 font-semibold transition-colors"
-                        >
-                          {item.title}
-                        </Link>
-                        <p className="text-secondary text-xs">{item.slug}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-body align-top text-sm">
-                      {item.category?.name || "Chưa có danh mục"}
-                    </TableCell>
-                    <TableCell className="text-body align-top text-sm">
-                      {formatLocationParts([
-                        item.desiredWard?.name,
-                        item.desiredProvince?.name,
-                      ])}
-                    </TableCell>
-                    <TableCell className="text-body align-top text-sm">
-                      {formatListingPrice(item.budget, {
-                        fallback: "Đang cập nhật",
-                        amount: item.budgetAmount,
-                        unit: item.budgetUnit,
-                        negotiable: item.isNegotiable,
-                        negotiableLabel: "Thỏa thuận",
-                      })}
-                    </TableCell>
-                    <TableCell className="text-body align-top text-sm">
-                      {formatAreaValue(item.desiredArea)}
-                    </TableCell>
-                    <TableCell className="text-body align-top text-sm">
-                      {formatDateDisplay(item.createdAt)}
-                    </TableCell>
-
-                    <TableCell className="align-top">
-                      <AdminStatusBadge
-                        tone={item.isMatched ? "success" : "muted"}
+              items.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="align-top">
+                    <div className="space-y-1">
+                      <Link
+                        href={getPublicPath(item)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-heading hover:text-primary line-clamp-2 font-semibold transition-colors"
                       >
-                        {item.isMatched ? "Đã khớp" : "Chưa khớp"}
-                      </AdminStatusBadge>
-                    </TableCell>
-                    <TableCell className="align-top">
-                      <AdminStatusBadge tone={statusToneMap[item.status]}>
-                        {PUBLISH_STATUS_LABEL_MAP[item.status]}
-                      </AdminStatusBadge>
-                    </TableCell>
-                    <TableCell className="text-right align-top">
-                      <div className="flex justify-end">
-                        <RentRequestActions
-                          item={item}
-                          copied={isCopied}
-                          onCopy={handleCopy}
-                        />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+                        {item.title}
+                      </Link>
+                      <p className="text-secondary text-xs">{item.slug}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-body align-top text-sm">
+                    {item.category?.name || "Chưa có danh mục"}
+                  </TableCell>
+                  <TableCell className="text-body align-top text-sm">
+                    {formatLocationParts([
+                      item.desiredWard?.name,
+                      item.desiredProvince?.name,
+                    ])}
+                  </TableCell>
+                  <TableCell className="text-body align-top text-sm">
+                    {formatListingPrice(item.budget, {
+                      fallback: "Đang cập nhật",
+                      amount: item.budgetAmount,
+                      unit: item.budgetUnit,
+                      negotiable: item.isNegotiable,
+                      negotiableLabel: "Thỏa thuận",
+                    })}
+                  </TableCell>
+                  <TableCell className="text-body align-top text-sm">
+                    {formatAreaValue(item.desiredArea)}
+                  </TableCell>
+                  <TableCell className="text-body align-top text-sm">
+                    {formatDateDisplay(item.createdAt)}
+                  </TableCell>
+                  <TableCell className="align-top">
+                    <AdminStatusBadge
+                      tone={item.isMatched ? "success" : "muted"}
+                    >
+                      {item.isMatched ? "Đã khớp" : "Chưa khớp"}
+                    </AdminStatusBadge>
+                  </TableCell>
+                  <TableCell className="align-top">
+                    <AdminStatusBadge tone={statusToneMap[item.status]}>
+                      {PUBLISH_STATUS_LABEL_MAP[item.status]}
+                    </AdminStatusBadge>
+                  </TableCell>
+                  <TableCell className="text-right align-top">
+                    <div className="flex justify-end">
+                      <RentRequestActions
+                        item={item}
+                        onToggleVisibility={handleToggleVisibility}
+                        isUpdating={updatingId === item.id}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
             ) : (
               <TableRow>
                 <TableCell colSpan={9} className="py-14 text-center">
@@ -328,17 +343,14 @@ export default function UserRentRequestsTable({
 
       <div className="space-y-3 p-3 md:hidden">
         {items.length > 0 ? (
-          items.map((item) => {
-            const isCopied = copiedSlug === item.slug;
-            return (
-              <RentRequestMobileCard
-                key={item.id}
-                item={item}
-                copied={isCopied}
-                onCopy={handleCopy}
-              />
-            );
-          })
+          items.map((item) => (
+            <RentRequestMobileCard
+              key={item.id}
+              item={item}
+              onToggleVisibility={handleToggleVisibility}
+              isUpdating={updatingId === item.id}
+            />
+          ))
         ) : (
           <div className="surface-card px-4">
             <div className="space-y-2 py-14 text-center">
