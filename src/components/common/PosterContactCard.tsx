@@ -1,21 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, PhoneCall, X } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 
-import { createPublicLeadAction } from "@/actions/lead.actions";
-import CloudinaryImage from "@/components/common/CloudinaryImage";
-import { Button } from "@/components/ui/button";
 import {
-  DialogClose,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  createPublicLeadAction,
+  getMyEligiblePropertiesAction,
+  getMyEligibleRentRequestsAction,
+} from "@/actions/lead.actions";
+import CloudinaryImage from "@/components/common/CloudinaryImage";
+import PosterContactCardEligibleListings from "@/components/common/PosterContactCardEligibleListings";
+import PosterContactCardSuccessDialog from "@/components/common/PosterContactCardSuccessDialog";
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
@@ -24,11 +22,19 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useAuthMe } from "@/hooks/use-auth";
 import {
   leadContactSchema,
   type LeadContactFormValues,
 } from "@/schemas/lead-contact.schema";
+import type { LeadUpsertPayload } from "@/services/lead.service";
 
 type PosterContactCardProps = {
   fullName?: string | null;
@@ -55,6 +61,15 @@ export default function PosterContactCard({
   const [successOpen, setSuccessOpen] = useState(false);
   const [submittedPhone, setSubmittedPhone] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [eligibleListings, setEligibleListings] = useState<
+    Array<{ id: number; title: string }>
+  >([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [loadingListings, setLoadingListings] = useState(false);
+
+  const isAuthenticated = Boolean(currentUser);
+  const sourceIsProperty = Boolean(propertyId);
+  const sourceIsRentRequest = Boolean(rentRequestId);
 
   const defaultValues = useMemo<LeadContactFormValues>(
     () => ({
@@ -70,6 +85,44 @@ export default function PosterContactCard({
     mode: "onSubmit",
   });
 
+  const fetchEligibleListings = useCallback(async () => {
+    if (!isAuthenticated) {
+      setEligibleListings([]);
+      return;
+    }
+
+    setLoadingListings(true);
+    try {
+      if (sourceIsProperty) {
+        const listings = await getMyEligibleRentRequestsAction();
+        setEligibleListings(
+          (listings ?? []).map((item: { id: number; title: string }) => ({
+            id: item.id,
+            title: item.title,
+          })),
+        );
+      } else if (sourceIsRentRequest) {
+        const listings = await getMyEligiblePropertiesAction();
+        setEligibleListings(
+          (listings ?? []).map((item: { id: number; title: string }) => ({
+            id: item.id,
+            title: item.title,
+          })),
+        );
+      }
+    } catch {
+      setEligibleListings([]);
+    } finally {
+      setLoadingListings(false);
+    }
+  }, [isAuthenticated, sourceIsProperty, sourceIsRentRequest]);
+
+  const toggleId = (id: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
+
   useEffect(() => {
     if (!contactOpen) return;
     form.reset(defaultValues);
@@ -77,20 +130,34 @@ export default function PosterContactCard({
 
   const openContactDialog = () => {
     setSubmitError(null);
+    setSelectedIds([]);
+    setEligibleListings([]);
+    form.reset(defaultValues);
     setContactOpen(true);
+    void fetchEligibleListings();
   };
 
   const handleSubmit = form.handleSubmit(async (values) => {
     setSubmitError(null);
 
     try {
-      const lead = await createPublicLeadAction({
+      const payload: LeadUpsertPayload = {
         fullName: values.fullName,
         phone: values.phone,
         userId: currentUser?.id ?? null,
         propertyId: propertyId ?? null,
         rentRequestId: rentRequestId ?? null,
-      });
+      };
+
+      if (selectedIds.length > 0) {
+        if (sourceIsProperty) {
+          payload.selectedRentRequestIds = selectedIds;
+        } else if (sourceIsRentRequest) {
+          payload.selectedPropertyIds = selectedIds;
+        }
+      }
+
+      const lead = await createPublicLeadAction(payload);
 
       setSubmittedPhone(lead.phone || values.phone);
       setContactOpen(false);
@@ -150,6 +217,12 @@ export default function PosterContactCard({
         Liên hệ
       </Button>
 
+      <PosterContactCardSuccessDialog
+        open={successOpen}
+        onOpenChange={setSuccessOpen}
+        submittedPhone={submittedPhone}
+      />
+
       <Dialog
         open={contactOpen}
         onOpenChange={(open) => {
@@ -162,7 +235,7 @@ export default function PosterContactCard({
             <DialogTitle>Gửi thông tin liên hệ</DialogTitle>
             <DialogDescription>
               {currentUser
-                ? "Thông tin từ tài khoản của bạn đã được điền sẵn. Bạn có thể chỉnh sửa trước khi gửi."
+                ? "Thông tin từ tài khoản của bạn đã được điền sẵn."
                 : "Vui lòng nhập thông tin để chúng tôi liên hệ lại sớm nhất."}
             </DialogDescription>
           </DialogHeader>
@@ -208,6 +281,15 @@ export default function PosterContactCard({
                 </Field>
               </FieldGroup>
 
+              <PosterContactCardEligibleListings
+                isAuthenticated={isAuthenticated}
+                sourceIsProperty={sourceIsProperty}
+                loadingListings={loadingListings}
+                eligibleListings={eligibleListings}
+                selectedIds={selectedIds}
+                onToggleId={toggleId}
+              />
+
               {submitError ? (
                 <p className="text-destructive text-sm">{submitError}</p>
               ) : null}
@@ -231,46 +313,6 @@ export default function PosterContactCard({
               </div>
             </form>
           </FormProvider>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-        <DialogContent
-          showCloseButton={false}
-          className="overflow-visible border-0 bg-transparent p-0 shadow-none sm:max-w-md"
-          onPointerDownOutside={(event) => event.preventDefault()}
-          onEscapeKeyDown={(event) => event.preventDefault()}
-        >
-          <div className="border-hairline bg-surface relative mx-auto w-full rounded-3xl border px-6 py-7 shadow-2xl">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="text-secondary hover:bg-accent-soft hover:text-heading absolute top-3 right-3"
-              >
-                <X className="size-4" />
-                <span className="sr-only">Đóng</span>
-              </Button>
-            </DialogClose>
-
-            <div className="mb-5 flex justify-center">
-              <div className="bg-primary flex size-16 items-center justify-center rounded-full text-white shadow-lg">
-                <Check className="size-8" strokeWidth={3} />
-              </div>
-            </div>
-
-            <DialogHeader className="gap-2 text-center">
-              <DialogTitle className="text-heading text-2xl font-semibold tracking-[-0.03em]">
-                Đã nhận thông tin
-              </DialogTitle>
-              <DialogDescription className="text-secondary mx-auto max-w-sm text-sm leading-6">
-                Chúng tôi đã nhận được thông tin và sẽ liên hệ lại qua số điện
-                thoại <strong className="text-primary">{submittedPhone}</strong>{" "}
-                trong thời gian sớm nhất.
-              </DialogDescription>
-            </DialogHeader>
-          </div>
         </DialogContent>
       </Dialog>
     </section>
