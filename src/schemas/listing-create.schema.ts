@@ -19,7 +19,7 @@ const slugSchema = z
     "Slug chỉ được chứa chữ thường, số và dấu gạch ngang",
   );
 
-const optionalTextSchema = z.string().trim().max(10_000).optional();
+const optionalTextSchema = z.string().trim().optional();
 
 const nullableDirectionSchema = z
   .enum(PROPERTY_DIRECTION_VALUES, {

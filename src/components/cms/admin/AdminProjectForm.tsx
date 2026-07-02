@@ -17,6 +17,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { CONTENT_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
 import {
+  hasGalleryImageOrderChanged,
   normalizeGalleryImages,
   normalizeProjectFormDefaults,
 } from "@/lib/listing/listing-form";
@@ -220,17 +221,24 @@ function AdminProjectFormContent({
       price: values.isNegotiable ? undefined : values.price,
       images: uploadedImages,
     };
-    const payload: ProjectUpsertPayload =
-      removedImageIds.length > 0 ||
-      existingGalleryImages.length !== initialExistingGalleryImages.length
-        ? {
-            ...basePayload,
-            removeImageIds: removedImageIds,
-            orderedExistingImageIds: existingGalleryImages.map(
-              (image) => image.id,
-            ),
-          }
-        : basePayload;
+    const orderedExistingImageIds = existingGalleryImages.map((image) => image.id);
+    const initialExistingImageIds = initialExistingGalleryImages.map(
+      (image) => image.id,
+    );
+    const hasExistingImageChanges =
+      initialExistingImageIds.length > 0 &&
+      (removedImageIds.length > 0 ||
+        hasGalleryImageOrderChanged(
+          initialExistingGalleryImages,
+          existingGalleryImages,
+        ));
+    const payload: ProjectUpsertPayload = hasExistingImageChanges
+      ? {
+          ...basePayload,
+          removeImageIds: removedImageIds,
+          orderedExistingImageIds,
+        }
+      : basePayload;
 
     try {
       await submitAction(payload);

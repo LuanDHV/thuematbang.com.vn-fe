@@ -14,7 +14,7 @@ const slugSchema = z
   .min(1, "Vui lòng nhập slug")
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug không hợp lệ");
 
-const optionalTextSchema = z.string().trim().max(10_000).optional();
+const optionalTextSchema = z.string().trim().optional();
 
 const optionalIntegerSchema = z.preprocess((value) => {
   if (value === "" || value === null || value === undefined) {
@@ -123,11 +123,7 @@ export const faqFormSchema = z.object({
     .trim()
     .min(2, "Vui lòng nhập câu hỏi hợp lệ")
     .max(1000, "Câu hỏi không vượt quá 1000 ký tự"),
-  answer: z
-    .string()
-    .trim()
-    .min(2, "Vui lòng nhập câu trả lời hợp lệ")
-    .max(10_000, "Câu trả lời không vượt quá 10000 ký tự"),
+  answer: z.string().trim().min(2, "Vui lòng nhập câu trả lời hợp lệ"),
   sortOrder: optionalIntegerSchema,
 });
 
@@ -152,8 +148,8 @@ export const leadFormSchema = z.object({
     .enum(LEAD_STATUS_VALUES, {
       message: "Vui lòng chọn trạng thái",
     })
-  .nullable()
-  .optional(),
+    .nullable()
+    .optional(),
   userId: optionalIntegerSchema,
   propertyId: optionalIntegerSchema,
   rentRequestId: optionalIntegerSchema,

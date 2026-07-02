@@ -40,6 +40,19 @@ export function normalizeGalleryImages(
     });
 }
 
+export function hasGalleryImageOrderChanged(
+  initialImages: ExistingGalleryImage[],
+  currentImages: ExistingGalleryImage[],
+) {
+  if (initialImages.length !== currentImages.length) {
+    return true;
+  }
+
+  return currentImages.some(
+    (image, index) => image.id !== initialImages[index]?.id,
+  );
+}
+
 export function mapPropertyImagesToGalleryImages(
   images?: Property["images"] | null,
 ): ExistingGalleryImage[] {

@@ -3,6 +3,11 @@ import {
   normalizePaginationMeta,
 } from "@/services/shared/validation";
 import { rentRequestCreateFormSchema } from "@/schemas/listing-create.schema";
+import { projectFormSchema } from "@/schemas/admin-crud.schema";
+import {
+  hasGalleryImageOrderChanged,
+  normalizeGalleryImages,
+} from "@/lib/listing/listing-form";
 
 describe("validation helpers", () => {
   it("normalizes legacy and current pagination shapes", () => {
@@ -64,5 +69,36 @@ describe("validation helpers", () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it("allows project content beyond 10000 characters", () => {
+    const result = projectFormSchema.safeParse({
+      name: "Dự án test",
+      slug: "du-an-test",
+      categoryId: 1,
+      provinceId: 1,
+      area: 100,
+      priceAmount: 1,
+      priceUnit: "MILLION",
+      content: "a".repeat(10_001),
+      isNegotiable: false,
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it("detects gallery image reordering", () => {
+    const initialImages = normalizeGalleryImages([
+      { id: 1, imageUrl: "https://img-1", sortOrder: 1 },
+      { id: 2, imageUrl: "https://img-2", sortOrder: 2 },
+    ]);
+    const reorderedImages = [
+      initialImages[1],
+      initialImages[0],
+    ];
+
+    expect(
+      hasGalleryImageOrderChanged(initialImages, reorderedImages),
+    ).toBe(true);
   });
 });

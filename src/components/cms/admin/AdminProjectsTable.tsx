@@ -54,13 +54,13 @@ export default function AdminProjectsTable({
     [toast],
   );
 
-  function getPrimaryProjectImage(project: Project) {
-    return (
-      project.images?.find((image) => image.sortOrder === 0)?.imageUrl ??
-      project.images?.[0]?.imageUrl ??
-      null
-    );
-  }
+function getPrimaryProjectImage(project: Project) {
+  return (
+    project.images?.find((image) => image.sortOrder === 1)?.imageUrl ??
+    project.images?.[0]?.imageUrl ??
+    null
+  );
+}
 
   const fields = useMemo<FieldConfig<Project>[]>(
     () => [

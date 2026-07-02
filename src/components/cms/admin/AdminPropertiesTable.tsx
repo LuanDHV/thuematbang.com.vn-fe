@@ -40,7 +40,7 @@ const priorityToneMap: Record<PropertyPriority, AdminPriorityTone> = {
 
 function getPrimaryPropertyImage(property: Property) {
   return (
-    property.images?.find((image) => image.sortOrder === 0)?.imageUrl ??
+    property.images?.find((image) => image.sortOrder === 1)?.imageUrl ??
     property.images?.[0]?.imageUrl ??
     null
   );
