@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
@@ -35,9 +35,6 @@ export default function FeaturedNewsCard({
         priority={priority}
         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
-
-      <div className="absolute inset-0 bg-linear-to-t from-black/20 via-black/35 to-black/75" />
-      <div className="absolute inset-0 bg-linear-to-b from-white/10 via-transparent to-transparent opacity-80" />
 
       <div className="absolute inset-x-0 bottom-0 z-10 space-y-3 p-4 md:p-5">
         <h3 className="group-hover:text-primary line-clamp-2 text-lg leading-snug font-semibold tracking-[-0.02em] text-white transition-colors md:text-xl">
