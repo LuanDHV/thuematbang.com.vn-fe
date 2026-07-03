@@ -1,6 +1,7 @@
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
+import SubHeader from "@/components/common/SubHeader";
 
 export default async function MainLayout({
   children,
@@ -9,8 +10,9 @@ export default async function MainLayout({
 }>) {
   return (
     <div className="bg-app text-body flex min-h-dvh flex-col">
+      <SubHeader />
       <Header />
-      <main className="grow pt-18">{children}</main>
+      <main className="grow pt-26">{children}</main>
       <Footer />
       <FloatingActions />
     </div>

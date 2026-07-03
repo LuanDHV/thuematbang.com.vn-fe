@@ -51,7 +51,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-surface/88 border-hairline fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-xl">
+    <header className="bg-surface/88 border-hairline fixed top-8 right-0 left-0 z-50 border-b backdrop-blur-xl">
       <nav className="layout-container flex h-18 items-center justify-center">
         <div className="relative flex w-full items-center justify-between">
           <div className="flex flex-1 lg:flex-none" />
@@ -94,14 +94,14 @@ export default function Header() {
                   >
                     <span className="bg-surface ring-hairline flex size-9 items-center justify-center overflow-hidden rounded-full ring-1">
                       {avatarUrl ? (
-                          <CloudinaryImage
-                            src={avatarUrl}
-                            alt={displayName}
-                            width={32}
-                            height={32}
+                        <CloudinaryImage
+                          src={avatarUrl}
+                          alt={displayName}
+                          width={32}
+                          height={32}
                           cldQuality="auto:good"
-                            className="size-8 rounded-full object-cover"
-                          />
+                          className="size-8 rounded-full object-cover"
+                        />
                       ) : (
                         <User className="text-primary size-4" />
                       )}

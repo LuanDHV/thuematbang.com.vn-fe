@@ -37,7 +37,7 @@ export default function ListingFilterSection({
 
   return (
     <section className="relative">
-      <div className="layout-container sticky top-20 z-40">
+      <div className="layout-container sticky top-28 z-40">
         <ListingFilterToolbar
           basePath={basePath}
           listingMode={listingMode}
