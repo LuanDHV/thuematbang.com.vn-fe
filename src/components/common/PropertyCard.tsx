@@ -7,10 +7,10 @@ import {
   Calendar,
   Crown,
   Eye,
+  Gem,
   Images,
   MapPin,
   Maximize,
-  Star,
 } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
@@ -104,16 +104,16 @@ function TierBadge({ tone }: { tone: CardTone }) {
     tone === "PREMIUM"
       ? "bg-primary text-white"
       : tone === "STANDARD"
-        ? "bg-surface/92 text-body"
-        : "bg-subtle text-secondary";
+        ? "bg-surface text-body"
+        : "bg-subtle text-body";
   const iconSize = 14;
 
   return (
     <span
-      className={`absolute top-3 left-0 z-20 inline-flex items-center gap-1 rounded-l-none rounded-r-full px-2 py-0.5 text-xs font-semibold ${toneClasses}`}
+      className={`absolute top-3 left-0 z-20 inline-flex items-center gap-1 rounded-l-none rounded-r-full px-2 py-1 text-xs font-semibold ${toneClasses}`}
     >
-      {tone === "PREMIUM" ? <Crown size={iconSize} /> : null}
-      {tone === "STANDARD" ? <Star size={iconSize} /> : null}
+      {tone === "PREMIUM" ? <Gem size={iconSize} /> : null}
+      {tone === "STANDARD" ? <Crown size={iconSize} /> : null}
       {getTierLabel(tone)}
     </span>
   );

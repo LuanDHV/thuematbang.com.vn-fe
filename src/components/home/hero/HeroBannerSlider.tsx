@@ -250,6 +250,9 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               }
             />
           </div>
+          <div className="mt-8 text-xl font-semibold text-white">
+            Hotline: <strong className="text-primary">0968 68 80 81</strong>
+          </div>
         </div>
       </div>
 
