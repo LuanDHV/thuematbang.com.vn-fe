@@ -256,7 +256,7 @@ export function ListingImageGalleryField({
         className="text-heading font-semibold"
       >
         {label}
-        {required ? <span className="text-destructive">*</span> : null}
+        {required ? <span className="text-red-500">*</span> : null}
       </FieldLabel>
       <FieldDescription>{description}</FieldDescription>
       <label
@@ -280,7 +280,9 @@ export function ListingImageGalleryField({
                   : "Tải ảnh lên"}
             </p>
             {disabled ? (
-              <p className="text-secondary text-xs">Tin đang ở chế độ chỉ xem.</p>
+              <p className="text-secondary text-xs">
+                Tin đang ở chế độ chỉ xem.
+              </p>
             ) : (
               <p className="text-secondary text-xs">
                 Hỗ trợ các định dạng JPG, JPEG, PNG, WEBP. <br />

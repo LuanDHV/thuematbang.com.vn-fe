@@ -9,6 +9,10 @@ import ProjectDetailContent from "@/components/listing-detail/project/ProjectDet
 import ProjectDetailSidebar from "@/components/listing-detail/project/ProjectDetailSidebar";
 import ProjectListingClient from "@/components/listing-client/ProjectListingClient";
 import {
+  buildGoogleMapEmbedSrc,
+  buildGoogleMapQuery,
+} from "@/lib/location/google-map";
+import {
   buildProjectCategoryBreadcrumbs,
   parsePagedSlugSegments,
   parseProjectCategoryFromSlug,
@@ -111,13 +115,16 @@ export default async function DuAnDynamicPage({ params }: PageProps) {
   if (project) {
     const galleryImages = extractProjectImages(project);
 
-    const hasCoordinates =
-      typeof project.latitude === "number" &&
-      typeof project.longitude === "number";
-
-    const mapSrc = hasCoordinates
-      ? `https://maps.google.com/maps?q=${project.latitude},${project.longitude}&z=15&output=embed`
-      : null;
+    const mapSrc = buildGoogleMapEmbedSrc({
+      latitude: project.latitude,
+      longitude: project.longitude,
+      query: buildGoogleMapQuery([
+        project.addressDetail,
+        project.ward?.name,
+        project.province?.name,
+        "Vietnam",
+      ]),
+    });
 
     let viewedProjects: Project[] = [];
 

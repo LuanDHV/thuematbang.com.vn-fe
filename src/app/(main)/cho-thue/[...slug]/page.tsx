@@ -10,6 +10,10 @@ import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLa
 import PropertyDetailContent from "@/components/listing-detail/property/PropertyDetailContent";
 import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
 import {
+  buildGoogleMapEmbedSrc,
+  buildGoogleMapQuery,
+} from "@/lib/location/google-map";
+import {
   buildPropertyFilterBreadcrumbs,
   buildPropertyFilterPathFromRouteParts,
   isLikelyPropertyFilterSlug,
@@ -188,13 +192,16 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
     const galleryImages = extractPropertyImages(property);
 
-    const hasCoordinates =
-      typeof property.latitude === "number" &&
-      typeof property.longitude === "number";
-
-    const mapSrc = hasCoordinates
-      ? `https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`
-      : null;
+    const mapSrc = buildGoogleMapEmbedSrc({
+      latitude: property.latitude,
+      longitude: property.longitude,
+      query: buildGoogleMapQuery([
+        property.addressDetail,
+        property.ward?.name,
+        property.province?.name,
+        "Vietnam",
+      ]),
+    });
 
     const provinceSlug = property.province?.slug;
 

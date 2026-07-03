@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 
 import { ListingCheckboxField } from "@/components/listing-form/ListingCheckboxField";
 import { ListingCreateFormShell } from "@/components/listing-form/ListingCreateFormShell";
@@ -14,8 +15,13 @@ import { ListingRichTextField } from "@/components/listing-form/ListingRichTextF
 import { ListingSelectField } from "@/components/listing-form/ListingSelectField";
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
+import { getProvinceWardsAction } from "@/actions/location.actions";
 import { CONTENT_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
+import {
+  buildGoogleMapEmbedSrc,
+  buildGoogleMapQuery,
+} from "@/lib/location/google-map";
 import {
   hasGalleryImageOrderChanged,
   normalizeGalleryImages,
@@ -166,6 +172,64 @@ function AdminProjectFormContent({
     control: form.control,
     name: "isNegotiable",
   });
+  const selectedProvinceId = useWatch({
+    control: form.control,
+    name: "provinceId",
+  });
+  const selectedWardId = useWatch({
+    control: form.control,
+    name: "wardId",
+  });
+  const addressDetailValue = useWatch({
+    control: form.control,
+    name: "addressDetail",
+  });
+  const longitudeValue = useWatch({
+    control: form.control,
+    name: "longitude",
+  });
+  const latitudeValue = useWatch({
+    control: form.control,
+    name: "latitude",
+  });
+  const provinceIdNumber = Number(selectedProvinceId || 0);
+  const { data: wards = [] } = useQuery({
+    queryKey: ["form-wards", provinceIdNumber],
+    queryFn: async () => {
+      if (!provinceIdNumber) return [];
+      return await getProvinceWardsAction(provinceIdNumber);
+    },
+    enabled: Boolean(provinceIdNumber),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const mapPreviewSrc = useMemo(() => {
+    const province = provinces.find(
+      (item) => String(item.id) === String(selectedProvinceId ?? ""),
+    );
+    const ward = wards.find(
+      (item) => String(item.id) === String(selectedWardId ?? ""),
+    );
+
+    return buildGoogleMapEmbedSrc({
+      latitude: latitudeValue,
+      longitude: longitudeValue,
+      query: buildGoogleMapQuery([
+        addressDetailValue,
+        ward?.name,
+        province?.name,
+        "Vietnam",
+      ]),
+    });
+  }, [
+    addressDetailValue,
+    latitudeValue,
+    longitudeValue,
+    provinces,
+    selectedProvinceId,
+    selectedWardId,
+    wards,
+  ]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(nameValue ?? ""));
@@ -221,7 +285,9 @@ function AdminProjectFormContent({
       price: values.isNegotiable ? undefined : values.price,
       images: uploadedImages,
     };
-    const orderedExistingImageIds = existingGalleryImages.map((image) => image.id);
+    const orderedExistingImageIds = existingGalleryImages.map(
+      (image) => image.id,
+    );
     const initialExistingImageIds = initialExistingGalleryImages.map(
       (image) => image.id,
     );
@@ -309,22 +375,42 @@ function AdminProjectFormContent({
         provinces={provinces}
         requiredProvince
       />
+
       <ListingTextField name="addressDetail" label="Địa chỉ chi tiết" />
       <div className="grid gap-4 md:grid-cols-2">
-        <ListingNumberField
-          name="longitude"
-          label="Kinh độ"
-          inputMode="decimal"
-          step="0.000001"
-        />
         <ListingNumberField
           name="latitude"
           label="Vĩ độ"
           inputMode="decimal"
           step="0.000001"
         />
+        <ListingNumberField
+          name="longitude"
+          label="Kinh độ"
+          inputMode="decimal"
+          step="0.000001"
+        />
       </div>
-
+      {mapPreviewSrc ? (
+        <section className="space-y-3">
+          <div className="mb-3 flex items-center gap-3">
+            <h2 className="text-heading text-sm font-semibold">
+              Xem trước bản đồ
+            </h2>
+          </div>
+          <p className="text-secondary text-sm">
+            Bản đồ được hiển thị gợi ý từ địa chỉ, phường/xã và tỉnh/thành. Nếu
+            bạn nhập tọa độ, hệ thống sẽ ưu tiên để hiển thị chính xác hơn.
+          </p>
+          <iframe
+            title="Xem trước vị trí trên bản đồ"
+            src={mapPreviewSrc}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="border-hairline h-80 w-full rounded-2xl border"
+          />
+        </section>
+      ) : null}
       <ListingSelectField
         name="status"
         label="Trạng thái"
