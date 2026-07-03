@@ -11,6 +11,18 @@ export function buildGoogleMapQuery(
   return parts.filter(Boolean).join(", ");
 }
 
+export function hasGoogleMapPreviewInput(
+  parts: Array<string | number | null | undefined>,
+): boolean {
+  return parts.some((part) => {
+    if (part === null || part === undefined) {
+      return false;
+    }
+
+    return String(part).trim().length > 0;
+  });
+}
+
 function parseGoogleMapCoordinate(value: number | string | null | undefined) {
   if (value === null || value === undefined) {
     return undefined;

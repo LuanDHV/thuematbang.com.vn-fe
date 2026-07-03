@@ -36,6 +36,7 @@ import { useAuthMe } from "@/hooks/use-auth";
 import {
   buildGoogleMapEmbedSrc,
   buildGoogleMapQuery,
+  hasGoogleMapPreviewInput,
 } from "@/lib/location/google-map";
 import { getProvinceWardsAction } from "@/actions/location.actions";
 import type { Category } from "@/types/category";
@@ -321,6 +322,13 @@ function PropertyCreateFormContent({
     selectedProvinceId,
     selectedWardId,
     wards,
+  ]);
+  const showMapPreview = hasGoogleMapPreviewInput([
+    addressDetailValue,
+    selectedProvinceId,
+    selectedWardId,
+    latitudeValue,
+    longitudeValue,
   ]);
 
   useEffect(() => {
@@ -627,7 +635,7 @@ function PropertyCreateFormContent({
           />
         </div>
 
-        {mapPreviewSrc ? (
+        {showMapPreview && mapPreviewSrc ? (
           <section className="space-y-3">
             <div className="mb-3 flex items-center gap-3">
               <h2 className="text-heading text-sm font-semibold">

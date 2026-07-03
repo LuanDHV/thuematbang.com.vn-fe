@@ -1,4 +1,7 @@
-import { buildGoogleMapEmbedSrc } from "@/lib/location/google-map";
+import {
+  buildGoogleMapEmbedSrc,
+  hasGoogleMapPreviewInput,
+} from "@/lib/location/google-map";
 
 describe("buildGoogleMapEmbedSrc", () => {
   it("builds a Google Maps embed URL from latitude and longitude", () => {
@@ -51,5 +54,11 @@ describe("buildGoogleMapEmbedSrc", () => {
     ).toBe(
       "https://www.google.com/maps?q=An+Ph%C3%BA+%C4%90%C3%B4ng%2C+H%E1%BB%93+Ch%C3%AD+Minh%2C+Vietnam&z=15&output=embed&hl=vi",
     );
+  });
+
+  it("detects whether the preview should be shown", () => {
+    expect(hasGoogleMapPreviewInput([null, undefined, ""])).toBe(false);
+    expect(hasGoogleMapPreviewInput(["  ", 0])).toBe(true);
+    expect(hasGoogleMapPreviewInput(["An Phú Đông"])).toBe(true);
   });
 });

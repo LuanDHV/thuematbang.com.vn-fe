@@ -21,6 +21,7 @@ import { buildListingSlug } from "@/lib/listing/listing-slug";
 import {
   buildGoogleMapEmbedSrc,
   buildGoogleMapQuery,
+  hasGoogleMapPreviewInput,
 } from "@/lib/location/google-map";
 import {
   hasGalleryImageOrderChanged,
@@ -230,6 +231,13 @@ function AdminProjectFormContent({
     selectedWardId,
     wards,
   ]);
+  const showMapPreview = hasGoogleMapPreviewInput([
+    addressDetailValue,
+    selectedProvinceId,
+    selectedWardId,
+    latitudeValue,
+    longitudeValue,
+  ]);
 
   useEffect(() => {
     const nextSlug = buildListingSlug(String(nameValue ?? ""));
@@ -391,7 +399,7 @@ function AdminProjectFormContent({
           step="0.000001"
         />
       </div>
-      {mapPreviewSrc ? (
+      {showMapPreview && mapPreviewSrc ? (
         <section className="space-y-3">
           <div className="mb-3 flex items-center gap-3">
             <h2 className="text-heading text-sm font-semibold">
