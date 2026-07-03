@@ -35,15 +35,15 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
   return (
     <Link
       href="/gioi-thieu"
-      className="group border-hairline bg-surface hover:border-primary/20 relative flex min-h-56 flex-col items-center rounded-xl border p-5 text-center shadow-(--shadow-card) transition-[border-color,box-shadow] duration-300 ease-in-out hover:shadow-(--shadow-float)"
+      className="group border-hairline bg-surface hover:border-primary/20 relative flex h-full min-h-72 flex-col items-center rounded-xl border p-5 text-center shadow-(--shadow-card) transition-[border-color,box-shadow] duration-300 ease-in-out hover:shadow-(--shadow-float) sm:min-h-56"
     >
       <div className="bg-primary/5 group-hover:border-primary/10 mb-4 rounded-full border border-transparent p-4 transition-colors duration-300">
         {feature.icon}
       </div>
-      <h3 className="text-body mb-4 text-xl font-bold tracking-tight">
+      <h3 className="text-body mb-4 line-clamp-2 w-full text-xl font-bold tracking-tight">
         {feature.title}
       </h3>
-      <p className="text-secondary text-sm leading-relaxed font-light">
+      <p className="text-secondary line-clamp-3 w-full text-sm leading-relaxed font-light">
         {feature.description}
       </p>
       <div className="bg-primary absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-b-lg transition-all duration-300 group-hover:w-full" />
@@ -63,11 +63,11 @@ export default function IntroduceSection() {
             variant="home"
           />
 
-          <HomeCarousel className="mt-6" options={{ align: "center" }}>
+          <HomeCarousel className="py-4" options={{ align: "center" }}>
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="min-w-0 shrink-0 basis-11/12 pl-3 md:basis-1/2"
+                className="flex h-full min-w-0 shrink-0 basis-11/12 pl-3 md:basis-1/2"
               >
                 <FeatureCard feature={feature} />
               </div>

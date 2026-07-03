@@ -66,7 +66,7 @@ export default function ProjectSection() {
             />
           </div>
 
-          <HomeCarousel options={{ align: "center" }}>
+          <HomeCarousel className="py-4" options={{ align: "center" }}>
             {categories.map((category, index) => (
               <div
                 key={index}

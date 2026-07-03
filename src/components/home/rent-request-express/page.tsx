@@ -62,7 +62,7 @@ export default async function RentRequestExpressSection() {
 
               return (
                 <>
-                  <HomeCarousel className="mt-6 py-2">
+                  <HomeCarousel className="py-4" options={{ align: "center" }}>
                     {rentRequests.map((item) => (
                       <div
                         key={item.id}

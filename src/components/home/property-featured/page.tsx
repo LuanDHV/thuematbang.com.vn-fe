@@ -63,7 +63,7 @@ export default async function PropertyFeaturedSection() {
 
               return (
                 <>
-                  <HomeCarousel className="mt-6 py-2">
+                  <HomeCarousel className="py-4" options={{ align: "center" }}>
                     {featuredProperties.map((item, index) => (
                       <div
                         key={item.id}
