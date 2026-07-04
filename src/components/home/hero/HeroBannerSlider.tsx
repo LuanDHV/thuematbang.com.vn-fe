@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowRight, CirclePlus, Phone } from "lucide-react";
+import { ArrowRight, CirclePlus } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ const FALLBACK_BANNER: Banner = {
   id: 0,
   title:
     "Sàn kết nối bất động sản cho thuê số 1 Việt Nam nơi đáp ứng mọi nhu cầu thuê và cho thuê",
-  imageUrl: "/imgs/wallpaper-3.jpg",
+  imageUrl: "/imgs/wallpaper-7.jpg",
   imagePublicId: null,
   targetLink: null,
   page: "home",
@@ -191,7 +191,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                     className="h-full w-full object-cover object-center"
                   />
                   <div className="absolute inset-0 bg-black/20" />
-                  <div className="absolute inset-0 bg-linear-to-b from-black/10 via-black/30 to-black/60" />
+                  <div className="absolute inset-0 bg-linear-to-b from-black/5 via-black/15 to-black/30" />
                   <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-b from-transparent to-black/35" />
                 </div>
               );

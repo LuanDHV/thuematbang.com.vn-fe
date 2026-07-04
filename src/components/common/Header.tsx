@@ -61,7 +61,7 @@ export default function Header() {
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0"
           >
             <Image
-              src="/imgs/logo-symbol.png"
+              src="/imgs/logo-TMB-black.png"
               alt="Thuematbang.com.vn"
               width={280}
               height={80}

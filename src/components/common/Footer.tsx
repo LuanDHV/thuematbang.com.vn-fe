@@ -31,7 +31,7 @@ export default function Footer() {
             <div className="relative h-16 w-56 sm:h-20 sm:w-64">
               <Link href="/" className="relative block h-full w-full">
                 <Image
-                  src="/imgs/logo-symbol.png"
+                  src="/imgs/logo-TMB-white.png"
                   alt="Thuematbang.com.vn"
                   fill
                   sizes="(max-width: 640px) 14rem, 16rem"
@@ -56,7 +56,7 @@ export default function Footer() {
                 <Phone size={18} className="text-primary mt-1 shrink-0" />
                 <a
                   href="tel:0968688081"
-                  className="transition-colors hover:text-primary"
+                  className="hover:text-primary transition-colors"
                 >
                   0968 68 80 81
                 </a>
