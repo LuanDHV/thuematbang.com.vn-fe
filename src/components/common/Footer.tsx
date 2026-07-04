@@ -7,7 +7,6 @@ export default function Footer() {
     { label: "Giới thiệu", href: "/gioi-thieu" },
     { label: "Liên hệ", href: "/lien-he" },
     { label: "Câu hỏi thường gặp", href: "/cau-hoi-thuong-gap" },
-    { label: "Tin tức", href: "/tin-tuc" },
   ];
   const policyLinks = [
     { label: "Quy chế hoạt động", href: "/quy-che-hoat-dong" },
