@@ -57,10 +57,12 @@ export default async function AdminStaticPageEditPage({ params }: PageProps) {
     notFound();
   }
 
+  const submitAction = updateStaticPageAction.bind(null, pageId);
+
   return (
     <section className="layout-container layout-section-sm">
       <AdminStaticPageForm
-        submitAction={(payload) => updateStaticPageAction(pageId, payload)}
+        submitAction={submitAction}
         title="Chỉnh sửa trang tĩnh"
         description="Cập nhật site code, nội dung HTML và trạng thái hiển thị."
         submitLabel="Lưu thay đổi"
