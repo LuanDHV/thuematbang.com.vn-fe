@@ -33,7 +33,10 @@ function toLastModifiedFromItems(items: Timestamped[]) {
 }
 
 async function fetchAllPages<T extends Timestamped>(
-  fetchPage: (page: number, limit: number) => Promise<{
+  fetchPage: (
+    page: number,
+    limit: number,
+  ) => Promise<{
     data?: T[];
     meta?: {
       currentPage?: number;
@@ -167,10 +170,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     newsCategories
       .filter((category) => category.slug !== "tin-tuc")
       .map((category) => ({
-      pathname: category.slug === "tin-tuc" ? "/tin-tuc" : `/tin-tuc/${category.slug}`,
-      lastModified: category.updatedAt,
-      priority: 0.7,
-      changeFrequency: "weekly",
+        pathname:
+          category.slug === "tin-tuc"
+            ? "/tin-tuc"
+            : `/tin-tuc/${category.slug}`,
+        lastModified: category.updatedAt,
+        priority: 0.7,
+        changeFrequency: "weekly",
       })),
   );
 
@@ -178,10 +184,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     projectCategories
       .filter((category) => category.slug !== "du-an")
       .map((category) => ({
-      pathname: category.slug === "du-an" ? "/du-an" : `/du-an/${category.slug}`,
-      lastModified: category.updatedAt,
-      priority: 0.7,
-      changeFrequency: "weekly",
+        pathname:
+          category.slug === "du-an" ? "/du-an" : `/du-an/${category.slug}`,
+        lastModified: category.updatedAt,
+        priority: 0.7,
+        changeFrequency: "weekly",
       })),
   );
 

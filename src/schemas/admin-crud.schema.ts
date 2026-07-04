@@ -134,6 +134,19 @@ export const seoContentFormSchema = z.object({
   seoContent: optionalTextSchema,
 });
 
+export const staticPageFormSchema = z.object({
+  siteCode: z
+    .string()
+    .trim()
+    .min(2, "Vui lòng nhập siteCode hợp lệ")
+    .max(120, "siteCode không vượt quá 120 ký tự")
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+      message: "siteCode phải viết thường và ngăn cách bằng dấu gạch ngang",
+    }),
+  content: optionalTextSchema,
+  isPublished: z.boolean().default(true),
+});
+
 export const leadFormSchema = z.object({
   fullName: z
     .string()
@@ -254,6 +267,7 @@ export type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 export type BannerFormValues = z.infer<typeof bannerFormSchema>;
 export type FaqFormValues = z.infer<typeof faqFormSchema>;
 export type SeoContentFormValues = z.infer<typeof seoContentFormSchema>;
+export type StaticPageFormValues = z.infer<typeof staticPageFormSchema>;
 export type LeadFormValues = z.infer<typeof leadFormSchema>;
 export type NewsFormValues = z.infer<typeof newsFormSchema>;
 export type ProjectFormValues = z.infer<typeof projectFormSchema>;

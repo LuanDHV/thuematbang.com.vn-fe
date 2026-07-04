@@ -8,6 +8,7 @@ import { newsService } from "@/services/news.service";
 import { projectService } from "@/services/project.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import { seoContentService } from "@/services/seo-content.service";
+import { staticPageService } from "@/services/static-page.service";
 import { propertyService } from "@/services/property.service";
 import { userService } from "@/services/user.service";
 import { USER_ROLE_VALUES } from "@/constants/enum-values";
@@ -18,6 +19,7 @@ import type { BannerUpsertPayload } from "@/services/banners.service";
 import type { NewsUpsertPayload } from "@/services/news.service";
 import type { ProjectUpsertPayload } from "@/services/project.service";
 import type { RentRequestUpsertPayload } from "@/services/rent-request.service";
+import type { StaticPageUpsertPayload } from "@/services/static-page.service";
 
 // Category
 export async function createCategoryAction(payload: {
@@ -151,6 +153,41 @@ export async function deleteSeoContentAction(id: string | number) {
   refreshCrudTags(
     ["seo-contents", "seo-content-detail"],
     ["/admin/quan-li-noi-dung-seo"],
+  );
+  return result;
+}
+
+// Static page
+export async function createStaticPageAction(payload: StaticPageUpsertPayload) {
+  const result = await staticPageService.create(payload);
+  refreshCrudTags(
+    ["static-pages"],
+    ["/admin/quan-li-trang-tinh", `/${result.siteCode}`],
+  );
+  return result;
+}
+
+export async function updateStaticPageAction(
+  id: string | number,
+  payload: Partial<StaticPageUpsertPayload>,
+) {
+  const staticPageId = toPositiveId(id);
+  const current = await staticPageService.getById(staticPageId);
+  const result = await staticPageService.update(staticPageId, payload);
+  refreshCrudTags(
+    ["static-pages", "static-page-detail"],
+    ["/admin/quan-li-trang-tinh", `/${current.siteCode}`, `/${result.siteCode}`],
+  );
+  return result;
+}
+
+export async function deleteStaticPageAction(id: string | number) {
+  const staticPageId = toPositiveId(id);
+  const current = await staticPageService.getById(staticPageId);
+  const result = await staticPageService.remove(staticPageId);
+  refreshCrudTags(
+    ["static-pages", "static-page-detail"],
+    ["/admin/quan-li-trang-tinh", `/${current.siteCode}`],
   );
   return result;
 }

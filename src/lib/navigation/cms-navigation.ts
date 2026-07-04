@@ -14,6 +14,7 @@ import {
   ClipboardList,
   Layers,
   LockKeyholeOpen,
+  FileText,
   UserRoundCog,
   Signpost,
 } from "lucide-react";
@@ -121,6 +122,11 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       href: "/admin/quan-li-faqs",
       label: "Câu hỏi thường gặp",
       icon: BadgeQuestionMark,
+    },
+    {
+      href: "/admin/quan-li-trang-tinh",
+      label: "Trang tĩnh",
+      icon: FileText,
     },
 
     {

@@ -14,5 +14,6 @@ export * from "./news";
 export * from "./project";
 export * from "./property";
 export * from "./rent-request";
+export * from "./static-page";
 export * from "./seo-content";
 export * from "./user";

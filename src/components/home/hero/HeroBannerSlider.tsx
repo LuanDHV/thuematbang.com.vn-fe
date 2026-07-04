@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowRight, CirclePlus } from "lucide-react";
+import { ArrowRight, CirclePlus, Phone } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { Button } from "@/components/ui/button";
@@ -214,44 +214,64 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
       </div>
 
       <div className="absolute inset-0">
-        <div className="layout-container relative flex h-full flex-col items-center justify-center py-16 text-center sm:py-20 md:py-28">
-          <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-bold tracking-[-0.04em] text-white uppercase drop-shadow-xl md:text-4xl lg:text-5xl">
-            Nền tảng kết nối <br /> bất động sản cho thuê toàn quốc
-          </h1>
+        <div className="layout-container relative flex h-full flex-col py-16 sm:py-20 md:py-28">
+          <div className="flex flex-1 items-center justify-center text-center">
+            <div className="flex w-full flex-col items-center">
+              <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-bold tracking-[-0.04em] text-white uppercase drop-shadow-xl md:text-4xl lg:text-5xl">
+                Nền tảng kết nối <br /> bất động sản cho thuê toàn quốc
+              </h1>
 
-          <div className="mt-8 grid w-full max-w-5xl grid-cols-1 gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5">
-            <HeroActionCard
-              primaryHref="/dang-tin/cho-thue"
-              primaryLabel="Đăng tin cho thuê"
-              primaryDescription="Kết nối mạng lưới khách thuê nhanh chóng"
-              secondaryHref="/can-thue"
-              secondaryLabel="Xem nhu cầu cần thuê mới nhất"
-              secondaryDescription="Nắm bắt nhu cầu của thị trường"
-              primaryIcon={
-                <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
-              }
-              secondaryIcon={
-                <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
-              }
-            />
+              <div className="mt-8 grid w-full max-w-5xl grid-cols-1 gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5">
+                <HeroActionCard
+                  primaryHref="/dang-tin/cho-thue"
+                  primaryLabel="Đăng tin cho thuê"
+                  primaryDescription="Kết nối mạng lưới khách thuê nhanh chóng"
+                  secondaryHref="/can-thue"
+                  secondaryLabel="Xem nhu cầu cần thuê mới nhất"
+                  secondaryDescription="Nắm bắt nhu cầu của thị trường"
+                  primaryIcon={
+                    <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+                  }
+                  secondaryIcon={
+                    <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+                  }
+                />
 
-            <HeroActionCard
-              primaryHref="/dang-tin/can-thue"
-              primaryLabel="Đăng tin cần thuê"
-              primaryDescription="Tiếp cận nguồn cung phù hợp"
-              secondaryHref="/cho-thue"
-              secondaryLabel="Xem bất động sản đang cho thuê"
-              secondaryDescription="Khám phá các lựa chọn đa dạng"
-              primaryIcon={
-                <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
-              }
-              secondaryIcon={
-                <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
-              }
-            />
+                <HeroActionCard
+                  primaryHref="/dang-tin/can-thue"
+                  primaryLabel="Đăng tin cần thuê"
+                  primaryDescription="Tiếp cận nguồn cung phù hợp"
+                  secondaryHref="/cho-thue"
+                  secondaryLabel="Xem bất động sản đang cho thuê"
+                  secondaryDescription="Khám phá các lựa chọn đa dạng"
+                  primaryIcon={
+                    <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+                  }
+                  secondaryIcon={
+                    <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out group-hover:translate-x-1 lg:size-5" />
+                  }
+                />
+              </div>
+            </div>
           </div>
-          <div className="mt-8 text-xl font-semibold text-white">
-            Hotline: <strong className="text-primary">0968 68 80 81</strong>
+
+          <div className="mt-auto flex justify-center py-8">
+            <Link
+              href="tel:0968688081"
+              className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-5 py-2.5 transition hover:border-white/18 hover:bg-white/20"
+            >
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              </span>
+              <span className="text-footer-body text-sm font-bold tracking-[0.12em] uppercase">
+                Hotline
+              </span>
+              <span className="h-3.5 w-px bg-white/15" />
+              <span className="text-primary text-base font-bold tracking-wide whitespace-nowrap">
+                0968 68 80 81
+              </span>
+            </Link>
           </div>
         </div>
       </div>

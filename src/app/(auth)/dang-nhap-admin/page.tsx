@@ -46,7 +46,7 @@ export default async function DangNhapAdminPage({
           className="inline-flex rounded-lg px-2 py-1 transition-opacity hover:opacity-85 lg:mb-5"
         >
           <Image
-            src="/imgs/logo-TMB-black.png"
+            src="/imgs/logo-symbol.png"
             alt="Thuematbang.com.vn"
             width={160}
             height={80}

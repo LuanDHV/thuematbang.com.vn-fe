@@ -31,7 +31,7 @@ export default function Footer() {
             <div className="relative h-16 w-56 sm:h-20 sm:w-64">
               <Link href="/" className="relative block h-full w-full">
                 <Image
-                  src="/imgs/logo-TMB-white.png"
+                  src="/imgs/logo-symbol.png"
                   alt="Thuematbang.com.vn"
                   fill
                   sizes="(max-width: 640px) 14rem, 16rem"
@@ -41,11 +41,8 @@ export default function Footer() {
               </Link>
             </div>
             <div className="max-w-xl space-y-3">
-              <p className="text-primary text-xs font-semibold tracking-[0.2em] uppercase">
-                Thuematbang
-              </p>
               <h2 className="text-footer-heading text-base font-semibold tracking-[-0.02em] md:text-lg">
-                CÔNG TY TNHH DỊCH VỤ QUẢNG CÁO THUEMATBANG
+                CÔNG TY TNHH DỊCH VỤ QUẢNG CÁO THUEMATBANG.COM.VN
               </h2>
               <div className="text-footer-body flex items-start gap-2 text-sm leading-7">
                 <MapPin size={18} className="text-primary mt-1 shrink-0" />
@@ -57,7 +54,12 @@ export default function Footer() {
 
               <div className="text-footer-body flex items-start gap-2 text-sm leading-7">
                 <Phone size={18} className="text-primary mt-1 shrink-0" />
-                <span>0968 68 80 81</span>
+                <a
+                  href="tel:0968688081"
+                  className="transition-colors hover:text-primary"
+                >
+                  0968 68 80 81
+                </a>
               </div>
             </div>
           </div>
