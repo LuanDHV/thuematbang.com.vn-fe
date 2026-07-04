@@ -23,7 +23,7 @@ export default async function NewsSection() {
   );
 
   return (
-    <SectionBand tone="app">
+    <SectionBand tone="secondary">
       <div className="layout-section w-full">
         <div className="layout-container w-full">
           <div className="section-intro-tight text-center">

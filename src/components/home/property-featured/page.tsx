@@ -31,7 +31,7 @@ export default async function PropertyFeaturedSection() {
   );
 
   return (
-    <SectionBand tone="surface">
+    <SectionBand tone="primary">
       <div className="layout-section w-full px-4">
         <div className="layout-container w-full">
           <div className="section-intro-tight">

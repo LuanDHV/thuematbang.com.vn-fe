@@ -23,7 +23,7 @@ export default async function ProjectSection() {
   });
 
   return (
-    <SectionBand tone="app">
+    <SectionBand tone="secondary">
       <div className="layout-section w-full px-4">
         <div className="layout-container w-full">
           <div className="section-intro-tight">

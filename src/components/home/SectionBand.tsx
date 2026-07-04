@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
-type SectionBandTone = "app" | "surface";
+type SectionBandTone = "primary" | "secondary";
 
 interface SectionBandProps {
   children: ReactNode;
@@ -10,14 +10,13 @@ interface SectionBandProps {
 }
 
 const toneClassMap: Record<SectionBandTone, string> = {
-  app: "bg-app",
-  surface: "bg-surface",
+  primary: "bg-white",
+  secondary: "bg-app",
 };
-
 export default function SectionBand({
   children,
   className,
-  tone = "surface",
+  tone = "primary",
 }: SectionBandProps) {
   return (
     <section

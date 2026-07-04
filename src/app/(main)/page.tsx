@@ -21,11 +21,11 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
-      <IntroduceSection />
       <PropertyFeaturedSection />
       <RentRequestExpressSection />
       <CategorySection />
       <ProjectSection />
+      <IntroduceSection />
       <NewsSection />
     </>
   );

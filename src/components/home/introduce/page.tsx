@@ -53,7 +53,7 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
 
 export default function IntroduceSection() {
   return (
-    <SectionBand tone="app">
+    <SectionBand tone="primary">
       <div className="layout-section w-full px-4">
         <div className="layout-container w-full">
           <Title
