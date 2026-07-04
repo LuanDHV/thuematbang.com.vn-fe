@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CategorySection from "@/components/home/category/page";
 import HeroSection from "@/components/home/hero/page";
 import IntroduceSection from "@/components/home/introduce/page";
 import NewsSection from "@/components/home/news/page";
@@ -17,13 +18,13 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function HomePage() {
-
   return (
     <>
       <HeroSection />
       <IntroduceSection />
       <PropertyFeaturedSection />
       <RentRequestExpressSection />
+      <CategorySection />
       <ProjectSection />
       <NewsSection />
     </>
