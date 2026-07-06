@@ -30,8 +30,8 @@ export default async function ProjectSection() {
           <div className="section-intro-tight">
             <Reveal>
               <Title
-                eyebrow="Dự án nổi bật"
-                title="Dự án đang thu hút quan tâm"
+                eyebrow="Tiềm năng"
+                title="Dự án mới nổi bật"
                 description="Khám phá các dự án bất động sản nổi bật và mới nhất, giúp bạn xem nhanh vị trí, quy mô, tiện ích và tình trạng dự án."
                 variant="home"
               />
@@ -59,7 +59,10 @@ export default async function ProjectSection() {
               return (
                 <>
                   <Reveal delay={80}>
-                    <HomeCarousel className="py-4" options={{ align: "center" }}>
+                    <HomeCarousel
+                      className="py-4"
+                      options={{ align: "center" }}
+                    >
                       {featuredProjects.map((project) => (
                         <div
                           key={project.id}

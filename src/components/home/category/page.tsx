@@ -80,7 +80,7 @@ export default function CategorySection() {
             </HomeCarousel>
           </Reveal>
 
-          <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-3 xl:grid-cols-6">
+          <div className="mt-5 hidden grid-cols-2 gap-4 md:grid md:grid-cols-3 xl:grid-cols-6">
             {categories.map((category, index) => (
               <Reveal key={index} delay={index * 70}>
                 <CategoryCard category={category} />

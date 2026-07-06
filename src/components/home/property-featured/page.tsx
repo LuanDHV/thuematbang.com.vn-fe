@@ -39,7 +39,7 @@ export default async function PropertyFeaturedSection() {
             <Reveal>
               <Title
                 eyebrow="Gợi ý tốt nhất"
-                title="Bất động sản nổi bật"
+                title="Tin cho thuê mới"
                 description="Tuyển chọn các tin đăng cho thuê giá tốt nhất từ khách hàng và doanh nghiệp được xác thực trên hệ thống."
                 variant="home"
               />
@@ -67,7 +67,10 @@ export default async function PropertyFeaturedSection() {
               return (
                 <>
                   <Reveal delay={80}>
-                    <HomeCarousel className="py-4" options={{ align: "center" }}>
+                    <HomeCarousel
+                      className="py-4"
+                      options={{ align: "center" }}
+                    >
                       {featuredProperties.map((item, index) => (
                         <div
                           key={item.id}

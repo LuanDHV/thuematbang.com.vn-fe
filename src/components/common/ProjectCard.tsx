@@ -60,24 +60,24 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/du-an/${project.slug}`}
-      className="surface-editorial group block overflow-hidden"
+      className="group block h-full overflow-hidden"
     >
       <article
-        className={`surface-editorial ${CARD_HOVER_CLASSES}`}
+        className={`surface-editorial ${CARD_HOVER_CLASSES} flex min-h-[30rem] flex-col`}
       >
         <div className="bg-surface-alt relative h-56 overflow-hidden">
           <CloudinaryImage
             src={thumbnailImageUrl}
             alt={project.name}
-          width={1200}
-          height={900}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          cldQuality="auto:good"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+            width={1200}
+            height={900}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            cldQuality="auto:good"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
         </div>
 
-        <div className="flex h-full flex-1 flex-col p-4">
+        <div className="flex flex-1 flex-col p-4">
           <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
             {project.name}
           </h3>
@@ -102,12 +102,12 @@ export function ProjectCard({ project }: { project: Project }) {
                 {location}
               </span>
             </p>
-            <p className="flex items-start gap-1.5">
+            {/* <p className="flex items-start gap-1.5">
               <Building2 size={14} className="text-primary mt-0.5 shrink-0" />
               <span className="text-secondary line-clamp-1 text-sm">
                 {project.developer || "Đang cập nhật chủ đầu tư"}
               </span>
-            </p>
+            </p> */}
             <p className="flex items-start gap-1.5">
               <Maximize size={14} className="text-primary mt-0.5 shrink-0" />
               <span className="text-secondary line-clamp-1 text-sm">
