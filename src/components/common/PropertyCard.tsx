@@ -104,7 +104,7 @@ function TierBadge({ tone }: { tone: CardTone }) {
     tone === "PREMIUM"
       ? "bg-primary text-white"
       : tone === "STANDARD"
-        ? "bg-surface text-body"
+        ? "bg-accent-soft text-primary"
         : "bg-subtle text-body";
   const iconSize = 14;
 
