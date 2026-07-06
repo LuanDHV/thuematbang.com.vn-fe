@@ -37,6 +37,12 @@ export type ProjectGetAllParams = {
   limit?: number;
 };
 
+export type ProjectListFetchOptions = {
+  cache?: RequestCache;
+  revalidate?: number;
+  tags?: string[];
+};
+
 export type ProjectUpsertPayload = {
   name: string;
   slug: string;
@@ -68,7 +74,10 @@ export type ProjectUpdatePayload = ProjectUpsertPayload & {
 };
 
 export const projectService = {
-  getAll: async (params: ProjectGetAllParams = {}) => {
+  getAll: async (
+    params: ProjectGetAllParams = {},
+    fetchOptions: ProjectListFetchOptions = {},
+  ) => {
     const filters = {
       ...params.filters,
       categorySlug: params.categorySlug ?? params.filters?.categorySlug,
@@ -81,14 +90,17 @@ export const projectService = {
         limit: params.limit,
       }),
       {
-        cache: "no-store",
-        tags: buildListTags("projects", {
-          page: params.page,
-          limit: params.limit,
-          scope: filters.categorySlug
-            ? { key: "category", value: String(filters.categorySlug) }
-            : undefined,
-        }),
+        cache: fetchOptions.cache ?? "no-store",
+        revalidate: fetchOptions.revalidate,
+        tags:
+          fetchOptions.tags ??
+          buildListTags("projects", {
+            page: params.page,
+            limit: params.limit,
+            scope: filters.categorySlug
+              ? { key: "category", value: String(filters.categorySlug) }
+              : undefined,
+          }),
       },
     );
   },

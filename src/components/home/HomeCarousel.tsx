@@ -27,7 +27,12 @@ export default function HomeCarousel({
 
   return (
     <div className={cn("overflow-hidden md:hidden", className)} ref={emblaRef}>
-      <div className={cn("-ml-3 flex h-full items-stretch touch-pan-y", trackClassName)}>
+      <div
+        className={cn(
+          "-ml-3 flex h-full touch-pan-y items-stretch",
+          trackClassName,
+        )}
+      >
         {children}
       </div>
     </div>

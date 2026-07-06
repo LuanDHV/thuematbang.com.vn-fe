@@ -1,5 +1,4 @@
 import { Building2 } from "lucide-react";
-
 import EmptyStateCard from "@/components/common/EmptyStateCard";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import SafeFetch from "@/components/common/SafeFetch";
@@ -11,17 +10,25 @@ import Reveal from "@/components/home/Reveal";
 import { projectService } from "@/services/project.service";
 import type { Project } from "@/types/project";
 
+const FEATURED_PROJECTS_REVALIDATE_SECONDS = 300;
 const FEATURED_PROJECTS_LIMIT = 8;
 
 export default async function ProjectSection() {
-  const featuredProjectsFetch = projectService.getAll({
-    filters: {
-      status: "PUBLISHED",
-      sortBy: "createdAt",
-      sortOrder: "desc",
+  const featuredProjectsFetch = projectService.getAll(
+    {
+      filters: {
+        status: "PUBLISHED",
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      },
+      limit: FEATURED_PROJECTS_LIMIT,
     },
-    limit: FEATURED_PROJECTS_LIMIT,
-  });
+    {
+      cache: "force-cache",
+      revalidate: FEATURED_PROJECTS_REVALIDATE_SECONDS,
+      tags: ["projects", "homepage-featured-projects"],
+    },
+  );
 
   return (
     <SectionBand tone="secondary">

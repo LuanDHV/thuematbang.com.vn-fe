@@ -1,11 +1,10 @@
 "use client";
 
 import Image, { type ImageProps } from "next/image";
-import { isCloudinaryImageUrl } from "@/lib/cloudinary";
 
 type CloudinaryImageProps = Omit<ImageProps, "src"> & {
   src: string;
-  cldQuality?: "auto" | "auto:good" | "auto:best";
+  cldQuality?: "auto" | "auto:good" | number;
 };
 
 export default function CloudinaryImage({
@@ -20,9 +19,9 @@ export default function CloudinaryImage({
   const resolvedQuality =
     typeof cldQuality === "number"
       ? cldQuality
-      : cldQuality === "auto:best"
-        ? 90
-        : 85;
+      : cldQuality === "auto:good"
+        ? 75
+        : 70;
 
   return (
     <Image
@@ -31,7 +30,6 @@ export default function CloudinaryImage({
       title={resolvedTitle}
       loading={resolvedLoading}
       quality={resolvedQuality}
-      unoptimized={isCloudinaryImageUrl(src)}
       {...rest}
     />
   );

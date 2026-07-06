@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-
 import EmptyStateCard from "@/components/common/EmptyStateCard";
 import FeaturedNewsCard from "@/components/common/FeaturedNewsCard";
 import NewsCard from "@/components/common/NewsCard";
@@ -74,10 +73,7 @@ export default async function NewsSection() {
                     <div className="grid grid-cols-1 gap-5">
                       {sideNews.map((newsItem, index) => (
                         <Reveal key={newsItem.id} delay={index * 70}>
-                          <NewsCard
-                            news={newsItem}
-                            priority={index === 0}
-                          />
+                          <NewsCard news={newsItem} priority={index === 0} />
                         </Reveal>
                       ))}
                     </div>
@@ -97,10 +93,7 @@ export default async function NewsSection() {
                     <div className="grid grid-cols-1 gap-5">
                       {sideNews.map((newsItem, index) => (
                         <Reveal key={newsItem.id} delay={index * 70}>
-                          <NewsCard
-                            news={newsItem}
-                            priority={index === 0}
-                          />
+                          <NewsCard news={newsItem} priority={index === 0} />
                         </Reveal>
                       ))}
                     </div>

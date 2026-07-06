@@ -3,7 +3,7 @@ type CloudinaryResizeMode = "fill" | "fit" | "limit" | "crop";
 type CloudinaryImageOptions = {
   width?: number;
   height?: number;
-  quality?: "auto" | "auto:good" | "auto:best" | number;
+  quality?: "auto" | "auto:good" | number;
   format?: "auto" | "webp" | "avif" | "jpg" | "png";
   mode?: CloudinaryResizeMode;
 };
@@ -110,14 +110,15 @@ export function getCloudinaryPublicId(rawUrl: string) {
   return publicIdWithExt.replace(/\.[^/.]+$/, "");
 }
 
-const CLOUDINARY_PRESETS: Record<CloudinaryPresetName, CloudinaryImageOptions> = {
-  avatarSm: { width: 96, height: 96, quality: "auto:best" },
-  avatarMd: { width: 176, height: 176, quality: "auto:best" },
-  avatarLg: { width: 192, height: 192, quality: "auto:best" },
-  listingCard: { width: 1200, height: 760, quality: "auto:good" },
-  listingGalleryMain: { width: 1600, height: 1000, quality: "auto:good" },
-  listingGalleryThumb: { width: 220, height: 140, quality: "auto:good" },
-};
+const CLOUDINARY_PRESETS: Record<CloudinaryPresetName, CloudinaryImageOptions> =
+  {
+    avatarSm: { width: 96, height: 96, quality: "auto:good" },
+    avatarMd: { width: 176, height: 176, quality: "auto:good" },
+    avatarLg: { width: 192, height: 192, quality: "auto:good" },
+    listingCard: { width: 1200, height: 760, quality: "auto:good" },
+    listingGalleryMain: { width: 1600, height: 1000, quality: "auto:good" },
+    listingGalleryThumb: { width: 220, height: 140, quality: "auto:good" },
+  };
 
 // Apply one named Cloudinary preset while still allowing per-call overrides.
 export function optimizeCloudinaryByPreset(

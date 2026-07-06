@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-
 import EmptyStateCard from "@/components/common/EmptyStateCard";
 import SafeFetch from "@/components/common/SafeFetch";
 import SeeMoreButton from "@/components/common/SeeMoreButton";

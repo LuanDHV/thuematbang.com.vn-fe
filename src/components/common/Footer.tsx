@@ -36,7 +36,6 @@ export default function Footer() {
                   alt="Thuematbang.com.vn"
                   fill
                   sizes="(max-width: 640px) 14rem, 16rem"
-                  priority
                   className="object-contain object-left"
                 />
               </Link>

@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-
 import Title from "@/components/common/Title";
 import SectionBand from "@/components/home/SectionBand";
 import HomeCarousel from "@/components/home/HomeCarousel";

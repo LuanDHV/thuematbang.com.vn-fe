@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, Calendar, Eye, MapPin, Maximize } from "lucide-react";
+import { Calendar, Eye, MapPin, Maximize } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import {
@@ -63,7 +63,7 @@ export function ProjectCard({ project }: { project: Project }) {
       className="group block h-full overflow-hidden"
     >
       <article
-        className={`surface-editorial ${CARD_HOVER_CLASSES} flex min-h-[30rem] flex-col`}
+        className={`surface-editorial ${CARD_HOVER_CLASSES} flex min-h-120 flex-col`}
       >
         <div className="bg-surface-alt relative h-56 overflow-hidden">
           <CloudinaryImage
