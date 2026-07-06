@@ -70,15 +70,16 @@ export function RentRequestCard({
         </div>
 
         <div className="flex h-full flex-1 flex-col p-4">
-          <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
-            {request.title}
-          </h3>
-
           {categoryName ? (
             <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-xs font-semibold tracking-[0.18em] uppercase">
               {categoryName}
             </span>
           ) : null}
+
+          <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+            {request.title}
+          </h3>
+
           <p className="group-hover:text-primary text-heading text-lg font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-xl">
             {formatListingPrice(request.budget, {
               fallback: "Đang cập nhật",

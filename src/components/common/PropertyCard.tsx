@@ -481,13 +481,6 @@ function CardBody({
     bathroomsText ? { icon: Bath, text: bathroomsText } : null,
   ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
 
-  const categoryBadgeSizeClass =
-    tone === "PREMIUM"
-      ? "text-sm"
-      : tone === "STANDARD"
-        ? "text-xs"
-        : "text-xs";
-
   const priceClass =
     tone === "PREMIUM"
       ? "text-xl "
@@ -519,11 +512,12 @@ function CardBody({
     <div className="flex h-full flex-1 flex-col p-4">
       {property.category?.name && (
         <span
-          className={`text-primary mb-2 inline-flex w-fit items-center self-start font-semibold tracking-[0.16em] uppercase ${categoryBadgeSizeClass}`}
+          className={`text-primary mb-2 inline-flex w-fit items-center self-start text-xs font-semibold tracking-[0.16em] uppercase`}
         >
           {property.category.name}
         </span>
       )}
+
       <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
         {property.title}
       </h3>
