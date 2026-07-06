@@ -5,8 +5,10 @@ import Link from "next/link";
 export default function Footer() {
   const aboutLinks = [
     { label: "Giới thiệu", href: "/gioi-thieu" },
-    { label: "Liên hệ", href: "/lien-he" },
-    { label: "Câu hỏi thường gặp", href: "/cau-hoi-thuong-gap" },
+    { label: "Tin cho thuê", href: "/cho-thue" },
+    { label: "Nhu cầu thuê", href: "/can-thue" },
+    { label: "Dự án", href: "/du-an" },
+    { label: "Tin tức", href: "/tin-tuc" },
   ];
   const policyLinks = [
     { label: "Quy chế hoạt động", href: "/quy-che-hoat-dong" },
@@ -26,7 +28,7 @@ export default function Footer() {
     <footer className="bg-footer text-footer-body border-footer-border mt-auto w-full border-t">
       <div className="layout-container py-12 md:py-14">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-          <div className="flex flex-col gap-7">
+          <div className="flex flex-col gap-8">
             <div className="relative h-16 w-56 sm:h-20 sm:w-64">
               <Link href="/" className="relative block h-full w-full">
                 <Image
