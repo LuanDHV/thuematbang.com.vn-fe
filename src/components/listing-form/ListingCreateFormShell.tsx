@@ -71,9 +71,9 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
       >
         <div className="flex flex-col gap-4 text-center md:items-center">
           <div className="space-y-2">
-            <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
+            <h2 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
               {title}
-            </h1>
+            </h2>
             <p className="text-secondary max-w-2xl text-sm leading-7 md:text-base">
               {description}
             </p>
@@ -111,9 +111,9 @@ export function ListingCreateFormShell<TFormValues extends FieldValues>({
           className="space-y-4"
         >
           <CardHeader className="px-0 pt-0">
-            <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
+            <h2 className="text-heading text-2xl font-semibold tracking-[-0.03em]">
               {title}
-            </h1>
+            </h2>
             <CardDescription className="text-secondary max-w-2xl text-sm leading-7 md:text-base">
               {description}
             </CardDescription>

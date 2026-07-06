@@ -9,7 +9,7 @@ import { locationService } from "@/services/location.service";
 export const metadata: Metadata = createPageMetadata({
   title: "Đăng tin cần thuê",
   description:
-    "Đăng tin cần thuê bất động sản nhanh chóng và dễ dàng, giúp bạn mô tả rõ nhu cầu tìm mặt bằng, văn phòng hay kho xưởng để tiếp cận đúng đối tác phù hợp hơn.",
+    "Đăng tin cần thuê nhanh chóng và dễ dàng, giúp bạn mô tả rõ nhu cầu tìm mặt bằng, văn phòng hay kho xưởng để tiếp cận đúng đối tác phù hợp hơn.",
   pathname: "/dang-tin/can-thue",
 });
 
@@ -28,6 +28,17 @@ export default async function DangTinCanThuePage() {
 
   return (
     <section className="layout-container layout-section-sm">
+      <div className="mb-6 text-center">
+        <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em] md:text-3xl">
+          Đăng tin cần thuê
+        </h1>
+        <p className="text-secondary mx-auto mt-2 max-w-3xl text-sm leading-7 md:text-base">
+          Đăng tin cần thuê bất động sản nhanh chóng và dễ dàng, giúp bạn mô tả
+          rõ nhu cầu tìm mặt bằng, văn phòng hay kho xưởng để tiếp cận đúng đối
+          tác phù hợp hơn.
+        </p>
+      </div>
+
       <RentRequestCreateForm
         categories={rentRequestCategories}
         provinces={provinces}

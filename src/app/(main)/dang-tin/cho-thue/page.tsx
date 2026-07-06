@@ -28,6 +28,17 @@ export default async function DangTinChoThuePage() {
 
   return (
     <section className="layout-container layout-section-sm">
+      <div className="mb-6 text-center">
+        <h1 className="text-heading text-2xl font-semibold tracking-[-0.03em] md:text-3xl">
+          Đăng tin cho thuê
+        </h1>
+        <p className="text-secondary mx-auto mt-2 max-w-3xl text-sm leading-7 md:text-base">
+          Đăng tin cho thuê bất động sản nhanh chóng và dễ dàng, giúp bạn đưa
+          thông tin mặt bằng, văn phòng, kho xưởng hoặc căn hộ đến đúng người
+          cần thuê trong thời gian ngắn nhất.
+        </p>
+      </div>
+
       <PropertyCreateForm
         categories={propertyCategories}
         provinces={provinces}
