@@ -109,7 +109,7 @@ function HeroActionCard({
       <Button
         asChild
         size="lg"
-        className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[background-color,border-color,filter,transform] duration-500 ease-out hover:-translate-y-0.5 hover:border-white/25 hover:brightness-105 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+        className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[background-color,border-color,filter,transform] duration-500 ease-out hover:-translate-y-0.5 hover:border-white/25 hover:brightness-105 sm:px-5 sm:py-4 md:mx-auto md:max-w-120 lg:min-h-20 lg:px-6 lg:text-base xl:mx-0 xl:max-w-none"
       >
         <Link href={primaryHref}>
           <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -126,7 +126,7 @@ function HeroActionCard({
         asChild
         variant="ghost"
         size="lg"
-        className="group border-border-subtle text-heading hover:border-border-strong hover:bg-surface mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-left text-sm font-bold shadow-lg transition-[background-color,border-color,filter,transform] duration-500 ease-out hover:-translate-y-0.5 hover:brightness-[1.02] sm:px-5 sm:py-4 lg:min-h-16 lg:px-6 lg:text-base"
+        className="group border-border-subtle text-heading hover:border-border-strong hover:bg-surface mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-left text-sm font-bold shadow-lg transition-[background-color,border-color,filter,transform] duration-500 ease-out hover:-translate-y-0.5 hover:brightness-[1.02] sm:px-5 sm:py-4 md:mx-auto md:max-w-120 lg:min-h-16 lg:px-6 lg:text-base xl:mx-0 xl:max-w-none"
       >
         <Link href={secondaryHref}>
           <span className="flex min-w-0 flex-1 flex-col items-start gap-1">

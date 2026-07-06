@@ -3,15 +3,14 @@
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 
-const scrollTopClassName =
-  "interactive-lift inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-primary/35 bg-primary text-white shadow-2xl hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35";
+import { cn } from "@/lib/utils";
 
 export default function FloatingActions() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
-      setShowScrollTop(window.scrollY > 320);
+      setShowScrollTop(window.scrollY > 260);
     };
 
     onScroll();
@@ -19,22 +18,24 @@ export default function FloatingActions() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (!showScrollTop) return null;
-
   return (
-    <div className="fixed right-4 bottom-5 z-70 md:right-6 md:bottom-6">
+    <div
+      className={cn(
+        "fixed right-4 bottom-5 z-70 transition-all duration-300 md:right-6 md:bottom-6",
+        showScrollTop
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-3 opacity-0",
+      )}
+    >
       <button
         type="button"
-        onClick={() =>
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          })
-        }
-        className={scrollTopClassName}
-        aria-label="Scroll to top"
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        className="interactive-lift border-primary/35 bg-primary focus-visible:ring-primary/35 inline-flex size-12 cursor-pointer items-center justify-center rounded-full border text-white shadow-2xl transition hover:brightness-105 focus-visible:ring-2 focus-visible:outline-none"
+        aria-label="Về đầu trang"
       >
-        <ArrowUp className="size-5 stroke-[2.5]" />
+        <ArrowUp className="size-5" />
       </button>
     </div>
   );
