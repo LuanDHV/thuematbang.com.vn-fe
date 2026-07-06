@@ -34,6 +34,16 @@ module.exports = async function handleListingsRoutes(context) {
     return String(value || "").trim().toLowerCase();
   }
 
+  function compareNumeric(left, right, sortOrder) {
+    return sortOrder === "asc" ? left - right : right - left;
+  }
+
+  function compareDate(left, right, sortOrder) {
+    const leftTime = new Date(left || 0).getTime();
+    const rightTime = new Date(right || 0).getTime();
+    return sortOrder === "asc" ? leftTime - rightTime : rightTime - leftTime;
+  }
+
   function matchesRentRequestFilters(item) {
     const status = normalizeText(requestUrl.searchParams.get("status"));
     const categorySlug = normalizeText(requestUrl.searchParams.get("categorySlug"));
@@ -111,22 +121,28 @@ module.exports = async function handleListingsRoutes(context) {
 
     items.sort((a, b) => {
       if (sortBy === "price") {
-        return sortOrder === "asc" ? (a.price || 0) - (b.price || 0) : (b.price || 0) - (a.price || 0);
+        return compareNumeric(a.price || 0, b.price || 0, sortOrder);
       }
       if (sortBy === "area") {
-        return sortOrder === "asc" ? (a.area || 0) - (b.area || 0) : (b.area || 0) - (a.area || 0);
+        return compareNumeric(a.area || 0, b.area || 0, sortOrder);
       }
       if (sortBy === "viewcount") {
-        return sortOrder === "asc" ? a.viewCount - b.viewCount : b.viewCount - a.viewCount;
+        return compareNumeric(a.viewCount || 0, b.viewCount || 0, sortOrder);
       }
       if (sortBy === "prioritystatus") {
         return sortOrder === "asc"
           ? normalizeText(a.priorityStatus).localeCompare(normalizeText(b.priorityStatus))
           : normalizeText(b.priorityStatus).localeCompare(normalizeText(a.priorityStatus));
       }
-      return sortOrder === "asc"
-        ? new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime()
-        : new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortBy === "isboosted") {
+        return sortOrder === "asc"
+          ? Number(Boolean(a.isBoosted)) - Number(Boolean(b.isBoosted))
+          : Number(Boolean(b.isBoosted)) - Number(Boolean(a.isBoosted));
+      }
+      if (sortBy === "boostcount") {
+        return compareNumeric(a.boostCount || 0, b.boostCount || 0, sortOrder);
+      }
+      return compareDate(a.createdAt, b.createdAt, sortOrder);
     });
 
     sendList(items);
@@ -219,17 +235,20 @@ module.exports = async function handleListingsRoutes(context) {
 
     items.sort((a, b) => {
       if (sortBy === "budget") {
-        return sortOrder === "asc" ? a.budget - b.budget : b.budget - a.budget;
+        return compareNumeric(a.budget || 0, b.budget || 0, sortOrder);
       }
       if (sortBy === "desiredarea") {
-        return sortOrder === "asc" ? a.desiredArea - b.desiredArea : b.desiredArea - a.desiredArea;
+        return compareNumeric(a.desiredArea || 0, b.desiredArea || 0, sortOrder);
       }
       if (sortBy === "viewcount") {
-        return sortOrder === "asc" ? a.viewCount - b.viewCount : b.viewCount - a.viewCount;
+        return compareNumeric(a.viewCount || 0, b.viewCount || 0, sortOrder);
       }
-      return sortOrder === "asc"
-        ? new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime()
-        : new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortBy === "isexpress") {
+        return sortOrder === "asc"
+          ? Number(Boolean(a.isExpress)) - Number(Boolean(b.isExpress))
+          : Number(Boolean(b.isExpress)) - Number(Boolean(a.isExpress));
+      }
+      return compareDate(a.createdAt, b.createdAt, sortOrder);
     });
 
     sendList(items);

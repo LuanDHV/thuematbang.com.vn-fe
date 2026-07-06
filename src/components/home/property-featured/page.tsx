@@ -7,6 +7,7 @@ import Title from "@/components/common/Title";
 import { PropertyCard } from "@/components/common/PropertyCard";
 import SectionBand from "@/components/home/SectionBand";
 import HomeCarousel from "@/components/home/HomeCarousel";
+import Reveal from "@/components/home/Reveal";
 import { propertyService } from "@/services/property.service";
 import { Property } from "@/types";
 
@@ -18,7 +19,7 @@ export default async function PropertyFeaturedSection() {
       filters: {
         priorityStatus: "PREMIUM",
         status: "PUBLISHED",
-        sortBy: "viewCount",
+        sortBy: "createdAt",
         sortOrder: "desc",
       },
       limit: 8,
@@ -32,15 +33,17 @@ export default async function PropertyFeaturedSection() {
 
   return (
     <SectionBand tone="primary">
-      <div className="layout-section w-full px-4">
+      <div className="layout-section w-full">
         <div className="layout-container w-full">
           <div className="section-intro-tight">
-            <Title
-              eyebrow="Gợi ý tốt nhất"
-              title="Bất động sản nổi bật"
-              description="Tuyển chọn các tin đăng cho thuê giá tốt nhất từ khách hàng và doanh nghiệp được xác thực trên hệ thống."
-              variant="home"
-            />
+            <Reveal>
+              <Title
+                eyebrow="Gợi ý tốt nhất"
+                title="Bất động sản nổi bật"
+                description="Tuyển chọn các tin đăng cho thuê giá tốt nhất từ khách hàng và doanh nghiệp được xác thực trên hệ thống."
+                variant="home"
+              />
+            </Reveal>
           </div>
 
           <SafeFetch
@@ -63,29 +66,32 @@ export default async function PropertyFeaturedSection() {
 
               return (
                 <>
-                  <HomeCarousel className="py-4" options={{ align: "center" }}>
+                  <Reveal delay={80}>
+                    <HomeCarousel className="py-4" options={{ align: "center" }}>
+                      {featuredProperties.map((item, index) => (
+                        <div
+                          key={item.id}
+                          className="min-w-0 shrink-0 basis-11/12 pl-3"
+                        >
+                          <PropertyCard
+                            property={item}
+                            variant="featured"
+                            priority={index === 0}
+                          />
+                        </div>
+                      ))}
+                    </HomeCarousel>
+                  </Reveal>
+
+                  <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
                     {featuredProperties.map((item, index) => (
-                      <div
-                        key={item.id}
-                        className="min-w-0 shrink-0 basis-11/12 pl-3"
-                      >
+                      <Reveal key={item.id} delay={index * 70}>
                         <PropertyCard
                           property={item}
                           variant="featured"
                           priority={index === 0}
                         />
-                      </div>
-                    ))}
-                  </HomeCarousel>
-
-                  <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
-                    {featuredProperties.map((item, index) => (
-                      <PropertyCard
-                        key={item.id}
-                        property={item}
-                        variant="featured"
-                        priority={index === 0}
-                      />
+                      </Reveal>
                     ))}
                   </div>
                 </>

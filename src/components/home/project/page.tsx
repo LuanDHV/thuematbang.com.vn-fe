@@ -7,6 +7,7 @@ import Title from "@/components/common/Title";
 import SectionBand from "@/components/home/SectionBand";
 import HomeCarousel from "@/components/home/HomeCarousel";
 import { ProjectCard } from "@/components/common/ProjectCard";
+import Reveal from "@/components/home/Reveal";
 import { projectService } from "@/services/project.service";
 import type { Project } from "@/types/project";
 
@@ -16,7 +17,7 @@ export default async function ProjectSection() {
   const featuredProjectsFetch = projectService.getAll({
     filters: {
       status: "PUBLISHED",
-      sortBy: "viewCount",
+      sortBy: "createdAt",
       sortOrder: "desc",
     },
     limit: FEATURED_PROJECTS_LIMIT,
@@ -24,15 +25,17 @@ export default async function ProjectSection() {
 
   return (
     <SectionBand tone="secondary">
-      <div className="layout-section w-full px-4">
+      <div className="layout-section w-full">
         <div className="layout-container w-full">
           <div className="section-intro-tight">
-            <Title
-              eyebrow="Dự án nổi bật"
-              title="Dự án đang thu hút quan tâm"
-              description="Khám phá các dự án bất động sản nổi bật và mới nhất, giúp bạn xem nhanh vị trí, quy mô, tiện ích và tình trạng dự án."
-              variant="home"
-            />
+            <Reveal>
+              <Title
+                eyebrow="Dự án nổi bật"
+                title="Dự án đang thu hút quan tâm"
+                description="Khám phá các dự án bất động sản nổi bật và mới nhất, giúp bạn xem nhanh vị trí, quy mô, tiện ích và tình trạng dự án."
+                variant="home"
+              />
+            </Reveal>
           </div>
 
           <SafeFetch
@@ -55,20 +58,24 @@ export default async function ProjectSection() {
 
               return (
                 <>
-                  <HomeCarousel className="py-4" options={{ align: "center" }}>
-                    {featuredProjects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="min-w-0 shrink-0 basis-11/12 pl-3"
-                      >
-                        <ProjectCard project={project} />
-                      </div>
-                    ))}
-                  </HomeCarousel>
+                  <Reveal delay={80}>
+                    <HomeCarousel className="py-4" options={{ align: "center" }}>
+                      {featuredProjects.map((project) => (
+                        <div
+                          key={project.id}
+                          className="min-w-0 shrink-0 basis-11/12 pl-3"
+                        >
+                          <ProjectCard project={project} />
+                        </div>
+                      ))}
+                    </HomeCarousel>
+                  </Reveal>
 
                   <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
-                    {featuredProjects.map((project) => (
-                      <ProjectCard key={project.id} project={project} />
+                    {featuredProjects.map((project, index) => (
+                      <Reveal key={project.id} delay={index * 70}>
+                        <ProjectCard project={project} />
+                      </Reveal>
                     ))}
                   </div>
                 </>

@@ -20,7 +20,9 @@ export type PropertySortBy =
   | "price"
   | "area"
   | "viewCount"
-  | "priorityStatus";
+  | "priorityStatus"
+  | "isBoosted"
+  | "boostCount";
 
 export type PropertyListFilters = {
   categoryId?: number;

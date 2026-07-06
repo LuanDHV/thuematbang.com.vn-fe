@@ -215,7 +215,7 @@ const statCards = [
 
 export function AboutPageHero() {
   return (
-    <section className="layout-section-md py-8">
+    <section className="layout-section">
       <Reveal>
         <h1 className="text-heading text-center text-2xl font-bold uppercase md:text-3xl">
           Hành trình của chúng tôi
@@ -227,7 +227,7 @@ export function AboutPageHero() {
 
 export function AboutPageOverview() {
   return (
-    <section className="layout-section-md py-8">
+    <section className="layout-section">
       <BlockHeading title="Giới thiệu" />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[4fr_6fr] lg:gap-8">
@@ -282,7 +282,7 @@ export function AboutPageOverview() {
 
 export function AboutPageTimeline() {
   return (
-    <section className="layout-section-md py-8">
+    <section className="layout-section">
       <BlockHeading title="Lịch sử hình thành" />
 
       <div className="relative mt-8 md:mt-12">
@@ -346,7 +346,7 @@ export function AboutPageTimeline() {
 
 export function AboutPageLeadership() {
   return (
-    <section className="layout-section-md py-8">
+    <section className="layout-section">
       <BlockHeading title="Ban lãnh đạo" />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[6fr_4fr] lg:gap-8">
@@ -393,7 +393,7 @@ export function AboutPageLeadership() {
 
 export function AboutPageReasonsStats() {
   return (
-    <section className="layout-section-md py-8">
+    <section className="layout-section">
       <BlockHeading title="Lý do chọn chúng tôi" />
 
       <Reveal delay={280}>

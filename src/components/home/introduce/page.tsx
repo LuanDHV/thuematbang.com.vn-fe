@@ -5,6 +5,7 @@ import Link from "next/link";
 import Title from "@/components/common/Title";
 import SectionBand from "@/components/home/SectionBand";
 import HomeCarousel from "@/components/home/HomeCarousel";
+import Reveal from "@/components/home/Reveal";
 import { Award, Handshake, Layers, ShieldCheck } from "lucide-react";
 
 const features = [
@@ -54,29 +55,35 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
 export default function IntroduceSection() {
   return (
     <SectionBand tone="primary">
-      <div className="layout-section w-full px-4">
+      <div className="layout-section w-full">
         <div className="layout-container w-full">
-          <Title
-            eyebrow="Về chúng tôi"
-            title="Giải pháp tối ưu cho thuê và cần thuê"
-            description="Nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. "
-            variant="home"
-          />
+          <Reveal>
+            <Title
+              eyebrow="Về chúng tôi"
+              title="Giải pháp tối ưu cho thuê và cần thuê"
+              description="Nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. "
+              variant="home"
+            />
+          </Reveal>
 
-          <HomeCarousel className="py-4" options={{ align: "center" }}>
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="flex h-full min-w-0 shrink-0 basis-11/12 pl-3 md:basis-1/2"
-              >
-                <FeatureCard feature={feature} />
-              </div>
-            ))}
-          </HomeCarousel>
+          <Reveal delay={80}>
+            <HomeCarousel className="py-4" options={{ align: "center" }}>
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="flex h-full min-w-0 shrink-0 basis-11/12 pl-3 md:basis-1/2"
+                >
+                  <FeatureCard feature={feature} />
+                </div>
+              ))}
+            </HomeCarousel>
+          </Reveal>
 
           <div className="mt-5 hidden grid-cols-1 gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
             {features.map((feature, index) => (
-              <FeatureCard key={index} feature={feature} />
+              <Reveal key={index} delay={index * 80}>
+                <FeatureCard feature={feature} />
+              </Reveal>
             ))}
           </div>
         </div>

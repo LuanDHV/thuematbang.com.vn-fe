@@ -48,6 +48,10 @@ export default async function DuAnPage() {
 
       <SafeFetch
         fetcher={projectService.getAll({
+          filters: {
+            sortBy: "createdAt",
+            sortOrder: "desc",
+          },
           limit: 24,
         })}
         debugLabel="Projects Response"

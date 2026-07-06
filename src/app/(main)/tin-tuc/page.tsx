@@ -37,6 +37,10 @@ export default async function TinTucPage() {
       />
       <SafeFetch
         fetcher={newsService.getAll({
+          filters: {
+            sortBy: "createdAt",
+            sortOrder: "desc",
+          },
           limit: 8,
         })}
         debugLabel="News Response"

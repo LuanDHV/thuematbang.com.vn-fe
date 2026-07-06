@@ -7,6 +7,7 @@ import SafeFetch from "@/components/common/SafeFetch";
 import SeeMoreButton from "@/components/common/SeeMoreButton";
 import Title from "@/components/common/Title";
 import SectionBand from "@/components/home/SectionBand";
+import Reveal from "@/components/home/Reveal";
 import { newsService } from "@/services/news.service";
 import { News } from "@/types/news";
 
@@ -14,7 +15,13 @@ const HOME_NEWS_REVALIDATE_SECONDS = 300;
 
 export default async function NewsSection() {
   const newsFetch = newsService.getAll(
-    { limit: 4 },
+    {
+      filters: {
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      },
+      limit: 4,
+    },
     {
       cache: "force-cache",
       revalidate: HOME_NEWS_REVALIDATE_SECONDS,
@@ -27,12 +34,14 @@ export default async function NewsSection() {
       <div className="layout-section w-full">
         <div className="layout-container w-full">
           <div className="section-intro-tight text-center">
-            <Title
-              eyebrow="Cập nhật"
-              title="Cẩm nang & Xu hướng thị trường"
-              description="Cập nhật xu hướng giá thuê, kinh nghiệm tìm mặt bằng và giải pháp tối ưu vận hành bất động sản."
-              variant="home"
-            />
+            <Reveal>
+              <Title
+                eyebrow="Cập nhật"
+                title="Cẩm nang & Xu hướng thị trường"
+                description="Cập nhật xu hướng giá thuê, kinh nghiệm tìm mặt bằng và giải pháp tối ưu vận hành bất động sản."
+                variant="home"
+              />
+            </Reveal>
           </div>
 
           <SafeFetch fetcher={newsFetch} debugLabel="Home News Response">
@@ -57,41 +66,49 @@ export default async function NewsSection() {
                 <>
                   <div className="space-y-5 md:hidden">
                     {featuredNews ? (
-                      <FeaturedNewsCard news={featuredNews} priority />
+                      <Reveal delay={80}>
+                        <FeaturedNewsCard news={featuredNews} priority />
+                      </Reveal>
                     ) : null}
 
                     <div className="grid grid-cols-1 gap-5">
                       {sideNews.map((newsItem, index) => (
-                        <NewsCard
-                          key={newsItem.id}
-                          news={newsItem}
-                          priority={index === 0}
-                        />
+                        <Reveal key={newsItem.id} delay={index * 70}>
+                          <NewsCard
+                            news={newsItem}
+                            priority={index === 0}
+                          />
+                        </Reveal>
                       ))}
                     </div>
                   </div>
 
                   <div className="hidden grid-cols-1 items-stretch gap-5 md:grid md:grid-cols-2 md:gap-8">
                     {featuredNews ? (
-                      <FeaturedNewsCard
-                        news={featuredNews}
-                        className="aspect-auto h-full min-h-136"
-                        priority
-                      />
+                      <Reveal delay={80}>
+                        <FeaturedNewsCard
+                          news={featuredNews}
+                          className="aspect-auto h-full min-h-136"
+                          priority
+                        />
+                      </Reveal>
                     ) : null}
 
                     <div className="grid grid-cols-1 gap-5">
                       {sideNews.map((newsItem, index) => (
-                        <NewsCard
-                          key={newsItem.id}
-                          news={newsItem}
-                          priority={index === 0}
-                        />
+                        <Reveal key={newsItem.id} delay={index * 70}>
+                          <NewsCard
+                            news={newsItem}
+                            priority={index === 0}
+                          />
+                        </Reveal>
                       ))}
                     </div>
                   </div>
 
-                  <SeeMoreButton href="/tin-tuc" />
+                  <Reveal delay={160}>
+                    <SeeMoreButton href="/tin-tuc" />
+                  </Reveal>
                 </>
               );
             }}

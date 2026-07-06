@@ -1,9 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowRight, CirclePlus } from "lucide-react";
+import {
+  ArrowRight,
+  CirclePlus,
+  Sparkles,
+  BadgeCheck,
+  Zap,
+} from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { Button } from "@/components/ui/button";
@@ -27,6 +34,12 @@ const FALLBACK_BANNER: Banner = {
   isActive: true,
   createdAt: new Date().toISOString(),
 };
+
+const heroBadges = [
+  { label: "Xác thực nội dung", icon: BadgeCheck },
+  { label: "Cập nhật liên tục", icon: Sparkles },
+  { label: "Kết nối nhanh", icon: Zap },
+] as const;
 
 function getSlides(banners: Banner[]) {
   const heroSlides = banners
@@ -77,6 +90,7 @@ type HeroActionCardProps = {
   secondaryDescription: string;
   primaryIcon: ReactNode;
   secondaryIcon: ReactNode;
+  className?: string;
 };
 
 function HeroActionCard({
@@ -88,13 +102,14 @@ function HeroActionCard({
   secondaryDescription,
   primaryIcon,
   secondaryIcon,
+  className,
 }: HeroActionCardProps) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className={cn("flex flex-col gap-3", className)}>
       <Button
         asChild
         size="lg"
-        className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[background-color,border-color,filter] duration-500 ease-out hover:border-white/25 hover:brightness-105 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
+        className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-2xl border border-white/15 px-4 py-3 text-left text-sm font-bold text-white shadow-2xl transition-[background-color,border-color,filter,transform] duration-500 ease-out hover:-translate-y-0.5 hover:border-white/25 hover:brightness-105 sm:px-5 sm:py-4 lg:min-h-20 lg:px-6 lg:text-base"
       >
         <Link href={primaryHref}>
           <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -111,7 +126,7 @@ function HeroActionCard({
         asChild
         variant="ghost"
         size="lg"
-        className="group border-border-subtle text-heading hover:border-border-strong hover:bg-surface mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-left text-sm font-bold shadow-lg transition-[background-color,border-color,filter] duration-500 ease-out hover:brightness-[1.02] sm:px-5 sm:py-4 lg:min-h-16 lg:px-6 lg:text-base"
+        className="group border-border-subtle text-heading hover:border-border-strong hover:bg-surface mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-left text-sm font-bold shadow-lg transition-[background-color,border-color,filter,transform] duration-500 ease-out hover:-translate-y-0.5 hover:brightness-[1.02] sm:px-5 sm:py-4 lg:min-h-16 lg:px-6 lg:text-base"
       >
         <Link href={secondaryHref}>
           <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
@@ -129,6 +144,32 @@ function HeroActionCard({
   );
 }
 
+function HeroBadgeStrip({ visible }: { visible: boolean }) {
+  return (
+    <div
+      className={cn(
+        "flex flex-wrap items-center justify-center gap-2 transition-all duration-700 ease-out",
+        visible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
+      )}
+      style={{ transitionDelay: visible ? "120ms" : "0ms" }}
+    >
+      {heroBadges.map((badge, index) => {
+        const Icon = badge.icon;
+        return (
+          <span
+            key={badge.label}
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-semibold tracking-[0.12em] text-white uppercase backdrop-blur-md"
+            style={{ transitionDelay: `${160 + index * 80}ms` }}
+          >
+            <Icon className="text-primary size-3.5" />
+            {badge.label}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
   const slides = useMemo(() => getSlides(banners), [banners]);
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -136,6 +177,11 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
     loop: slides.length > 1,
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -188,11 +234,15 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                     priority={slide.id === slides[0]?.id}
                     sizes="100vw"
                     cldQuality="auto:good"
-                    className="h-full w-full object-cover object-center"
+                    className={cn(
+                      "h-full w-full object-cover object-center transition-transform duration-1200 ease-out",
+                      mounted ? "scale-100" : "scale-[1.08]",
+                    )}
                   />
                   <div className="absolute inset-0 bg-black/20" />
-                  <div className="absolute inset-0 bg-linear-to-b from-black/5 via-black/15 to-black/30" />
+                  <div className="absolute inset-0 bg-linear-to-b from-black/5 via-black/15 to-black/35" />
                   <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-b from-transparent to-black/35" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(245,158,11,0.22),transparent_20%)]" />
                 </div>
               );
 
@@ -214,14 +264,47 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
       </div>
 
       <div className="absolute inset-0">
-        <div className="layout-container relative flex h-full flex-col py-16 sm:py-20 md:py-28">
+        <div className="layout-container relative flex h-full flex-col px-4 py-10 sm:px-6 sm:py-14 md:py-24 lg:py-28">
           <div className="flex flex-1 items-center justify-center text-center">
-            <div className="flex w-full flex-col items-center">
-              <h1 className="mt-6 max-w-5xl text-3xl leading-tight font-bold tracking-[-0.04em] text-white uppercase drop-shadow-xl md:text-4xl lg:text-5xl">
+            <div className="flex w-full max-w-6xl flex-col items-center">
+              <h1
+                className={cn(
+                  "mt-0 max-w-5xl text-2xl leading-tight font-bold tracking-tighter text-white uppercase drop-shadow-xl transition-all duration-700 ease-out sm:mt-6 sm:text-3xl md:text-4xl lg:text-5xl",
+                  mounted
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-6 opacity-0",
+                )}
+                style={{ transitionDelay: mounted ? "120ms" : "0ms" }}
+              >
                 Nền tảng kết nối <br /> bất động sản cho thuê toàn quốc
               </h1>
 
-              <div className="mt-8 grid w-full max-w-5xl grid-cols-1 gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5">
+              <p
+                className={cn(
+                  "mt-3 max-w-3xl text-xs leading-6 text-white/82 transition-all duration-700 ease-out sm:mt-5 sm:text-base sm:leading-7 md:text-lg",
+                  mounted
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-6 opacity-0",
+                )}
+                style={{ transitionDelay: mounted ? "220ms" : "0ms" }}
+              >
+                Tìm, đăng và kết nối nhanh hơn với những tin cho thuê, cần thuê
+                được cập nhật liên tục trên hệ thống.
+              </p>
+
+              <div className="mt-4 hidden w-full max-w-4xl sm:mt-6 sm:block">
+                <HeroBadgeStrip visible={mounted} />
+              </div>
+
+              <div
+                className={cn(
+                  "mt-5 grid w-full max-w-5xl grid-cols-1 gap-3 sm:mt-8 sm:gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5",
+                  mounted
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-6 opacity-0",
+                )}
+                style={{ transitionDelay: mounted ? "320ms" : "0ms" }}
+              >
                 <HeroActionCard
                   primaryHref="/dang-tin/cho-thue"
                   primaryLabel="Đăng tin cho thuê"
@@ -255,7 +338,13 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
             </div>
           </div>
 
-          <div className="mt-auto flex justify-center py-8">
+          <div
+            className={cn(
+              "mt-auto hidden justify-center py-4 transition-all duration-700 ease-out sm:flex sm:py-8",
+              mounted ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0",
+            )}
+            style={{ transitionDelay: mounted ? "420ms" : "0ms" }}
+          >
             <Link
               href="tel:0968688081"
               className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-5 py-2.5 transition hover:border-white/18 hover:bg-white/20"
@@ -277,7 +366,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
       </div>
 
       {slides.length > 1 ? (
-        <div className="absolute inset-x-0 bottom-6 z-20 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-x-0 bottom-4 z-20 flex items-center justify-center px-4 sm:bottom-6 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-md">
             {slides.map((slide, index) => (
               <button

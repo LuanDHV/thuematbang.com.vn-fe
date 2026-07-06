@@ -23,7 +23,7 @@ export default async function AdminDuAnPage({ searchParams }: PageProps) {
       limit,
       filters: {
         q: searchQuery,
-        sortBy: "createdAt",
+        sortBy: "viewCount",
         sortOrder: "desc",
       },
     })

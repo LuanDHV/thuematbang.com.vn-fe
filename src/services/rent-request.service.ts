@@ -17,7 +17,8 @@ export type RentRequestSortBy =
   | "createdAt"
   | "budget"
   | "desiredArea"
-  | "viewCount";
+  | "viewCount"
+  | "isExpress";
 
 export type RentRequestListFilters = {
   categoryId?: number;

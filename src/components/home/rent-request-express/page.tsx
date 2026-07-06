@@ -7,6 +7,7 @@ import Title from "@/components/common/Title";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import SectionBand from "@/components/home/SectionBand";
 import HomeCarousel from "@/components/home/HomeCarousel";
+import Reveal from "@/components/home/Reveal";
 import { rentRequestService } from "@/services/rent-request.service";
 import type { RentRequest } from "@/types/rent-request";
 
@@ -31,15 +32,17 @@ export default async function RentRequestExpressSection() {
 
   return (
     <SectionBand tone="secondary">
-      <div className="layout-section w-full px-4">
+      <div className="layout-section w-full">
         <div className="layout-container w-full">
           <div className="section-intro-tight">
-            <Title
-              eyebrow="Nhu cầu"
-              title="Nhu cầu thuê mới"
-              description="Tập hợp các nhu cầu thuê xác thực, giúp kết nối nhanh giữa người thuê và chủ bất động sản."
-              variant="home"
-            />
+            <Reveal>
+              <Title
+                eyebrow="Nhu cầu"
+                title="Nhu cầu thuê mới"
+                description="Tập hợp các nhu cầu thuê xác thực, giúp kết nối nhanh giữa người thuê và chủ bất động sản."
+                variant="home"
+              />
+            </Reveal>
           </div>
 
           <SafeFetch
@@ -62,24 +65,27 @@ export default async function RentRequestExpressSection() {
 
               return (
                 <>
-                  <HomeCarousel className="py-4" options={{ align: "center" }}>
-                    {rentRequests.map((item) => (
-                      <div
-                        key={item.id}
-                        className="min-w-0 shrink-0 basis-11/12 pl-3"
-                      >
-                        <RentRequestCard request={item} variant="featured" />
-                      </div>
-                    ))}
-                  </HomeCarousel>
+                  <Reveal delay={80}>
+                    <HomeCarousel className="py-4" options={{ align: "center" }}>
+                      {rentRequests.map((item) => (
+                        <div
+                          key={item.id}
+                          className="min-w-0 shrink-0 basis-11/12 pl-3"
+                        >
+                          <RentRequestCard request={item} variant="featured" />
+                        </div>
+                      ))}
+                    </HomeCarousel>
+                  </Reveal>
 
                   <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
-                    {rentRequests.map((item) => (
-                      <RentRequestCard
-                        key={item.id}
-                        request={item}
-                        variant="featured"
-                      />
+                    {rentRequests.map((item, index) => (
+                      <Reveal key={item.id} delay={index * 70}>
+                        <RentRequestCard
+                          request={item}
+                          variant="featured"
+                        />
+                      </Reveal>
                     ))}
                   </div>
                 </>
