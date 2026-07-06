@@ -218,7 +218,7 @@ export function AboutPageHero() {
     <section className="layout-section">
       <Reveal>
         <h1 className="text-heading text-center text-2xl font-bold uppercase md:text-3xl">
-          Hành trình của chúng tôi
+          Tầm nhìn và sứ mệnh
         </h1>
       </Reveal>
     </section>
@@ -285,18 +285,18 @@ export function AboutPageTimeline() {
     <section className="layout-section">
       <BlockHeading title="Lịch sử hình thành" />
 
-      <div className="relative mt-8 md:mt-12">
-        <div className="bg-primary/30 absolute top-0 bottom-0 left-1/2 w-px -translate-x-px md:left-1/2 md:-translate-x-px" />
-        <div className="space-y-4">
+      <div className="relative mt-8 md:mt-12 lg:mt-14">
+        <div className="bg-primary/20 absolute top-0 bottom-0 left-3.5 w-px md:left-4 lg:left-1/2 lg:-translate-x-px" />
+        <div className="space-y-4 md:space-y-5 lg:space-y-4">
           {timelineItems.map((item, index) => {
             const isEven = index % 2 === 0;
 
             return (
               <div
                 key={item.year}
-                className="relative grid grid-cols-1 items-start gap-4 md:grid-cols-[2.5rem_minmax(0,1fr)] md:items-center md:gap-x-4 lg:grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)]"
+                className="relative grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-4 md:grid-cols-[2.5rem_minmax(0,1fr)] md:gap-5 lg:grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)] lg:items-center"
               >
-                <div className="relative z-10 flex justify-center md:col-start-1 md:pt-2 lg:col-start-2 lg:justify-center lg:pt-3">
+                <div className="relative z-10 flex justify-center pt-1 md:pt-1.5 lg:col-start-2 lg:pt-3">
                   <span className="relative flex size-4 shrink-0">
                     <span className="bg-primary/35 absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" />
                     <span className="bg-primary relative inline-flex size-4 rounded-full" />
@@ -305,7 +305,7 @@ export function AboutPageTimeline() {
 
                 <div
                   className={cn(
-                    "col-start-1 md:col-start-2 lg:row-start-1",
+                    "col-start-2 md:col-start-2 lg:row-start-1",
                     isEven
                       ? "lg:col-start-1 lg:w-[calc(100%-1.5rem)] lg:max-w-2xl lg:justify-self-end lg:text-right"
                       : "lg:col-start-3 lg:justify-self-start lg:text-left",
@@ -314,7 +314,7 @@ export function AboutPageTimeline() {
                   <Reveal delay={index * 90}>
                     <article
                       className={cn(
-                        "surface-card max-w-xl p-5",
+                        "surface-card w-full max-w-none p-5 md:p-6 lg:max-w-xl",
                         isEven ? "lg:text-right" : "lg:text-left",
                       )}
                     >
