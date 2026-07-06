@@ -21,6 +21,7 @@ type UploadManyParams = UploadParams & {
 const MIN_FILE_SIZE_TO_OPTIMIZE = 400 * 1024;
 const MAX_UPLOAD_DIMENSION = 1920;
 const OPTIMIZED_IMAGE_QUALITY = 0.82;
+const CLOUDINARY_UPLOAD_PRESET = "ml_default";
 
 function buildUploadFormData(file: File, signature: CloudinaryUploadSignature) {
   const formData = new FormData();
@@ -29,6 +30,7 @@ function buildUploadFormData(file: File, signature: CloudinaryUploadSignature) {
   formData.append("timestamp", String(signature.timestamp));
   formData.append("signature", signature.signature);
   formData.append("folder", signature.folder);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
   return formData;
 }
 
