@@ -8,7 +8,7 @@ type AdminEntityCellProps = {
   imageUrl?: string | null;
   title: string;
   slug?: string;
-  displayCode?: string | null;
+  displayCode?: string;
   imageAlt?: string;
   className?: string;
 };
@@ -24,7 +24,7 @@ export default function AdminEntityCell({
   return (
     <div
       className={cn(
-        "flex min-w-0 w-full max-w-[18rem] items-center gap-3 overflow-hidden sm:max-w-[20rem] lg:max-w-[24rem]",
+        "flex w-full max-w-[18rem] min-w-0 items-center gap-3 overflow-hidden sm:max-w-[20rem] lg:max-w-[24rem]",
         className,
       )}
     >
@@ -51,7 +51,10 @@ export default function AdminEntityCell({
           {title}
         </p>
         {slug ? (
-          <p className="text-muted truncate overflow-hidden text-xs" title={slug}>
+          <p
+            className="text-muted truncate overflow-hidden text-xs"
+            title={slug}
+          >
             {slug}
           </p>
         ) : null}

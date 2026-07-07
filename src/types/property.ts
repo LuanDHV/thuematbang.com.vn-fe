@@ -14,7 +14,7 @@ import { PriceUnit } from "./enums";
 
 export interface Property {
   id: number;
-  displayCode?: string | null;
+  displayCode: string;
   userId?: number | null;
   title: string;
   slug: string;

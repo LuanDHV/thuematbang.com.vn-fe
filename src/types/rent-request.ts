@@ -10,7 +10,7 @@ import { User } from "./user";
 
 export interface RentRequest {
   id: number;
-  displayCode?: string | null;
+  displayCode: string;
   userId?: number | null;
   title: string;
   slug: string;
