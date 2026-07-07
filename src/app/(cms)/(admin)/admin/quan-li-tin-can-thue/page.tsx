@@ -19,14 +19,14 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
 
   const result = await rentRequestService
     .getAll({
-        page: currentPage,
-        limit,
-        filters: {
-          q: searchQuery,
-          sortBy: "viewCount",
-          sortOrder: "desc",
-        },
-      })
+      page: currentPage,
+      limit,
+      filters: {
+        q: searchQuery,
+        sortBy: "viewCount",
+        sortOrder: "desc",
+      },
+    })
     .catch(() => ({ data: [], meta: undefined }));
 
   const items = result.data ?? [];
@@ -40,7 +40,7 @@ export default async function AdminCanThuePage({ searchParams }: PageProps) {
         totalPages={totalPages}
         toolbar={{
           title: "Quản lí tin cần thuê",
-          searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
+          searchPlaceholder: "Tìm kiếm theo tên, mã hoặc slug",
           searchValue,
           actionLabel: "Tạo mới",
           actionHref: "/admin/quan-li-tin-can-thue/new",

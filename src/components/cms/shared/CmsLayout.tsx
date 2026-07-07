@@ -53,9 +53,7 @@ export default function CmsLayout({
         </aside>
 
         <main className="min-w-0 flex-1">
-          <div className="px-3 py-3 md:px-5 md:py-5 lg:px-7 lg:py-6">
-            {children}
-          </div>
+          <div className="layout-section px-5">{children}</div>
         </main>
       </div>
     </section>

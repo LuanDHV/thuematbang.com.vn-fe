@@ -40,9 +40,8 @@ export default function RentRequestDetailContent({
   locationText,
   viewedRequests,
 }: RentRequestDetailContentProps) {
-  const hasArea = typeof rentRequest.desiredArea === "number";
-  const hasDirection = Boolean(rentRequest.desiredDirection);
-  const categoryName = rentRequest.category?.name ?? "";
+  const hasArea = typeof rentRequest?.desiredArea === "number";
+  const hasDirection = Boolean(rentRequest?.desiredDirection);
 
   return (
     <div className="surface-card flex w-full flex-col gap-6 p-5 lg:gap-8">
@@ -51,7 +50,7 @@ export default function RentRequestDetailContent({
           <div className="bg-surface-alt relative aspect-video w-full overflow-hidden rounded-2xl">
             <CloudinaryImage
               src={RENT_REQUEST_COVER_IMAGE}
-              alt={rentRequest.title}
+              alt={rentRequest?.title}
               width={1600}
               height={900}
               sizes="(max-width: 1024px) 100vw, 75vw"
@@ -64,25 +63,29 @@ export default function RentRequestDetailContent({
 
         <section>
           <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
-            {rentRequest.title}
+            {rentRequest?.title}
           </h1>
 
           <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
-            {categoryName ? (
-              <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-                <Layers size={14} className="text-primary" />
-                Danh mục: {categoryName}
-              </span>
-            ) : null}
+            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Layers size={14} className="text-primary" />
+              Mã tin: {rentRequest?.displayCode}
+            </span>
+
+            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Layers size={14} className="text-primary" />
+              Danh mục: {rentRequest?.category?.name}
+            </span>
 
             <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
               <CalendarDays size={14} className="text-primary" />
-              Ngày đăng: {formatDate(rentRequest.createdAt)}
+              Ngày đăng: {formatDate(rentRequest?.createdAt)}
             </span>
 
             <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
               <Eye size={14} className="text-primary" />
-              Lượt xem: {formatNumber(rentRequest.viewCount, { fallback: "0" })}
+              Lượt xem:{" "}
+              {formatNumber(rentRequest?.viewCount, { fallback: "0" })}
             </span>
           </div>
         </section>
@@ -115,11 +118,11 @@ export default function RentRequestDetailContent({
                   Ngân sách
                 </p>
                 <p className="text-heading text-sm font-semibold">
-                  {formatListingPrice(rentRequest.budget, {
+                  {formatListingPrice(rentRequest?.budget, {
                     fallback: "Đang cập nhật",
-                    amount: rentRequest.budgetAmount,
-                    unit: rentRequest.budgetUnit,
-                    negotiable: rentRequest.isNegotiable,
+                    amount: rentRequest?.budgetAmount,
+                    unit: rentRequest?.budgetUnit,
+                    negotiable: rentRequest?.isNegotiable,
                     negotiableLabel: "Thỏa thuận",
                   })}
                 </p>
@@ -134,7 +137,7 @@ export default function RentRequestDetailContent({
                     Diện tích cần thuê
                   </p>
                   <p className="text-heading text-sm font-semibold">
-                    {formatAreaValue(rentRequest.desiredArea)}
+                    {formatAreaValue(rentRequest?.desiredArea)}
                   </p>
                 </div>
               </div>
@@ -149,7 +152,7 @@ export default function RentRequestDetailContent({
                   </p>
                   <p className="text-heading text-sm font-semibold">
                     {getDirectionLabel(
-                      rentRequest.desiredDirection?.toString(),
+                      rentRequest?.desiredDirection?.toString(),
                     )}
                   </p>
                 </div>
@@ -165,11 +168,11 @@ export default function RentRequestDetailContent({
               Thông tin mô tả
             </h2>
           </div>
-          {rentRequest.requirementText ? (
+          {rentRequest?.requirementText ? (
             <div
               className="premium-prose prose prose-sm prose-p:leading-8 prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-[-0.02em] text-body max-w-none"
               suppressHydrationWarning
-              dangerouslySetInnerHTML={{ __html: rentRequest.requirementText }}
+              dangerouslySetInnerHTML={{ __html: rentRequest?.requirementText }}
             />
           ) : (
             <p className="text-secondary text-sm">

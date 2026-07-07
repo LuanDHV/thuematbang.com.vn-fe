@@ -8,6 +8,7 @@ type AdminEntityCellProps = {
   imageUrl?: string | null;
   title: string;
   slug?: string;
+  displayCode?: string | null;
   imageAlt?: string;
   className?: string;
 };
@@ -16,6 +17,7 @@ export default function AdminEntityCell({
   imageUrl,
   title,
   slug,
+  displayCode,
   imageAlt,
   className,
 }: AdminEntityCellProps) {
@@ -51,6 +53,14 @@ export default function AdminEntityCell({
         {slug ? (
           <p className="text-muted truncate overflow-hidden text-xs" title={slug}>
             {slug}
+          </p>
+        ) : null}
+        {displayCode ? (
+          <p
+            className="text-primary truncate overflow-hidden text-xs font-medium"
+            title={displayCode}
+          >
+            {displayCode}
           </p>
         ) : null}
       </div>

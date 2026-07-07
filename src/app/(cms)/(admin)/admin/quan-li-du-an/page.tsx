@@ -40,7 +40,7 @@ export default async function AdminDuAnPage({ searchParams }: PageProps) {
         totalPages={totalPages}
         toolbar={{
           title: "Quản lí dự án",
-          searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
+          searchPlaceholder: "Tìm kiếm theo tên, mã hoặc slug",
           searchValue,
           actionLabel: "Tạo mới",
           actionHref: "/admin/quan-li-du-an/new",

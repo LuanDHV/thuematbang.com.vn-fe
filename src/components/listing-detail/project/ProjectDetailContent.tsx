@@ -29,30 +29,33 @@ export default function ProjectDetailContent({
   return (
     <div className="surface-card flex flex-col gap-6 p-5 lg:gap-8">
       <section>
-        <PropertyImageGallery title={project.name} images={galleryImages} />
+        <PropertyImageGallery title={project?.name} images={galleryImages} />
       </section>
 
       <section>
         <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
-          {project.name}
+          {project?.name}
         </h1>
 
         <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
-          {project.category?.name ? (
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <Layers size={14} className="text-primary" />
-              Danh mục: {project.category.name}
-            </span>
-          ) : null}
+          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+            <Layers size={14} className="text-primary" />
+            Mã tin: {project?.displayCode}
+          </span>
+
+          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+            <Layers size={14} className="text-primary" />
+            Danh mục: {project?.category?.name}
+          </span>
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <CalendarDays size={14} className="text-primary" />
-            Ngày đăng: {formatDate(project.createdAt)}
+            Ngày đăng: {formatDate(project?.createdAt)}
           </span>
 
           <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Eye size={14} className="text-primary" />
-            Lượt xem: {formatNumber(project.viewCount, { fallback: "0" })}
+            Lượt xem: {formatNumber(project?.viewCount, { fallback: "0" })}
           </span>
         </div>
       </section>
@@ -73,10 +76,10 @@ export default function ProjectDetailContent({
                 Tổng mức đầu tư
               </p>
               <p className="text-heading text-sm font-semibold">
-                {formatNegotiablePrice(project.price, project.isNegotiable, {
+                {formatNegotiablePrice(project?.price, project?.isNegotiable, {
                   fallback: "Liên hệ",
-                  amount: project.priceAmount,
-                  unit: project.priceUnit,
+                  amount: project?.priceAmount,
+                  unit: project?.priceUnit,
                 })}
               </p>
             </div>
@@ -89,7 +92,7 @@ export default function ProjectDetailContent({
                 Quy mô
               </p>
               <p className="text-heading text-sm font-semibold">
-                {formatAreaValue(project.area)}
+                {formatAreaValue(project?.area)}
               </p>
             </div>
           </div>
@@ -101,7 +104,7 @@ export default function ProjectDetailContent({
                 Chủ đầu tư
               </p>
               <p className="text-heading text-sm font-semibold">
-                {project.developer || "Đang cập nhật"}
+                {project?.developer || "Đang cập nhật"}
               </p>
             </div>
           </div>
@@ -116,11 +119,11 @@ export default function ProjectDetailContent({
           </h2>
         </div>
 
-        {project.content ? (
+        {project?.content ? (
           <div
             className="premium-prose prose prose-sm prose-p:leading-relaxed prose-headings:font-semibold text-body max-w-none"
             suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: project.content }}
+            dangerouslySetInnerHTML={{ __html: project?.content }}
           />
         ) : (
           <p className="text-secondary text-sm">
@@ -139,7 +142,7 @@ export default function ProjectDetailContent({
 
         {mapSrc ? (
           <iframe
-            title={`Bản đồ vị trí ${project.name}`}
+            title={`Bản đồ vị trí ${project?.name}`}
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

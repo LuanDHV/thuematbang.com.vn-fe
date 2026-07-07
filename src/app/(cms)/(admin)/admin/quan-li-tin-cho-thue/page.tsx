@@ -42,7 +42,7 @@ export default async function AdminChoThuePage({ searchParams }: PageProps) {
         totalPages={totalPages}
         toolbar={{
           title: "Quản lí tin cho thuê",
-          searchPlaceholder: "Tìm kiếm theo tên hoặc slug",
+          searchPlaceholder: "Tìm kiếm theo tên, mã hoặc slug",
           searchValue,
           actionLabel: "Tạo mới",
           actionHref: "/admin/quan-li-tin-cho-thue/new",

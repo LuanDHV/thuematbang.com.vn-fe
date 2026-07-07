@@ -46,43 +46,46 @@ export default function PropertyDetailContent({
   featuredProperties,
   viewedProperties,
 }: PropertyDetailContentProps) {
-  const hasArea = typeof property.area === "number" && property.area > 0;
-  const hasDirection = Boolean(property.direction);
+  const hasArea = typeof property?.area === "number" && property?.area > 0;
+  const hasDirection = Boolean(property?.direction);
 
   return (
     <div className="surface-editorial flex flex-col gap-6 p-5 lg:gap-8 lg:p-6">
       <section>
-        <PropertyImageGallery title={property.title} images={galleryImages} />
+        <PropertyImageGallery title={property?.title} images={galleryImages} />
       </section>
 
       <section>
         <h1 className="text-heading text-2xl leading-tight font-semibold tracking-[-0.03em] lg:text-4xl">
-          {property.title}
+          {property?.title}
         </h1>
 
         <div className="text-secondary mt-4 flex flex-wrap items-center gap-2 text-sm">
-          {property.category?.name ? (
-            <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <Layers size={14} className="text-primary" />
-              Danh mục: {property.category.name}
-            </span>
-          ) : null}
+          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+            <Layers size={14} className="text-primary" />
+            Mã tin: {property?.displayCode}
+          </span>
+
+          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+            <Layers size={14} className="text-primary" />
+            Danh mục: {property?.category?.name}
+          </span>
 
           <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Tag size={14} className="text-primary" />
-            Loại tin đăng:{" "}
-            {PROPERTY_PRIORITY_LABEL_MAP[property.priorityStatus] ??
-              property.priorityStatus}
+            Loại tin:{" "}
+            {PROPERTY_PRIORITY_LABEL_MAP[property?.priorityStatus] ??
+              property?.priorityStatus}
           </span>
 
           <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <CalendarDays size={14} className="text-primary" />
-            Ngày đăng: {formatDate(property.createdAt)}
+            Ngày đăng: {formatDate(property?.createdAt)}
           </span>
 
           <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             <Eye size={14} className="text-primary" />
-            Lượt xem: {formatNumber(property.viewCount, { fallback: "0" })}
+            Lượt xem: {formatNumber(property?.viewCount, { fallback: "0" })}
           </span>
         </div>
       </section>
@@ -103,11 +106,15 @@ export default function PropertyDetailContent({
                 Giá thuê
               </p>
               <p className="text-heading text-sm font-semibold">
-                {formatNegotiablePrice(property.price, property.isNegotiable, {
-                  fallback: "Liên hệ",
-                  amount: property.priceAmount,
-                  unit: property.priceUnit,
-                })}
+                {formatNegotiablePrice(
+                  property?.price,
+                  property?.isNegotiable,
+                  {
+                    fallback: "Liên hệ",
+                    amount: property?.priceAmount,
+                    unit: property?.priceUnit,
+                  },
+                )}
               </p>
             </div>
           </div>
@@ -132,7 +139,7 @@ export default function PropertyDetailContent({
                   Diện tích
                 </p>
                 <p className="text-heading text-sm font-semibold">
-                  {formatAreaValue(property.area)}
+                  {formatAreaValue(property?.area)}
                 </p>
               </div>
             </div>
@@ -146,7 +153,7 @@ export default function PropertyDetailContent({
                   Hướng
                 </p>
                 <p className="text-heading text-sm font-semibold">
-                  {getDirectionLabel(property.direction?.toString())}
+                  {getDirectionLabel(property?.direction?.toString())}
                 </p>
               </div>
             </div>
@@ -161,11 +168,11 @@ export default function PropertyDetailContent({
             Thông tin mô tả
           </h2>
         </div>
-        {property.content ? (
+        {property?.content ? (
           <div
             className="premium-prose prose prose-sm prose-p:leading-8 prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-[-0.02em] text-body max-w-none"
             suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: property.content }}
+            dangerouslySetInnerHTML={{ __html: property?.content }}
           />
         ) : (
           <p className="text-secondary text-sm">
@@ -184,7 +191,7 @@ export default function PropertyDetailContent({
 
         {mapSrc ? (
           <iframe
-            title={`Bản đồ vị trí ${property.title}`}
+            title={`Bản đồ vị trí ${property?.title}`}
             src={mapSrc}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

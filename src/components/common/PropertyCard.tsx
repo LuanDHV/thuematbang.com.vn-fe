@@ -42,12 +42,12 @@ type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
 
 function resolvePropertyHref(property: Property) {
-  return `/cho-thue/${property.slug}`;
+  return `/cho-thue/${property?.slug}`;
 }
 
 function getSortedPropertyImageUrls(property: Property) {
   const sortedImages =
-    property.images
+    property?.images
       ?.slice()
       .sort((left, right) => left.sortOrder - right.sortOrder)
       .map((image) => image.imageUrl)
@@ -89,11 +89,11 @@ function CardFooter({ property }: { property: Property }) {
     <div className="text-secondary border-hairline mt-auto grid grid-cols-2 gap-2 border-t border-dashed pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
         <Calendar size={14} />
-        {formatDate(property.createdAt)}
+        {formatDate(property?.createdAt)}
       </span>
       <span className="inline-flex items-center justify-end gap-1">
         <Eye size={14} />
-        {formatNumber(property.viewCount, { fallback: "0" })}
+        {formatNumber(property?.viewCount, { fallback: "0" })}
       </span>
     </div>
   );
@@ -149,7 +149,7 @@ function FeaturedCard({
   property: Property;
   priority?: boolean;
 }) {
-  const tone = getTierTone(property.priorityStatus);
+  const tone = getTierTone(property?.priorityStatus);
 
   return (
     <article className={`surface-editorial ${CARD_HOVER_CLASSES}`}>
@@ -157,7 +157,7 @@ function FeaturedCard({
         <TierBadge tone={tone} />
         <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
-          alt={property.title || "Bất động sản"}
+          alt={property?.title || "Bất động sản"}
           width={1200}
           height={800}
           priority={priority}
@@ -211,7 +211,7 @@ function PremiumCard({
         >
           <CloudinaryImage
             src={heroImage}
-            alt={property.title || "Bất động sản"}
+            alt={property?.title || "Bất động sản"}
             width={1200}
             height={800}
             priority={priority}
@@ -227,7 +227,7 @@ function PremiumCard({
               <div className="relative h-full w-full overflow-hidden">
                 <CloudinaryImage
                   src={sideImages[0] || fallbackImage}
-                  alt={`${property.title} - ảnh 2`}
+                  alt={`${property?.title} - ảnh 2`}
                   width={800}
                   height={600}
                   sizes={TIER_SIDE_IMAGE_SIZES}
@@ -240,7 +240,7 @@ function PremiumCard({
                 <div className="relative h-1/2 w-full overflow-hidden">
                   <CloudinaryImage
                     src={sideImages[0] || fallbackImage}
-                    alt={`${property.title} - ảnh 2`}
+                    alt={`${property?.title} - ảnh 2`}
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
@@ -251,7 +251,7 @@ function PremiumCard({
                 <div className="relative h-1/2 w-full overflow-hidden">
                   <CloudinaryImage
                     src={sideImages[1] || fallbackImage}
-                    alt={`${property.title} - ảnh 3`}
+                    alt={`${property?.title} - ảnh 3`}
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
@@ -265,7 +265,7 @@ function PremiumCard({
                 <div className="relative h-1/2 w-full overflow-hidden">
                   <CloudinaryImage
                     src={sideImages[0] || fallbackImage}
-                    alt={`${property.title} - ảnh 2`}
+                    alt={`${property?.title} - ảnh 2`}
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
@@ -277,7 +277,7 @@ function PremiumCard({
                   <div className="relative h-full w-1/2 overflow-hidden">
                     <CloudinaryImage
                       src={sideImages[1] || fallbackImage}
-                      alt={`${property.title} - ảnh 3`}
+                      alt={`${property?.title} - ảnh 3`}
                       width={800}
                       height={600}
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
@@ -288,7 +288,7 @@ function PremiumCard({
                   <div className="relative h-full w-1/2 overflow-hidden">
                     <CloudinaryImage
                       src={sideImages[2] || fallbackImage}
-                      alt={`${property.title} - ảnh 4`}
+                      alt={`${property?.title} - ảnh 4`}
                       width={800}
                       height={600}
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
@@ -339,7 +339,7 @@ function StandardCard({
         >
           <CloudinaryImage
             src={heroImage}
-            alt={property.title || "Bất động sản"}
+            alt={property?.title || "Bất động sản"}
             width={1200}
             height={800}
             priority={priority}
@@ -355,7 +355,7 @@ function StandardCard({
               <div className="relative h-full overflow-hidden">
                 <CloudinaryImage
                   src={sideImages[0] || fallbackImage}
-                  alt={`${property.title} - ảnh phụ 1`}
+                  alt={`${property?.title} - ảnh phụ 1`}
                   width={800}
                   height={600}
                   sizes={TIER_SIDE_IMAGE_SIZES}
@@ -366,12 +366,12 @@ function StandardCard({
             ) : (
               sideImages.map((src, index) => (
                 <div
-                  key={`${property.id}-right-thumb-${index}`}
+                  key={`${property?.id}-right-thumb-${index}`}
                   className="relative h-1/2 overflow-hidden"
                 >
                   <CloudinaryImage
                     src={src || fallbackImage}
-                    alt={`${property.title} - ảnh phụ ${index + 1}`}
+                    alt={`${property?.title} - ảnh phụ ${index + 1}`}
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
@@ -414,7 +414,7 @@ function FreeCard({
       <div className="relative h-40 overflow-hidden">
         <CloudinaryImage
           src={image}
-          alt={property.title || "Bất động sản"}
+          alt={property?.title || "Bất động sản"}
           width={1200}
           height={800}
           priority={priority}
@@ -451,21 +451,22 @@ function CardBody({
   showRooms?: boolean;
 }) {
   const location = formatLocationParts(
-    [property.ward?.name, property.province?.name],
+    [property?.ward?.name, property?.province?.name],
     "Đang cập nhật vị trí",
   );
-  const contentPreview = property.content?.replace(/<[^>]+>/g, "").trim() || "";
+  const contentPreview =
+    property?.content?.replace(/<[^>]+>/g, "").trim() || "";
   const isCompact = density === "compact";
   const bedroomsText = showRooms
-    ? property.bedrooms
-      ? `${property.bedrooms} phòng ngủ`
+    ? property?.bedrooms
+      ? `${property?.bedrooms} phòng ngủ`
       : isCompact
         ? null
         : "Đang cập nhật phòng ngủ"
     : null;
   const bathroomsText = showRooms
-    ? property.bathrooms
-      ? `${property.bathrooms} phòng tắm`
+    ? property?.bathrooms
+      ? `${property?.bathrooms} phòng tắm`
       : isCompact
         ? null
         : "Đang cập nhật phòng tắm"
@@ -475,25 +476,11 @@ function CardBody({
     { icon: MapPin, text: location },
     {
       icon: Maximize,
-      text: formatAreaValue(property.area, "Đang cập nhật diện tích"),
+      text: formatAreaValue(property?.area, "Đang cập nhật diện tích"),
     },
     bedroomsText ? { icon: Bed, text: bedroomsText } : null,
     bathroomsText ? { icon: Bath, text: bathroomsText } : null,
   ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
-
-  const priceClass =
-    tone === "PREMIUM"
-      ? "text-xl "
-      : tone === "STANDARD"
-        ? "text-lg "
-        : "text-base";
-
-  const metaTextClass =
-    tone === "PREMIUM"
-      ? "text-sm"
-      : tone === "STANDARD"
-        ? "text-sm"
-        : "text-xs";
 
   const previewTextClass =
     tone === "PREMIUM"
@@ -501,6 +488,7 @@ function CardBody({
       : tone === "STANDARD"
         ? "text-sm"
         : "text-sm";
+
   const metaGridClass =
     tone === "PREMIUM" || tone === "STANDARD"
       ? "grid-cols-1"
@@ -510,25 +498,19 @@ function CardBody({
 
   return (
     <div className="flex h-full flex-1 flex-col p-4">
-      {property.category?.name && (
-        <span
-          className={`text-primary mb-2 inline-flex w-fit items-center self-start text-xs font-semibold tracking-[0.16em] uppercase`}
-        >
-          {property.category.name}
-        </span>
-      )}
+      <span className="text-primary mb-2 inline-flex text-xs font-semibold lg:text-sm">
+        {property?.displayCode} - {property?.category?.name}
+      </span>
 
       <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
-        {property.title}
+        {property?.title}
       </h3>
 
-      <p
-        className={`group-hover:text-primary text-heading transition-colors duration-200 ${priceClass} font-semibold tracking-[-0.01em]`}
-      >
-        {formatNegotiablePrice(property.price, property.isNegotiable, {
+      <p className="group-hover:text-primary text-heading text-base font-semibold transition-colors duration-200">
+        {formatNegotiablePrice(property?.price, property?.isNegotiable, {
           fallback: "Liên hệ",
-          amount: property.priceAmount,
-          unit: property.priceUnit,
+          amount: property?.priceAmount,
+          unit: property?.priceUnit,
         })}
       </p>
 
@@ -537,11 +519,11 @@ function CardBody({
       >
         {metaItems.map(({ icon: Icon, text }, index) => (
           <p
-            key={`${property.id}-meta-${index}`}
+            key={`${property?.id}-meta-${index}`}
             className="flex items-start gap-1.5"
           >
             <Icon size={14} className="text-primary mt-0.5 shrink-0" />
-            <span className={`line-clamp-1 ${metaTextClass}`}>{text}</span>
+            <span className="line-clamp-1 text-xs lg:text-sm">{text}</span>
           </p>
         ))}
       </div>
@@ -575,7 +557,7 @@ export function PropertyCard({
   if (variant === "featured") {
     content = <FeaturedCard property={property} priority={priority} />;
   } else {
-    const tier = (property.priorityStatus ?? "FREE") as PropertyPriority;
+    const tier = (property?.priorityStatus ?? "FREE") as PropertyPriority;
     switch (tier) {
       case "PREMIUM":
         content = <PremiumCard property={property} priority={priority} />;

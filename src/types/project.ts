@@ -5,6 +5,7 @@ import { ProjectImage } from "./media";
 
 export interface Project {
   id: number;
+  displayCode?: string | null;
   name: string;
   slug: string;
   categoryId: number;

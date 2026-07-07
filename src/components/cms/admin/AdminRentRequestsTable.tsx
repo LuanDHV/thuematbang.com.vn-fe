@@ -79,6 +79,7 @@ export default function AdminRentRequestsTable({
             imageUrl={RENT_REQUEST_COVER_IMAGE}
             title={row.title}
             slug={row.slug}
+            displayCode={row.displayCode}
           />
         ),
       },

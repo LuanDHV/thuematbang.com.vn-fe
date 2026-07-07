@@ -19,7 +19,7 @@ const CARD_HOVER_CLASSES =
 
 function getProjectThumbnailUrl(project: Project) {
   const sortedImages =
-    project.images
+    project?.images
       ?.slice()
       .sort((left, right) => left.sortOrder - right.sortOrder)
       .map((image) => image.imageUrl)
@@ -52,23 +52,23 @@ function CardFooter({
 export function ProjectCard({ project }: { project: Project }) {
   const thumbnailImageUrl = getProjectThumbnailUrl(project);
   const location = formatLocationParts(
-    [project.ward?.name, project.province?.name],
+    [project?.ward?.name, project?.province?.name],
     "Đang cập nhật vị trí",
   );
-  // const contentPreview = project.content?.replace(/<[^>]+>/g, "").trim() || "";
+  // const contentPreview = project?.content?.replace(/<[^>]+>/g, "").trim() || "";
 
   return (
     <Link
-      href={`/du-an/${project.slug}`}
+      href={`/du-an/${project?.slug}`}
       className="group block h-full overflow-hidden"
     >
       <article
-        className={`surface-editorial ${CARD_HOVER_CLASSES} flex min-h-120 flex-col`}
+        className={`surface-editorial ${CARD_HOVER_CLASSES} flex h-full flex-col`}
       >
         <div className="bg-surface-alt relative h-56 overflow-hidden">
           <CloudinaryImage
             src={thumbnailImageUrl}
-            alt={project.name}
+            alt={project?.name}
             width={1200}
             height={900}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -78,20 +78,19 @@ export function ProjectCard({ project }: { project: Project }) {
         </div>
 
         <div className="flex h-full flex-1 flex-col p-4">
-          {project.category?.name ? (
-            <span className="text-primary mb-2 inline-flex w-fit items-center self-start text-xs font-semibold tracking-[0.18em] uppercase">
-              {project.category.name}
-            </span>
-          ) : null}
+          <span className="text-primary mb-2 inline-flex text-xs font-semibold lg:text-sm">
+            {project?.displayCode} - {project?.category?.name}
+          </span>
+
           <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
-            {project.name}
+            {project?.name}
           </h3>
 
-          <p className="group-hover:text-primary text-heading text-lg font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-xl">
-            {formatNegotiablePrice(project.price, project.isNegotiable, {
+          <p className="group-hover:text-primary text-heading text-base font-semibold transition-colors duration-200">
+            {formatNegotiablePrice(project?.price, project?.isNegotiable, {
               fallback: "Liên hệ",
-              amount: project.priceAmount,
-              unit: project.priceUnit,
+              amount: project?.priceAmount,
+              unit: project?.priceUnit,
             })}
           </p>
 
@@ -105,13 +104,13 @@ export function ProjectCard({ project }: { project: Project }) {
             {/* <p className="flex items-start gap-1.5">
               <Building2 size={14} className="text-primary mt-0.5 shrink-0" />
               <span className="text-secondary line-clamp-1 text-sm">
-                {project.developer || "Đang cập nhật chủ đầu tư"}
+                {project?.developer || "Đang cập nhật chủ đầu tư"}
               </span>
             </p> */}
             <p className="flex items-start gap-1.5">
               <Maximize size={14} className="text-primary mt-0.5 shrink-0" />
               <span className="text-secondary line-clamp-1 text-sm">
-                {formatAreaValue(project.area, "Đang cập nhật diện tích")}
+                {formatAreaValue(project?.area, "Đang cập nhật diện tích")}
               </span>
             </p>
           </div>
@@ -123,8 +122,8 @@ export function ProjectCard({ project }: { project: Project }) {
           ) : null} */}
 
           <CardFooter
-            createdAt={project.createdAt}
-            viewCount={project.viewCount || 0}
+            createdAt={project?.createdAt}
+            viewCount={project?.viewCount || 0}
           />
         </div>
 

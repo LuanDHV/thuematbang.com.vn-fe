@@ -87,6 +87,7 @@ export default function AdminPropertiesTable({
             imageUrl={getPrimaryPropertyImage(row)}
             title={row.title}
             slug={row.slug}
+            displayCode={row.displayCode}
           />
         ),
       },

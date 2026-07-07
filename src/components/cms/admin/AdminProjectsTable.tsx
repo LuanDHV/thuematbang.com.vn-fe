@@ -73,6 +73,7 @@ function getPrimaryProjectImage(project: Project) {
             imageUrl={getPrimaryProjectImage(row)}
             title={row.name}
             slug={row.slug}
+            displayCode={row.displayCode}
           />
         ),
       },
