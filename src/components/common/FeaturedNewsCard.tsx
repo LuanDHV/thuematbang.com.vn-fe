@@ -33,7 +33,7 @@ export default function FeaturedNewsCard({
         height={900}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         priority={priority}
-        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        className="h-full w-full object-cover"
       />
 
       <div className="absolute inset-x-0 bottom-0 z-10 space-y-3 p-4 md:p-5">

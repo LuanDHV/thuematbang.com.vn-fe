@@ -22,6 +22,7 @@ export interface Project {
   isNegotiable: boolean;
   content?: string | null;
   viewCount: number;
+  favoriteCount: number;
   status: ContentStatus;
   createdAt: Date | string;
   updatedAt: Date | string;

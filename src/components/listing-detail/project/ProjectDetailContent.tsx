@@ -1,11 +1,14 @@
 import {
+  Bookmark,
   Building2,
   CalendarDays,
   Eye,
+  Heart,
   Landmark,
   Layers,
   Maximize,
 } from "lucide-react";
+import FavoriteButton from "@/components/common/FavoriteButton";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
 import {
   formatAreaValue,
@@ -37,26 +40,41 @@ export default function ProjectDetailContent({
           {project?.name}
         </h1>
 
-        <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Layers size={14} className="text-primary" />
-            Mã tin: {project?.displayCode}
-          </span>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <div className="text-secondary flex flex-wrap items-center gap-2 text-sm">
+            <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Bookmark size={14} className="text-primary" />
+              Mã tin: {project?.displayCode}
+            </span>
 
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Layers size={14} className="text-primary" />
-            Danh mục: {project?.category?.name}
-          </span>
+            <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Layers size={14} className="text-primary" />
+              Danh mục: {project?.category?.name}
+            </span>
 
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <CalendarDays size={14} className="text-primary" />
-            Ngày đăng: {formatDate(project?.createdAt)}
-          </span>
+            <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <CalendarDays size={14} className="text-primary" />
+              Ngày đăng: {formatDate(project?.createdAt)}
+            </span>
 
-          <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Eye size={14} className="text-primary" />
-            Lượt xem: {formatNumber(project?.viewCount, { fallback: "0" })}
-          </span>
+            <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Eye size={14} className="text-primary" />
+              Lượt xem: {formatNumber(project?.viewCount, { fallback: "0" })}
+            </span>
+
+            <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Heart size={14} className="text-primary" />
+              Lượt quan tâm:{" "}
+              {formatNumber(project?.favoriteCount ?? 0, { fallback: "0" })}
+            </span>
+          </div>
+
+          <FavoriteButton
+            entityType="PROJECT"
+            entityId={project.id}
+            initialFavoriteCount={project.favoriteCount ?? 0}
+            className="relative z-0 self-center"
+          />
         </div>
       </section>
 

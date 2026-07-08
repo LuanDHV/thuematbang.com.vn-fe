@@ -1,6 +1,8 @@
 import {
+  Bookmark,
   CalendarDays,
   Eye,
+  Heart,
   Layers,
   MapPin,
   Maximize,
@@ -8,6 +10,7 @@ import {
   Wallet,
 } from "lucide-react";
 
+import FavoriteButton from "@/components/common/FavoriteButton";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
@@ -66,27 +69,44 @@ export default function RentRequestDetailContent({
             {rentRequest?.title}
           </h1>
 
-          <div className="text-secondary mt-3 flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <Layers size={14} className="text-primary" />
-              Mã tin: {rentRequest?.displayCode}
-            </span>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <div className="text-secondary flex flex-wrap items-center gap-2 text-sm">
+              <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+                <Bookmark size={14} className="text-primary" />
+                Mã tin: {rentRequest?.displayCode}
+              </span>
 
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <Layers size={14} className="text-primary" />
-              Danh mục: {rentRequest?.category?.name}
-            </span>
+              <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+                <Layers size={14} className="text-primary" />
+                Danh mục: {rentRequest?.category?.name}
+              </span>
 
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <CalendarDays size={14} className="text-primary" />
-              Ngày đăng: {formatDate(rentRequest?.createdAt)}
-            </span>
+              <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+                <CalendarDays size={14} className="text-primary" />
+                Ngày đăng: {formatDate(rentRequest?.createdAt)}
+              </span>
 
-            <span className="text-secondary surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-              <Eye size={14} className="text-primary" />
-              Lượt xem:{" "}
-              {formatNumber(rentRequest?.viewCount, { fallback: "0" })}
-            </span>
+              <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+                <Eye size={14} className="text-primary" />
+                Lượt xem:{" "}
+                {formatNumber(rentRequest?.viewCount, { fallback: "0" })}
+              </span>
+
+              <span className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+                <Heart size={14} className="text-primary" />
+                Lượt quan tâm:{" "}
+                {formatNumber(rentRequest?.favoriteCount ?? 0, {
+                  fallback: "0",
+                })}
+              </span>
+            </div>
+
+            <FavoriteButton
+              entityType="RENT_REQUEST"
+              entityId={rentRequest.id}
+              initialFavoriteCount={rentRequest.favoriteCount ?? 0}
+              className="relative z-0 self-center"
+            />
           </div>
         </section>
 

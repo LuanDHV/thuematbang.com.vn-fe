@@ -33,6 +33,8 @@ export type PropertyDirection =
 
 export type CategoryType = "PROPERTY" | "RENT_REQUEST" | "PROJECT" | "NEWS";
 
+export type FavoriteEntityType = "PROPERTY" | "RENT_REQUEST" | "PROJECT";
+
 export type PaymentStatus =
   | "PENDING"
   | "SUCCESS"

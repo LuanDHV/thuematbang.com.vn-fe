@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   Bath,
@@ -9,11 +10,13 @@ import {
   Eye,
   Gem,
   Images,
+  Heart,
   MapPin,
   Maximize,
 } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import FavoriteButton from "@/components/common/FavoriteButton";
 import {
   formatAreaValue,
   formatDate,
@@ -84,16 +87,29 @@ function getTierLabel(tone: CardTone) {
   }
 }
 
-function CardFooter({ property }: { property: Property }) {
+function CardFooter({
+  property,
+  favoriteCount,
+}: {
+  property: Property;
+  favoriteCount: number;
+}) {
   return (
-    <div className="text-secondary border-hairline mt-auto grid grid-cols-2 gap-2 border-t border-dashed pt-3 text-xs">
+    <div className="text-secondary border-hairline mt-auto flex items-center justify-between gap-2 border-t border-dashed pt-3 text-xs">
       <span className="inline-flex items-center gap-1">
         <Calendar size={14} />
         {formatDate(property?.createdAt)}
       </span>
-      <span className="inline-flex items-center justify-end gap-1">
-        <Eye size={14} />
-        {formatNumber(property?.viewCount, { fallback: "0" })}
+      <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+        <span className="inline-flex items-center gap-1">
+          <Heart size={14} />
+          {formatNumber(favoriteCount, { fallback: "0" })}
+        </span>
+        <span>|</span>
+        <span className="inline-flex items-center gap-1">
+          <Eye size={14} />
+          {formatNumber(property?.viewCount, { fallback: "0" })}
+        </span>
       </span>
     </div>
   );
@@ -105,12 +121,12 @@ function TierBadge({ tone }: { tone: CardTone }) {
       ? "bg-primary text-white"
       : tone === "STANDARD"
         ? "bg-accent-soft text-primary"
-        : "bg-subtle text-body";
+        : "bg-surface text-body border border-hairline";
   const iconSize = 14;
 
   return (
     <span
-      className={`absolute top-3 left-0 z-20 inline-flex items-center gap-1 rounded-l-none rounded-r-full px-2 py-1 text-xs font-semibold ${toneClasses}`}
+      className={`absolute top-3 left-3 z-20 inline-flex h-7 items-center gap-1 rounded-lg px-2 text-[11px] font-semibold shadow-sm ${toneClasses}`}
     >
       {tone === "PREMIUM" ? <Gem size={iconSize} /> : null}
       {tone === "STANDARD" ? <Crown size={iconSize} /> : null}
@@ -119,19 +135,11 @@ function TierBadge({ tone }: { tone: CardTone }) {
   );
 }
 
-function ImageCountBadge({ count, tone }: { count: number; tone: CardTone }) {
-  const badgeSizeClass =
-    tone === "PREMIUM" ? "px-2 py-0.5 text-sm" : "px-2 py-0.5 text-xs";
-  const iconSize = 14;
-
+function ImageCountBadge({ count }: { count: number }) {
   return (
-    <div
-      className={`absolute top-3 right-3 z-30 rounded-lg bg-black/50 font-semibold text-white ${badgeSizeClass}`}
-    >
-      <span className="inline-flex items-center gap-1">
-        <Images size={iconSize} />
-        {count}
-      </span>
+    <div className="absolute top-14 right-3 z-30 inline-flex h-7 min-w-10 items-center justify-center gap-1 rounded-lg bg-slate-900 px-2 text-[11px] font-semibold text-white shadow-sm">
+      <Images size={14} />
+      {count}
     </div>
   );
 }
@@ -144,17 +152,21 @@ function CardHoverBar() {
 
 function FeaturedCard({
   property,
+  favoriteCount,
   priority = false,
 }: {
   property: Property;
+  favoriteCount: number;
   priority?: boolean;
 }) {
   const tone = getTierTone(property?.priorityStatus);
+  const realImageCount = getSortedPropertyImageUrls(property).length;
 
   return (
     <article className={`surface-editorial ${CARD_HOVER_CLASSES}`}>
       <div className="relative h-52 overflow-hidden">
         <TierBadge tone={tone} />
+        <ImageCountBadge count={realImageCount} />
         <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
           alt={property?.title || "Bất động sản"}
@@ -162,16 +174,16 @@ function FeaturedCard({
           height={800}
           priority={priority}
           sizes={FEATURED_CARD_IMAGE_SIZES}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-cover"
           cldQuality="auto:good"
         />
       </div>
 
       <CardBody
         property={property}
+        favoriteCount={favoriteCount}
         density="rich"
         tone={tone}
-        showPreview={false}
         showRooms={false}
       />
       <CardHoverBar />
@@ -181,9 +193,11 @@ function FeaturedCard({
 
 function PremiumCard({
   property,
+  favoriteCount,
   priority = false,
 }: {
   property: Property;
+  favoriteCount: number;
   priority?: boolean;
 }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
@@ -216,7 +230,7 @@ function PremiumCard({
             height={800}
             priority={priority}
             sizes={TIER_MAIN_IMAGE_SIZES}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="h-full w-full object-cover"
             cldQuality="auto:good"
           />
         </div>
@@ -303,14 +317,15 @@ function PremiumCard({
         ) : null}
 
         <TierBadge tone="PREMIUM" />
-        <ImageCountBadge count={realImageCount} tone="PREMIUM" />
+        <ImageCountBadge count={realImageCount} />
       </div>
 
       <CardBody
         property={property}
+        favoriteCount={favoriteCount}
         density="rich"
         tone="PREMIUM"
-        showPreview={false}
+        showRooms
       />
       <CardHoverBar />
     </article>
@@ -319,9 +334,11 @@ function PremiumCard({
 
 function StandardCard({
   property,
+  favoriteCount,
   priority = false,
 }: {
   property: Property;
+  favoriteCount: number;
   priority?: boolean;
 }) {
   const fallbackImage = getPropertyThumbnailUrl(property);
@@ -344,7 +361,7 @@ function StandardCard({
             height={800}
             priority={priority}
             sizes={TIER_MAIN_IMAGE_SIZES}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="h-full w-full object-cover"
             cldQuality="auto:good"
           />
         </div>
@@ -385,14 +402,14 @@ function StandardCard({
         ) : null}
 
         <TierBadge tone="STANDARD" />
-        <ImageCountBadge count={realImageCount} tone="STANDARD" />
+        <ImageCountBadge count={realImageCount} />
       </div>
 
       <CardBody
         property={property}
+        favoriteCount={favoriteCount}
         density="rich"
         tone="STANDARD"
-        showPreview={false}
         showRooms
       />
       <CardHoverBar />
@@ -402,12 +419,15 @@ function StandardCard({
 
 function FreeCard({
   property,
+  favoriteCount,
   priority = false,
 }: {
   property: Property;
+  favoriteCount: number;
   priority?: boolean;
 }) {
   const image = getPropertyThumbnailUrl(property);
+  const realImageCount = getSortedPropertyImageUrls(property).length;
 
   return (
     <article className={`surface-utility ${CARD_HOVER_CLASSES}`}>
@@ -419,17 +439,18 @@ function FreeCard({
           height={800}
           priority={priority}
           sizes={FREE_CARD_IMAGE_SIZES}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-cover"
           cldQuality="auto:good"
         />
         <TierBadge tone="FREE" />
+        <ImageCountBadge count={realImageCount} />
       </div>
 
       <CardBody
         property={property}
+        favoriteCount={favoriteCount}
         density="compact"
         tone="FREE"
-        showPreview={false}
         showRooms
       />
       <CardHoverBar />
@@ -439,23 +460,21 @@ function FreeCard({
 
 function CardBody({
   property,
+  favoriteCount,
   density,
   tone,
-  showPreview,
   showRooms = true,
 }: {
   property: Property;
+  favoriteCount: number;
   density: CardDensity;
   tone: CardTone;
-  showPreview: boolean;
   showRooms?: boolean;
 }) {
   const location = formatLocationParts(
     [property?.ward?.name, property?.province?.name],
     "Đang cập nhật vị trí",
   );
-  const contentPreview =
-    property?.content?.replace(/<[^>]+>/g, "").trim() || "";
   const isCompact = density === "compact";
   const bedroomsText = showRooms
     ? property?.bedrooms
@@ -482,13 +501,6 @@ function CardBody({
     bathroomsText ? { icon: Bath, text: bathroomsText } : null,
   ].filter(Boolean) as Array<{ icon: typeof MapPin; text: string }>;
 
-  const previewTextClass =
-    tone === "PREMIUM"
-      ? "text-sm"
-      : tone === "STANDARD"
-        ? "text-sm"
-        : "text-sm";
-
   const metaGridClass =
     tone === "PREMIUM" || tone === "STANDARD"
       ? "grid-cols-1"
@@ -502,7 +514,7 @@ function CardBody({
         {property?.displayCode} - {property?.category?.name}
       </span>
 
-      <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+      <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 overflow-hidden text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
         {property?.title}
       </h3>
 
@@ -528,15 +540,7 @@ function CardBody({
         ))}
       </div>
 
-      {showPreview && contentPreview ? (
-        <p
-          className={`text-secondary mb-2 line-clamp-2 leading-relaxed ${previewTextClass}`}
-        >
-          {contentPreview}
-        </p>
-      ) : null}
-
-      <CardFooter property={property} />
+      <CardFooter property={property} favoriteCount={favoriteCount} />
     </div>
   );
 }
@@ -551,29 +555,67 @@ export function PropertyCard({
   priority?: boolean;
 }) {
   const href = resolvePropertyHref(property);
+  const [favoriteCount, setFavoriteCount] = useState(
+    property.favoriteCount ?? 0,
+  );
 
-  let content: React.ReactNode;
+  let content: ReactNode;
 
   if (variant === "featured") {
-    content = <FeaturedCard property={property} priority={priority} />;
+    content = (
+      <FeaturedCard
+        property={property}
+        favoriteCount={favoriteCount}
+        priority={priority}
+      />
+    );
   } else {
     const tier = (property?.priorityStatus ?? "FREE") as PropertyPriority;
     switch (tier) {
       case "PREMIUM":
-        content = <PremiumCard property={property} priority={priority} />;
+        content = (
+          <PremiumCard
+            property={property}
+            favoriteCount={favoriteCount}
+            priority={priority}
+          />
+        );
         break;
       case "STANDARD":
-        content = <StandardCard property={property} priority={priority} />;
+        content = (
+          <StandardCard
+            property={property}
+            favoriteCount={favoriteCount}
+            priority={priority}
+          />
+        );
         break;
       default:
-        content = <FreeCard property={property} priority={priority} />;
+        content = (
+          <FreeCard
+            property={property}
+            favoriteCount={favoriteCount}
+            priority={priority}
+          />
+        );
         break;
     }
   }
 
   return (
-    <Link href={href} className="block h-full">
-      {content}
-    </Link>
+    <div className="relative h-full">
+      <FavoriteButton
+        entityType="PROPERTY"
+        entityId={property.id}
+        initialFavoriteCount={property.favoriteCount ?? 0}
+        className="absolute top-3 right-3 z-10"
+        onToggleResult={(_, nextFavoriteCount) => {
+          setFavoriteCount(nextFavoriteCount);
+        }}
+      />
+      <Link href={href} className="block h-full">
+        {content}
+      </Link>
+    </div>
   );
 }

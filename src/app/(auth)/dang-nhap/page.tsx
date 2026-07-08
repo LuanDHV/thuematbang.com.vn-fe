@@ -12,7 +12,27 @@ export const metadata: Metadata = createPageMetadata({
   noIndex: true,
 });
 
-export default function DangNhapPage() {
+type LoginPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+function resolveRedirectTo(
+  searchParams: Record<string, string | string[] | undefined> | undefined,
+) {
+  const fromValue = searchParams?.from;
+  const fromPath = Array.isArray(fromValue) ? fromValue[0] : fromValue;
+
+  if (fromPath && fromPath.startsWith("/") && !fromPath.startsWith("//")) {
+    return fromPath;
+  }
+
+  return "/";
+}
+
+export default async function DangNhapPage({ searchParams }: LoginPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const redirectTo = resolveRedirectTo(resolvedSearchParams);
+
   return (
     <div className="bg-app flex min-h-dvh flex-col items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-lg md:max-w-5xl">
@@ -31,7 +51,7 @@ export default function DangNhapPage() {
           />
         </Link>
         <div>
-          <LoginForm />
+          <LoginForm redirectTo={redirectTo} />
         </div>
       </div>
     </div>

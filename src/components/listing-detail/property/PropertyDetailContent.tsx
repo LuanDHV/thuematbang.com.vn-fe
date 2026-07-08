@@ -1,6 +1,8 @@
 import {
+  Bookmark,
   CalendarDays,
   Eye,
+  Heart,
   Layers,
   MapPin,
   Maximize,
@@ -9,6 +11,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { PropertyCard } from "@/components/common/PropertyCard";
+import FavoriteButton from "@/components/common/FavoriteButton";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
 import {
   formatAreaValue,
@@ -60,33 +63,48 @@ export default function PropertyDetailContent({
           {property?.title}
         </h1>
 
-        <div className="text-secondary mt-4 flex flex-wrap items-center gap-2 text-sm">
-          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Layers size={14} className="text-primary" />
-            Mã tin: {property?.displayCode}
-          </span>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <div className="text-secondary flex flex-wrap items-center gap-2 text-sm">
+            <span className="surface-utility inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Bookmark size={14} className="text-primary" />
+              Mã tin: {property?.displayCode}
+            </span>
 
-          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Layers size={14} className="text-primary" />
-            Danh mục: {property?.category?.name}
-          </span>
+            <span className="surface-utility inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Layers size={14} className="text-primary" />
+              Danh mục: {property?.category?.name}
+            </span>
 
-          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Tag size={14} className="text-primary" />
-            Loại tin:{" "}
-            {PROPERTY_PRIORITY_LABEL_MAP[property?.priorityStatus] ??
-              property?.priorityStatus}
-          </span>
+            <span className="surface-utility inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Tag size={14} className="text-primary" />
+              Loại tin:{" "}
+              {PROPERTY_PRIORITY_LABEL_MAP[property?.priorityStatus] ??
+                property?.priorityStatus}
+            </span>
 
-          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <CalendarDays size={14} className="text-primary" />
-            Ngày đăng: {formatDate(property?.createdAt)}
-          </span>
+            <span className="surface-utility inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <CalendarDays size={14} className="text-primary" />
+              Ngày đăng: {formatDate(property?.createdAt)}
+            </span>
 
-          <span className="surface-utility text-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            <Eye size={14} className="text-primary" />
-            Lượt xem: {formatNumber(property?.viewCount, { fallback: "0" })}
-          </span>
+            <span className="surface-utility inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Eye size={14} className="text-primary" />
+              Lượt xem: {formatNumber(property?.viewCount, { fallback: "0" })}
+            </span>
+
+            <span className="surface-utility inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+              <Heart size={14} className="text-primary" />
+              Lượt quan tâm:{" "}
+              {formatNumber(property?.favoriteCount ?? 0, { fallback: "0" })}
+            </span>
+          </div>
+
+          <FavoriteButton
+            entityType="PROPERTY"
+            entityId={property.id}
+            initialFavoriteCount={property.favoriteCount ?? 0}
+            className="relative z-0 self-center"
+          />
         </div>
       </section>
 

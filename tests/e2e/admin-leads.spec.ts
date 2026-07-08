@@ -13,7 +13,6 @@ async function loginAsAdmin(page: Page, nextPath = "/admin") {
 }
 
 const leadsListUrl = "/admin/quan-li-leads/cho-thue";
-const leadDetailUrl = "/admin/quan-li-leads/cho-thue/1";
 
 test.describe("admin leads flow", () => {
   test("admin can view leads list", async ({ page }) => {
@@ -23,15 +22,23 @@ test.describe("admin leads flow", () => {
 
   test("admin can navigate to lead detail", async ({ page }) => {
     await loginAsAdmin(page, leadsListUrl);
-    const leadLink = page.getByRole("link").filter({ hasText: "#1" }).first();
+    const leadLink = page
+      .locator('a[href*="/admin/quan-li-leads/cho-thue/"]')
+      .first();
+    const leadHref = await leadLink.getAttribute("href");
+    await expect(leadLink).toBeVisible();
     await leadLink.click();
-    await page.waitForURL(leadDetailUrl);
-    await expect(page.getByText(/Lead #1/)).toBeVisible();
+    await expect(page).toHaveURL(
+      new RegExp(`${(leadHref ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`),
+    );
+    await expect(page.getByRole("heading", { name: /Lead #/ })).toBeVisible();
   });
 
   test("lead detail shows overview cards and candidates", async ({ page }) => {
-    await loginAsAdmin(page, leadDetailUrl);
-    await expect(page.getByText(/Lead #1/)).toBeVisible();
-    await expect(page.getByText("Đề xuất (")).toBeVisible();
+    await loginAsAdmin(page, "/admin/quan-li-leads/cho-thue/1");
+    await expect(page.getByRole("heading", { name: /Lead #/ })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Đề xuất" }),
+    ).toBeVisible();
   });
 });

@@ -37,6 +37,7 @@ export interface RentRequest {
   expressExpiresAt?: Date | string | null;
   rentRequestExpressOrderId?: number | null;
   viewCount: number;
+  favoriteCount: number;
   createdAt: Date | string;
   updatedAt: Date | string;
   user?: User | null;

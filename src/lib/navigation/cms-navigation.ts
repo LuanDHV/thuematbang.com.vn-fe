@@ -1,22 +1,23 @@
 import {
   BadgeQuestionMark,
   Building2,
-  CreditCard,
-  LayoutDashboard,
-  Newspaper,
-  House,
-  Users,
-  type LucideIcon,
-  UserStar,
-  Wallpaper,
-  TrendingUp,
-  Compass,
   ClipboardList,
+  Compass,
+  CreditCard,
+  FileText,
+  Heart,
+  House,
+  LayoutDashboard,
   Layers,
   LockKeyholeOpen,
-  FileText,
-  UserRoundCog,
+  Newspaper,
   Signpost,
+  TrendingUp,
+  type LucideIcon,
+  UserRoundCog,
+  UserStar,
+  Users,
+  Wallpaper,
 } from "lucide-react";
 import type { User as AppUser } from "@/types";
 
@@ -61,6 +62,11 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
       icon: ClipboardList,
     },
     {
+      href: "/quan-li-tai-khoan/da-quan-tam",
+      label: "Tin đã quan tâm",
+      icon: Heart,
+    },
+    {
       href: "/quan-li-tai-khoan/doi-mat-khau",
       label: hasPassword ? "Đổi mật khẩu" : "Tạo mật khẩu",
       icon: LockKeyholeOpen,
@@ -77,7 +83,6 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       icon: LayoutDashboard,
       exact: true,
     },
-
     {
       href: "/admin/quan-li-tin-cho-thue",
       label: "Tin cho thuê",
@@ -128,7 +133,6 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       label: "Trang tĩnh",
       icon: FileText,
     },
-
     {
       href: "/admin/quan-li-noi-dung-seo",
       label: "Nội dung SEO",
@@ -144,7 +148,6 @@ export function buildAdminCmsNavItems(): CmsNavItem[] {
       label: "Banner",
       icon: Wallpaper,
     },
-
     {
       href: "/admin/quan-li-thanh-toan",
       label: "Thanh toán",

@@ -6,7 +6,7 @@ import { RentRequest } from "@/types/rent-request";
 type RentRequestDetailSidebarProps = {
   contactName?: string | null;
   rentRequestId: number;
-  latestWantedProperties: RentRequest[]; 
+  latestWantedProperties: RentRequest[];
 };
 
 export default function RentRequestDetailSidebar({
@@ -18,7 +18,7 @@ export default function RentRequestDetailSidebar({
     <aside className="flex h-full w-full flex-col gap-6">
       <div
         id="detail-contact-card"
-        className="surface-card relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-18"
+        className="surface-card relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-30"
       >
         <PosterContactCard
           fullName={contactName}

@@ -31,7 +31,7 @@ export default function NewsCard({
           height={720}
           sizes="(max-width: 768px) 100vw, 20vw"
           priority={priority}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-cover"
         />
       </div>
 

@@ -22,7 +22,7 @@ export default function PropertyDetailSidebar({
     <aside className="flex h-full w-full flex-col gap-6">
       <div
         id="detail-contact-card"
-        className="surface-utility relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-22"
+        className="surface-utility relative z-20 w-full scroll-mt-24 self-start p-5 lg:sticky lg:top-30"
       >
         <PosterContactCard fullName={contactName} propertyId={propertyId} />
       </div>

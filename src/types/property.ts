@@ -45,6 +45,7 @@ export interface Property {
   content?: string | null;
   isMatched?: boolean | null;
   viewCount: number;
+  favoriteCount: number;
   status: ListingStatus;
   createdAt: Date | string;
   updatedAt: Date | string;
