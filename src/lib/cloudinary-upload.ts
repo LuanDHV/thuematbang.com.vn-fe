@@ -1,4 +1,8 @@
-import { deleteMediaAction, requestCloudinaryUploadSignatureAction } from "@/actions/media.actions";
+import {
+  deleteMediaAction,
+  requestCloudinaryUploadSignatureAction,
+} from "@/actions/media.actions";
+import { applyCloudinaryWatermark } from "@/lib/cloudinary";
 import type {
   CloudinaryUploadResourceType,
   CloudinaryUploadSignature,
@@ -34,7 +38,9 @@ function buildUploadFormData(file: File, signature: CloudinaryUploadSignature) {
   return formData;
 }
 
-function mapUploadResponse(payload: Record<string, unknown>): UploadedCloudinaryImage {
+function mapUploadResponse(
+  payload: Record<string, unknown>,
+): UploadedCloudinaryImage {
   const imageUrl =
     typeof payload.secure_url === "string" ? payload.secure_url : "";
   const imagePublicId =
@@ -45,7 +51,7 @@ function mapUploadResponse(payload: Record<string, unknown>): UploadedCloudinary
   }
 
   return {
-    imageUrl,
+    imageUrl: applyCloudinaryWatermark(imageUrl),
     imagePublicId,
     width:
       typeof payload.width === "number" && Number.isFinite(payload.width)
@@ -64,7 +70,8 @@ function mapUploadResponse(payload: Record<string, unknown>): UploadedCloudinary
 
 function getOptimizedFileName(fileName: string) {
   const lastDotIndex = fileName.lastIndexOf(".");
-  const baseName = lastDotIndex > 0 ? fileName.slice(0, lastDotIndex) : fileName;
+  const baseName =
+    lastDotIndex > 0 ? fileName.slice(0, lastDotIndex) : fileName;
   return `${baseName}.webp`;
 }
 
@@ -102,7 +109,10 @@ async function optimizeImageFile(file: File) {
     return file;
   }
 
-  if (!file.type.startsWith("image/") || file.size < MIN_FILE_SIZE_TO_OPTIMIZE) {
+  if (
+    !file.type.startsWith("image/") ||
+    file.size < MIN_FILE_SIZE_TO_OPTIMIZE
+  ) {
     return file;
   }
 
@@ -206,7 +216,8 @@ export async function uploadCloudinaryImage(
         const message =
           typeof response?.error === "object" &&
           response.error &&
-          typeof (response.error as Record<string, unknown>).message === "string"
+          typeof (response.error as Record<string, unknown>).message ===
+            "string"
             ? ((response.error as Record<string, unknown>).message as string)
             : "Cloudinary upload failed";
         reject(new Error(message));

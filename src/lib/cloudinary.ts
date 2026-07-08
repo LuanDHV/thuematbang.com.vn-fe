@@ -18,12 +18,50 @@ type CloudinaryPresetName =
 
 const CLOUDINARY_HOST = "res.cloudinary.com";
 const IMAGE_UPLOAD_SEGMENT = "/image/upload/";
+const WATERMARK_TRANSFORM = "t_watermark_v1";
 
 // Round transform inputs to the positive integers expected by Cloudinary.
 function toInteger(value?: number) {
   if (!value) return undefined;
   const rounded = Math.round(value);
   return rounded > 0 ? rounded : undefined;
+}
+
+function prependCloudinaryTransforms(rawUrl: string, transforms: string[]) {
+  if (!rawUrl) return rawUrl;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return rawUrl;
+  }
+
+  if (parsed.hostname !== CLOUDINARY_HOST) return rawUrl;
+
+  const uploadIndex = parsed.pathname.indexOf(IMAGE_UPLOAD_SEGMENT);
+  if (uploadIndex === -1) return rawUrl;
+
+  const prefix = parsed.pathname.slice(
+    0,
+    uploadIndex + IMAGE_UPLOAD_SEGMENT.length,
+  );
+  const suffix = parsed.pathname.slice(
+    uploadIndex + IMAGE_UPLOAD_SEGMENT.length,
+  );
+
+  if (suffix.startsWith(`${WATERMARK_TRANSFORM}/`)) {
+    return rawUrl;
+  }
+
+  const transformPath = transforms.filter(Boolean).join("/");
+  parsed.pathname = `${prefix}${transformPath}/${suffix}`;
+
+  return parsed.toString();
+}
+
+export function applyCloudinaryWatermark(rawUrl: string) {
+  return prependCloudinaryTransforms(rawUrl, [WATERMARK_TRANSFORM]);
 }
 
 // Inject responsive optimization transforms into one Cloudinary delivery URL.
@@ -52,6 +90,7 @@ export function optimizeCloudinaryImage(
   const height = toInteger(options.height);
 
   const transforms = [
+    WATERMARK_TRANSFORM,
     `f_${format}`,
     `q_${quality}`,
     width ? `w_${width}` : null,
@@ -69,6 +108,12 @@ export function optimizeCloudinaryImage(
   const suffix = parsed.pathname.slice(
     uploadIndex + IMAGE_UPLOAD_SEGMENT.length,
   );
+  if (suffix.startsWith(`${WATERMARK_TRANSFORM}/`)) {
+    const remainder = suffix.slice(WATERMARK_TRANSFORM.length + 1);
+    parsed.pathname = `${prefix}${WATERMARK_TRANSFORM}/${transforms}/${remainder}`;
+    return parsed.toString();
+  }
+
   parsed.pathname = `${prefix}${transforms}/${suffix}`;
 
   return parsed.toString();
