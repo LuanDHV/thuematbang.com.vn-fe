@@ -164,6 +164,8 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
         limit: 24,
         filters: {
           status: "PUBLISHED",
+          sortBy: "priorityStatus",
+          sortOrder: "desc",
         },
       });
 
@@ -285,6 +287,11 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     : propertyService.getAll({
         page,
         limit: 24,
+        filters: {
+          status: "PUBLISHED",
+          sortBy: "priorityStatus",
+          sortOrder: "desc",
+        },
       });
 
   const paginationBasePath = rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue";

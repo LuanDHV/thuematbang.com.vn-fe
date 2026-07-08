@@ -44,14 +44,14 @@ export default async function ChoThuePage() {
       />
 
       <SafeFetch
-      fetcher={propertyService.getAll({
-        filters: {
-          status: "PUBLISHED",
-          sortBy: "createdAt",
-          sortOrder: "desc",
-        },
-        limit: 24,
-      })}
+        fetcher={propertyService.getAll({
+          filters: {
+            status: "PUBLISHED",
+            sortBy: "priorityStatus",
+            sortOrder: "desc",
+          },
+          limit: 24,
+        })}
         debugLabel="Properties Response"
       >
         {(response) => (
