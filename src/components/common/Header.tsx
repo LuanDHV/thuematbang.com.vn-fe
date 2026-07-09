@@ -148,7 +148,7 @@ export default function Header() {
               <Button
                 asChild
                 size="lg"
-                className="hidden rounded-full px-5 lg:inline-flex"
+                className="hidden rounded-lg px-5 lg:inline-flex"
               >
                 <Link href="/dang-nhap">
                   Đăng nhập
