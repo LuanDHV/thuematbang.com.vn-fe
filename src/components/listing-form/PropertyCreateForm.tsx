@@ -119,14 +119,6 @@ function resolvePropertyCreateErrorMessage(error: unknown) {
   const message = error instanceof Error ? error.message : "";
   const normalizedMessage = message.toLowerCase();
 
-  if (normalizedMessage.includes("free property posting quota exceeded")) {
-    return "Bạn đã hết lượt đăng tin miễn phí. Vui lòng nâng cấp gói hoặc liên hệ quản trị viên.";
-  }
-
-  if (normalizedMessage.includes("free property posting quota not found")) {
-    return "Không tìm thấy thông tin lượt đăng tin miễn phí của tài khoản.";
-  }
-
   if (normalizedMessage.includes("slug tin cho thuê đã tồn tại")) {
     return "Slug tin cho thuê đã tồn tại.";
   }

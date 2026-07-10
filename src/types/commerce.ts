@@ -10,16 +10,6 @@ import { Property } from "./property";
 import { RentRequest } from "./rent-request";
 import { User } from "./user";
 
-export interface UserPostingQuota {
-  id: number;
-  userId: number;
-  freePropertyPostsTotal: number;
-  freePropertyPostsRemaining: number;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-  user?: User;
-}
-
 export interface PropertyPackageOrder {
   id: number;
   userId: number;

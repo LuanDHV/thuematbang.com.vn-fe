@@ -46,12 +46,6 @@ export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
       exact: true,
     },
     {
-      href: "/quan-li-tai-khoan/goi-dang-tin",
-      label: "Gói đăng tin",
-      icon: CreditCard,
-      exact: true,
-    },
-    {
       href: "/quan-li-tai-khoan/cho-thue",
       label: "Tin cho thuê của tôi",
       icon: Signpost,
