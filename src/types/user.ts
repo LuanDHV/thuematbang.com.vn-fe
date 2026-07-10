@@ -3,7 +3,6 @@ import {
   PropertyBoostOrder,
   PropertyPackageOrder,
   RentRequestExpressOrder,
-  UserPostingQuota,
 } from "./commerce";
 import { AuthProvider, UserRole } from "./enums";
 import { Lead } from "./lead";
@@ -28,7 +27,6 @@ export interface User {
   properties?: Property[];
   rentRequests?: RentRequest[];
   leads?: Lead[];
-  postingQuota?: UserPostingQuota | null;
   packageOrders?: PropertyPackageOrder[];
   boostOrders?: PropertyBoostOrder[];
   expressOrders?: RentRequestExpressOrder[];
