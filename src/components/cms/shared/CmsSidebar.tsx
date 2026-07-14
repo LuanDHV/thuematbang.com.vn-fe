@@ -19,6 +19,8 @@ import {
   buildCmsHomeNavItem,
   type CmsNavItem,
 } from "@/lib/navigation/cms-navigation";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store";
 import type { User } from "@/types";
@@ -108,8 +110,23 @@ export default function CmsSidebar({
   const handleLogout = async () => {
     if (logoutMutation.isPending) return;
 
+    trackEvent(ANALYTICS_EVENTS.logoutClicked, {
+      source: "cms_sidebar",
+      user_role: user.role,
+      is_authenticated: true,
+    });
     try {
       await logoutMutation.mutateAsync();
+      trackEvent(ANALYTICS_EVENTS.logoutCompleted, {
+        source: "cms_sidebar",
+        user_role: user.role,
+      });
+    } catch {
+      trackEvent(ANALYTICS_EVENTS.logoutFailed, {
+        source: "cms_sidebar",
+        user_role: user.role,
+        reason: "logout_error",
+      });
     } finally {
       router.refresh();
       router.push("/");

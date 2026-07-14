@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -39,6 +39,8 @@ import {
   hasGoogleMapPreviewInput,
 } from "@/lib/location/google-map";
 import { getProvinceWardsAction } from "@/actions/location.actions";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import type { Category } from "@/types/category";
 import type { ExistingGalleryImage } from "@/types/gallery";
 import type { Province } from "@/types/location";
@@ -232,6 +234,7 @@ function PropertyCreateFormContent({
   const [galleryBusy, setGalleryBusy] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [draftId] = useState(() => crypto.randomUUID());
+  const trackedStartedRef = useRef(false);
   const { toast } = useToast();
   const { data: authUser } = useAuthMe();
 
@@ -276,6 +279,9 @@ function PropertyCreateFormContent({
   const latitudeValue = useWatch({
     control: form.control,
     name: "latitude",
+  });
+  const watchedValues = useWatch({
+    control: form.control,
   });
   const provinceIdNumber = Number(selectedProvinceId || 0);
   const { data: wards = [] } = useQuery({
@@ -375,21 +381,68 @@ function PropertyCreateFormContent({
   );
 
   const { showAdminOnly, isViewOnly } = getVisibleModeFields(mode);
+  const trackingEnabled = mode === "public-create";
+
+  const getTrackingParams = (values?: Partial<PropertyCreateFormValues>) => ({
+    listing_type: "property",
+    listing_title: values?.title ?? form.getValues("title"),
+    category_id: values?.categoryId ?? form.getValues("categoryId"),
+    province_id: values?.provinceId ?? form.getValues("provinceId"),
+    ward_id: values?.wardId ?? form.getValues("wardId"),
+    price_amount: values?.priceAmount ?? form.getValues("priceAmount"),
+    price_unit: values?.priceUnit ?? form.getValues("priceUnit"),
+    is_negotiable: values?.isNegotiable ?? form.getValues("isNegotiable"),
+  });
+
+  useEffect(() => {
+    if (
+      !trackingEnabled ||
+      trackedStartedRef.current ||
+      !Object.values(watchedValues ?? {}).some((value) => {
+        if (typeof value === "string") return value.trim().length > 0;
+        return value != null && value !== false;
+      })
+    ) {
+      return;
+    }
+
+    trackedStartedRef.current = true;
+    trackEvent(ANALYTICS_EVENTS.propertyFormStarted, getTrackingParams());
+  }, [trackingEnabled, watchedValues]);
 
   const onSubmit: SubmitHandler<PropertyCreateFormValues> = async (values) => {
     setSubmitError(null);
     setImagesError(null);
     setSuccessOpen(false);
 
+    if (trackingEnabled) {
+      trackEvent(
+        ANALYTICS_EVENTS.propertyFormSubmitClicked,
+        getTrackingParams(values),
+      );
+    }
+
     const totalImageCount =
       existingGalleryImages.length + uploadedImages.length;
     if (mode === "public-create" && totalImageCount < 1) {
       setImagesError("Vui lòng chọn ít nhất 1 ảnh cho tin đăng.");
+      if (trackingEnabled) {
+        trackEvent(ANALYTICS_EVENTS.propertyFormFailed, {
+          ...getTrackingParams(values),
+          reason: "missing_images",
+        });
+      }
       return;
     }
 
     if (galleryBusy) {
       setImagesError("Vui lòng đợi ảnh tải xong trước khi lưu.");
+      if (trackingEnabled) {
+        trackEvent(ANALYTICS_EVENTS.propertyFormFailed, {
+          ...getTrackingParams(values),
+          reason: "gallery_busy",
+        });
+      }
       return;
     }
 
@@ -431,6 +484,12 @@ function PropertyCreateFormContent({
 
     try {
       await submitAction(payload);
+      if (trackingEnabled) {
+        trackEvent(
+          ANALYTICS_EVENTS.propertyFormCompleted,
+          getTrackingParams(values),
+        );
+      }
 
       if (showSuccessDialog) {
         setSuccessOpen(true);
@@ -454,6 +513,12 @@ function PropertyCreateFormContent({
       setExistingGalleryImages(initialExistingGalleryImages);
     } catch (error) {
       setSubmitError(resolvePropertyCreateErrorMessage(error));
+      if (trackingEnabled) {
+        trackEvent(ANALYTICS_EVENTS.propertyFormFailed, {
+          ...getTrackingParams(values),
+          reason: "api_error",
+        });
+      }
     }
   };
 

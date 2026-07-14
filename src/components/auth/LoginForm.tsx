@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { AUTH_ME_QUERY_KEY, useLoginMutation } from "@/hooks/use-auth";
 import { loginSchema, type LoginFormValues } from "@/schemas/auth.schema";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 
 type LoginFormProps = React.ComponentProps<"div"> & {
   variant?: "user" | "admin";
@@ -48,26 +50,46 @@ export function LoginForm({
   });
 
   const onSubmit = handleSubmit(async (values) => {
-    await loginMutation.mutateAsync(values);
+    const trackingParams = {
+      source: variant === "admin" ? "admin_login_form" : "login_form",
+      auth_method: "password",
+      redirect_to: redirectTo ?? (variant === "admin" ? "/admin" : "/"),
+    };
 
-    let currentUser: Awaited<ReturnType<typeof getCurrentUserAction>> = null;
+    trackEvent(ANALYTICS_EVENTS.loginSubmitClicked, trackingParams);
+
     try {
-      currentUser = await queryClient.fetchQuery({
-        queryKey: AUTH_ME_QUERY_KEY,
-        queryFn: getCurrentUserAction,
-      });
-    } catch {
-      currentUser = null;
-    }
+      await loginMutation.mutateAsync(values);
 
-    if (variant === "admin" && currentUser?.role !== "ADMIN") {
-      router.push("/");
+      let currentUser: Awaited<ReturnType<typeof getCurrentUserAction>> = null;
+      try {
+        currentUser = await queryClient.fetchQuery({
+          queryKey: AUTH_ME_QUERY_KEY,
+          queryFn: getCurrentUserAction,
+        });
+      } catch {
+        currentUser = null;
+      }
+
+      if (variant === "admin" && currentUser?.role !== "ADMIN") {
+        trackEvent(ANALYTICS_EVENTS.loginFailed, {
+          ...trackingParams,
+          reason: "not_admin",
+        });
+        router.push("/");
+        router.refresh();
+        return;
+      }
+
+      trackEvent(ANALYTICS_EVENTS.loginCompleted, trackingParams);
+      router.push(redirectTo || (variant === "admin" ? "/admin" : "/"));
       router.refresh();
-      return;
+    } catch {
+      trackEvent(ANALYTICS_EVENTS.loginFailed, {
+        ...trackingParams,
+        reason: "invalid_credentials",
+      });
     }
-
-    router.push(redirectTo || (variant === "admin" ? "/admin" : "/"));
-    router.refresh();
   });
 
   const isAdminVariant = variant === "admin";
@@ -186,7 +208,15 @@ export function LoginForm({
                       type="button"
                       className="h-11 w-full"
                     >
-                      <a href="/api/v1/auth/google">
+                      <a
+                        href="/api/v1/auth/google"
+                        onClick={() =>
+                          trackEvent(ANALYTICS_EVENTS.googleLoginClicked, {
+                            source: "login_form",
+                            auth_method: "google",
+                          })
+                        }
+                      >
                         <svg
                           className="mr-2 h-5 w-5"
                           xmlns="http://www.w3.org/2000/svg"

@@ -13,6 +13,7 @@ import {
 import { PropertyCard } from "@/components/common/PropertyCard";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
+import PropertyDetailAnalytics from "@/components/listing-detail/property/PropertyDetailAnalytics";
 import {
   formatAreaValue,
   formatDate,
@@ -54,8 +55,37 @@ export default function PropertyDetailContent({
 
   return (
     <div className="surface-editorial flex flex-col gap-6 p-5 lg:gap-8 lg:p-6">
+      <PropertyDetailAnalytics
+        listingId={property.id}
+        listingTitle={property.title}
+        displayCode={property.displayCode}
+        categoryId={property.categoryId}
+        provinceId={property.provinceId}
+        wardId={property.wardId}
+        wardName={property.ward?.name}
+        priorityStatus={property.priorityStatus}
+      />
       <section>
-        <PropertyImageGallery title={property?.title} images={galleryImages} />
+        <PropertyImageGallery
+          title={property?.title}
+          images={galleryImages}
+          analytics={{
+            source: "property_detail",
+            listingType: "property",
+            listingId: property.id,
+            listingTitle: property.title,
+            listingCode: property.displayCode,
+            categoryId: property.categoryId,
+            categoryName: property.category?.name,
+            provinceId: property.provinceId,
+            provinceName: property.province?.name,
+            wardId: property.wardId,
+            wardName: property.ward?.name,
+            priceAmount: property.priceAmount,
+            priceUnit: property.priceUnit,
+            priorityStatus: property.priorityStatus,
+          }}
+        />
       </section>
 
       <section>
@@ -104,6 +134,21 @@ export default function PropertyDetailContent({
             entityId={property.id}
             initialFavoriteCount={property.favoriteCount ?? 0}
             className="relative z-0 self-center"
+            analytics={{
+              source: "property_detail",
+              listingType: "property",
+              listingTitle: property.title,
+              listingCode: property.displayCode,
+              categoryId: property.categoryId,
+              categoryName: property.category?.name,
+              provinceId: property.provinceId,
+              provinceName: property.province?.name,
+              wardId: property.wardId,
+              wardName: property.ward?.name,
+              priceAmount: property.priceAmount,
+              priceUnit: property.priceUnit,
+              priorityStatus: property.priorityStatus,
+            }}
           />
         </div>
       </section>

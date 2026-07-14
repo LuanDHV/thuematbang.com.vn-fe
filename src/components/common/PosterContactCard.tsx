@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import {
   Dialog,
   DialogContent,
@@ -70,6 +72,12 @@ export default function PosterContactCard({
   const isAuthenticated = Boolean(currentUser);
   const sourceIsProperty = Boolean(propertyId);
   const sourceIsRentRequest = Boolean(rentRequestId);
+  const contactTrackingParams = {
+    listing_type: sourceIsProperty ? "property" : "rent_request",
+    property_id: propertyId ?? null,
+    rent_request_id: rentRequestId ?? null,
+    is_authenticated: isAuthenticated,
+  };
 
   const defaultValues = useMemo<LeadContactFormValues>(
     () => ({
@@ -129,6 +137,10 @@ export default function PosterContactCard({
   }, [contactOpen, defaultValues, form]);
 
   const openContactDialog = () => {
+    trackEvent(ANALYTICS_EVENTS.clickContact, {
+      ...contactTrackingParams,
+      source: "poster_contact_card",
+    });
     setSubmitError(null);
     setSelectedIds([]);
     setEligibleListings([]);
@@ -139,6 +151,10 @@ export default function PosterContactCard({
 
   const handleSubmit = form.handleSubmit(async (values) => {
     setSubmitError(null);
+    trackEvent(ANALYTICS_EVENTS.contactFormSubmitClicked, {
+      ...contactTrackingParams,
+      selected_listing_count: selectedIds.length,
+    });
 
     try {
       const payload: LeadUpsertPayload = {
@@ -158,6 +174,10 @@ export default function PosterContactCard({
       }
 
       const lead = await createPublicLeadAction(payload);
+      trackEvent(ANALYTICS_EVENTS.contactFormCompleted, {
+        ...contactTrackingParams,
+        selected_listing_count: selectedIds.length,
+      });
 
       setSubmittedPhone(lead.phone || values.phone);
       setContactOpen(false);
@@ -169,6 +189,11 @@ export default function PosterContactCard({
           ? error.message
           : "Không thể gửi thông tin liên hệ.";
       setSubmitError(message);
+      trackEvent(ANALYTICS_EVENTS.contactFormFailed, {
+        ...contactTrackingParams,
+        selected_listing_count: selectedIds.length,
+        reason: "api_error",
+      });
       toast({
         title: "Không thể gửi thông tin liên hệ",
         description: message,

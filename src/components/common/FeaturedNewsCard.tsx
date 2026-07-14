@@ -6,6 +6,8 @@ import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { News } from "@/types/news";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 
 interface FeaturedNewsCardProps {
   news: News;
@@ -25,6 +27,17 @@ export default function FeaturedNewsCard({
         "surface-editorial interactive-lift group relative block aspect-4/3 overflow-hidden",
         className,
       )}
+      onClick={() =>
+        trackEvent(ANALYTICS_EVENTS.clickNewsListing, {
+          source: "featured_news_card",
+          listing_type: "news",
+          listing_id: news.id,
+          listing_title: news.title,
+          category_id: news.categoryId,
+          category_name: news.category?.name,
+          is_featured: news.isFeatured,
+        })
+      }
     >
       <CloudinaryImage
         src={news.imageUrl || "/imgs/wallpaper-1.jpg"}

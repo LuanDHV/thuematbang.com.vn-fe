@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import PropertyImageGallery from "@/components/common/PropertyImageGallery";
+import ProjectDetailAnalytics from "@/components/listing-detail/project/ProjectDetailAnalytics";
 import {
   formatAreaValue,
   formatDate,
@@ -31,8 +32,35 @@ export default function ProjectDetailContent({
 }: ProjectDetailContentProps) {
   return (
     <div className="surface-card flex flex-col gap-6 p-5 lg:gap-8">
+      <ProjectDetailAnalytics
+        listingId={project.id}
+        listingTitle={project.name}
+        displayCode={project.displayCode}
+        categoryId={project.categoryId}
+        provinceId={project.provinceId}
+        wardId={project.wardId}
+        wardName={project.ward?.name}
+      />
       <section>
-        <PropertyImageGallery title={project?.name} images={galleryImages} />
+        <PropertyImageGallery
+          title={project?.name}
+          images={galleryImages}
+          analytics={{
+            source: "project_detail",
+            listingType: "project",
+            listingId: project.id,
+            listingTitle: project.name,
+            listingCode: project.displayCode,
+            categoryId: project.categoryId,
+            categoryName: project.category?.name,
+            provinceId: project.provinceId,
+            provinceName: project.province?.name,
+            wardId: project.wardId,
+            wardName: project.ward?.name,
+            priceAmount: project.priceAmount,
+            priceUnit: project.priceUnit,
+          }}
+        />
       </section>
 
       <section>
@@ -74,6 +102,20 @@ export default function ProjectDetailContent({
             entityId={project.id}
             initialFavoriteCount={project.favoriteCount ?? 0}
             className="relative z-0 self-center"
+            analytics={{
+              source: "project_detail",
+              listingType: "project",
+              listingTitle: project.name,
+              listingCode: project.displayCode,
+              categoryId: project.categoryId,
+              categoryName: project.category?.name,
+              provinceId: project.provinceId,
+              provinceName: project.province?.name,
+              wardId: project.wardId,
+              wardName: project.ward?.name,
+              priceAmount: project.priceAmount,
+              priceUnit: project.priceUnit,
+            }}
           />
         </div>
       </section>

@@ -6,6 +6,8 @@ import { Calendar, Eye, Heart, MapPin, Maximize } from "lucide-react";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import FavoriteButton from "@/components/common/FavoriteButton";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
   formatDate,
@@ -76,12 +78,44 @@ export function RentRequestCard({
         entityId={request.id}
         initialFavoriteCount={request.favoriteCount ?? 0}
         className="absolute top-3 right-3 z-10"
+        analytics={{
+          source: "rent_request_card",
+          listingType: "rent_request",
+          listingTitle: request.title,
+          listingCode: request.displayCode,
+          categoryId: request.categoryId,
+          categoryName: request.category?.name,
+          provinceId: request.desiredProvinceId,
+          provinceName: request.desiredProvince?.name,
+          wardId: request.desiredWardId,
+          wardName: request.desiredWard?.name,
+          priceAmount: request.budgetAmount,
+          priceUnit: request.budgetUnit,
+        }}
         onToggleResult={(_, nextFavoriteCount) => {
           setFavoriteCount(nextFavoriteCount);
         }}
       />
 
-      <Link href={`/can-thue/${request?.slug}`} className="block h-full">
+      <Link
+        href={`/can-thue/${request?.slug}`}
+        className="block h-full"
+        onClick={() =>
+          trackEvent(ANALYTICS_EVENTS.clickRentRequestListing, {
+            source: "rent_request_card",
+            listing_type: "rent_request",
+            listing_id: request.id,
+            listing_title: request.title,
+            display_code: request.displayCode,
+            category_id: request.categoryId,
+            province_id: request.desiredProvinceId,
+            ward_id: request.desiredWardId,
+            ward_name: request.desiredWard?.name,
+            is_express: request.isExpress,
+            budget_amount: request.budgetAmount,
+          })
+        }
+      >
         <article className={`surface-utility ${CARD_HOVER_CLASSES}`}>
           <div
             className={`bg-surface-alt relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}

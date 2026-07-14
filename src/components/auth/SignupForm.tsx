@@ -20,6 +20,38 @@ import { cn } from "@/lib/utils";
 import { HttpError } from "@/lib/http";
 import { useRegisterMutation } from "@/hooks/use-auth";
 import { registerSchema, type RegisterFormValues } from "@/schemas/auth.schema";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
+
+const registerTrackingParams = {
+  source: "register_form",
+  auth_method: "password",
+  redirect_to: "/",
+};
+
+function resolveRegisterFailureReason(error: unknown) {
+  const message =
+    error instanceof HttpError
+      ? error.message
+      : error instanceof Error
+        ? error.message
+        : "";
+  const normalizedMessage = message.trim().toLowerCase();
+
+  if (normalizedMessage.includes("email and phone already exist")) {
+    return "email_phone_exists";
+  }
+
+  if (normalizedMessage.includes("phone already exists")) {
+    return "phone_exists";
+  }
+
+  if (normalizedMessage.includes("email already exists")) {
+    return "email_exists";
+  }
+
+  return "register_error";
+}
 
 export function SignupForm({
   className,
@@ -43,11 +75,27 @@ export function SignupForm({
     },
   });
 
-  const onSubmit = handleSubmit(async (values) => {
-    await registerMutation.mutateAsync(values);
-    router.push("/");
-    router.refresh();
-  });
+  const onSubmit = handleSubmit(
+    async (values) => {
+    try {
+      await registerMutation.mutateAsync(values);
+      trackEvent(ANALYTICS_EVENTS.registerCompleted, registerTrackingParams);
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      trackEvent(ANALYTICS_EVENTS.registerFailed, {
+        ...registerTrackingParams,
+        reason: resolveRegisterFailureReason(error),
+      });
+    }
+    },
+    () => {
+      trackEvent(ANALYTICS_EVENTS.registerFailed, {
+        ...registerTrackingParams,
+        reason: "validation_error",
+      });
+    },
+  );
 
   function getRegisterErrorMessage() {
     const error = registerMutation.error;
@@ -79,7 +127,13 @@ export function SignupForm({
       <Card className="surface-panel overflow-hidden p-0 shadow-2xl">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
-            onSubmit={onSubmit}
+            onSubmit={(event) => {
+              trackEvent(
+                ANALYTICS_EVENTS.registerSubmitClicked,
+                registerTrackingParams,
+              );
+              void onSubmit(event);
+            }}
             className="bg-surface flex flex-col justify-center p-8 md:p-12"
           >
             <FieldGroup className="flex flex-col gap-5">
@@ -230,7 +284,15 @@ export function SignupForm({
                   type="button"
                   className="h-11 w-full"
                 >
-                  <Link href="/api/v1/auth/google">
+                  <Link
+                    href="/api/v1/auth/google"
+                    onClick={() =>
+                      trackEvent(ANALYTICS_EVENTS.googleLoginClicked, {
+                        source: "register_form",
+                        auth_method: "google",
+                      })
+                    }
+                  >
                     <svg
                       className="mr-2 h-5 w-5"
                       xmlns="http://www.w3.org/2000/svg"

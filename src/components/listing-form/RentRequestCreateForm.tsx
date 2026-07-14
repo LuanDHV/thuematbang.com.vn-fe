@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,6 +19,8 @@ import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { normalizeRentRequestFormDefaults } from "@/lib/listing/listing-form";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { useAuthMe } from "@/hooks/use-auth";
 import type { Category } from "@/types/category";
 import type { Province } from "@/types/location";
@@ -92,6 +94,7 @@ export function RentRequestCreateForm({
 }: RentRequestCreateFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState(false);
+  const trackedStartedRef = useRef(false);
   const { toast } = useToast();
   const { data: authUser } = useAuthMe();
 
@@ -133,6 +136,9 @@ export function RentRequestCreateForm({
   const isNegotiableValue = useWatch({
     control: form.control,
     name: "isNegotiable",
+  });
+  const watchedValues = useWatch({
+    control: form.control,
   });
 
   useEffect(() => {
@@ -191,12 +197,50 @@ export function RentRequestCreateForm({
   );
 
   const { showAdminOnly, isViewOnly } = getVisibleModeFields(mode);
+  const trackingEnabled = mode === "public-create";
+
+  const getTrackingParams = (
+    values?: Partial<RentRequestCreateFormValues>,
+  ) => ({
+    listing_type: "rent_request",
+    listing_title: values?.title ?? form.getValues("title"),
+    category_id: values?.categoryId ?? form.getValues("categoryId"),
+    province_id:
+      values?.desiredProvinceId ?? form.getValues("desiredProvinceId"),
+    ward_id: values?.desiredWardId ?? form.getValues("desiredWardId"),
+    budget_amount: values?.budgetAmount ?? form.getValues("budgetAmount"),
+    budget_unit: values?.budgetUnit ?? form.getValues("budgetUnit"),
+    is_negotiable: values?.isNegotiable ?? form.getValues("isNegotiable"),
+  });
+
+  useEffect(() => {
+    if (
+      !trackingEnabled ||
+      trackedStartedRef.current ||
+      !Object.values(watchedValues ?? {}).some((value) => {
+        if (typeof value === "string") return value.trim().length > 0;
+        return value != null && value !== false;
+      })
+    ) {
+      return;
+    }
+
+    trackedStartedRef.current = true;
+    trackEvent(ANALYTICS_EVENTS.rentRequestFormStarted, getTrackingParams());
+  }, [trackingEnabled, watchedValues]);
 
   const onSubmit: SubmitHandler<RentRequestCreateFormValues> = async (
     values,
   ) => {
     setSubmitError(null);
     setSuccessOpen(false);
+
+    if (trackingEnabled) {
+      trackEvent(
+        ANALYTICS_EVENTS.rentRequestFormSubmitClicked,
+        getTrackingParams(values),
+      );
+    }
 
     const resolvedStatus =
       mode === "user-edit-limited" ? "PENDING" : values.status;
@@ -213,6 +257,12 @@ export function RentRequestCreateForm({
 
     try {
       await submitAction(payload);
+      if (trackingEnabled) {
+        trackEvent(
+          ANALYTICS_EVENTS.rentRequestFormCompleted,
+          getTrackingParams(values),
+        );
+      }
       if (showSuccessDialog) {
         form.reset(normalizedDefaults);
         setSuccessOpen(true);
@@ -231,6 +281,12 @@ export function RentRequestCreateForm({
           ? error.message
           : "Không thể tạo yêu cầu thuê. Vui lòng thử lại.",
       );
+      if (trackingEnabled) {
+        trackEvent(ANALYTICS_EVENTS.rentRequestFormFailed, {
+          ...getTrackingParams(values),
+          reason: "api_error",
+        });
+      }
     }
   };
 

@@ -66,10 +66,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gtmId = siteConfig.googleTagManagerId;
+  const shouldEnableGTM =
+    isProduction || process.env.NEXT_PUBLIC_ENABLE_GTM_LOCAL;
 
   return (
     <html lang="vi" suppressHydrationWarning className="h-full antialiased">
-      {isProduction && gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
+      {shouldEnableGTM && gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="bg-app text-body min-h-dvh">
         <PageStructuredData
           schemas={[buildWebSiteSchema(), buildOrganizationSchema()]}

@@ -21,6 +21,12 @@ import {
   readPendingFavoriteIntent,
   savePendingFavoriteIntent,
 } from "@/lib/favorites/pending-favorite";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  sanitizeAnalyticsText,
+  trackEvent,
+  type AnalyticsEventParams,
+} from "@/lib/analytics/track-event";
 
 type FavoriteButtonProps = {
   entityType: FavoriteEntityType;
@@ -28,6 +34,22 @@ type FavoriteButtonProps = {
   initialFavoriteCount: number;
   className?: string;
   onToggleResult?: (nextFavorited: boolean, nextFavoriteCount: number) => void;
+  analytics?: {
+    source: string;
+    listingType?: string;
+    listingTitle?: string | null;
+    listingCode?: string | null;
+    categoryId?: number | null;
+    categoryName?: string | null;
+    provinceId?: number | null;
+    provinceName?: string | null;
+    wardId?: number | null;
+    wardName?: string | null;
+    priceAmount?: number | null;
+    priceUnit?: string | null;
+    area?: number | null;
+    priorityStatus?: string | null;
+  };
 };
 
 const FAVORITE_QUERY_KEY = "favorite-state";
@@ -38,6 +60,7 @@ export default function FavoriteButton({
   initialFavoriteCount,
   className,
   onToggleResult,
+  analytics,
 }: FavoriteButtonProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -58,6 +81,26 @@ export default function FavoriteButton({
   });
 
   const pendingIntent = useMemo(() => readPendingFavoriteIntent(), []);
+  const trackingParams = useMemo<AnalyticsEventParams>(
+    () => ({
+      source: analytics?.source ?? "favorite_button",
+      listing_type: analytics?.listingType ?? entityType.toLowerCase(),
+      listing_id: entityId,
+      listing_title: sanitizeAnalyticsText(analytics?.listingTitle),
+      display_code: analytics?.listingCode,
+      category_id: analytics?.categoryId,
+      category_name: sanitizeAnalyticsText(analytics?.categoryName),
+      province_id: analytics?.provinceId,
+      province_name: sanitizeAnalyticsText(analytics?.provinceName),
+      ward_id: analytics?.wardId,
+      ward_name: sanitizeAnalyticsText(analytics?.wardName),
+      price_amount: analytics?.priceAmount,
+      price_unit: analytics?.priceUnit,
+      priority_status: analytics?.priorityStatus,
+      is_authenticated: Boolean(authUser),
+    }),
+    [analytics, authUser, entityId, entityType],
+  );
 
   const resolvedIsFavorited =
     optimisticState?.isFavorited ?? stateQuery.data?.isFavorited ?? false;
@@ -111,6 +154,15 @@ export default function FavoriteButton({
         isFavorited: result.isFavorited,
         favoriteCount: result.favoriteCount,
       });
+      trackEvent(
+        result.isFavorited
+          ? ANALYTICS_EVENTS.favoriteListing
+          : ANALYTICS_EVENTS.unfavoriteListing,
+        {
+          ...trackingParams,
+          favorite_count: result.favoriteCount,
+        },
+      );
       void queryClient.invalidateQueries({
         queryKey: [FAVORITE_QUERY_KEY, entityType, entityId],
         refetchType: "none",
@@ -134,6 +186,7 @@ export default function FavoriteButton({
     resolvedFavoriteCount,
     resolvedIsFavorited,
     router,
+    trackingParams,
   ]);
 
   const handleButtonClick = (event: MouseEvent<HTMLButtonElement>) => {

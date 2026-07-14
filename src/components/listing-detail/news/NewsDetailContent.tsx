@@ -1,5 +1,6 @@
 import { CalendarDays, Eye, Layers } from "lucide-react";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import NewsDetailAnalytics from "@/components/listing-detail/news/NewsDetailAnalytics";
 import { formatDate, formatNumber } from "@/lib/format";
 import { News } from "@/types/news";
 
@@ -10,6 +11,13 @@ type NewsDetailContentProps = {
 export default function NewsDetailContent({ news }: NewsDetailContentProps) {
   return (
     <div className="surface-card flex flex-col gap-6 p-5 lg:gap-8">
+      <NewsDetailAnalytics
+        listingId={news.id}
+        listingTitle={news.title}
+        categoryId={news.categoryId}
+        categoryName={news.category?.name}
+        isFeatured={news.isFeatured}
+      />
       <section>
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
           <CloudinaryImage

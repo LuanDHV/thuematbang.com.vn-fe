@@ -9,6 +9,8 @@ import { USER_ROLE_LABEL_MAP } from "@/constants/enum-options";
 import { useAuthMe, useLogoutMutation } from "@/hooks/use-auth";
 import { useUIStore } from "@/stores/ui-store";
 import { Button } from "@/components/ui/button";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import {
   Popover,
   PopoverContent,
@@ -17,8 +19,18 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
 const HEADER_ITEMS = [
-  { id: "cho-thue", name: "Đăng cho thuê", href: "/dang-tin/cho-thue" },
-  { id: "can-thue", name: "Đăng cần thuê", href: "/dang-tin/can-thue" },
+  {
+    id: "cho-thue",
+    name: "Đăng cho thuê",
+    href: "/dang-tin/cho-thue",
+    event: ANALYTICS_EVENTS.clickPostProperty,
+  },
+  {
+    id: "can-thue",
+    name: "Đăng cần thuê",
+    href: "/dang-tin/can-thue",
+    event: ANALYTICS_EVENTS.clickPostRentRequest,
+  },
   { id: "du-an", name: "Dự án", href: "/du-an" },
   { id: "tin-tuc", name: "Tin tức", href: "/tin-tuc" },
 ];
@@ -41,8 +53,20 @@ export default function Header() {
     if (logoutMutation.isPending) return;
 
     setUserMenuOpen(false);
+    trackEvent(ANALYTICS_EVENTS.logoutClicked, {
+      source: "header",
+      is_authenticated: Boolean(authUser),
+    });
     try {
       await logoutMutation.mutateAsync();
+      trackEvent(ANALYTICS_EVENTS.logoutCompleted, {
+        source: "header",
+      });
+    } catch {
+      trackEvent(ANALYTICS_EVENTS.logoutFailed, {
+        source: "header",
+        reason: "logout_error",
+      });
     } finally {
       closeMobileMenu();
       router.refresh();
@@ -75,6 +99,11 @@ export default function Header() {
               <Link
                 key={item.id}
                 href={item.href}
+                onClick={() => {
+                  if (item.event) {
+                    trackEvent(item.event, { source: "header_desktop" });
+                  }
+                }}
                 className="text-heading hover:text-primary after:bg-primary/80 relative rounded-full px-3.5 py-2 text-sm font-semibold tracking-[0.08em] uppercase transition-colors after:absolute after:right-3.5 after:bottom-1.5 after:left-3.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:transition-transform hover:after:scale-x-100"
               >
                 {item.name}
@@ -178,7 +207,14 @@ export default function Header() {
                         <Link
                           key={item.id}
                           href={item.href}
-                          onClick={closeMobileMenu}
+                          onClick={() => {
+                            if (item.event) {
+                              trackEvent(item.event, {
+                                source: "header_mobile",
+                              });
+                            }
+                            closeMobileMenu();
+                          }}
                           className="text-heading hover:text-primary block rounded-lg px-3 py-2 text-sm font-medium tracking-[0.06em] uppercase transition-colors"
                         >
                           {item.name}

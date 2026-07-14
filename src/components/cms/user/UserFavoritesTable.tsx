@@ -19,6 +19,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { favoriteClient } from "@/lib/favorites/favorite-client";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { sanitizeAnalyticsText, trackEvent } from "@/lib/analytics/track-event";
 import {
   buildFavoriteRoute,
   type FavoriteRouteState,
@@ -147,6 +149,74 @@ function resolveRow(item: FavoriteListItem): ResolvedFavoriteRow {
   };
 }
 
+function getFavoriteTrackingParams(item: FavoriteListItem) {
+  if (item.property) {
+    return {
+      source: "user_favorites_table",
+      listing_type: "property",
+      listing_id: item.property.id,
+      listing_title: sanitizeAnalyticsText(item.property.title),
+      display_code: item.property.displayCode,
+      category_id: item.property.categoryId,
+      category_name: sanitizeAnalyticsText(item.property.category?.name),
+      province_id: item.property.provinceId,
+      province_name: sanitizeAnalyticsText(item.property.province?.name),
+      ward_id: item.property.wardId,
+      ward_name: sanitizeAnalyticsText(item.property.ward?.name),
+      price_amount: item.property.priceAmount,
+      price_unit: item.property.priceUnit,
+      priority_status: item.property.priorityStatus,
+      is_authenticated: true,
+    };
+  }
+
+  if (item.rentRequest) {
+    return {
+      source: "user_favorites_table",
+      listing_type: "rent_request",
+      listing_id: item.rentRequest.id,
+      listing_title: sanitizeAnalyticsText(item.rentRequest.title),
+      display_code: item.rentRequest.displayCode,
+      category_id: item.rentRequest.categoryId,
+      category_name: sanitizeAnalyticsText(item.rentRequest.category?.name),
+      province_id: item.rentRequest.desiredProvinceId,
+      province_name: sanitizeAnalyticsText(item.rentRequest.desiredProvince?.name),
+      ward_id: item.rentRequest.desiredWardId,
+      ward_name: sanitizeAnalyticsText(item.rentRequest.desiredWard?.name),
+      budget_amount: item.rentRequest.budgetAmount,
+      price_unit: item.rentRequest.budgetUnit,
+      is_express: item.rentRequest.isExpress,
+      is_authenticated: true,
+    };
+  }
+
+  if (item.project) {
+    return {
+      source: "user_favorites_table",
+      listing_type: "project",
+      listing_id: item.project.id,
+      listing_title: sanitizeAnalyticsText(item.project.name),
+      display_code: item.project.displayCode,
+      category_id: item.project.categoryId,
+      category_name: sanitizeAnalyticsText(item.project.category?.name),
+      province_id: item.project.provinceId,
+      province_name: sanitizeAnalyticsText(item.project.province?.name),
+      ward_id: item.project.wardId,
+      ward_name: sanitizeAnalyticsText(item.project.ward?.name),
+      price_amount: item.project.priceAmount,
+      price_unit: item.project.priceUnit,
+      is_authenticated: true,
+    };
+  }
+
+  return {
+    source: "user_favorites_table",
+    listing_type: item.entityType.toLowerCase(),
+    listing_id: item.entityId,
+    is_authenticated: true,
+  };
+}
+
 function FavoriteStatusBadge({
   label,
   tone,
@@ -263,10 +333,19 @@ export default function UserFavoritesTable({
   const handleToggle = async (item: FavoriteListItem) => {
     setUpdatingId(item.id);
     try {
-      await favoriteClient.toggle({
+      const result = await favoriteClient.toggle({
         entityType: item.entityType,
         entityId: item.entityId,
       });
+      trackEvent(
+        result.isFavorited
+          ? ANALYTICS_EVENTS.favoriteListing
+          : ANALYTICS_EVENTS.unfavoriteListing,
+        {
+          ...getFavoriteTrackingParams(item),
+          favorite_count: result.favoriteCount,
+        },
+      );
       router.refresh();
     } finally {
       setUpdatingId((current) => (current === item.id ? null : current));

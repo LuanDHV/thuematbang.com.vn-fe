@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowRight, CirclePlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ANALYTICS_EVENTS, type AnalyticsEventName } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { cn } from "@/lib/utils";
 
 const DESKTOP_BANNER_SRC = "/imgs/hero-banner-desktop.png";
@@ -39,6 +41,10 @@ type HeroActionCardProps = {
   secondaryDescription: string;
   primaryIcon: ReactNode;
   secondaryIcon: ReactNode;
+  primaryEvent?: AnalyticsEventName;
+  primarySource?: string;
+  secondaryEvent?: AnalyticsEventName;
+  secondarySource?: string;
   className?: string;
 };
 
@@ -51,6 +57,10 @@ function HeroActionCard({
   secondaryDescription,
   primaryIcon,
   secondaryIcon,
+  primaryEvent,
+  primarySource,
+  secondaryEvent,
+  secondarySource,
   className,
 }: HeroActionCardProps) {
   return (
@@ -60,7 +70,14 @@ function HeroActionCard({
         size="lg"
         className="group bg-primary h-auto min-h-16 w-full justify-between gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-white transition-[background-color,filter,transform] duration-500 ease-out hover:brightness-105 sm:px-5 sm:py-4 md:mx-auto md:max-w-120 lg:min-h-20 lg:px-6 lg:text-base xl:mx-0 xl:max-w-none"
       >
-        <Link href={primaryHref}>
+        <Link
+          href={primaryHref}
+          onClick={() => {
+            if (primaryEvent) {
+              trackEvent(primaryEvent, { source: primarySource ?? "hero" });
+            }
+          }}
+        >
           <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
             <span className="text-lg font-semibold">{primaryLabel}</span>
             <span className="text-xs font-medium text-white/75">
@@ -77,7 +94,16 @@ function HeroActionCard({
         size="lg"
         className="group text-heading hover:bg-surface mt-3 h-auto min-h-14 w-full justify-between gap-3 rounded-xl bg-white px-4 py-3 text-left text-sm font-bold transition-[background-color,filter,transform] duration-500 ease-out hover:brightness-105 sm:px-5 sm:py-4 md:mx-auto md:max-w-120 lg:min-h-16 lg:px-6 lg:text-base xl:mx-0 xl:max-w-none"
       >
-        <Link href={secondaryHref}>
+        <Link
+          href={secondaryHref}
+          onClick={() => {
+            if (secondaryEvent) {
+              trackEvent(secondaryEvent, {
+                source: secondarySource ?? "hero",
+              });
+            }
+          }}
+        >
           <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
             <span className="text-base font-semibold sm:text-lg">
               {secondaryLabel}
@@ -145,9 +171,13 @@ export default function HeroBannerSlider() {
                   primaryIcon={
                     <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out lg:size-5" />
                   }
+                  primaryEvent={ANALYTICS_EVENTS.clickPostProperty}
+                  primarySource="hero_primary"
                   secondaryIcon={
                     <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out lg:size-5" />
                   }
+                  secondaryEvent={ANALYTICS_EVENTS.clickRentRequestListing}
+                  secondarySource="hero_secondary"
                 />
 
                 <HeroActionCard
@@ -160,9 +190,13 @@ export default function HeroBannerSlider() {
                   primaryIcon={
                     <CirclePlus className="size-4 shrink-0 opacity-80 transition-transform duration-500 ease-out lg:size-5" />
                   }
+                  primaryEvent={ANALYTICS_EVENTS.clickPostRentRequest}
+                  primarySource="hero_primary"
                   secondaryIcon={
                     <ArrowRight className="size-4 shrink-0 opacity-70 transition-transform duration-500 ease-out lg:size-5" />
                   }
+                  secondaryEvent={ANALYTICS_EVENTS.clickPropertyListing}
+                  secondarySource="hero_secondary"
                 />
               </div>
             </div>

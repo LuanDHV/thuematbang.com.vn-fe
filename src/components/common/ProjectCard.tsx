@@ -13,6 +13,8 @@ import {
   formatNumber,
   formatNegotiablePrice,
 } from "@/lib/format";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { Project } from "@/types/project";
 
 const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
@@ -119,12 +121,46 @@ export function ProjectCard({ project }: { project: Project }) {
         entityId={project.id}
         initialFavoriteCount={project.favoriteCount ?? 0}
         className="absolute top-3 right-3 z-10"
+        analytics={{
+          source: "project_card",
+          listingType: "project",
+          listingTitle: project.name,
+          listingCode: project.displayCode,
+          categoryId: project.categoryId,
+          categoryName: project.category?.name,
+          provinceId: project.provinceId,
+          provinceName: project.province?.name,
+          wardId: project.wardId,
+          wardName: project.ward?.name,
+          priceAmount: project.priceAmount,
+          priceUnit: project.priceUnit,
+        }}
         onToggleResult={(_, nextFavoriteCount) => {
           setFavoriteCount(nextFavoriteCount);
         }}
       />
 
-      <Link href={`/du-an/${project?.slug}`} className="block h-full">
+      <Link
+        href={`/du-an/${project?.slug}`}
+        className="block h-full"
+        onClick={() =>
+          trackEvent(ANALYTICS_EVENTS.clickProjectListing, {
+            source: "project_card",
+            listing_type: "project",
+            listing_id: project.id,
+            listing_title: project.name,
+            display_code: project.displayCode,
+            category_id: project.categoryId,
+            category_name: project.category?.name,
+            province_id: project.provinceId,
+            province_name: project.province?.name,
+            ward_id: project.wardId,
+            ward_name: project.ward?.name,
+            price_amount: project.priceAmount,
+            price_unit: project.priceUnit,
+          })
+        }
+      >
         <article className={`surface-editorial ${CARD_HOVER_CLASSES}`}>
           <div className="bg-surface-alt relative h-56 overflow-hidden">
             <CloudinaryImage

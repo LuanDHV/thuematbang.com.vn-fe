@@ -4,7 +4,9 @@ import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { formatDate } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { News } from "@/types/news";
 
 interface NewsCardProps {
@@ -22,6 +24,17 @@ export default function NewsCard({
     <Link
       href={`/tin-tuc/${news.slug}`}
       className="surface-utility group flex flex-col items-stretch overflow-hidden transition-shadow duration-300 ease-out hover:shadow-2xl md:flex-row"
+      onClick={() =>
+        trackEvent(ANALYTICS_EVENTS.clickNewsListing, {
+          source: "news_card",
+          listing_type: "news",
+          listing_id: news.id,
+          listing_title: news.title,
+          category_id: news.categoryId,
+          category_name: news.category?.name ?? category,
+          is_featured: news.isFeatured,
+        })
+      }
     >
       <div className="bg-surface-alt relative aspect-[16/10] w-full shrink-0 overflow-hidden md:aspect-auto md:w-2/5">
         <CloudinaryImage

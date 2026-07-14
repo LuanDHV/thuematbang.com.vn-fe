@@ -10,10 +10,33 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  sanitizeAnalyticsText,
+  trackEvent,
+  type AnalyticsEventParams,
+} from "@/lib/analytics/track-event";
 
 type PropertyImageGalleryProps = {
   title: string;
   images: string[];
+  analytics?: {
+    source: string;
+    listingType: string;
+    listingId: number;
+    listingTitle?: string | null;
+    listingCode?: string | null;
+    categoryId?: number | null;
+    categoryName?: string | null;
+    provinceId?: number | null;
+    provinceName?: string | null;
+    wardId?: number | null;
+    wardName?: string | null;
+    priceAmount?: number | null;
+    priceUnit?: string | null;
+    area?: number | null;
+    priorityStatus?: string | null;
+  };
 };
 
 const FALLBACK_IMAGE = "/imgs/wallpaper-1.jpg";
@@ -21,6 +44,7 @@ const FALLBACK_IMAGE = "/imgs/wallpaper-1.jpg";
 export default function PropertyImageGallery({
   title,
   images,
+  analytics,
 }: PropertyImageGalleryProps) {
   const safeImages = useMemo(() => images.filter(Boolean), [images]);
   const displayImages = useMemo(
@@ -126,6 +150,24 @@ export default function PropertyImageGallery({
   const openViewer = () => {
     setViewerIndex(currentActiveIndex);
     setViewerOpen(true);
+    const trackingParams: AnalyticsEventParams = {
+      source: analytics?.source ?? "listing_gallery",
+      listing_type: analytics?.listingType,
+      listing_id: analytics?.listingId,
+      listing_title: sanitizeAnalyticsText(analytics?.listingTitle ?? title),
+      display_code: analytics?.listingCode,
+      category_id: analytics?.categoryId,
+      category_name: sanitizeAnalyticsText(analytics?.categoryName),
+      province_id: analytics?.provinceId,
+      province_name: sanitizeAnalyticsText(analytics?.provinceName),
+      ward_id: analytics?.wardId,
+      ward_name: sanitizeAnalyticsText(analytics?.wardName),
+      price_amount: analytics?.priceAmount,
+      price_unit: analytics?.priceUnit,
+      priority_status: analytics?.priorityStatus,
+      image_count: displayImages.length,
+    };
+    trackEvent(ANALYTICS_EVENTS.listingGalleryOpened, trackingParams);
   };
 
   const slideVariants = {

@@ -13,6 +13,7 @@ import {
 import FavoriteButton from "@/components/common/FavoriteButton";
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
+import RentRequestDetailAnalytics from "@/components/listing-detail/rent-request/RentRequestDetailAnalytics";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
 import {
@@ -48,6 +49,16 @@ export default function RentRequestDetailContent({
 
   return (
     <div className="surface-card flex w-full flex-col gap-6 p-5 lg:gap-8">
+      <RentRequestDetailAnalytics
+        listingId={rentRequest.id}
+        listingTitle={rentRequest.title}
+        displayCode={rentRequest.displayCode}
+        categoryId={rentRequest.categoryId}
+        provinceId={rentRequest.desiredProvinceId}
+        wardId={rentRequest.desiredWardId}
+        wardName={rentRequest.desiredWard?.name}
+        isExpress={rentRequest.isExpress}
+      />
       <div className="flex flex-col gap-6 lg:gap-8">
         <section>
           <div className="bg-surface-alt relative aspect-video w-full overflow-hidden rounded-2xl">
@@ -106,6 +117,20 @@ export default function RentRequestDetailContent({
               entityId={rentRequest.id}
               initialFavoriteCount={rentRequest.favoriteCount ?? 0}
               className="relative z-0 self-center"
+              analytics={{
+                source: "rent_request_detail",
+                listingType: "rent_request",
+                listingTitle: rentRequest.title,
+                listingCode: rentRequest.displayCode,
+                categoryId: rentRequest.categoryId,
+                categoryName: rentRequest.category?.name,
+                provinceId: rentRequest.desiredProvinceId,
+                provinceName: rentRequest.desiredProvince?.name,
+                wardId: rentRequest.desiredWardId,
+                wardName: rentRequest.desiredWard?.name,
+                priceAmount: rentRequest.budgetAmount,
+                priceUnit: rentRequest.budgetUnit,
+              }}
             />
           </div>
         </section>

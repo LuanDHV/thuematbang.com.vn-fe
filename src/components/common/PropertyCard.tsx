@@ -17,6 +17,8 @@ import {
 
 import CloudinaryImage from "@/components/common/CloudinaryImage";
 import FavoriteButton from "@/components/common/FavoriteButton";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { trackEvent } from "@/lib/analytics/track-event";
 import {
   formatAreaValue,
   formatDate,
@@ -609,11 +611,44 @@ export function PropertyCard({
         entityId={property.id}
         initialFavoriteCount={property.favoriteCount ?? 0}
         className="absolute top-3 right-3 z-10"
+        analytics={{
+          source: "property_card",
+          listingType: "property",
+          listingTitle: property.title,
+          listingCode: property.displayCode,
+          categoryId: property.categoryId,
+          categoryName: property.category?.name,
+          provinceId: property.provinceId,
+          provinceName: property.province?.name,
+          wardId: property.wardId,
+          wardName: property.ward?.name,
+          priceAmount: property.priceAmount,
+          priceUnit: property.priceUnit,
+          priorityStatus: property.priorityStatus,
+        }}
         onToggleResult={(_, nextFavoriteCount) => {
           setFavoriteCount(nextFavoriteCount);
         }}
       />
-      <Link href={href} className="block h-full">
+      <Link
+        href={href}
+        className="block h-full"
+        onClick={() =>
+          trackEvent(ANALYTICS_EVENTS.clickPropertyListing, {
+            source: "property_card",
+            listing_type: "property",
+            listing_id: property.id,
+            listing_title: property.title,
+            display_code: property.displayCode,
+            category_id: property.categoryId,
+            province_id: property.provinceId,
+            ward_id: property.wardId,
+            ward_name: property.ward?.name,
+            priority_status: property.priorityStatus,
+            price_amount: property.priceAmount,
+          })
+        }
+      >
         {content}
       </Link>
     </div>
