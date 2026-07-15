@@ -133,9 +133,9 @@ export const AdminLayout: React.FC = () => {
       );
       return data;
     },
-    refetchInterval: 30_000,
-    refetchOnWindowFocus: true,
-    staleTime: 0,
+    refetchInterval: 120_000,
+    refetchOnWindowFocus: false,
+    staleTime: 60_000,
   });
 
   React.useEffect(() => {
@@ -153,11 +153,6 @@ export const AdminLayout: React.FC = () => {
       window.removeEventListener("admin-data-changed", handleDataChanged);
     };
   }, [queryClient]);
-
-  React.useEffect(() => {
-    void notifications.refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, location.search]);
 
   const notificationGroups =
     notifications.data?.items?.filter(

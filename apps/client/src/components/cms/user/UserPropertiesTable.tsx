@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArchiveRestore,
   EyeOff,
@@ -216,6 +216,7 @@ export default function UserPropertiesTable({
   const searchParams = useSearchParams();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const copyResetTimerRef = useRef<number | null>(null);
   const handlePageChange = createPaginationChangeHandler(
     (href) => router.push(href),
     pathname,
@@ -223,12 +224,24 @@ export default function UserPropertiesTable({
     totalPages,
   );
 
+  useEffect(() => {
+    return () => {
+      if (copyResetTimerRef.current !== null) {
+        window.clearTimeout(copyResetTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleCopy = async (item: Property) => {
     const publicUrl = `${window.location.origin}${getPublicPath(item)}`;
     await navigator.clipboard.writeText(publicUrl);
     setCopiedSlug(item.slug);
-    window.setTimeout(() => {
+    if (copyResetTimerRef.current !== null) {
+      window.clearTimeout(copyResetTimerRef.current);
+    }
+    copyResetTimerRef.current = window.setTimeout(() => {
       setCopiedSlug((current) => (current === item.slug ? null : current));
+      copyResetTimerRef.current = null;
     }, 1800);
   };
 

@@ -6,6 +6,7 @@ import {
   setRefreshToken,
   clearAuthState,
   getRefreshToken,
+  getAccessToken,
 } from "./auth-store";
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
@@ -44,6 +45,10 @@ export const authProvider: AuthProvider = {
   },
 
   check: async () => {
+    if (getAccessToken()) {
+      return { authenticated: true };
+    }
+
     const storedRefreshToken = getRefreshToken();
     if (!storedRefreshToken) {
       return { authenticated: false, redirectTo: "/login", logout: true };
