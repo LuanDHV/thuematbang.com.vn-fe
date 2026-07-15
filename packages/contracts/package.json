@@ -1,0 +1,52 @@
+{
+  "name": "@thuematbang/contracts",
+  "version": "0.1.1",
+  "description": "Shared domain contracts for thuematbang.com.vn — enums, types, schemas, mappers, and utilities",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./enums": {
+      "import": "./dist/enums/index.js",
+      "types": "./dist/enums/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./constants": {
+      "import": "./dist/constants/index.js",
+      "types": "./dist/constants/index.d.ts"
+    },
+    "./mappers": {
+      "import": "./dist/mappers/index.js",
+      "types": "./dist/mappers/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "zod": "^4.4.3"
+  },
+  "license": "UNLICENSED",
+  "private": false
+}
