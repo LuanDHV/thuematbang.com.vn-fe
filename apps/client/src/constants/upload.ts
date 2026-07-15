@@ -1,2 +1,4 @@
-export const MAX_IMAGE_FILE_SIZE_BYTES = 2 * 1024 * 1024;
-export const MAX_IMAGE_FILE_COUNT = 25;
+export {
+  MAX_IMAGE_FILE_COUNT,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+} from "@thuematbang/contracts";
