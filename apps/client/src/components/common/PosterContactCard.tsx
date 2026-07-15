@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { PhoneCall } from "lucide-react";
 
 import {
@@ -45,6 +47,12 @@ type PosterContactCardProps = {
   rentRequestId?: number | null;
 };
 
+type EligibleListing = {
+  id: number;
+  title: string;
+  displayCode?: string | null;
+};
+
 function getInitials(name?: string | null) {
   if (!name) return "ND";
   const words = name.trim().split(/\s+/).slice(-2);
@@ -58,18 +66,20 @@ export default function PosterContactCard({
   rentRequestId,
 }: PosterContactCardProps) {
   const { data: currentUser } = useAuthMe();
+  const pathname = usePathname();
   const { toast } = useToast();
   const [contactOpen, setContactOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [submittedPhone, setSubmittedPhone] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [eligibleListings, setEligibleListings] = useState<
-    Array<{ id: number; title: string }>
+    EligibleListing[]
   >([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [loadingListings, setLoadingListings] = useState(false);
 
   const isAuthenticated = Boolean(currentUser);
+  const loginHref = `/dang-nhap?from=${encodeURIComponent(pathname || "/")}`;
   const sourceIsProperty = Boolean(propertyId);
   const sourceIsRentRequest = Boolean(rentRequestId);
   const contactTrackingParams = {
@@ -104,17 +114,19 @@ export default function PosterContactCard({
       if (sourceIsProperty) {
         const listings = await getMyEligibleRentRequestsAction();
         setEligibleListings(
-          (listings ?? []).map((item: { id: number; title: string }) => ({
+          (listings ?? []).map((item: EligibleListing) => ({
             id: item.id,
             title: item.title,
+            displayCode: item.displayCode,
           })),
         );
       } else if (sourceIsRentRequest) {
         const listings = await getMyEligiblePropertiesAction();
         setEligibleListings(
-          (listings ?? []).map((item: { id: number; title: string }) => ({
+          (listings ?? []).map((item: EligibleListing) => ({
             id: item.id,
             title: item.title,
+            displayCode: item.displayCode,
           })),
         );
       }
@@ -246,6 +258,8 @@ export default function PosterContactCard({
         open={successOpen}
         onOpenChange={setSuccessOpen}
         submittedPhone={submittedPhone}
+        showGuestLoginCta={!isAuthenticated}
+        loginHref={loginHref}
       />
 
       <Dialog
@@ -261,9 +275,21 @@ export default function PosterContactCard({
             <DialogDescription>
               {currentUser
                 ? "Thông tin từ tài khoản của bạn đã được điền sẵn."
-                : "Vui lòng nhập thông tin để chúng tôi liên hệ lại sớm nhất."}
+                : "Bạn có thể gửi nhanh bằng số điện thoại, hoặc đăng nhập để tự điền thông tin lần sau."}
             </DialogDescription>
           </DialogHeader>
+
+          {!isAuthenticated ? (
+            <div className="border-hairline bg-accent-soft/40 text-secondary rounded-2xl border px-4 py-3 text-sm leading-6">
+              Đã có tài khoản?{" "}
+              <Link
+                href={loginHref}
+                className="text-primary font-semibold underline-offset-4 hover:underline"
+              >
+                Đăng nhập để gửi nhanh hơn
+              </Link>
+            </div>
+          ) : null}
 
           <FormProvider {...form}>
             <form onSubmit={handleSubmit} className="space-y-4">

@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, X } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,12 +17,16 @@ type PosterContactCardSuccessDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   submittedPhone: string;
+  showGuestLoginCta?: boolean;
+  loginHref?: string;
 };
 
 export default function PosterContactCardSuccessDialog({
   open,
   onOpenChange,
   submittedPhone,
+  showGuestLoginCta = false,
+  loginHref = "/dang-nhap",
 }: PosterContactCardSuccessDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,6 +65,26 @@ export default function PosterContactCardSuccessDialog({
               trong thời gian sớm nhất.
             </DialogDescription>
           </DialogHeader>
+
+          {showGuestLoginCta ? (
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
+              <Button
+                asChild
+                className="rounded-xl px-5 shadow-lg shadow-primary/20"
+              >
+                <Link href={loginHref}>Đăng nhập để lưu thông tin</Link>
+              </Button>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="rounded-xl border border-hairline-strong bg-surface px-5 hover:border-primary/20 hover:bg-accent-soft hover:text-primary"
+                >
+                  Để sau
+                </Button>
+              </DialogClose>
+            </div>
+          ) : null}
         </div>
       </DialogContent>
     </Dialog>
