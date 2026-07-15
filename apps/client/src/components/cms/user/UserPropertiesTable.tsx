@@ -11,12 +11,12 @@ import {
 } from "lucide-react";
 
 import { updatePropertyAction } from "@/actions/property.actions";
-import AdminPriorityBadge, {
-  type AdminPriorityTone,
-} from "@/components/cms/admin/AdminPriorityBadge";
-import AdminStatusBadge, {
+import PriorityBadge, {
+  type PriorityTone,
+} from "@/components/cms/shared/PriorityBadge";
+import StatusBadge, {
   publishStatusBadgeToneMap,
-} from "@/components/cms/admin/AdminStatusBadge";
+} from "@/components/cms/shared/StatusBadge";
 import {
   Pagination,
   TablePaginationFooter,
@@ -55,7 +55,7 @@ type UserPropertiesTableProps = {
   totalPages: number;
 };
 
-const priorityToneMap: Record<PropertyPriority, AdminPriorityTone> = {
+const priorityToneMap: Record<PropertyPriority, PriorityTone> = {
   FREE: "free",
   STANDARD: "standard",
   PREMIUM: "premium",
@@ -134,12 +134,12 @@ function PropertyMobileCard({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <AdminPriorityBadge tone={priorityToneMap[item.priorityStatus]}>
+        <PriorityBadge tone={priorityToneMap[item.priorityStatus]}>
           {PROPERTY_PRIORITY_LABEL_MAP[item.priorityStatus]}
-        </AdminPriorityBadge>
-        <AdminStatusBadge tone={publishStatusBadgeToneMap[item.status]}>
+        </PriorityBadge>
+        <StatusBadge tone={publishStatusBadgeToneMap[item.status]}>
           {PUBLISH_STATUS_LABEL_MAP[item.status]}
-        </AdminStatusBadge>
+        </StatusBadge>
       </div>
     </article>
   );
@@ -314,18 +314,18 @@ export default function UserPropertiesTable({
                       })}
                     </TableCell>
                     <TableCell className="align-top">
-                      <AdminPriorityBadge
+                      <PriorityBadge
                         tone={priorityToneMap[item.priorityStatus]}
                       >
                         {PROPERTY_PRIORITY_LABEL_MAP[item.priorityStatus]}
-                      </AdminPriorityBadge>
+                      </PriorityBadge>
                     </TableCell>
                     <TableCell className="align-top">
-                      <AdminStatusBadge
+                      <StatusBadge
                         tone={publishStatusBadgeToneMap[item.status]}
                       >
                         {PUBLISH_STATUS_LABEL_MAP[item.status]}
-                      </AdminStatusBadge>
+                      </StatusBadge>
                     </TableCell>
                     <TableCell className="text-body align-top text-sm">
                       {formatDateDisplay(item.createdAt)}

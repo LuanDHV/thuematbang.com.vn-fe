@@ -44,38 +44,6 @@ export async function loginAsCustomer(page: Page) {
   await page.goto("/");
 }
 
-export async function loginAsAdmin(page: Page, nextPath = "/admin") {
-  const response = await page.request.post("/api/v1/auth/login", {
-    data: {
-      identifier: "admin@example.com",
-      password: "Admin123!",
-    },
-  });
-  expect(response.ok()).toBeTruthy();
-  const payload = (await response.json()) as {
-    accessToken?: string;
-    refreshToken?: string;
-  };
-
-  await page.context().addCookies(
-    ["accessToken", "refreshToken"].flatMap((name) => {
-      const value = payload[name as "accessToken" | "refreshToken"];
-      return value
-        ? [
-            {
-              name,
-              value,
-              domain: "127.0.0.1",
-              path: "/",
-            },
-          ]
-        : [];
-    }),
-  );
-
-  await page.goto(nextPath);
-}
-
 export async function registerUser(page: Page, suffix?: string) {
   const token = suffix || uniqueValue("user");
   await page.goto("/dang-ky");

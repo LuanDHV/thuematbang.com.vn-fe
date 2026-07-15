@@ -10,7 +10,7 @@ import type {
   ListingStatus,
 } from "@/types/enums";
 
-const adminStatusBadgeVariants = cva(
+const statusBadgeVariants = cva(
   "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold leading-none",
   {
     variants: {
@@ -30,54 +30,52 @@ const adminStatusBadgeVariants = cva(
   },
 );
 
-export type AdminBadgeTone = NonNullable<
-  VariantProps<typeof adminStatusBadgeVariants>["tone"]
+export type BadgeTone = NonNullable<
+  VariantProps<typeof statusBadgeVariants>["tone"]
 >;
 
-export const publishStatusBadgeToneMap: Record<ListingStatus, AdminBadgeTone> =
-  {
-    DRAFT: "muted",
-    PENDING: "warning",
-    PUBLISHED: "success",
-    REJECTED: "danger",
-    ARCHIVED: "neutral",
-  };
+export const publishStatusBadgeToneMap: Record<ListingStatus, BadgeTone> = {
+  DRAFT: "muted",
+  PENDING: "warning",
+  PUBLISHED: "success",
+  REJECTED: "danger",
+  ARCHIVED: "neutral",
+};
 
-export const leadStatusBadgeToneMap: Record<LeadStatus, AdminBadgeTone> = {
+export const leadStatusBadgeToneMap: Record<LeadStatus, BadgeTone> = {
   NEW: "info",
   CONTACTED: "warning",
   QUALIFIED: "success",
   REJECTED: "danger",
 };
 
-export const paymentStatusBadgeToneMap: Record<PaymentStatus, AdminBadgeTone> =
-  {
-    PENDING: "warning",
-    SUCCESS: "success",
-    FAILED: "danger",
-    CANCELED: "danger",
-  };
+export const paymentStatusBadgeToneMap: Record<PaymentStatus, BadgeTone> = {
+  PENDING: "warning",
+  SUCCESS: "success",
+  FAILED: "danger",
+  CANCELED: "danger",
+};
 
 export const listingMatchStatusBadgeToneMap: Record<
   ListingMatchStatus,
-  AdminBadgeTone
+  BadgeTone
 > = {
   CANDIDATE: "warning",
   MATCHED: "success",
   REJECTED: "danger",
 };
 
-export default function AdminStatusBadge({
+export default function StatusBadge({
   tone,
   children,
   className,
 }: {
-  tone: AdminBadgeTone;
+  tone: BadgeTone;
   children: ReactNode;
   className?: string;
 }) {
   return (
-    <span className={cn(adminStatusBadgeVariants({ tone }), className)}>
+    <span className={cn(statusBadgeVariants({ tone }), className)}>
       {children}
     </span>
   );

@@ -16,7 +16,6 @@ import { ListingSelectField } from "@/components/listing-form/ListingSelectField
 import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
-import { RENT_REQUEST_STATUS_OPTIONS } from "@/constants/enum-options";
 import { buildListingSlug } from "@/lib/listing/listing-slug";
 import { normalizeRentRequestFormDefaults } from "@/lib/listing/listing-form";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
@@ -33,7 +32,6 @@ import type { RentRequestUpsertPayload } from "@/services/rent-request.service";
 
 type RentRequestCreateFormMode =
   | "public-create"
-  | "admin-edit-full"
   | "user-edit-limited"
   | "view-only";
 
@@ -75,7 +73,6 @@ const DEFAULT_VALUES: Partial<RentRequestCreateFormValues> = {
 
 function getVisibleModeFields(mode: RentRequestCreateFormMode) {
   return {
-    showAdminOnly: mode === "admin-edit-full",
     isViewOnly: mode === "view-only",
   };
 }
@@ -124,10 +121,6 @@ export function RentRequestCreateForm({
   const titleValue = useWatch({
     control: form.control,
     name: "title",
-  });
-  const statusValue = useWatch({
-    control: form.control,
-    name: "status",
   });
   const slugValue = useWatch({
     control: form.control,
@@ -196,7 +189,7 @@ export function RentRequestCreateForm({
     [],
   );
 
-  const { showAdminOnly, isViewOnly } = getVisibleModeFields(mode);
+  const { isViewOnly } = getVisibleModeFields(mode);
   const trackingEnabled = mode === "public-create";
 
   const getTrackingParams = (
@@ -268,10 +261,8 @@ export function RentRequestCreateForm({
         setSuccessOpen(true);
       } else {
         toast({
-          title: showAdminOnly ? "Đã lưu tin thành công" : "Tin đã được gửi",
-          description: showAdminOnly
-            ? "Tin đăng đã được lưu thành công."
-            : "Tin đăng đang đợi duyệt trước khi hiển thị công khai.",
+          title: "Tin đã được gửi",
+          description: "Tin đăng đang đợi duyệt trước khi hiển thị công khai.",
           variant: "success",
         });
       }
@@ -332,16 +323,6 @@ export function RentRequestCreateForm({
           autoComplete="off"
           disabled={isViewOnly}
         />
-
-        {showAdminOnly ? (
-          <ListingTextField
-            name="slug"
-            label="Slug"
-            required
-            readOnly
-            disabled={isViewOnly}
-          />
-        ) : null}
 
         <ListingSelectField
           name="categoryId"
@@ -439,32 +420,6 @@ export function RentRequestCreateForm({
             disabled={isViewOnly}
           />
         </div>
-
-        {showAdminOnly ? (
-          <div className="grid items-end gap-4 md:grid-cols-2">
-            <ListingSelectField
-              name="status"
-              label="Trạng thái"
-              options={RENT_REQUEST_STATUS_OPTIONS}
-              disabled={isViewOnly}
-            />
-            <ListingCheckboxField
-              name="isMatched"
-              label="Đã khớp nhu cầu"
-              disabled={isViewOnly}
-            />
-          </div>
-        ) : null}
-
-        {showAdminOnly && statusValue === "REJECTED" ? (
-          <ListingTextareaField
-            name="rejectReason"
-            label="Lý do từ chối"
-            required
-            placeholder="Nhập lý do từ chối để người đăng biết cần chỉnh sửa gì"
-            disabled={isViewOnly}
-          />
-        ) : null}
 
         {mode === "public-create" ? (
           <ListingTextareaField

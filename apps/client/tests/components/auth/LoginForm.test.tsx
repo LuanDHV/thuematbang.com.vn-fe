@@ -6,7 +6,6 @@ import { LoginForm } from "@/components/auth/LoginForm";
 const pushMock = jest.fn();
 const refreshMock = jest.fn();
 const mutateAsyncMock = jest.fn();
-const getCurrentUserActionMock = jest.fn();
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -17,7 +16,6 @@ jest.mock("next/navigation", () => ({
 
 jest.mock("@/hooks/use-auth", () => {
   return {
-    AUTH_ME_QUERY_KEY: ["auth", "me"],
     useLoginMutation: () => ({
       mutateAsync: mutateAsyncMock,
       isPending: false,
@@ -26,16 +24,11 @@ jest.mock("@/hooks/use-auth", () => {
   };
 });
 
-jest.mock("@/actions/user.actions", () => ({
-  getCurrentUserAction: (...args: unknown[]) => getCurrentUserActionMock(...args),
-}));
-
 describe("LoginForm", () => {
   beforeEach(() => {
     pushMock.mockReset();
     refreshMock.mockReset();
     mutateAsyncMock.mockReset();
-    getCurrentUserActionMock.mockReset();
   });
 
   it("shows validation errors when submitted empty", async () => {
@@ -54,7 +47,6 @@ describe("LoginForm", () => {
 
   it("submits valid credentials and redirects to the provided path", async () => {
     const user = userEvent.setup();
-    getCurrentUserActionMock.mockResolvedValue({ role: "CUSTOMER" });
     mutateAsyncMock.mockResolvedValue({ ok: true });
 
     renderWithProviders(
@@ -76,27 +68,6 @@ describe("LoginForm", () => {
     });
 
     expect(pushMock).toHaveBeenCalledWith("/tin-cua-toi");
-    expect(refreshMock).toHaveBeenCalledTimes(1);
-  });
-
-  it("sends non-admin users back home when the admin variant is used", async () => {
-    const user = userEvent.setup();
-    getCurrentUserActionMock.mockResolvedValue({ role: "CUSTOMER" });
-    mutateAsyncMock.mockResolvedValue({ ok: true });
-
-    renderWithProviders(<LoginForm variant="admin" />);
-
-    await user.type(
-      screen.getByLabelText("Số điện thoại hoặc email"),
-      "0901234567",
-    );
-    await user.type(screen.getByLabelText("Mật khẩu"), "Abcd1234!");
-    await user.click(screen.getByRole("button", { name: "Đăng nhập" }));
-
-    await waitFor(() => {
-      expect(pushMock).toHaveBeenCalledWith("/");
-    });
-
     expect(refreshMock).toHaveBeenCalledTimes(1);
   });
 });

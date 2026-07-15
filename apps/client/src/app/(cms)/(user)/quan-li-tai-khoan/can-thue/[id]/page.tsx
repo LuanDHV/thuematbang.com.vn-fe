@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-
-import { updateRentRequestAction } from "@/actions/admin-crud.actions";
+import { updateRentRequestAction } from "@/actions/rent-request.actions";
 import { RentRequestCreateForm } from "@/components/listing-form/RentRequestCreateForm";
 import { createPageMetadata } from "@/lib/metadata";
 import { categoryService } from "@/services/category.service";

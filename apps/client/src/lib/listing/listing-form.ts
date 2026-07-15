@@ -1,5 +1,4 @@
 import type { ExistingGalleryImage } from "@/types/gallery";
-import type { ProjectFormValues } from "@/schemas/admin-crud.schema";
 import type {
   PropertyCreateFormValues,
   RentRequestCreateFormValues,
@@ -91,30 +90,6 @@ export function normalizePropertyCreateDefaults(
     latitude: toOptionalNumber(defaultValues.latitude),
     boostCount: toOptionalNumber(defaultValues.boostCount),
     userId: toOptionalNumber(defaultValues.userId),
-  };
-}
-
-export function normalizeProjectFormDefaults(
-  defaultValues?: Partial<ProjectFormValues>,
-): Partial<ProjectFormValues> {
-  if (!defaultValues) {
-    return {};
-  }
-
-  return {
-    ...defaultValues,
-    categoryId: toOptionalNumber(defaultValues.categoryId),
-    provinceId: toOptionalNumber(defaultValues.provinceId),
-    wardId: toOptionalNumber(defaultValues.wardId),
-    longitude: toOptionalNumber(defaultValues.longitude),
-    latitude: toOptionalNumber(defaultValues.latitude),
-    area: toOptionalNumber(defaultValues.area),
-    priceAmount: derivePriceAmount(
-      defaultValues.priceAmount,
-      defaultValues.price,
-    ),
-    price: toOptionalNumber(defaultValues.price),
-    isNegotiable: Boolean(defaultValues.isNegotiable),
   };
 }
 

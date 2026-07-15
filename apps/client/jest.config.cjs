@@ -15,6 +15,10 @@ const customJestConfig = {
     "<rootDir>/tests/**/*.spec.tsx",
   ],
   moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^@thuematbang/contracts$": "<rootDir>/../../packages/contracts/src/index.ts",
+    "^@thuematbang/contracts/(.*)$":
+      "<rootDir>/../../packages/contracts/src/$1/index.ts",
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   transformIgnorePatterns: [

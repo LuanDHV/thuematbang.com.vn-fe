@@ -19,11 +19,6 @@ import { ListingTextField } from "@/components/listing-form/ListingTextField";
 import { useToast } from "@/components/ui/use-toast";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
 import {
-  PROPERTY_PRIORITY_OPTIONS,
-  PUBLISH_SOURCE_OPTIONS,
-  PUBLISH_STATUS_OPTIONS,
-} from "@/constants/enum-options";
-import {
   MAX_IMAGE_FILE_COUNT,
   MAX_IMAGE_FILE_SIZE_BYTES,
 } from "@/constants/upload";
@@ -53,7 +48,6 @@ import {
 
 type PropertyCreateFormMode =
   | "public-create"
-  | "admin-edit-full"
   | "user-edit-limited"
   | "view-only";
 
@@ -112,7 +106,6 @@ const DEFAULT_VALUES: Partial<PropertyCreateFormValues> = {
 
 function getVisibleModeFields(mode: PropertyCreateFormMode) {
   return {
-    showAdminOnly: mode === "admin-edit-full",
     isViewOnly: mode === "view-only",
   };
 }
@@ -248,10 +241,6 @@ function PropertyCreateFormContent({
     control: form.control,
     name: "title",
   });
-  const statusValue = useWatch({
-    control: form.control,
-    name: "status",
-  });
   const slugValue = useWatch({
     control: form.control,
     name: "slug",
@@ -380,7 +369,7 @@ function PropertyCreateFormContent({
     [],
   );
 
-  const { showAdminOnly, isViewOnly } = getVisibleModeFields(mode);
+  const { isViewOnly } = getVisibleModeFields(mode);
   const trackingEnabled = mode === "public-create";
 
   const getTrackingParams = (values?: Partial<PropertyCreateFormValues>) => ({
@@ -461,13 +450,13 @@ function PropertyCreateFormContent({
     const basePayload = {
       ...values,
       slug: buildListingSlug(values.title),
-      priorityStatus: showAdminOnly ? values.priorityStatus : undefined,
-      publishSource: showAdminOnly ? values.publishSource : undefined,
-      isBoosted: showAdminOnly ? Boolean(values.isBoosted) : undefined,
-      boostCount: showAdminOnly ? values.boostCount : undefined,
+      priorityStatus: undefined,
+      publishSource: undefined,
+      isBoosted: undefined,
+      boostCount: undefined,
       status: resolvedStatus,
-      longitude: showAdminOnly ? values.longitude : undefined,
-      latitude: showAdminOnly ? values.latitude : undefined,
+      longitude: undefined,
+      latitude: undefined,
       userId: values.userId,
       images: uploadedImages,
     };
@@ -496,14 +485,10 @@ function PropertyCreateFormContent({
       } else {
         const isUserEditResubmit = mode === "user-edit-limited";
         toast({
-          title: showAdminOnly
-            ? "Đã lưu tin thành công"
-            : isUserEditResubmit
-              ? "Tin đã được gửi lại duyệt"
-              : "Tin đã được gửi",
-          description: showAdminOnly
-            ? "Tin đăng đã được lưu thành công."
-            : "Tin đăng đang đợi duyệt trước khi hiển thị công khai.",
+          title: isUserEditResubmit
+            ? "Tin đã được gửi lại duyệt"
+            : "Tin đã được gửi",
+          description: "Tin đăng đang đợi duyệt trước khi hiển thị công khai.",
           variant: "success",
         });
       }
@@ -564,16 +549,6 @@ function PropertyCreateFormContent({
           autoComplete="off"
           disabled={isViewOnly}
         />
-
-        {showAdminOnly ? (
-          <ListingTextField
-            name="slug"
-            label="Slug"
-            required
-            readOnly
-            disabled={isViewOnly}
-          />
-        ) : null}
 
         <ListingSelectField
           name="categoryId"
@@ -729,65 +704,6 @@ function PropertyCreateFormContent({
             readOnly={isViewOnly}
           />
         )}
-
-        {showAdminOnly ? (
-          <>
-            <div className="grid gap-4 md:grid-cols-2">
-              <ListingSelectField
-                name="priorityStatus"
-                label="Loại tin"
-                options={PROPERTY_PRIORITY_OPTIONS}
-                disabled={isViewOnly}
-              />
-              <ListingSelectField
-                name="publishSource"
-                label="Nguồn xuất bản"
-                options={PUBLISH_SOURCE_OPTIONS}
-                disabled={isViewOnly}
-              />
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <ListingSelectField
-                name="status"
-                label="Trạng thái"
-                options={PUBLISH_STATUS_OPTIONS}
-                disabled={isViewOnly}
-              />
-
-              <ListingNumberField
-                name="boostCount"
-                label="Số lần boost"
-                min={0}
-                step="1"
-                disabled={isViewOnly}
-              />
-            </div>
-
-            {statusValue === "REJECTED" ? (
-              <ListingTextareaField
-                name="rejectReason"
-                label="Lý do từ chối"
-                required
-                placeholder="Nhập lý do từ chối để chủ tin biết cần chỉnh sửa gì"
-                disabled={isViewOnly}
-              />
-            ) : null}
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <ListingCheckboxField
-                name="isBoosted"
-                label="Đã boost"
-                disabled={isViewOnly}
-              />
-              <ListingCheckboxField
-                name="isMatched"
-                label="Đã khớp nhu cầu"
-                disabled={isViewOnly}
-              />
-            </div>
-          </>
-        ) : null}
 
         <ListingImageGalleryField
           images={uploadedImages}

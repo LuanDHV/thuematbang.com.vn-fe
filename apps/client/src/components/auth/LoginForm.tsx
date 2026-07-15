@@ -4,9 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { getCurrentUserAction } from "@/actions/user.actions";
 import PasswordInput from "@/components/common/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,24 +16,17 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { AUTH_ME_QUERY_KEY, useLoginMutation } from "@/hooks/use-auth";
+import { useLoginMutation } from "@/hooks/use-auth";
 import { loginSchema, type LoginFormValues } from "@/schemas/auth.schema";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { trackEvent } from "@/lib/analytics/track-event";
 
 type LoginFormProps = React.ComponentProps<"div"> & {
-  variant?: "user" | "admin";
   redirectTo?: string;
 };
 
-export function LoginForm({
-  className,
-  variant = "user",
-  redirectTo,
-  ...props
-}: LoginFormProps) {
+export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const loginMutation = useLoginMutation();
   const {
     register,
@@ -51,9 +42,9 @@ export function LoginForm({
 
   const onSubmit = handleSubmit(async (values) => {
     const trackingParams = {
-      source: variant === "admin" ? "admin_login_form" : "login_form",
+      source: "login_form",
       auth_method: "password",
-      redirect_to: redirectTo ?? (variant === "admin" ? "/admin" : "/"),
+      redirect_to: redirectTo ?? "/",
     };
 
     trackEvent(ANALYTICS_EVENTS.loginSubmitClicked, trackingParams);
@@ -61,28 +52,8 @@ export function LoginForm({
     try {
       await loginMutation.mutateAsync(values);
 
-      let currentUser: Awaited<ReturnType<typeof getCurrentUserAction>> = null;
-      try {
-        currentUser = await queryClient.fetchQuery({
-          queryKey: AUTH_ME_QUERY_KEY,
-          queryFn: getCurrentUserAction,
-        });
-      } catch {
-        currentUser = null;
-      }
-
-      if (variant === "admin" && currentUser?.role !== "ADMIN") {
-        trackEvent(ANALYTICS_EVENTS.loginFailed, {
-          ...trackingParams,
-          reason: "not_admin",
-        });
-        router.push("/");
-        router.refresh();
-        return;
-      }
-
       trackEvent(ANALYTICS_EVENTS.loginCompleted, trackingParams);
-      router.push(redirectTo || (variant === "admin" ? "/admin" : "/"));
+      router.push(redirectTo || "/");
       router.refresh();
     } catch {
       trackEvent(ANALYTICS_EVENTS.loginFailed, {
@@ -91,8 +62,6 @@ export function LoginForm({
       });
     }
   });
-
-  const isAdminVariant = variant === "admin";
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -117,12 +86,10 @@ export function LoginForm({
             <FieldGroup className="flex flex-col gap-5">
               <div className="mb-4 flex flex-col items-center gap-2 text-center">
                 <h1 className="text-heading text-2xl font-semibold tracking-[-0.04em]">
-                  {isAdminVariant ? "Đăng nhập quản trị" : "Chào mừng trở lại"}
+                  Chào mừng trở lại
                 </h1>
                 <p className="text-secondary text-sm leading-7">
-                  {isAdminVariant
-                    ? "Chỉ tài khoản quản trị mới có thể vào khu vực admin."
-                    : "Vui lòng nhập thông tin để đăng nhập vào tài khoản"}
+                  Vui lòng nhập thông tin để đăng nhập vào tài khoản
                 </p>
               </div>
 
@@ -195,54 +162,50 @@ export function LoginForm({
                 </p>
               ) : null}
 
-              {isAdminVariant ? null : (
-                <>
-                  <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary *:data-[slot=field-separator-content]:bg-surface mb-1 py-2 *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
-                    Hoặc
-                  </FieldSeparator>
+              <FieldSeparator className="text-secondary *:data-[slot=field-separator-content]:text-secondary *:data-[slot=field-separator-content]:bg-surface mb-1 py-2 *:data-[slot=field-separator-content]:px-3 *:data-[slot=field-separator-content]:text-xs *:data-[slot=field-separator-content]:font-medium *:data-[slot=field-separator-content]:uppercase">
+                Hoặc
+              </FieldSeparator>
 
-                  <Field>
-                    <Button
-                      asChild
-                      variant="outline"
-                      type="button"
-                      className="h-11 w-full"
+              <Field>
+                <Button
+                  asChild
+                  variant="outline"
+                  type="button"
+                  className="h-11 w-full"
+                >
+                  <Link
+                    href="/api/v1/auth/google"
+                    onClick={() =>
+                      trackEvent(ANALYTICS_EVENTS.googleLoginClicked, {
+                        source: "login_form",
+                        auth_method: "google",
+                      })
+                    }
+                  >
+                    <svg
+                      className="mr-2 h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
                     >
-                      <a
-                        href="/api/v1/auth/google"
-                        onClick={() =>
-                          trackEvent(ANALYTICS_EVENTS.googleLoginClicked, {
-                            source: "login_form",
-                            auth_method: "google",
-                          })
-                        }
-                      >
-                        <svg
-                          className="mr-2 h-5 w-5"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                        Đăng nhập với Google
-                      </a>
-                    </Button>
-                  </Field>
+                      <path
+                        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Đăng nhập với Google
+                  </Link>
+                </Button>
+              </Field>
 
-                  <div className="text-secondary mt-4 text-center text-sm">
-                    Chưa có tài khoản?{" "}
-                    <Link
-                      href="/dang-ky"
-                      className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
-                    >
-                      Đăng ký
-                    </Link>
-                  </div>
-                </>
-              )}
+              <div className="text-secondary mt-4 text-center text-sm">
+                Chưa có tài khoản?{" "}
+                <Link
+                  href="/dang-ky"
+                  className="text-secondary hover:text-primary text-sm font-medium underline-offset-4 transition-colors duration-200 hover:underline"
+                >
+                  Đăng ký
+                </Link>
+              </div>
             </FieldGroup>
           </form>
         </CardContent>

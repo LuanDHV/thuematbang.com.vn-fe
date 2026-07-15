@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-const adminPriorityBadgeVariants = cva(
+const priorityBadgeVariants = cva(
   "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold leading-none",
   {
     variants: {
@@ -20,21 +20,21 @@ const adminPriorityBadgeVariants = cva(
   },
 );
 
-export type AdminPriorityTone = NonNullable<
-  VariantProps<typeof adminPriorityBadgeVariants>["tone"]
+export type PriorityTone = NonNullable<
+  VariantProps<typeof priorityBadgeVariants>["tone"]
 >;
 
-export default function AdminPriorityBadge({
+export default function PriorityBadge({
   tone,
   children,
   className,
 }: {
-  tone: AdminPriorityTone;
+  tone: PriorityTone;
   children: ReactNode;
   className?: string;
 }) {
   return (
-    <span className={cn(adminPriorityBadgeVariants({ tone }), className)}>
+    <span className={cn(priorityBadgeVariants({ tone }), className)}>
       {children}
     </span>
   );

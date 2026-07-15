@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ArchiveRestore, EyeOff, MoreHorizontal, Pencil } from "lucide-react";
-import { updateRentRequestAction } from "@/actions/admin-crud.actions";
-import AdminStatusBadge, {
-  type AdminBadgeTone,
-} from "@/components/cms/admin/AdminStatusBadge";
+import { updateRentRequestAction } from "@/actions/rent-request.actions";
+import StatusBadge, {
+  type BadgeTone,
+} from "@/components/cms/shared/StatusBadge";
 import {
   Pagination,
   TablePaginationFooter,
@@ -44,7 +44,7 @@ type UserRentRequestsTableProps = {
   totalPages: number;
 };
 
-const statusToneMap: Record<ListingStatus, AdminBadgeTone> = {
+const statusToneMap: Record<ListingStatus, BadgeTone> = {
   DRAFT: "muted",
   PENDING: "warning",
   PUBLISHED: "success",
@@ -132,12 +132,12 @@ function RentRequestMobileCard({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <AdminStatusBadge tone={item.isMatched ? "success" : "muted"}>
+        <StatusBadge tone={item.isMatched ? "success" : "muted"}>
           {item.isMatched ? "Đã khớp" : "Chưa khớp"}
-        </AdminStatusBadge>
-        <AdminStatusBadge tone={statusToneMap[item.status]}>
+        </StatusBadge>
+        <StatusBadge tone={statusToneMap[item.status]}>
           {PUBLISH_STATUS_LABEL_MAP[item.status]}
-        </AdminStatusBadge>
+        </StatusBadge>
       </div>
     </article>
   );
@@ -295,16 +295,16 @@ export default function UserRentRequestsTable({
                     {formatDateDisplay(item.createdAt)}
                   </TableCell>
                   <TableCell className="align-top">
-                    <AdminStatusBadge
+                    <StatusBadge
                       tone={item.isMatched ? "success" : "muted"}
                     >
                       {item.isMatched ? "Đã khớp" : "Chưa khớp"}
-                    </AdminStatusBadge>
+                    </StatusBadge>
                   </TableCell>
                   <TableCell className="align-top">
-                    <AdminStatusBadge tone={statusToneMap[item.status]}>
+                    <StatusBadge tone={statusToneMap[item.status]}>
                       {PUBLISH_STATUS_LABEL_MAP[item.status]}
-                    </AdminStatusBadge>
+                    </StatusBadge>
                   </TableCell>
                   <TableCell className="text-right align-top">
                     <div className="flex justify-end">
