@@ -88,6 +88,7 @@ export const NewsList: React.FC = () => {
           render={(value: string, record: Record<string, unknown>) => (
             <EntityCell
               imageUrl={
+                (record.imageUrl as string | undefined) ??
                 (record.images as Array<{ imageUrl: string }>)?.[0]?.imageUrl ??
                 null
               }
