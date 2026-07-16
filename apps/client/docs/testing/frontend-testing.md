@@ -1,133 +1,146 @@
 # Frontend Testing
 
-This document describes the current frontend test strategy and suite in `thuematbang.com.vn-fe`.
+Tài liệu này mô tả test strategy hiện tại của `apps/client`.
 
-The frontend strategy is intentionally split:
+## 1. Chiến Lược
 
-- `Unit tests`: protect services, helpers, hooks, and schema logic.
-- `Component tests`: protect form behavior, render states, error mapping, and interaction branches that do not need a full browser.
-- `Browser E2E`: protect auth, route gating, and primary listing journeys through the real browser, FE route handlers, and mock API server.
+Client app chia test thành:
 
-## Commands
+- `Unit tests`: services, helpers, schemas, cookie/server boundary logic.
+- `Component tests`: form behavior, render states, error mapping, common UI, user interactions không cần browser thật.
+- `Hook tests`: React Query/Zustand-facing hook behavior.
+- `Browser E2E`: auth, route gating, listing create và user dashboard journeys qua Playwright với mock API server.
+
+Không mở rộng Playwright cho mọi CRUD branch nhỏ. Branch-heavy validation và error string mapping nên nằm ở unit/component tests.
+
+## 2. Commands
 
 ```bash
 npm test
 npm run test:e2e
 ```
 
-## Priority Levels
+Từ root monorepo:
 
-- `P1`: auth, property, and rent-request primary flows.
-- `P2`: smoke/platform/supporting regression flows outside the current priority domains.
+```bash
+npm run test:client
+```
 
-## Browser E2E Priority
+## 3. Browser E2E Hiện Có
 
 ### `tests/e2e/auth-flow.spec.ts` (`P1`)
 
-- Focus: customer login, access to protected create pages, logout, and customer register with cookie verification.
-- Why E2E: this is the top-level browser auth contract and verifies the FE auth route handlers, cookie bridge, and protected-route gating in a real browser.
-- Review when: auth route handlers, login/register redirect behavior, auth cookies, or route gating change.
+Focus: customer login, protected create pages, logout, register và cookie verification.
+
+Review khi đổi auth route handlers, cookie bridge, redirect behavior hoặc protected-route gating.
 
 ### `tests/e2e/listing-create.spec.ts` (`P1`)
 
-- Focus: property creation with image upload, rent-request creation with budget, and negotiable rent-request creation without budget.
-- Why E2E: this is the main end-user listing journey and catches real browser interactions around form state, submit actions, route changes, and success-dialog visibility.
-- Review when: create forms, create server actions, revalidation behavior, or create-page redirects/success UX change.
+Focus: tạo property với image upload, tạo rent request có budget, tạo negotiable rent request không budget.
 
-### `tests/e2e/admin-smoke.spec.ts` (`P1`)
-
-- Focus: anonymous/admin access behavior around `/admin`.
-- Why E2E: admin route gating is user-visible and depends on FE server-side auth resolution, not only local component logic.
-- Review when: admin shell auth behavior, route guard, or admin layout auth resolution changes.
+Review khi đổi create forms, create server actions, revalidation, route changes hoặc success UX.
 
 ### `tests/e2e/user-dashboard-status.spec.ts` (`P1`)
 
-- Focus: rejected property/rent-request revision flow and the transition back to pending, plus hidden actions after publish.
-- Why E2E: verifies a real user workflow across UI state, API state, and status transitions.
-- Review when: dashboard status UI or listing moderation/revision flow changes.
+Focus: rejected property/rent-request revision flow, transition về pending và hidden actions sau publish.
 
-## Browser Smoke and Supporting
+Review khi đổi user dashboard status UI hoặc listing moderation/revision flow.
 
 ### `tests/e2e/auth-page.spec.ts` (`P2`)
 
-- Focus: auth page shell renders the expected heading and action button.
-- Why E2E: lightweight smoke for route and shell availability only.
-- Review when: auth shell or route structure changes.
+Focus: auth page shell render heading và action button.
 
-This file should stay documented as a smoke check, not as a business-critical flow.
+Đây là smoke check cho route/shell availability, không phải business-critical flow.
 
-## Unit Tests For Services, Helpers, and Hooks
+## 4. Mock API E2E
 
-### Services and boundaries
+Playwright dùng mock API server trong:
+
+```text
+tests/e2e/mock-api-server.cjs
+tests/e2e/mock-api/
+```
+
+Mock route groups hiện có:
+
+- auth
+- banners
+- categories
+- content/static content
+- FAQs
+- leads
+- listings
+- locations
+- media
+- news
+- search
+- SEO contents
+- system
+
+Khi đổi request/response shape của browser journey, cập nhật mock router/fixtures cùng test.
+
+## 5. Unit Tests
+
+Unit tests hiện có:
 
 - `tests/unit/auth-service.test.ts`
-  - Covers auth client payload unwrapping.
 - `tests/unit/server-api-client.test.ts`
-  - Covers refresh-and-retry behavior, unauthorized handling, and server-side auth boundary rules.
 - `tests/unit/auth-cookies.test.ts`
-  - Covers cookie read/write/delete behavior, production secure flag, and cookie option consistency.
 - `tests/unit/validation.test.ts`
-  - Covers pagination normalization, ensureArray, and negotiable rent-request schema branches.
-
-### Helpers
-
 - `tests/unit/format.test.ts`
 - `tests/unit/listing-filter.test.ts`
 - `tests/unit/text-normalize.test.ts`
 - `tests/unit/utils.test.ts`
+- `tests/unit/google-map.test.ts`
+- `tests/unit/listing-match-status.test.ts`
 
-These files protect pure formatting, filtering, text normalization, and utility behavior. Keep them at the unit layer; do not move this kind of coverage into Playwright.
+Các suite này bảo vệ service boundary, refresh/retry behavior, cookie options, schema branches, formatting/filtering, Google Map helper và listing-match status logic.
 
-### Hooks
+## 6. Component Và Hook Tests
 
-- `tests/hooks/use-auth.test.tsx`
-  - Covers logout cache clearing in React Query.
-
-## Component Tests For Forms, Common UI, and Admin UI
-
-### Auth forms
+Component tests hiện có:
 
 - `tests/components/auth/LoginForm.test.tsx`
-  - Covers empty validation, submit redirect, and admin-variant redirect behavior.
 - `tests/components/auth/SignupForm.test.tsx`
-  - Covers empty validation, successful submit redirect, and duplicate-error message mapping.
-
-### Listing forms
-
-- `tests/components/listing-form/PropertyCreateForm.test.tsx`
-  - Covers auth prefill, default value preservation, loading state, logged-out prompt, heading/description render, and view-only mode.
-
-### Shared/common/admin components
-
-- `tests/components/cms/admin/AdminDashboardOverview.test.tsx`
-- `tests/components/cms/admin/AdminUsersTable.test.tsx`
+- `tests/components/common/FavoriteButton.test.tsx`
 - `tests/components/common/Pagination.test.tsx`
 - `tests/components/common/PasswordInput.test.tsx`
 - `tests/components/common/PosterContactCard.test.tsx`
 - `tests/components/listing-filter/ListingFilterToolbar.test.tsx`
+- `tests/components/listing-form/PropertyCreateForm.test.tsx`
 
-These files protect UI render states and interaction branches that are valuable but not worth moving into browser E2E.
+Hook/lib tests:
 
-## Frontend Testing Rules
+- `tests/hooks/use-auth.test.tsx`
+- `tests/lib/favorites/favorite-navigation.test.ts`
 
-- Browser E2E is for auth, route protection, and primary listing journeys.
-- Schema, render-state, error-mapping, and branch-heavy form behavior should stay in unit/component tests.
-- Do not add Playwright coverage just to test a validation branch or error string mapping.
-- If a refactor touches:
-  - auth route handlers or cookie bridges -> review `auth-flow.spec.ts`, `server-api-client.test.ts`, and `auth-cookies.test.ts`
-  - property or rent-request create flows -> review `listing-create.spec.ts` plus the related schema/component tests
-  - admin access behavior -> review `admin-smoke.spec.ts` first
-  - dashboard moderation/revision behavior -> review `user-dashboard-status.spec.ts` first
+Các suite này bảo vệ render states, validation behavior, favorite UX, pagination, password visibility, contact card, filter toolbar, create form states và auth hook cache cleanup.
 
-## Recommended Next Additions
+## 7. Quy Tắc Cập Nhật Test
 
-Only add these when the related area is actively changing:
+- Auth/cookie/proxy/session flow: review `auth-flow.spec.ts`, `server-api-client.test.ts`, `auth-cookies.test.ts`.
+- Listing create/update form behavior: review `listing-create.spec.ts` và component/schema tests liên quan.
+- User dashboard moderation/status: review `user-dashboard-status.spec.ts`.
+- Favorites: review `FavoriteButton.test.tsx` và `favorite-navigation.test.ts`.
+- Listing match status helpers: review `listing-match-status.test.ts`.
+- Pure helper/schema branches: thêm unit test, không thêm Playwright nếu không cần browser.
+- Render-state/error-mapping form behavior: thêm component test trước.
 
-- direct unit tests for FE auth route handlers if auth/session refactors become deeper
-- more component/integration coverage for admin listing edit screens before adding more Playwright
+## 8. Coverage Tracking
 
-Not recommended right now:
+Ma trận coverage sống nằm ở `TEST_COVERAGE.md`.
 
-- expanding Playwright to every CRUD branch
-- adding browser E2E for small validation permutations
-- trimming current `P1` suites for speed before there is data showing waste or duplication
+Cập nhật file đó khi:
+
+- thêm/xóa test suite
+- đổi priority của flow
+- thêm coverage cho feature area mới
+- phát hiện coverage gap quan trọng trong lúc refactor
+
+## 9. Drift Prevention
+
+Khi route structure, auth flow, server action hoặc test boundary đổi:
+
+- cập nhật tài liệu này
+- cập nhật `ARCHITECTURE.md` nếu ownership/data flow đổi
+- cập nhật `TEST_COVERAGE.md` nếu coverage matrix đổi
