@@ -39,6 +39,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
+# Coolify healthcheck cần curl/wget trong runtime image để kiểm tra app còn sống.
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
 # Chỉ copy output standalone, không copy toàn bộ source/node_modules vào runtime.
 COPY --from=builder /app/apps/client/.next/standalone ./
 COPY --from=builder /app/apps/client/public ./apps/client/public
