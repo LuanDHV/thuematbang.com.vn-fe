@@ -22,9 +22,6 @@ function buildImagePayload(images: AdminGalleryImage[]) {
     .map((image) => ({
       imageUrl: image.imageUrl,
       imagePublicId: image.imagePublicId,
-      width: image.width ?? null,
-      height: image.height ?? null,
-      bytes: image.bytes ?? null,
     }));
 }
 
