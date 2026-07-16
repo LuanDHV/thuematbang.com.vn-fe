@@ -24,6 +24,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Next 16/Turbopack cần root monorepo để resolve workspace package @thuematbang/contracts.
 ENV NEXT_WORKSPACE_ROOT=/app
 
+# Next.js prerender cần các env này ngay lúc build image, không chỉ lúc chạy container.
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PRIVATE_API_URL
+ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+ARG NEXT_PUBLIC_ENABLE_GTM_LOCAL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PRIVATE_API_URL=${NEXT_PRIVATE_API_URL}
+ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+ENV NEXT_PUBLIC_ENABLE_GTM_LOCAL=${NEXT_PUBLIC_ENABLE_GTM_LOCAL}
+
 # Reuse node_modules từ deps stage để cache npm ci tốt hơn khi chỉ đổi source code.
 COPY --from=deps /app ./
 COPY . .

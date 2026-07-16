@@ -52,6 +52,11 @@ jobs:
           context: .
           file: Dockerfile.client
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ github.ref_name == 'main' && vars.PRODUCTION_NEXT_PUBLIC_API_URL || vars.STAGING_NEXT_PUBLIC_API_URL }}
+            NEXT_PRIVATE_API_URL=${{ github.ref_name == 'main' && vars.PRODUCTION_NEXT_PRIVATE_API_URL || vars.STAGING_NEXT_PRIVATE_API_URL }}
+            NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ github.ref_name == 'main' && vars.PRODUCTION_NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || vars.STAGING_NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+            NEXT_PUBLIC_ENABLE_GTM_LOCAL=${{ github.ref_name == 'main' && (vars.PRODUCTION_NEXT_PUBLIC_ENABLE_GTM_LOCAL || 'true') || (vars.STAGING_NEXT_PUBLIC_ENABLE_GTM_LOCAL || 'true') }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.CLIENT_IMAGE }}:${{ steps.meta.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.CLIENT_IMAGE }}:${{ github.sha }}
