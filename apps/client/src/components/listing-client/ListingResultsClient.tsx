@@ -132,9 +132,6 @@ export default function ListingResultsClient({
               onChange={(nextPage) =>
                 router.replace(
                   buildPagedPath(paginationBasePath ?? "", nextPage),
-                  {
-                    scroll: false,
-                  },
                 )
               }
             />

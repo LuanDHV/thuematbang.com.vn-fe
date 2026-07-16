@@ -47,7 +47,7 @@ export default function ProjectListingClient({
   const handleSelectCategory = (value: string) => {
     setSelectedCategorySlug(value);
     const targetPath = value === "du-an" ? "/du-an" : `/du-an/${value}`;
-    router.replace(targetPath, { scroll: false });
+    router.replace(targetPath);
   };
 
   const resolvedPaginationMeta = resolvePaginationClientMeta(paginationMeta);
@@ -95,9 +95,6 @@ export default function ProjectListingClient({
                   targetPathFromCategory(selectedCategorySlug),
                   nextPage,
                 ),
-                {
-                  scroll: false,
-                },
               )
             }
           />

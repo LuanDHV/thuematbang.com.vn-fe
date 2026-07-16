@@ -48,16 +48,9 @@ describe("ListingFilterToolbar", () => {
       },
     ]);
 
-    renderWithProviders(
-      <ListingFilterToolbar
-        basePath="/cho-thue"
-      />,
-    );
+    renderWithProviders(<ListingFilterToolbar basePath="/cho-thue" />);
 
-    await user.type(
-      screen.getByPlaceholderText("Bạn muốn thuê ở đâu?"),
-      "can",
-    );
+    await user.type(screen.getByPlaceholderText("Bạn muốn thuê ở đâu?"), "can");
 
     await waitFor(() => {
       expect(getPublicSearchSuggestionsActionMock).toHaveBeenCalled();
@@ -69,9 +62,7 @@ describe("ListingFilterToolbar", () => {
 
     await user.click(suggestion);
 
-    expect(replaceMock).toHaveBeenCalledWith("/cho-thue/can-ho-quan-1", {
-      scroll: false,
-    });
+    expect(replaceMock).toHaveBeenCalledWith("/cho-thue/can-ho-quan-1");
   });
 
   it("opens the advanced filter drawer from the trigger button", async () => {
@@ -88,7 +79,9 @@ describe("ListingFilterToolbar", () => {
       />,
     );
 
-    await user.click(screen.getByText("1").closest("button") as HTMLButtonElement);
+    await user.click(
+      screen.getByText("1").closest("button") as HTMLButtonElement,
+    );
 
     expect(screen.getByText("Bộ lọc nâng cao")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Đặt lại" })).toBeInTheDocument();
@@ -100,9 +93,7 @@ describe("ListingFilterToolbar", () => {
   it("renders hardcoded property type options", async () => {
     const user = userEvent.setup();
 
-    renderWithProviders(
-      <ListingFilterToolbar basePath="/cho-thue" />,
-    );
+    renderWithProviders(<ListingFilterToolbar basePath="/cho-thue" />);
 
     await user.click(screen.getByRole("button", { name: "Loại BĐS" }));
 

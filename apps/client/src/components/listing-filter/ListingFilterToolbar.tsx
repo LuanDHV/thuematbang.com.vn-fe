@@ -216,7 +216,7 @@ export default function ListingFilterToolbar({
   const navigateToSuggestion = (suggestion: PublicSearchSuggestion) => {
     setIsSuggestionOpen(false);
     setActiveSuggestionIndex(0);
-    router.replace(resolveSuggestionHref(suggestion), { scroll: false });
+    router.replace(resolveSuggestionHref(suggestion));
   };
 
   // All URL sync goes through the same builder so pagination, breadcrumbs, and
@@ -231,16 +231,9 @@ export default function ListingFilterToolbar({
     if (options?.syncUrl !== false) {
       router.replace(
         buildPagedPath(
-          buildPropertyFilterPath(
-            nextBasePath,
-            activeFilters,
-            flatUrlContext,
-          ),
+          buildPropertyFilterPath(nextBasePath, activeFilters, flatUrlContext),
           1,
         ),
-        {
-          scroll: false,
-        },
       );
     }
   };
@@ -248,7 +241,7 @@ export default function ListingFilterToolbar({
   const resetAll = () => {
     setKeyword("");
     setAdvancedFilters(INITIAL_ADVANCED_FILTER_VALUE);
-    router.replace(buildPagedPath(basePath, 1), { scroll: false });
+    router.replace(buildPagedPath(basePath, 1));
   };
 
   useEffect(() => {
