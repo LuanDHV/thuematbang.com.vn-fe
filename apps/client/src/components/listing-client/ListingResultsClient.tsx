@@ -125,20 +125,13 @@ export default function ListingResultsClient({
             </section>
           ) : null}
 
-          <>
-            <Pagination
-              page={currentPage}
-              totalPages={totalPages}
-              onChange={(nextPage) =>
-                router.replace(
-                  buildPagedPath(paginationBasePath ?? "", nextPage),
-                  {
-                    scroll: false,
-                  },
-                )
-              }
-            />
-          </>
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={(nextPage) =>
+              router.replace(buildPagedPath(paginationBasePath ?? "", nextPage))
+            }
+          />
         </div>
       </div>
     </section>

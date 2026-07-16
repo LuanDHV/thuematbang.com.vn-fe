@@ -25,9 +25,6 @@ function buildImg(img?: AdminGalleryImage) {
   return {
     imageUrl: img.imageUrl,
     imagePublicId: img.imagePublicId,
-    width: img.width ?? null,
-    height: img.height ?? null,
-    bytes: img.bytes ?? null,
   };
 }
 

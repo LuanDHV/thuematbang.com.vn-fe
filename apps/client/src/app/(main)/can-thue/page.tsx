@@ -44,14 +44,14 @@ export default async function CanThuePage() {
       />
 
       <SafeFetch
-      fetcher={rentRequestService.getAll({
-        filters: {
-          status: "PUBLISHED",
-          sortBy: "createdAt",
-          sortOrder: "desc",
-        },
-        limit: 24,
-      })}
+        fetcher={rentRequestService.getAll({
+          filters: {
+            status: "PUBLISHED",
+            sortBy: "createdAt",
+            sortOrder: "desc",
+          },
+          limit: 24,
+        })}
         debugLabel="Rent-Requests Response"
       >
         {(response) => (
@@ -65,8 +65,8 @@ export default async function CanThuePage() {
         )}
       </SafeFetch>
 
-      <PageSeoContent seoData={seoRes.data} />
       <PageFaq faqData={faqRes.data} />
+      <PageSeoContent seoData={seoRes.data} />
     </>
   );
 }

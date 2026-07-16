@@ -18,20 +18,32 @@ import Reveal from "@/components/home/Reveal";
 const categories = [
   {
     name: "Văn Phòng",
+    href: "/cho-thue/van-phong",
     icon: <BriefcaseBusiness size={40} strokeWidth={1.2} />,
   },
-  { name: "Mặt Bằng", icon: <Store size={40} strokeWidth={1.2} /> },
+  {
+    name: "Mặt Bằng",
+    href: "/cho-thue/mat-bang",
+    icon: <Store size={40} strokeWidth={1.2} />,
+  },
   {
     name: "Kho Xưởng, Khu Công Nghiệp",
+    href: "/cho-thue/kho-xuong-khu-cong-nghiep",
     icon: <Factory size={40} strokeWidth={1.2} />,
   },
-  { name: "Căn Hộ, Chung Cư", icon: <Building2 size={40} strokeWidth={1.2} /> },
+  {
+    name: "Căn Hộ, Chung Cư",
+    href: "/cho-thue/can-ho-chung-cu",
+    icon: <Building2 size={40} strokeWidth={1.2} />,
+  },
   {
     name: "Trung Tâm Thương Mại",
+    href: "/cho-thue/trung-tam-thuong-mai",
     icon: <ShoppingBag size={40} strokeWidth={1.2} />,
   },
   {
     name: "Nhà Trọ, Phòng Trọ",
+    href: "/cho-thue/nha-tro-phong-tro",
     icon: <BedDouble size={40} strokeWidth={1.2} />,
   },
 ];
@@ -39,10 +51,10 @@ const categories = [
 function CategoryCard({ category }: { category: (typeof categories)[number] }) {
   return (
     <Link
-      href="/du-an"
-      className="group hover:border-primary/50 hover:shadow-primary/10 border-hairline bg-surface hover:bg-surface flex min-h-52 flex-col items-center justify-center rounded-xl border p-4 shadow-(--shadow-card) transition-[border-color,box-shadow] duration-300 hover:shadow-(--shadow-float)"
+      href={category.href}
+      className="group hover:border-primary/50 hover:shadow-primary/10 border-hairline bg-surface hover:bg-surface flex min-h-48 flex-col items-center justify-center rounded-xl border p-4 shadow-(--shadow-card) transition-[border-color,box-shadow] duration-300 hover:shadow-(--shadow-float)"
     >
-      <div className="text-primary mb-4 transition-all duration-300 group-hover:scale-110">
+      <div className="text-primary mb-2 transition-all duration-300 group-hover:scale-110">
         {category.icon}
       </div>
       <h3 className="group-hover:text-primary text-body text-center text-base font-bold tracking-tight transition-colors duration-300">

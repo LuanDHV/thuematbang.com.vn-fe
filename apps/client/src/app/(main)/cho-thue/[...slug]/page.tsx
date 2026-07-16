@@ -6,6 +6,7 @@ import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
+import RandomLuckyPropertiesSection from "@/components/listing-client/RandomLuckyPropertiesSection";
 import DetailTwoColumnLayout from "@/components/listing-detail/DetailTwoColumnLayout";
 import PropertyDetailContent from "@/components/listing-detail/property/PropertyDetailContent";
 import PropertyDetailSidebar from "@/components/listing-detail/property/PropertyDetailSidebar";
@@ -320,26 +321,31 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
           );
 
           return (
-            <ListingFilterSection
-              properties={properties}
-              listingMode="property"
-              basePath="/cho-thue"
-              paginationBasePath={paginationBasePath}
-              initialFilters={initialFilters}
-              initialLocationContext={resolvedLocationContext}
-              breadcrumbItems={buildPropertyFilterBreadcrumbs(
-                "/cho-thue",
-                rawSlug,
-                resolvedLocationContext,
-              )}
-              paginationMeta={response.meta}
-            />
+            <>
+              <ListingFilterSection
+                properties={properties}
+                listingMode="property"
+                basePath="/cho-thue"
+                paginationBasePath={paginationBasePath}
+                initialFilters={initialFilters}
+                initialLocationContext={resolvedLocationContext}
+                breadcrumbItems={buildPropertyFilterBreadcrumbs(
+                  "/cho-thue",
+                  rawSlug,
+                  resolvedLocationContext,
+                )}
+                paginationMeta={response.meta}
+              />
+              <RandomLuckyPropertiesSection
+                excludeIds={properties.map((property) => property.id)}
+              />
+            </>
           );
         }}
       </SafeFetch>
 
-      <PageSeoContent seoData={seoRes.data} />
       <PageFaq faqData={faqRes.data} />
+      <PageSeoContent seoData={seoRes.data} />
     </>
   );
 }
