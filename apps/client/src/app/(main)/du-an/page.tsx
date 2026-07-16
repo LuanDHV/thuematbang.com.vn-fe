@@ -65,8 +65,8 @@ export default async function DuAnPage() {
           />
         )}
       </SafeFetch>
-      <PageSeoContent seoData={seoRes.data} />
       <PageFaq faqData={faqRes.data} />
+      <PageSeoContent seoData={seoRes.data} />
     </>
   );
 }

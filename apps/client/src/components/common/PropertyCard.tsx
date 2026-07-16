@@ -42,6 +42,8 @@ const TIER_SIDE_SMALL_IMAGE_SIZES =
   "(max-width: 767px) 24vw, (max-width: 1023px) 15vw, 12vw";
 const FREE_CARD_IMAGE_SIZES =
   "(max-width: 767px) 92vw, (max-width: 1023px) 33vw, 25vw";
+const LUCKY_CARD_IMAGE_SIZES =
+  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, 25vw";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
@@ -187,6 +189,47 @@ function FeaturedCard({
         density="rich"
         tone={tone}
         showRooms={false}
+      />
+      <CardHoverBar />
+    </article>
+  );
+}
+
+function LuckyCard({
+  property,
+  favoriteCount,
+  priority = false,
+}: {
+  property: Property;
+  favoriteCount: number;
+  priority?: boolean;
+}) {
+  const tone = getTierTone(property?.priorityStatus);
+  const realImageCount = getSortedPropertyImageUrls(property).length;
+
+  return (
+    <article className={`surface-utility ${CARD_HOVER_CLASSES}`}>
+      <div className="relative h-48 overflow-hidden">
+        <TierBadge tone={tone} />
+        <ImageCountBadge count={realImageCount} />
+        <CloudinaryImage
+          src={getPropertyThumbnailUrl(property)}
+          alt={property?.title || "Bất động sản"}
+          width={1200}
+          height={800}
+          priority={priority}
+          sizes={LUCKY_CARD_IMAGE_SIZES}
+          className="h-full w-full object-cover"
+          cldQuality="auto:good"
+        />
+      </div>
+
+      <CardBody
+        property={property}
+        favoriteCount={favoriteCount}
+        density="compact"
+        tone={tone}
+        showRooms
       />
       <CardHoverBar />
     </article>
@@ -553,7 +596,7 @@ export function PropertyCard({
   priority = false,
 }: {
   property: Property;
-  variant?: "featured" | "tier";
+  variant?: "featured" | "lucky" | "tier";
   priority?: boolean;
 }) {
   const href = resolvePropertyHref(property);
@@ -566,6 +609,14 @@ export function PropertyCard({
   if (variant === "featured") {
     content = (
       <FeaturedCard
+        property={property}
+        favoriteCount={favoriteCount}
+        priority={priority}
+      />
+    );
+  } else if (variant === "lucky") {
+    content = (
+      <LuckyCard
         property={property}
         favoriteCount={favoriteCount}
         priority={priority}

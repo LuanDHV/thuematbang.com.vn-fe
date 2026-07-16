@@ -5,6 +5,7 @@ import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
 import SafeFetch from "@/components/common/SafeFetch";
 import ListingFilterSection from "@/components/listing-filter/ListingFilterSection";
+import RandomLuckyPropertiesSection from "@/components/listing-client/RandomLuckyPropertiesSection";
 import { buildPropertyFilterBreadcrumbs } from "@/lib/listing/flat-url";
 import { buildLatestListingTitle, createPageMetadata } from "@/lib/metadata";
 import { buildWebPageSchema } from "@/lib/seo";
@@ -54,18 +55,27 @@ export default async function ChoThuePage() {
         })}
         debugLabel="Properties Response"
       >
-        {(response) => (
-          <ListingFilterSection
-            properties={response.data ?? []}
-            listingMode="property"
-            basePath="/cho-thue"
-            breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue")}
-            paginationMeta={response.meta}
-          />
-        )}
+        {(response) => {
+          const properties = response.data ?? [];
+
+          return (
+            <>
+              <ListingFilterSection
+                properties={properties}
+                listingMode="property"
+                basePath="/cho-thue"
+                breadcrumbItems={buildPropertyFilterBreadcrumbs("/cho-thue")}
+                paginationMeta={response.meta}
+              />
+              <RandomLuckyPropertiesSection
+                excludeIds={properties.map((property) => property.id)}
+              />
+            </>
+          );
+        }}
       </SafeFetch>
-      <PageSeoContent seoData={seoRes.data} />
       <PageFaq faqData={faqRes.data} />
+      <PageSeoContent seoData={seoRes.data} />
     </>
   );
 }

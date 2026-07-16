@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function SubHeader() {
   return (
-    <div className="bg-footer/95 border-footer-border fixed top-0 right-0 left-0 z-40 border-b backdrop-blur-md">
+    <div className="bg-footer/95 border-footer-border fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-md">
       <div className="layout-container flex h-10 items-center justify-center">
         <Link href="tel:0968688081" className="inline-flex items-center gap-2">
           <span className="relative flex h-2 w-2 shrink-0">
