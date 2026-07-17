@@ -3,6 +3,7 @@ import Footer from "@/components/common/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
 import FloatingContactButton from "@/components/common/FloatingContactButton";
 import SubHeader from "@/components/common/SubHeader";
+import ProfileCompletionGate from "@/components/auth/ProfileCompletionGate";
 
 export default async function MainLayout({
   children,
@@ -17,6 +18,7 @@ export default async function MainLayout({
       <Footer />
       <FloatingContactButton />
       <FloatingActions />
+      <ProfileCompletionGate />
     </div>
   );
 }
