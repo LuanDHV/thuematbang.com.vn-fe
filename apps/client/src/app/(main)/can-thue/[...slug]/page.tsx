@@ -22,7 +22,7 @@ import {
 } from "@/lib/metadata";
 import { buildMetaDescription, buildWebPageSchema } from "@/lib/seo";
 import { faqService } from "@/services/faq.service";
-import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
+import { getRentRequestCoverImage } from "@/constants/rent-request";
 import { RentRequest } from "@/types/rent-request";
 import { rentRequestService } from "@/services/rent-request.service";
 import { locationService } from "@/services/location.service";
@@ -123,6 +123,7 @@ export async function generateMetadata({
     ]
       .filter(Boolean)
       .join(", ");
+    const coverImage = getRentRequestCoverImage(rentRequest.category?.slug);
 
     return createPageMetadata({
       title: buildPageTitle(rentRequest.title),
@@ -131,7 +132,7 @@ export async function generateMetadata({
         "Xem chi tiết nhu cầu cần thuê, bao gồm khu vực mong muốn, ngân sách, diện tích và thông tin liên hệ để bạn gửi đề xuất phù hợp hơn.",
       ),
       pathname: `/can-thue/${rentRequest.slug}`,
-      image: RENT_REQUEST_COVER_IMAGE,
+      image: coverImage,
       type: "article",
     });
   }
@@ -142,6 +143,7 @@ export async function generateMetadata({
     title: seoData?.metaTitle || RENT_REQUEST_LISTING_TITLE,
     description: seoData?.metaDescription || RENT_REQUEST_LISTING_DESCRIPTION,
     pathname: seoData?.targetPath || buildSeoPath(rawSlug),
+    image: seoData?.metaImageUrl || undefined,
   });
 }
 
@@ -184,6 +186,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     ]
       .filter(Boolean)
       .join(", ");
+    const coverImage = getRentRequestCoverImage(rentRequest.category?.slug);
 
     const relatedRequests = rentRequests.filter(
       (item) => item.id !== rentRequest.id,
@@ -211,7 +214,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
                 "Xem chi tiết nhu cầu cần thuê, bao gồm khu vực mong muốn, ngân sách, diện tích và thông tin liên hệ để bạn gửi đề xuất phù hợp hơn.",
               ),
               url: `/can-thue/${rentRequest.slug}`,
-              image: RENT_REQUEST_COVER_IMAGE,
+              image: coverImage,
               datePublished: rentRequest.createdAt,
               dateModified: rentRequest.updatedAt,
             }),
@@ -274,6 +277,7 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
             description:
               seoRes.data?.metaDescription || RENT_REQUEST_LISTING_DESCRIPTION,
             url: seoRes.data?.targetPath || seoPath,
+            image: seoRes.data?.metaImageUrl || undefined,
             schemaType: "CollectionPage",
           }),
         ]}
