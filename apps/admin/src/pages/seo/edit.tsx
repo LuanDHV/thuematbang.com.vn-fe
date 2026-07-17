@@ -2,6 +2,11 @@ import React from "react";
 import { Edit, useForm } from "@refinedev/antd";
 import { Form, Select, Card, Input, Switch } from "antd";
 import { AdminRichTextEditor } from "../../components/admin/fields/AdminRichTextEditor";
+import { AdminGalleryField } from "../../components/admin/fields/AdminGalleryField";
+import {
+  normalizeGalleryImage,
+  type AdminGalleryImage,
+} from "../../lib/admin/media";
 
 const PAGE_OPTIONS = [
   { label: "Trang chủ", value: "home" },
@@ -24,16 +29,45 @@ export const SeoContentsEdit: React.FC = () => {
   const { formProps, saveButtonProps, query, onFinish } = useForm();
   const record = query?.data?.data as Record<string, unknown> | undefined;
   const form = formProps.form;
+  const draftId = React.useMemo(() => crypto.randomUUID(), []);
+
+  React.useEffect(() => {
+    const imageUrl = String(record?.metaImageUrl ?? "");
+    const imagePublicId =
+      typeof record?.metaImagePublicId === "string"
+        ? String(record.metaImagePublicId)
+        : null;
+
+    form?.setFieldsValue({
+      metaImage:
+        imageUrl && imagePublicId
+          ? [
+              normalizeGalleryImage({
+                imageUrl,
+                imagePublicId,
+                persisted: true,
+              }),
+            ]
+          : [],
+    });
+  }, [form, record?.metaImagePublicId, record?.metaImageUrl]);
 
   const handleFinish = async (values: Record<string, unknown>) => {
+    const { metaImage, ...rest } = values;
+    const selectedImage = Array.isArray(metaImage)
+      ? (metaImage[0] as AdminGalleryImage | undefined)
+      : undefined;
+
     onFinish?.({
-      ...values,
-      page: String(values.page ?? ""),
-      targetPath: normalizePath(values.targetPath),
-      metaTitle: String(values.metaTitle ?? ""),
-      metaDescription: String(values.metaDescription ?? ""),
-      isActive: values.isActive !== false,
-      seoContent: String(values.seoContent ?? ""),
+      ...rest,
+      page: String(rest.page ?? ""),
+      targetPath: normalizePath(rest.targetPath),
+      metaTitle: String(rest.metaTitle ?? ""),
+      metaDescription: String(rest.metaDescription ?? ""),
+      metaImageUrl: selectedImage?.imageUrl ?? null,
+      metaImagePublicId: selectedImage?.imagePublicId ?? null,
+      isActive: rest.isActive !== false,
+      seoContent: String(rest.seoContent ?? ""),
     });
   };
 
@@ -65,6 +99,17 @@ export const SeoContentsEdit: React.FC = () => {
           </Form.Item>
         </Card>
         <Card title="Metadata" style={{ marginBottom: 16 }}>
+          <Form.Item name="metaImage">
+            <AdminGalleryField
+              label="Ảnh thumbnail SEO"
+              description="Ảnh chỉ dùng cho metadata chia sẻ/SEO, không hiển thị ở giao diện public."
+              resourceType="seo-contents"
+              draftId={draftId}
+              resourceId={record?.id != null ? Number(record.id) : undefined}
+              maxFiles={1}
+              deleteOnRemove={false}
+            />
+          </Form.Item>
           <Form.Item label="Meta title" name="metaTitle">
             <Input maxLength={255} />
           </Form.Item>
@@ -77,7 +122,7 @@ export const SeoContentsEdit: React.FC = () => {
             <AdminRichTextEditor
               imageUpload={{
                 resourceType: "seo-contents",
-                draftId: crypto.randomUUID(),
+                draftId,
                 resourceId: record?.id != null ? Number(record.id) : undefined,
               }}
             />

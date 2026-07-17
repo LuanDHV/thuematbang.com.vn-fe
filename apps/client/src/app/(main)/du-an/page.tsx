@@ -13,12 +13,24 @@ import { faqService } from "@/services/faq.service";
 import { seoContentService } from "@/services/seo-content.service";
 import { projectService } from "@/services/project.service";
 
-export const metadata: Metadata = createPageMetadata({
-  title: buildLatestListingTitle("Dự án bất động sản"),
-  description:
-    "Khám phá các dự án bất động sản nổi bật và mới nhất, kèm thông tin vị trí, quy mô, tiện ích và tiến độ để bạn so sánh, đánh giá và chọn đúng dự án phù hợp nhu cầu.",
-  pathname: "/du-an",
-});
+const PROJECT_PATH = "/du-an";
+const PROJECT_TITLE = buildLatestListingTitle("Dự án bất động sản");
+const PROJECT_DESCRIPTION =
+  "Khám phá các dự án bất động sản nổi bật và mới nhất, kèm thông tin vị trí, quy mô, tiện ích và tiến độ để bạn so sánh, đánh giá và chọn đúng dự án phù hợp nhu cầu.";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seoData = await seoContentService
+    .getByPage("du-an")
+    .then((response) => response.data)
+    .catch(() => null);
+
+  return createPageMetadata({
+    title: seoData?.metaTitle || PROJECT_TITLE,
+    description: seoData?.metaDescription || PROJECT_DESCRIPTION,
+    pathname: seoData?.targetPath || PROJECT_PATH,
+    image: seoData?.metaImageUrl || undefined,
+  });
+}
 
 export default async function DuAnPage() {
   await connection();
@@ -37,10 +49,10 @@ export default async function DuAnPage() {
       <PageStructuredData
         schemas={[
           buildWebPageSchema({
-            title: buildLatestListingTitle("Dự án bất động sản"),
-            description:
-              "Khám phá các dự án bất động sản nổi bật và mới nhất, kèm thông tin vị trí, quy mô, tiện ích và tiến độ để bạn so sánh, đánh giá và chọn đúng dự án phù hợp nhu cầu.",
-            url: "/du-an",
+            title: seoRes.data?.metaTitle || PROJECT_TITLE,
+            description: seoRes.data?.metaDescription || PROJECT_DESCRIPTION,
+            url: seoRes.data?.targetPath || PROJECT_PATH,
+            image: seoRes.data?.metaImageUrl || undefined,
             schemaType: "CollectionPage",
           }),
         ]}

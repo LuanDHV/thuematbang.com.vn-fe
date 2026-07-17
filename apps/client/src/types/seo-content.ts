@@ -4,6 +4,8 @@ export interface SeoContent {
   targetPath: string;
   metaTitle?: string | null;
   metaDescription?: string | null;
+  metaImageUrl?: string | null;
+  metaImagePublicId?: string | null;
   seoContent?: string | null;
   isActive?: boolean;
   matchedPath?: string;

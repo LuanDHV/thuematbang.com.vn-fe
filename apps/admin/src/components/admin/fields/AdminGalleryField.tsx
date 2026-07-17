@@ -15,8 +15,8 @@ import {
 } from "../../../lib/admin/media";
 
 type Props = {
-  value: AdminGalleryImage[];
-  onChange: (value: AdminGalleryImage[]) => void;
+  value?: AdminGalleryImage[];
+  onChange?: (value: AdminGalleryImage[]) => void;
   label?: string;
   description?: string;
   error?: string | null;
@@ -28,6 +28,7 @@ type Props = {
   resourceId?: number | string;
   onBusyChange?: (busy: boolean) => void;
   disabled?: boolean;
+  deleteOnRemove?: boolean;
 };
 
 const DEFAULT_MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
@@ -46,8 +47,8 @@ function getFileError(file: File, maxBytes: number) {
 }
 
 export function AdminGalleryField({
-  value,
-  onChange,
+  value = [],
+  onChange = () => undefined,
   label = "Hình ảnh",
   description,
   error,
@@ -59,6 +60,7 @@ export function AdminGalleryField({
   resourceId,
   onBusyChange,
   disabled = false,
+  deleteOnRemove = true,
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -127,7 +129,9 @@ export function AdminGalleryField({
   const remove = async (idx: number) => {
     const img = value[idx];
     if (!img) return;
-    if (img.imagePublicId) await deleteAdminMediaImage(img.imagePublicId);
+    if (deleteOnRemove && img.imagePublicId) {
+      await deleteAdminMediaImage(img.imagePublicId);
+    }
     onChange(
       value
         .filter((_, i) => i !== idx)
