@@ -5,7 +5,7 @@ import {
   EditButton,
   useTable,
 } from "@refinedev/antd";
-import { Space, Table } from "antd";
+import { Space, Table, Tag } from "antd";
 
 import { AdminDataTable } from "../../components/admin/page/AdminDataTable";
 import { AdminFilterBar } from "../../components/admin/page/AdminFilterBar";
@@ -24,9 +24,23 @@ export const SeoContentsList: React.FC = () => {
         actions={<CreateButton type="primary">Thêm SEO</CreateButton>}
       />
 
-      <AdminDataTable tableProps={tableProps} minWidth={700}>
+      <AdminDataTable tableProps={tableProps} minWidth={1100}>
         <Table.Column title="ID" dataIndex="id" width={70} sorter />
-        <Table.Column title="Page" dataIndex="page" sorter />
+        <Table.Column title="Page" dataIndex="page" width={120} sorter />
+        <Table.Column title="URL" dataIndex="targetPath" width={260} sorter />
+        <Table.Column title="Meta title" dataIndex="metaTitle" />
+        <Table.Column
+          title="Trạng thái"
+          dataIndex="isActive"
+          width={120}
+          render={(value: boolean) =>
+            value === false ? (
+              <Tag color="default">Tắt</Tag>
+            ) : (
+              <Tag color="green">Active</Tag>
+            )
+          }
+        />
         <Table.Column
           title="Ngày tạo"
           dataIndex="createdAt"

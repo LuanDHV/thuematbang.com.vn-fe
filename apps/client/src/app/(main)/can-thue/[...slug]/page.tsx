@@ -32,6 +32,26 @@ type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
+const RENT_REQUEST_BASE_PATH = "/can-thue";
+const RENT_REQUEST_LISTING_TITLE = buildLatestListingTitle(
+  "Nhu cầu thuê bất động sản",
+);
+const RENT_REQUEST_LISTING_DESCRIPTION =
+  "Danh sách nhu cầu thuê bất động sản mới nhất, giúp bạn tìm nhanh các yêu cầu theo khu vực, ngân sách và diện tích để kết nối đúng đối tượng.";
+
+function buildSeoPath(rawSlug?: string) {
+  return rawSlug
+    ? `${RENT_REQUEST_BASE_PATH}/${rawSlug}`
+    : RENT_REQUEST_BASE_PATH;
+}
+
+const resolveSeoContent = cache(async (path: string) => {
+  const response = await seoContentService
+    .resolveByPath(path)
+    .catch(() => ({ data: null }));
+  return response.data;
+});
+
 function buildLocationContextFromRentRequests(
   requests: RentRequest[],
 ): Awaited<
@@ -116,11 +136,12 @@ export async function generateMetadata({
     });
   }
 
+  const seoData = await resolveSeoContent(buildSeoPath(rawSlug));
+
   return createPageMetadata({
-    title: buildLatestListingTitle("Nhu cầu thuê bất động sản"),
-    description:
-      "Danh sách nhu cầu thuê bất động sản mới nhất, giúp bạn tìm nhanh các yêu cầu theo khu vực, ngân sách và diện tích để kết nối đúng đối tượng.",
-    pathname: rawSlug ? `/can-thue/${rawSlug}` : "/can-thue",
+    title: seoData?.metaTitle || RENT_REQUEST_LISTING_TITLE,
+    description: seoData?.metaDescription || RENT_REQUEST_LISTING_DESCRIPTION,
+    pathname: seoData?.targetPath || buildSeoPath(rawSlug),
   });
 }
 
@@ -128,12 +149,9 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
   const { slug } = await params;
   const { rawSlug, page } = parseListingPagedSlugSegments(slug);
 
-  const [seoRes, faqRes] = await Promise.all([
-    seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
-    faqService
-      .getByPage("can-thue")
-      .catch(() => ({ data: { page: "can-thue", faqs: [] } })),
-  ]);
+  const faqRes = await faqService
+    .getByPage("can-thue")
+    .catch(() => ({ data: { page: "can-thue", faqs: [] } }));
 
   const rentRequest = await resolveRentRequestIfDetailSlug(rawSlug);
 
@@ -228,8 +246,11 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
     );
   }
 
-  const locationContext =
-    await locationService.resolvePropertyFilterLocationContext(rawSlug);
+  const seoPath = buildSeoPath(rawSlug);
+  const [seoRes, locationContext] = await Promise.all([
+    resolveSeoContent(seoPath).then((data) => ({ data })),
+    locationService.resolvePropertyFilterLocationContext(rawSlug),
+  ]);
 
   const listFetcher = rawSlug
     ? rentRequestService.getAllByFlatSlug({
@@ -246,6 +267,18 @@ export default async function DynamicCanThuePage({ params }: PageProps) {
 
   return (
     <>
+      <PageStructuredData
+        schemas={[
+          buildWebPageSchema({
+            title: seoRes.data?.metaTitle || RENT_REQUEST_LISTING_TITLE,
+            description:
+              seoRes.data?.metaDescription || RENT_REQUEST_LISTING_DESCRIPTION,
+            url: seoRes.data?.targetPath || seoPath,
+            schemaType: "CollectionPage",
+          }),
+        ]}
+      />
+
       <SafeFetch
         fetcher={listFetcher}
         debugLabel="Rent-Requests Dynamic Response"
