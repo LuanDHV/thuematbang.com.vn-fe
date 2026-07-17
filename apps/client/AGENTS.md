@@ -4,104 +4,121 @@
 This version has breaking changes. APIs, conventions, and file structure may differ from common examples. Read the relevant guide in `node_modules/next/dist/docs/` before writing code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# Repo Rules
+# Quy Tắc Làm Việc Trong Client App
 
-Before changing code, always read these files in order:
+Trước khi đổi code trong `apps/client`, đọc theo thứ tự:
 
 1. `AGENTS.md`
 2. `ARCHITECTURE.md`
 3. `DESIGN.md`
 
-Do not skip `ARCHITECTURE.md` or `DESIGN.md`.
+Nếu source code và docs lệch nhau:
 
-If source code and documentation disagree:
-- trust source code after verification
-- call out the drift explicitly
-- update the correct document if the task touches that area
+- xác minh bằng source code
+- ghi nhận drift
+- cập nhật đúng doc khi task chạm vùng đó
 
-## Primary Goal
+## Mục Tiêu Chính
 
-Do not optimize only for "feature works".
-Optimize for a code base that stays coherent when the project scales:
+Không chỉ tối ưu cho “feature chạy được”. Tối ưu cho codebase dễ mở rộng:
 
-- no unnecessary intermediate layers
-- no duplicate logic
-- no duplicate UI patterns
-- no duplicate implementation patterns for the same problem
-- no drift between source code and docs
-- no components that own too many responsibilities
-- no local fixes that weaken the system
+- không thêm layer trung gian không cần thiết
+- không duplicate logic
+- không duplicate UI pattern
+- không tạo pattern thứ hai cho cùng một vấn đề
+- không để docs lệch source
+- không để component ôm quá nhiều trách nhiệm
+- không sửa cục bộ theo cách làm yếu architecture chung
 
-## Mandatory Working Rules
+## Quy Tắc Bắt Buộc
 
-- Keep all edited text files in `UTF-8` with `LF` line endings.
-- Protect Vietnamese copy from mojibake and encoding drift.
-- Prefer updating existing patterns over introducing new ones.
-- Prefer clear naming over excessive comments.
-- Add short comments only when logic is not obvious, there is an important assumption, or there is a non-trivial workaround.
-- For long helper/parser/filter files, add brief comments around non-trivial logic blocks so the file stays scannable without reverse-engineering every branch.
-- Prefer one simple comment above a meaningful logic block or helper over many line-by-line comments.
-- Use the correct comment syntax for the current language. Do not use shell-style `#` comments in TS/TSX/CSS.
+- Giữ text files ở UTF-8 và LF.
+- Bảo vệ tiếng Việt khỏi mojibake/encoding drift.
+- Ưu tiên pattern hiện có trước khi tạo pattern mới.
+- Ưu tiên naming rõ ràng hơn comment dài.
+- Chỉ thêm comment ngắn khi logic không hiển nhiên, có assumption quan trọng hoặc workaround không tầm thường.
+- Với helper/parser/filter dài, thêm comment ngắn quanh block logic khó để file dễ scan.
+- Dùng đúng syntax comment của ngôn ngữ hiện tại; không dùng `#` trong TS/TSX/CSS.
 
 ## Architecture Rules
 
-- Public pages, auth pages, CMS admin, and CMS user are different shells. Do not mix them.
-- Server reads should follow:
-  - page or server component -> service -> backend
-- Browser mutations should follow:
-  - client component or form -> server action -> service -> backend
-- `src/app/api/v1/*` should stay minimal and only exist for auth or callback flows that truly need cookies, refresh, or redirects.
-- Do not recreate generic data proxy route handlers.
+- Public pages, auth pages và user CMS là các shell khác nhau. Không trộn layout primitive tùy tiện.
+- Admin operator app nằm ở `../admin`; không thêm admin CMS lớn vào `apps/client`.
+- Server reads đi theo:
+
+```text
+page/server component -> service -> backend
+```
+
+- Browser mutations đi theo:
+
+```text
+client component/form -> server action -> service -> backend
+```
+
+- `src/app/api/v1/auth/*` dành cho cookie/refresh/OAuth flow.
+- `src/app/api/v1/[...path]/route.ts` là backend proxy có token forwarding, không chứa business logic.
+- Không tạo thêm generic proxy route handlers cạnh tranh với catch-all proxy hiện tại.
 
 ## Stack Consistency Rules
 
-If the repo already has a standard tool for a class of problems, use it.
+Nếu repo đã có tool chuẩn cho một nhóm vấn đề, dùng tool đó:
 
-- Forms: `react-hook-form`
-- Validation: `zod`
-- Shared UI primitives: shadcn-based components in `src/components/ui`
-- Shared UI state: `zustand`
-- Client async state and caching: `@tanstack/react-query`
-- Server-side data access: domain services in `src/services`
-- Browser mutation bridge: server actions in `src/actions`
+- forms: React Hook Form
+- validation: Zod
+- UI primitives: `src/components/ui`
+- shared UI state: Zustand
+- client async state/cache: TanStack Query
+- server-side data access: `src/services`
+- browser mutation bridge: `src/actions`
+- shared domain contracts: `@thuematbang/contracts`
 
-Do not introduce a second pattern for the same problem unless the current one is clearly insufficient.
+Không đưa server-only service vào client component. Không pass token thủ công nếu service/action boundary đã xử lý auth.
 
 ## UI Rules
 
-- Use tokens and primitives from `DESIGN.md` and `src/app/globals.css`.
-- Reuse `surface-card`, `surface-panel`, `surface-float`, and existing layout primitives before inventing local styles.
-- Do not hard-code new colors when semantic tokens already exist.
-- Do not add a one-off visual language for a single screen.
+- Dùng token và primitive từ `DESIGN.md` và `src/app/globals.css`.
+- Reuse `surface-card`, `surface-panel`, `surface-float`, `surface-marketplace`, `surface-editorial`, `surface-utility` trước khi tạo local style.
+- Không hard-code màu mới khi semantic token đã có.
+- Không tạo visual language riêng cho một screen.
+- User CMS dùng public/user CMS language, không dùng admin operator palette.
 
 ## Refactor Rules
 
-When refactoring:
+Khi refactor, giữ nguyên:
 
-- preserve route contract
-- preserve data contract
-- preserve UI semantics
-- preserve filter, breadcrumb, heading, CTA, and summary behavior
-- improve structure only after behavior is safe
+- route contract
+- data contract
+- UI semantics
+- filter semantics
+- breadcrumb semantics
+- heading/CTA/summary behavior
 
-Do not justify semantic changes with "clean code".
+Chỉ cải thiện structure sau khi behavior an toàn. Không dùng “clean code” để biện minh cho semantic change.
 
 ## Validation Rules
 
-After a meaningful batch of changes, at minimum run:
+Sau batch thay đổi có ý nghĩa, tối thiểu chạy:
 
-- `npx.cmd tsc --noEmit`
+```bash
+npx.cmd tsc --noEmit
+```
 
-If the task includes UI, also verify:
+Nếu task có UI, kiểm tra thêm:
 
 - desktop
 - mobile
-- hover, focus, disabled states
-- Vietnamese labels and messages
-- form validation and submit state when forms are involved
+- hover/focus/disabled states
+- Vietnamese labels/messages
+- form validation và submit state nếu có form
 
-If you did not run a manual UI check, say so clearly.
+Nếu không chạy manual UI check, nói rõ trong summary.
 
 ## Testing Docs
 
-When changing frontend test strategy, suite boundaries, or browser/unit coverage expectations, read and keep `docs/testing/frontend-testing.md` aligned with the codebase. Treat `TEST_COVERAGE.md` as the live matrix and the testing doc as the policy guide.
+Khi đổi test strategy, suite boundary hoặc coverage expectation:
+
+- cập nhật `docs/testing/frontend-testing.md`
+- cập nhật `TEST_COVERAGE.md`
+
+`frontend-testing.md` là policy guide. `TEST_COVERAGE.md` là ma trận coverage sống.

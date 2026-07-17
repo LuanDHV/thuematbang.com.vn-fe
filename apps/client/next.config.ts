@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
+const workspaceRoot =
+  process.env.NEXT_WORKSPACE_ROOT ?? process.cwd() + "/../..";
+
 const nextConfig: NextConfig = {
+  output: "standalone",
+  outputFileTracingRoot: workspaceRoot,
+  turbopack: {
+    root: workspaceRoot,
+  },
+  transpilePackages: ["@thuematbang/contracts"],
   allowedDevOrigins: ["127.0.0.1", "localhost"],
   experimental: {
     serverActions: {
@@ -19,10 +28,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
-      },
-      {
-        protocol: "https",
-        hostname: "ui-avatars.com",
       },
       {
         protocol: "https",

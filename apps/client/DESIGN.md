@@ -1,388 +1,192 @@
-# Design
+# Design System Client
 
-## 0. Design Tooling
+## 1. Hướng Thiết Kế
 
-This project uses Taste Skill as the primary design reference.
-When Taste Skill principles conflict with any rule in this file, Taste Skill takes precedence.
-Skill files are located at `.agents/skills/`.
-
-## 1. Visual Direction
-
-The current UI system is:
+Client app là Vietnamese-first real-estate experience:
 
 - light-first
 - warm-neutral
-- premium but restrained
-- content-readable before decorative
+- sạch, rõ, đáng tin
+- premium nhưng tiết chế
+- ưu tiên đọc nội dung và so sánh listing hơn trang trí
 
-The design language should feel:
+Không đưa dark-heavy dashboard aesthetic vào public site. Admin operator aesthetic thuộc `apps/admin`; user CMS trong client có theme riêng nhưng vẫn gần public language.
 
-- bright
-- clean
-- soft
-- structured
-- trustworthy
+## 2. Source Of Truth
 
-This repository is not using a dark-heavy dashboard aesthetic by default.
-Do not introduce an unrelated visual language for one page or one feature.
+- tokens và global utility classes: `src/app/globals.css`
+- font import: `src/app/layout.tsx`
+- primitive UI: `src/components/ui`
+- public shell: `src/components/common`
+- user CMS shell/components: `src/components/cms/user`
+- shared CMS helpers: `src/components/cms/shared`
 
-## 2. Source of Truth
+Font chính là `Be Vietnam Pro`, được import bằng `@fontsource/be-vietnam-pro`.
 
-The main design tokens live in:
+## 3. Theme Scopes
 
-- `src/app/globals.css`
+`globals.css` có ba scope quan trọng:
 
-The root font and global visual baseline live in:
+- `:root`: public site default
+- `[data-theme="admin"]`: admin-like neutral palette nếu một surface cần admin scope
+- `[data-theme="user-cms"]`: user account/CMS palette, vẫn warm/public-aligned
 
-- `src/app/layout.tsx`
+Trong `apps/client`, user account pages không được tự ý dùng admin operator language. Admin app riêng ở `../admin` dùng Ant Design theme riêng.
 
-The primitive UI layer lives in:
+## 4. Semantic Tokens Chính
 
-- `src/components/ui`
+Public root tokens:
 
-The shared CMS shell lives in:
+| Token | Vai trò |
+| --- | --- |
+| `--primary` | CTA, active state, accent |
+| `--accent-soft` | soft highlight, pill, hover wash |
+| `--app` | page background |
+| `--surface` | card/panel base |
+| `--surface-alt` | neutral elevated/media control surface |
+| `--subtle` | soft section background |
+| `--heading`, `--body`, `--secondary`, `--muted` | text hierarchy |
+| `--hairline`, `--hairline-strong` | border nhẹ |
+| `--border-subtle`, `--border-strong` | card/panel border |
+| `--success`, `--warning`, `--info`, `--danger` | state tones |
+| `--success-soft`, `--warning-soft`, `--info-soft`, `--danger-soft` | soft state backgrounds |
 
-- `src/components/cms/shared`
+Tailwind aliases được khai báo trong `@theme`, ví dụ `text-heading`, `bg-app`, `border-border-subtle`, `text-danger`.
 
-## 3. Typography
+## 5. Surface System
 
-The current application font is:
+Shared surface classes trong `globals.css`:
 
-- `Be Vietnam Pro`
+- `surface-card`: card/listing/stat block
+- `surface-panel`: grouped content, forms, tables, settings panels
+- `surface-float`: popover, dropdown-like surface, sticky/floating controls
+- `surface-marketplace`: marketplace/listing card language
+- `surface-editorial`: editorial/news/project content card
+- `surface-utility`: translucent utility/control surface
 
-Loaded through `next/font/google` in the root layout.
+Quy tắc:
 
-### Typography rules
+- dùng surface class hiện có trước khi tạo local recipe
+- nếu một style xuất hiện ở nhiều nơi, promote thành token/variant/component
+- ưu tiên border/shadow mềm, tránh heavy border và shadow gắt
 
-- prefer readable Vietnamese-first typography
-- use stronger weight and tighter tracking for headings
-- use calmer, looser rhythm for body copy
-- avoid decorative font changes outside the root system
-- do not introduce a second font system for one feature
+## 6. Layout Primitives
 
-### Typical hierarchy
+Global layout classes:
 
-- heading: `text-heading`, semibold, tighter tracking
+- `layout-container`: width 100%, max `80rem`, responsive inline padding
+- `layout-section-sm`
+- `layout-section`
+- `layout-section-lg`
+
+Public content nên dùng `layout-container`. User CMS shell không nên bị ép vào public listing layout nếu shell đã có padding/width rule riêng.
+
+## 7. Typography
+
+Nguyên tắc:
+
+- tiếng Việt dễ đọc là ưu tiên đầu tiên
+- heading dùng weight mạnh hơn, rhythm chặt hơn
+- body copy thoáng hơn
+- không thêm font thứ hai cho một feature
+
+Text token thường dùng:
+
+- heading: `text-heading`
 - body: `text-body`
 - secondary/meta: `text-secondary`
 - muted/supporting: `text-muted`
 
-## 4. Core Color Tokens
+Không scale font bằng viewport width cho UI controls. Text trong button/card phải fit trên mobile.
 
-Current semantic tokens in `globals.css`:
+## 8. Public Shell Language
 
-| Token               | Value                       | Usage                                        |
-| ------------------- | --------------------------- | -------------------------------------------- |
-| `--primary`         | `#f7aa1b`                   | primary CTA, active state, highlight         |
-| `--accent-soft`     | `#fff4dc`                   | soft accent background, pill, hover wash     |
-| `--app`             | `#f8f6f2`                   | app/page background                          |
-| `--surface-alt`     | `#fbfaf7`                   | elevated neutral surface, media controls     |
-| `--subtle`          | `#f0ede7`                   | softer section background                    |
-| `--surface`         | `#ffffff`                   | main card/surface color                      |
-| `--footer`          | `#26231f`                   | footer dark zone                             |
-| `--footer-heading`  | `#f5f0e8`                   | footer headings                              |
-| `--footer-body`     | `#c8bfb2`                   | footer body text                             |
-| `--footer-border`   | `rgba(245, 240, 232, 0.12)` | footer dividers and hairlines                |
-| `--heading`         | `#18160f`                   | main strong text                             |
-| `--body`            | `#302d26`                   | main body text                               |
-| `--secondary`       | `#6e6a62`                   | secondary text                               |
-| `--muted`           | `#a8a49e`                   | subtle/supporting text                       |
-| `--hairline`        | `#3d200a18`                 | light border                                 |
-| `--hairline-strong` | `#3d200a28`                 | stronger border                              |
-| `--border-subtle`   | `rgba(61, 32, 10, 0.08)`    | main border tone for cards and panels        |
-| `--border-strong`   | `rgba(61, 32, 10, 0.18)`    | stronger divider and floating surface border |
-| `--success`         | `#168f57`                   | success state and badge tone                 |
-| `--warning`         | `#b76b00`                   | warning state and badge tone                 |
-| `--info`            | `#1678a7`                   | info state and badge tone                    |
-| `--danger`          | `#c53b2d`                   | danger state and badge tone                  |
+Public shell:
 
-### Color rules
-
-- use semantic tokens before raw color values
-- keep `primary` for action emphasis, not for full-page dominance
-- keep large surfaces in the `app/subtle/surface` family
-- prefer `surface-alt` for media controls, controls chrome, and quiet neutral overlays
-- prefer `border-subtle` or `hairline` before raw `black/*` borders
-- do not introduce a separate dashboard palette unless the whole system changes
-- keep admin status/badge tones local to the badge component instead of adding a scoped admin theme
-
-## 5. Layout Primitives
-
-Current layout primitives in `globals.css`:
-
-- `layout-container`
-- `layout-section-sm`
-- `layout-section`
-- `layout-section-lg`
-
-### Current values
-
-- `layout-container`
-  - max width: `80rem`
-  - mobile inline padding: `1rem`
-  - tablet inline padding: `1.5rem`
-  - desktop inline padding: `2rem`
-
-- `layout-section-sm`
-  - `2.5rem` mobile
-  - `3.5rem` from `md`
-
-- `layout-section`
-  - `3.5rem` mobile
-  - `5rem` from `md`
-
-- `layout-section-lg`
-  - `4.5rem` mobile
-  - `6rem` from `md`
-
-### Layout rules
-
-- use `layout-container` for public content width control
-- do not force `layout-container` into CMS shell level
-- fix layout issues in the correct shell before patching many pages
-
-## 6. Surface System
-
-Current shared surface patterns:
-
-### `surface-card`
-
-- white surface
-- subtle border
-- rounded corners
-- medium shadow
-
-Use for:
-
-- content cards
-- listing cards
-- stat blocks
-
-### `surface-panel`
-
-- white surface
-- subtle border
-- softer large-radius panel
-- lighter shadow
-
-Use for:
-
-- settings blocks
-- tables
-- grouped content sections
-- CMS content containers
-
-### `surface-float`
-
-- white surface
-- stronger border
-- stronger shadow
-- backdrop blur
-
-Use for:
-
-- floating toolbar
-- dropdown-like surfaces
-- popovers
-- sticky floating UI blocks
-
-### Surface rules
-
-- do not invent new card recipes if one of these already fits
-- if a pattern repeats, promote it to a token or shared variant
-- prefer subtle separation over heavy borders
-
-### Tailwind usage
-
-- prefer standard Tailwind utilities first
-- avoid custom arbitrary values like `rounded-[...]`, `w-[...]`, `shadow-[...]`, or `transition-[...]` unless there is no standard Tailwind alternative
-- keep arbitrary values for true layout/runtime constraints only
-
-## 7. Radius and Shadow
-
-Current visual language prefers soft corners and soft depth.
-
-### Radius usage
-
-- `rounded-lg`
-  - compact controls
-- `rounded-xl`
-  - common cards and controls
-- `rounded-2xl`
-  - larger premium blocks, hero surfaces, modals
-
-### Shadow usage
-
-- keep shadows soft and low-noise
-- avoid harsh dark shadows
-- use shadow for depth, not decoration
-- avoid arbitrary one-off shadow stacks unless necessary
-
-## 8. Interaction Rules
-
-Global transitions currently cover:
-
-- color
-- background-color
-- border-color
-- box-shadow
-- transform
-
-### Hover
-
-- subtle lift is acceptable
-- subtle shadow increase is acceptable
-- avoid aggressive scale or bounce
-
-### Focus
-
-- focus-visible must remain readable on light surfaces
-- use the existing accent/focus language
-
-### Disabled
-
-- reduce emphasis without killing legibility
-- avoid disabled states that still look interactive
-
-## 9. Public Shell Language
-
-Public shell characteristics:
-
+- fixed light translucent header
 - warm app background
-- fixed header
-- footer with a dedicated dark palette
-- public content organized inside `layout-container`
+- footer có palette tối riêng
+- content section có spacing rộng và cấu trúc rõ
+- listing card, breadcrumb, filter, CTA và editorial block dùng shared components
 
-Typical components:
+Hero/banner data là API-driven khi có domain data, không hardcode layout copy tùy tiện.
 
-- listing cards
-- breadcrumbs
-- sections with generous spacing
-- editorial/news/project blocks
+## 9. User CMS Language
 
-## 10. CMS Shell Language
+User CMS nằm trong `apps/client`, không phải `apps/admin`.
 
-CMS is a different layout system from the public site.
+Quy tắc:
 
-### Current CMS shell
+- giữ feeling gần public site nhưng dày thông tin hơn
+- dùng `data-theme="user-cms"` khi cần scope token
+- dùng panel/card rõ ràng cho form/table
+- giữ action states dễ scan: pending, published, rejected, archived
+- favorites/listing tables không được expose internal FE API route nếu có public/domain route phù hợp
 
-From `src/components/cms/shared/CmsLayout.tsx`:
+## 10. Forms
 
-- full-width shell
-- left sidebar
-- mobile fixed rail with icon-first navigation
-- desktop sidebar that can collapse into a rail
-- right main area
-- outer content padding at shell level
-- no `layout-container` at the shell root
+Stack form:
 
-### CMS rules
+- React Hook Form
+- Zod
+- shadcn-based inputs/controls
 
-- keep the shell full-width
-- keep sidebar structurally separate from public layout primitives
-- keep the mobile CMS sidebar as a fixed rail instead of a sheet menu
-- use panel-based content inside the right column
-- avoid squeezing CMS content into public-page width rules
-- keep table and dashboard screens full-width
-- constrain form-only CMS screens to a shared centered form shell
-- admin surfaces must live inside `[data-theme="admin"]` and use the neutral admin palette defined in `globals.css`
-- `src/app/(auth)/dang-nhap-admin` also belongs to the admin theme scope
-- CMS user pages under `src/app/(cms)/(user)/quan-li-tai-khoan/**` must continue inheriting the public theme, not the admin theme
+Quy tắc UI:
 
-## 11. Component Language
+- validation message ngắn, rõ
+- submit/loading/disabled states phải đọc được
+- form-only screens nên dùng content width có chủ đích, thường `max-w-2xl`
+- dùng `surface-panel` làm surface mặc định cho form group lớn
+- không scatter validation logic trong component nếu schema phù hợp hơn
 
-### Header
+## 11. Tables Và Lists
 
-- fixed
-- light translucent background
-- subtle border
-- soft blur
+User CMS tables dùng:
 
-### Footer
+- panel wrapper
+- stable pagination
+- action controls rõ ràng
+- status/priority badges dùng shared badge language
 
-- dark background
-- separate footer text tokens
-- structurally distinct from the rest of the site
+Listing/public lists:
 
-### Forms
+- filter summary không làm đổi route semantics ngoài flat URL contract
+- empty/error states nên dùng common components
+- favorite interactions phải giữ auth/optimistic state dễ hiểu
 
-Form language should stay consistent with current stack:
+## 12. Motion, Media Và Interaction
 
-- `react-hook-form`
-- `zod`
-- shadcn-based inputs and controls
+- hover lift/shadow nhẹ là đủ
+- tránh scale/bounce quá mạnh ở content-heavy views
+- focus-visible phải rõ trên light surfaces
+- disabled state giảm nhấn nhưng vẫn đọc được
+- image hover/overlay chỉ dùng khi tăng legibility hoặc affordance
+- loading state nên phản ánh shape layout thật
 
-UI rules:
+## 13. Copy Và Localization
 
-- inputs should feel clean and readable first
-- validation messages should be concise and visible
-- success/error states should not invent a second design language
-- form-only CMS screens and listing-create screens should use a shared `max-w-2xl` content width
-- use `surface-panel` as the default surface for those centered form screens
+UI là tiếng Việt-first.
 
-### Tables
+Quy tắc:
 
-CMS tables currently use:
+- bảo vệ encoding
+- label ngắn, nhất quán giữa route, nav, heading, table/action
+- tránh trộn thuật ngữ cho cùng domain, ví dụ “tin cho thuê” và “tin cần thuê”
 
-- shadcn table primitives
-- action dropdowns
-- pagination footer
-- surface panel wrappers
+## 14. Design Drift Prevention
 
-Rules:
+Trước khi thêm visual code:
 
-- keep data tables visually aligned with CMS panels
-- do not expose internal FE API endpoints in table actions
-- prefer public-page links or domain actions instead
+- đã có token chưa?
+- đã có surface class chưa?
+- đã có shared primitive/component chưa?
+- đây là public shell, user CMS hay admin operator concern?
 
-## 12. Library Alignment Rules
+Nếu pattern lặp lại ở hai nơi, dừng copy và tạo token/variant/component phù hợp.
 
-When adding new UI or state behavior, align with the stack already used by the repo:
+## 15. Verification Tối Thiểu
 
-- form handling: `react-hook-form`
-- validation: `zod`
-- primitives: shadcn-based components
-- shared UI state: `zustand`
-- query/mutation orchestration: `react-query`
-
-Do not mix multiple approaches for the same problem without a strong reason.
-
-## 13. Motion and Media
-
-- keep image hover effects subtle
-- use overlay only when legibility needs it
-- loading states should reflect layout shape when practical
-- avoid noisy or theatrical motion in content-heavy views
-
-## 14. Copy and Localization
-
-The UI is Vietnamese-first.
-
-Rules:
-
-- protect Vietnamese text from encoding drift
-- prefer concise, readable labels
-- keep naming consistent across route, navigation, page heading, and table copy
-
-## 15. Design Drift Prevention
-
-Before adding new visual code, check:
-
-- is there already a token for this?
-- is there already a surface for this?
-- is there already a shared component for this?
-- is this a public-shell pattern or a CMS-shell pattern?
-
-If a style pattern appears in two or more places, stop copying it and promote it to:
-
-- a token
-- a shared variant
-- a primitive
-- a shared component
-
-## 16. Minimum Design Verification
-
-After meaningful UI work, verify:
+Sau UI change:
 
 - desktop layout
 - mobile layout
@@ -390,4 +194,4 @@ After meaningful UI work, verify:
 - text hierarchy
 - hover/focus/disabled states
 - Vietnamese copy rendering
-- form error/success states if forms were touched
+- form error/success states nếu có form

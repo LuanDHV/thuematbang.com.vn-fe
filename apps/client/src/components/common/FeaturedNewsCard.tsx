@@ -49,25 +49,29 @@ export default function FeaturedNewsCard({
         className="h-full w-full object-cover"
       />
 
-      <div className="absolute inset-x-0 bottom-0 z-10 space-y-3 p-4 md:p-5">
-        <h3 className="group-hover:text-primary line-clamp-2 text-lg leading-snug font-semibold tracking-[-0.02em] text-white transition-colors md:text-xl">
-          {news.title}
-        </h3>
-        {news.summary ? (
-          <p className="line-clamp-2 text-sm leading-6 text-white/85">
-            {news.summary}
-          </p>
-        ) : null}
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/35 to-black/5" />
 
-        <div className="flex items-center justify-between border-t border-white/20 pt-2">
-          <span className="flex items-center gap-1.5 text-xs text-white/85">
-            <Calendar size={14} strokeWidth={2} className="text-primary" />
-            {formatDate(news.createdAt)}
-          </span>
-          <span className="group-hover:text-primary flex items-center gap-1 text-xs font-medium tracking-wide text-white transition-colors">
-            Đọc tiếp
-            <ArrowRight size={14} strokeWidth={2} />
-          </span>
+      <div className="absolute inset-x-0 bottom-0 z-10 p-3 sm:p-4 md:p-5">
+        <div className="space-y-3 rounded-lg bg-black/22 p-3 drop-shadow-lg ring-1 ring-white/10 backdrop-blur-[2px] sm:p-4">
+          <h3 className="group-hover:text-primary line-clamp-2 text-lg leading-snug font-semibold text-white transition-colors md:text-xl">
+            {news.title}
+          </h3>
+          {news.summary ? (
+            <p className="line-clamp-2 text-sm leading-6 text-white/85">
+              {news.summary}
+            </p>
+          ) : null}
+
+          <div className="flex items-center justify-between border-t border-white/20 pt-2">
+            <span className="flex items-center gap-1.5 text-xs text-white/85">
+              <Calendar size={14} strokeWidth={2} className="text-primary" />
+              {formatDate(news.createdAt)}
+            </span>
+            <span className="group-hover:text-primary flex items-center gap-1 text-xs font-medium tracking-wide text-white transition-colors">
+              Đọc tiếp
+              <ArrowRight size={14} strokeWidth={2} />
+            </span>
+          </div>
         </div>
       </div>
     </Link>
