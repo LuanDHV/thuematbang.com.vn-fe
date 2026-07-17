@@ -6,6 +6,8 @@ import { requestServerApi } from "./shared/server-api-client";
 
 export type SeoContentListFilters = {
   q?: string;
+  pageGroup?: string;
+  isActive?: boolean;
 };
 
 export type SeoContentGetAllParams = {
@@ -16,7 +18,11 @@ export type SeoContentGetAllParams = {
 
 export type SeoContentUpsertPayload = {
   page: string;
+  targetPath: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   seoContent?: string | null;
+  isActive?: boolean;
 };
 
 export const seoContentService = {
@@ -39,6 +45,15 @@ export const seoContentService = {
       {
         cache: "no-store",
         tags: ["seo-contents", `seo-contents-${page}`],
+      },
+    ),
+
+  resolveByPath: async (path: string) =>
+    requestServerApi<SeoContent>(
+      `/seo-contents/resolve?path=${encodeURIComponent(path)}`,
+      {
+        cache: "no-store",
+        tags: ["seo-contents", `seo-contents-path-${encodeURIComponent(path)}`],
       },
     ),
 

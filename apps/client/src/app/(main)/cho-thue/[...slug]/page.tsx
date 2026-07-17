@@ -37,6 +37,22 @@ type PageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
+const PROPERTY_BASE_PATH = "/cho-thue";
+const PROPERTY_LISTING_TITLE = buildLatestListingTitle("Bất động sản cho thuê");
+const PROPERTY_LISTING_DESCRIPTION =
+  "Danh sách bất động sản cho thuê mới nhất, giúp bạn lọc nhanh theo khu vực, diện tích, mức giá và loại hình phù hợp trước khi liên hệ.";
+
+function buildSeoPath(rawSlug?: string) {
+  return rawSlug ? `${PROPERTY_BASE_PATH}/${rawSlug}` : PROPERTY_BASE_PATH;
+}
+
+const resolveSeoContent = cache(async (path: string) => {
+  const response = await seoContentService
+    .resolveByPath(path)
+    .catch(() => ({ data: null }));
+  return response.data;
+});
+
 function buildLocationContextFromProperties(
   properties: Property[],
 ): Awaited<
@@ -135,11 +151,12 @@ export async function generateMetadata({
     });
   }
 
+  const seoData = await resolveSeoContent(buildSeoPath(rawSlug));
+
   return createPageMetadata({
-    title: buildLatestListingTitle("Bất động sản cho thuê"),
-    description:
-      "Danh sách bất động sản cho thuê mới nhất, giúp bạn lọc nhanh theo khu vực, diện tích, mức giá và loại hình phù hợp trước khi liên hệ.",
-    pathname: rawSlug ? `/cho-thue/${rawSlug}` : "/cho-thue",
+    title: seoData?.metaTitle || PROPERTY_LISTING_TITLE,
+    description: seoData?.metaDescription || PROPERTY_LISTING_DESCRIPTION,
+    pathname: seoData?.targetPath || buildSeoPath(rawSlug),
   });
 }
 
@@ -147,12 +164,9 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
   const { slug } = await params;
   const { rawSlug, page } = parseListingPagedSlugSegments(slug);
 
-  const [seoRes, faqRes] = await Promise.all([
-    seoContentService.getByPage("cho-thue").catch(() => ({ data: null })),
-    faqService
-      .getByPage("cho-thue")
-      .catch(() => ({ data: { page: "cho-thue", faqs: [] } })),
-  ]);
+  const faqRes = await faqService
+    .getByPage("cho-thue")
+    .catch(() => ({ data: { page: "cho-thue", faqs: [] } }));
 
   const property = await resolvePropertyIfDetailSlug(rawSlug);
 
@@ -276,8 +290,11 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
     );
   }
 
-  const locationContext =
-    await locationService.resolvePropertyFilterLocationContext(rawSlug);
+  const seoPath = buildSeoPath(rawSlug);
+  const [seoRes, locationContext] = await Promise.all([
+    resolveSeoContent(seoPath).then((data) => ({ data })),
+    locationService.resolvePropertyFilterLocationContext(rawSlug),
+  ]);
 
   const listFetcher = rawSlug
     ? propertyService.getAllByFlatSlug({
@@ -299,6 +316,18 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
 
   return (
     <>
+      <PageStructuredData
+        schemas={[
+          buildWebPageSchema({
+            title: seoRes.data?.metaTitle || PROPERTY_LISTING_TITLE,
+            description:
+              seoRes.data?.metaDescription || PROPERTY_LISTING_DESCRIPTION,
+            url: seoRes.data?.targetPath || seoPath,
+            schemaType: "CollectionPage",
+          }),
+        ]}
+      />
+
       <SafeFetch fetcher={listFetcher} debugLabel="Properties Dynamic Response">
         {(response) => {
           const properties = response.data ?? [];

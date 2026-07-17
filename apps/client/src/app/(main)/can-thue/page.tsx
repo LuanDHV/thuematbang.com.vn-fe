@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { cache } from "react";
 import SafeFetch from "@/components/common/SafeFetch";
 import PageFaq from "@/components/common/PageFaq";
 import PageSeoContent from "@/components/common/PageSeoContent";
@@ -12,18 +13,34 @@ import { faqService } from "@/services/faq.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import { seoContentService } from "@/services/seo-content.service";
 
-export const metadata: Metadata = createPageMetadata({
-  title: buildLatestListingTitle("Nhu cầu thuê bất động sản"),
-  description:
-    "Tìm nhanh các nhu cầu cần thuê bất động sản mới nhất, từ mặt bằng kinh doanh, văn phòng đến kho xưởng và căn hộ, giúp bạn kết nối đúng khách hàng theo khu vực, ngân sách và diện tích phù hợp.",
-  pathname: "/can-thue",
+const RENT_REQUEST_PATH = "/can-thue";
+const RENT_REQUEST_TITLE = buildLatestListingTitle("Nhu cầu thuê bất động sản");
+const RENT_REQUEST_SCHEMA_TITLE = buildLatestListingTitle("Cần thuê mặt bằng");
+const RENT_REQUEST_DESCRIPTION =
+  "Tìm nhanh các nhu cầu cần thuê bất động sản mới nhất, từ mặt bằng kinh doanh, văn phòng đến kho xưởng và căn hộ, giúp bạn kết nối đúng khách hàng theo khu vực, ngân sách và diện tích phù hợp.";
+
+const resolveSeoContent = cache(async (path: string) => {
+  const response = await seoContentService
+    .resolveByPath(path)
+    .catch(() => ({ data: null }));
+  return response.data;
 });
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seoData = await resolveSeoContent(RENT_REQUEST_PATH);
+
+  return createPageMetadata({
+    title: seoData?.metaTitle || RENT_REQUEST_TITLE,
+    description: seoData?.metaDescription || RENT_REQUEST_DESCRIPTION,
+    pathname: seoData?.targetPath || RENT_REQUEST_PATH,
+  });
+}
 
 export default async function CanThuePage() {
   await connection();
 
   const [seoRes, faqRes] = await Promise.all([
-    seoContentService.getByPage("can-thue").catch(() => ({ data: null })),
+    resolveSeoContent(RENT_REQUEST_PATH).then((data) => ({ data })),
     faqService
       .getByPage("can-thue")
       .catch(() => ({ data: { page: "can-thue", faqs: [] } })),
@@ -34,10 +51,10 @@ export default async function CanThuePage() {
       <PageStructuredData
         schemas={[
           buildWebPageSchema({
-            title: buildLatestListingTitle("Cần thuê mặt bằng"),
+            title: seoRes.data?.metaTitle || RENT_REQUEST_SCHEMA_TITLE,
             description:
-              "Tìm nhanh các nhu cầu cần thuê bất động sản mới nhất, từ mặt bằng kinh doanh, văn phòng đến kho xưởng và căn hộ, giúp bạn kết nối đúng khách hàng theo khu vực, ngân sách và diện tích phù hợp.",
-            url: "/can-thue",
+              seoRes.data?.metaDescription || RENT_REQUEST_DESCRIPTION,
+            url: seoRes.data?.targetPath || RENT_REQUEST_PATH,
             schemaType: "CollectionPage",
           }),
         ]}

@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: workspaceRoot,
   turbopack: {
     root: workspaceRoot,
+    resolveAlias: {
+      "@thuematbang/contracts": "../../packages/contracts/dist/index.js",
+    },
   },
   transpilePackages: ["@thuematbang/contracts"],
   allowedDevOrigins: ["127.0.0.1", "localhost"],
