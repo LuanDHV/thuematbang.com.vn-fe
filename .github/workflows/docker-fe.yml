@@ -66,13 +66,13 @@ jobs:
       - name: Deploy client to staging
         if: github.ref_name == 'staging'
         run: |
-          curl -fsSL --request GET "${{ secrets.COOLIFY_STAGING_FE_WEBHOOK }}" \
+          curl -fsSL --request GET "${{ secrets.COOLIFY_STAGING_FE_CLIENT_WEBHOOK }}" \
             --header "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
 
       - name: Deploy client to production
         if: github.ref_name == 'main'
         run: |
-          curl -fsSL --request GET "${{ secrets.COOLIFY_PRODUCTION_FE_WEBHOOK }}" \
+          curl -fsSL --request GET "${{ secrets.COOLIFY_PRODUCTION_FE_CLIENT_WEBHOOK }}" \
             --header "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
 
   build-admin:
