@@ -40,6 +40,7 @@ type PropertyImageGalleryProps = {
 };
 
 const FALLBACK_IMAGE = "/imgs/wallpaper-1.jpg";
+const GALLERY_HISTORY_STATE_KEY = "__thuematbangGalleryOpen";
 
 export default function PropertyImageGallery({
   title,
@@ -68,6 +69,8 @@ export default function PropertyImageGallery({
     "portrait" | "landscape" | "square" | null
   >(null);
   const preloadedImagesRef = useRef(new Set<string>());
+  const viewerOpenRef = useRef(false);
+  const hasGalleryHistoryEntryRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   const currentActiveIndex = Math.min(activeIndex, displayImages.length - 1);
@@ -147,8 +150,63 @@ export default function PropertyImageGallery({
     setActiveIndex(index);
   };
 
+  useEffect(() => {
+    viewerOpenRef.current = viewerOpen;
+  }, [viewerOpen]);
+
+  useEffect(() => {
+    const closeViewerOnBack = () => {
+      if (!viewerOpenRef.current || !hasGalleryHistoryEntryRef.current) {
+        return;
+      }
+
+      hasGalleryHistoryEntryRef.current = false;
+      viewerOpenRef.current = false;
+      setViewerOpen(false);
+    };
+
+    window.addEventListener("popstate", closeViewerOnBack);
+
+    return () => {
+      window.removeEventListener("popstate", closeViewerOnBack);
+    };
+  }, []);
+
+  const pushViewerHistoryEntry = () => {
+    if (typeof window === "undefined" || hasGalleryHistoryEntryRef.current) {
+      return;
+    }
+
+    const state =
+      typeof window.history.state === "object" && window.history.state !== null
+        ? window.history.state
+        : {};
+
+    window.history.pushState(
+      {
+        ...state,
+        [GALLERY_HISTORY_STATE_KEY]: true,
+      },
+      "",
+      window.location.href,
+    );
+    hasGalleryHistoryEntryRef.current = true;
+  };
+
+  const closeViewer = () => {
+    if (hasGalleryHistoryEntryRef.current) {
+      window.history.back();
+      return;
+    }
+
+    viewerOpenRef.current = false;
+    setViewerOpen(false);
+  };
+
   const openViewer = () => {
     setViewerIndex(currentActiveIndex);
+    pushViewerHistoryEntry();
+    viewerOpenRef.current = true;
     setViewerOpen(true);
     const trackingParams: AnalyticsEventParams = {
       source: analytics?.source ?? "listing_gallery",
@@ -302,7 +360,7 @@ export default function PropertyImageGallery({
 
       <Lightbox
         open={viewerOpen}
-        close={() => setViewerOpen(false)}
+        close={closeViewer}
         index={currentViewerIndex}
         slides={slides}
         plugins={[Fullscreen, Thumbnails, Zoom, Counter]}

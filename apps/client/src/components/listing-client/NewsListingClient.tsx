@@ -156,7 +156,7 @@ export default function NewsListingClient({
                   page={currentPage}
                   totalPages={totalPages}
                   onChange={(nextPage) =>
-                    router.replace(
+                    router.push(
                       buildPagedPath(
                         getCategoryPath(selectedCategorySlug),
                         nextPage,

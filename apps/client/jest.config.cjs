@@ -16,6 +16,10 @@ const customJestConfig = {
   ],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^react$": "<rootDir>/node_modules/react",
+    "^react/(.*)$": "<rootDir>/node_modules/react/$1",
+    "^react-dom$": "<rootDir>/node_modules/react-dom",
+    "^react-dom/(.*)$": "<rootDir>/node_modules/react-dom/$1",
     "^@thuematbang/contracts$": "<rootDir>/../../packages/contracts/src/index.ts",
     "^@thuematbang/contracts/(.*)$":
       "<rootDir>/../../packages/contracts/src/$1/index.ts",

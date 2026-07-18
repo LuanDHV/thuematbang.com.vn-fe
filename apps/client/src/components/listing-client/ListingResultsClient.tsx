@@ -129,7 +129,7 @@ export default function ListingResultsClient({
             page={currentPage}
             totalPages={totalPages}
             onChange={(nextPage) =>
-              router.replace(buildPagedPath(paginationBasePath ?? "", nextPage))
+              router.push(buildPagedPath(paginationBasePath ?? "", nextPage))
             }
           />
         </div>
