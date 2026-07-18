@@ -15,7 +15,7 @@ import CloudinaryImage from "@/components/common/CloudinaryImage";
 import { RentRequestCard } from "@/components/common/RentRequestCard";
 import RentRequestDetailAnalytics from "@/components/listing-detail/rent-request/RentRequestDetailAnalytics";
 import { DIRECTION_OPTIONS } from "@/constants/filter";
-import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
+import { getRentRequestCoverImage } from "@/constants/rent-request";
 import {
   formatDate,
   formatAreaValue,
@@ -46,6 +46,7 @@ export default function RentRequestDetailContent({
 }: RentRequestDetailContentProps) {
   const hasArea = typeof rentRequest?.desiredArea === "number";
   const hasDirection = Boolean(rentRequest?.desiredDirection);
+  const coverImage = getRentRequestCoverImage(rentRequest.category?.slug);
 
   return (
     <div className="surface-card flex w-full flex-col gap-6 p-5 lg:gap-8">
@@ -63,7 +64,7 @@ export default function RentRequestDetailContent({
         <section>
           <div className="bg-surface-alt relative aspect-video w-full overflow-hidden rounded-2xl">
             <CloudinaryImage
-              src={RENT_REQUEST_COVER_IMAGE}
+              src={coverImage}
               alt={rentRequest?.title}
               width={1600}
               height={900}

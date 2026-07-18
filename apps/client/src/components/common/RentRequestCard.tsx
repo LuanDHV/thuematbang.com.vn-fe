@@ -8,7 +8,7 @@ import CloudinaryImage from "@/components/common/CloudinaryImage";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { trackEvent } from "@/lib/analytics/track-event";
-import { RENT_REQUEST_COVER_IMAGE } from "@/constants/rent-request";
+import { getRentRequestCoverImage } from "@/constants/rent-request";
 import {
   formatDate,
   formatAreaValue,
@@ -67,6 +67,7 @@ export function RentRequestCard({
     "Toàn quốc",
   );
   const isFeatured = variant === "featured";
+  const coverImage = getRentRequestCoverImage(request.category?.slug);
   const [favoriteCount, setFavoriteCount] = useState(
     request.favoriteCount ?? 0,
   );
@@ -121,7 +122,7 @@ export function RentRequestCard({
             className={`bg-surface-alt relative overflow-hidden ${isFeatured ? "h-52" : "h-40"}`}
           >
             <CloudinaryImage
-              src={RENT_REQUEST_COVER_IMAGE}
+              src={coverImage}
               alt={request?.title}
               width={1200}
               height={800}

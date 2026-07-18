@@ -33,6 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: seoData?.metaTitle || RENT_REQUEST_TITLE,
     description: seoData?.metaDescription || RENT_REQUEST_DESCRIPTION,
     pathname: seoData?.targetPath || RENT_REQUEST_PATH,
+    image: seoData?.metaImageUrl || undefined,
   });
 }
 
@@ -55,6 +56,7 @@ export default async function CanThuePage() {
             description:
               seoRes.data?.metaDescription || RENT_REQUEST_DESCRIPTION,
             url: seoRes.data?.targetPath || RENT_REQUEST_PATH,
+            image: seoRes.data?.metaImageUrl || undefined,
             schemaType: "CollectionPage",
           }),
         ]}

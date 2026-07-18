@@ -2,6 +2,8 @@ import React from "react";
 import { Create, useForm } from "@refinedev/antd";
 import { Form, Select, Card, Input, Switch } from "antd";
 import { AdminRichTextEditor } from "../../components/admin/fields/AdminRichTextEditor";
+import { AdminGalleryField } from "../../components/admin/fields/AdminGalleryField";
+import type { AdminGalleryImage } from "../../lib/admin/media";
 
 const PAGE_OPTIONS = [
   { label: "Trang chủ", value: "home" },
@@ -23,16 +25,24 @@ function normalizePath(value: unknown) {
 export const SeoContentsCreate: React.FC = () => {
   const { formProps, saveButtonProps, onFinish } = useForm();
   const form = formProps.form;
+  const draftId = React.useMemo(() => crypto.randomUUID(), []);
 
   const handleFinish = async (values: Record<string, unknown>) => {
+    const { metaImage, ...rest } = values;
+    const selectedImage = Array.isArray(metaImage)
+      ? (metaImage[0] as AdminGalleryImage | undefined)
+      : undefined;
+
     onFinish?.({
-      ...values,
-      page: String(values.page ?? ""),
-      targetPath: normalizePath(values.targetPath),
-      metaTitle: String(values.metaTitle ?? ""),
-      metaDescription: String(values.metaDescription ?? ""),
-      isActive: values.isActive !== false,
-      seoContent: String(values.seoContent ?? ""),
+      ...rest,
+      page: String(rest.page ?? ""),
+      targetPath: normalizePath(rest.targetPath),
+      metaTitle: String(rest.metaTitle ?? ""),
+      metaDescription: String(rest.metaDescription ?? ""),
+      metaImageUrl: selectedImage?.imageUrl ?? null,
+      metaImagePublicId: selectedImage?.imagePublicId ?? null,
+      isActive: rest.isActive !== false,
+      seoContent: String(rest.seoContent ?? ""),
     });
   };
 
@@ -42,7 +52,7 @@ export const SeoContentsCreate: React.FC = () => {
         {...formProps}
         form={form}
         layout="vertical"
-        initialValues={{ isActive: true, seoContent: "" }}
+        initialValues={{ isActive: true, seoContent: "", metaImage: [] }}
         onFinish={handleFinish}
       >
         <Card title="Trang áp dụng" style={{ marginBottom: 16 }}>
@@ -65,6 +75,16 @@ export const SeoContentsCreate: React.FC = () => {
           </Form.Item>
         </Card>
         <Card title="Metadata" style={{ marginBottom: 16 }}>
+          <Form.Item name="metaImage">
+            <AdminGalleryField
+              label="Ảnh thumbnail SEO"
+              description="Ảnh chỉ dùng cho metadata chia sẻ/SEO, không hiển thị ở giao diện public."
+              resourceType="seo-contents"
+              draftId={draftId}
+              maxFiles={1}
+              deleteOnRemove={false}
+            />
+          </Form.Item>
           <Form.Item label="Meta title" name="metaTitle">
             <Input maxLength={255} />
           </Form.Item>
@@ -77,7 +97,7 @@ export const SeoContentsCreate: React.FC = () => {
             <AdminRichTextEditor
               imageUpload={{
                 resourceType: "seo-contents",
-                draftId: crypto.randomUUID(),
+                draftId,
               }}
             />
           </Form.Item>

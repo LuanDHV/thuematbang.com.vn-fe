@@ -157,6 +157,7 @@ export async function generateMetadata({
     title: seoData?.metaTitle || PROPERTY_LISTING_TITLE,
     description: seoData?.metaDescription || PROPERTY_LISTING_DESCRIPTION,
     pathname: seoData?.targetPath || buildSeoPath(rawSlug),
+    image: seoData?.metaImageUrl || undefined,
   });
 }
 
@@ -323,6 +324,7 @@ export default async function DynamicChoThuePage({ params }: PageProps) {
             description:
               seoRes.data?.metaDescription || PROPERTY_LISTING_DESCRIPTION,
             url: seoRes.data?.targetPath || seoPath,
+            image: seoRes.data?.metaImageUrl || undefined,
             schemaType: "CollectionPage",
           }),
         ]}
