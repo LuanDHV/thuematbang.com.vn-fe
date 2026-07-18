@@ -90,7 +90,7 @@ export default function ProjectListingClient({
             page={currentPage}
             totalPages={totalPages}
             onChange={(nextPage) =>
-              router.replace(
+              router.push(
                 buildPagedPath(
                   targetPathFromCategory(selectedCategorySlug),
                   nextPage,

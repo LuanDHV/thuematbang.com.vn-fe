@@ -93,7 +93,7 @@ function extractPropertyImages(property: Property) {
       .map((image) => image.imageUrl)
       .filter(Boolean) ?? [];
 
-  return imageUrls.length > 0 ? imageUrls : ["/imgs/wallpaper-1.jpg"];
+  return imageUrls.length > 0 ? imageUrls : ["/imgs/fallback.png"];
 }
 
 const resolveProperty = cache(async (rawSlug: string) => {

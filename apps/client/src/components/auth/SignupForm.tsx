@@ -77,17 +77,17 @@ export function SignupForm({
 
   const onSubmit = handleSubmit(
     async (values) => {
-    try {
-      await registerMutation.mutateAsync(values);
-      trackEvent(ANALYTICS_EVENTS.registerCompleted, registerTrackingParams);
-      router.push("/");
-      router.refresh();
-    } catch (error) {
-      trackEvent(ANALYTICS_EVENTS.registerFailed, {
-        ...registerTrackingParams,
-        reason: resolveRegisterFailureReason(error),
-      });
-    }
+      try {
+        await registerMutation.mutateAsync(values);
+        trackEvent(ANALYTICS_EVENTS.registerCompleted, registerTrackingParams);
+        router.push("/");
+        router.refresh();
+      } catch (error) {
+        trackEvent(ANALYTICS_EVENTS.registerFailed, {
+          ...registerTrackingParams,
+          reason: resolveRegisterFailureReason(error),
+        });
+      }
     },
     () => {
       trackEvent(ANALYTICS_EVENTS.registerFailed, {
@@ -104,7 +104,7 @@ export function SignupForm({
     }
 
     const message =
-      error instanceof HttpError ? error.message : error.message ?? "";
+      error instanceof HttpError ? error.message : (error.message ?? "");
 
     const normalizedMessage = message.trim().toLowerCase();
     if (normalizedMessage.includes("phone already exists")) {
@@ -322,7 +322,7 @@ export function SignupForm({
 
           <div className="bg-surface relative hidden md:block">
             <Image
-              src="/imgs/wallpaper-2.jpg"
+              src="/imgs/fallback.png"
               alt="Hình nền đăng ký"
               fill
               sizes="(min-width: 768px) 50vw, 0px"

@@ -38,13 +38,14 @@ export default function NewsCard({
     >
       <div className="bg-surface-alt relative aspect-[16/10] w-full shrink-0 overflow-hidden md:aspect-auto md:w-2/5">
         <CloudinaryImage
-          src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
+          src={news.imageUrl || "/imgs/fallback.png"}
           alt={news.title}
           width={960}
           height={720}
           sizes="(max-width: 768px) 100vw, 20vw"
           priority={priority}
           className="h-full w-full object-cover"
+          fallbackSrc="/imgs/fallback.png"
         />
       </div>
 

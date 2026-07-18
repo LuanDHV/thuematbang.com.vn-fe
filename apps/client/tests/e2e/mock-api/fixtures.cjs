@@ -126,7 +126,7 @@ function createInitialState() {
         slug: "tin-demo-1",
         excerpt: "Bai viet demo cho trang chu.",
         content: "Noi dung demo 1",
-        thumbnailUrl: "/imgs/wallpaper-1.jpg",
+        thumbnailUrl: "/imgs/fallback.png",
         isActive: true,
         createdAt: stamp(),
         updatedAt: stamp(),
@@ -144,7 +144,7 @@ function createInitialState() {
         slug: "tin-demo-2",
         excerpt: "Bai viet demo so 2.",
         content: "Noi dung demo 2",
-        thumbnailUrl: "/imgs/wallpaper-2.jpg",
+        thumbnailUrl: "/imgs/fallback.png",
         isActive: true,
         createdAt: stamp(),
         updatedAt: stamp(),
@@ -154,8 +154,8 @@ function createInitialState() {
       {
         id: 1,
         page: "home",
-        imageUrl: "/imgs/wallpaper-2.jpg",
-        mobileImageUrl: "/imgs/wallpaper-1.jpg",
+        imageUrl: "/imgs/fallback.png",
+        mobileImageUrl: "/imgs/fallback.png",
         linkUrl: "/",
         title: "Banner home demo",
         isActive: true,
@@ -310,7 +310,7 @@ function createInitialState() {
         images: [
           {
             id: 1,
-            imageUrl: "/imgs/wallpaper-1.jpg",
+            imageUrl: "/imgs/fallback.png",
             imagePublicId: "properties/demo/1",
             sortOrder: 1,
           },
@@ -359,7 +359,7 @@ function createInitialState() {
         images: [
           {
             id: 2,
-            imageUrl: "/imgs/wallpaper-2.jpg",
+            imageUrl: "/imgs/fallback.png",
             imagePublicId: "properties/demo/2",
             sortOrder: 1,
           },
@@ -408,7 +408,7 @@ function createInitialState() {
         images: [
           {
             id: 3,
-            imageUrl: "/imgs/wallpaper-1.jpg",
+            imageUrl: "/imgs/fallback.png",
             imagePublicId: "properties/demo/3",
             sortOrder: 1,
           },

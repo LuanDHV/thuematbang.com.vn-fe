@@ -17,7 +17,7 @@ import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { Project } from "@/types/project";
 
-const DEFAULT_PROJECT_IMAGE = "/imgs/wallpaper-2.jpg";
+const DEFAULT_PROJECT_IMAGE = "/imgs/fallback.png";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 
@@ -171,6 +171,7 @@ export function ProjectCard({ project }: { project: Project }) {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               cldQuality="auto:good"
               className="h-full w-full object-cover"
+              fallbackSrc={DEFAULT_PROJECT_IMAGE}
             />
             <ImageCountBadge count={imageCount} />
           </div>
