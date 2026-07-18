@@ -62,7 +62,7 @@ describe("PropertyImageGallery browser history", () => {
     render(
       <PropertyImageGallery
         title="Demo listing"
-        images={["/imgs/wallpaper-1.jpg"]}
+        images={["/imgs/fallback.png"]}
       />,
     );
 
@@ -86,7 +86,7 @@ describe("PropertyImageGallery browser history", () => {
     render(
       <PropertyImageGallery
         title="Demo listing"
-        images={["/imgs/wallpaper-1.jpg"]}
+        images={["/imgs/fallback.png"]}
       />,
     );
 
@@ -115,7 +115,7 @@ describe("PropertyImageGallery browser history", () => {
     render(
       <PropertyImageGallery
         title="Demo listing"
-        images={["/imgs/wallpaper-1.jpg"]}
+        images={["/imgs/fallback.png"]}
       />,
     );
 

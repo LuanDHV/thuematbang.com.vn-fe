@@ -40,19 +40,20 @@ export default function FeaturedNewsCard({
       }
     >
       <CloudinaryImage
-        src={news.imageUrl || "/imgs/wallpaper-1.jpg"}
+        src={news.imageUrl || "/imgs/fallback.png"}
         alt={news.title}
         width={1200}
         height={900}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         priority={priority}
         className="h-full w-full object-cover"
+        fallbackSrc="/imgs/fallback.png"
       />
 
       <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/35 to-black/5" />
 
       <div className="absolute inset-x-0 bottom-0 z-10 p-3 sm:p-4 md:p-5">
-        <div className="space-y-3 rounded-lg bg-black/22 p-3 drop-shadow-lg ring-1 ring-white/10 backdrop-blur-[2px] sm:p-4">
+        <div className="space-y-3 rounded-lg bg-black/22 p-3 ring-1 ring-white/10 drop-shadow-lg backdrop-blur-[2px] sm:p-4">
           <h3 className="group-hover:text-primary line-clamp-2 text-lg leading-snug font-semibold text-white transition-colors md:text-xl">
             {news.title}
           </h3>

@@ -39,7 +39,7 @@ function extractProjectImages(project: Project) {
       .map((image) => image.imageUrl)
       .filter(Boolean) ?? [];
 
-  return images.length > 0 ? images : ["/imgs/wallpaper-1.jpg"];
+  return images.length > 0 ? images : ["/imgs/fallback.png"];
 }
 
 const resolveProject = cache(async (slug: string) => {

@@ -159,7 +159,7 @@ function createSharedHelpers(state) {
       images: Array.isArray(payload.images)
         ? payload.images.map((image, index) => ({
             id: id * 100 + index + 1,
-            imageUrl: image.imageUrl || "/imgs/wallpaper-1.jpg",
+            imageUrl: image.imageUrl || "/imgs/fallback.png",
             imagePublicId:
               image.imagePublicId || `properties/draft/${slug}/${index + 1}`,
             sortOrder: index + 1,

@@ -233,7 +233,7 @@ export function AboutPageOverview() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[4fr_6fr] lg:gap-8">
         <Reveal delay={80}>
           <ImageFrame
-            src="/imgs/wallpaper-2.jpg"
+            src="/imgs/fallback.png"
             alt="Khung hình minh họa về không gian thương mại và hoạt động của thương hiệu"
             className="h-full"
           />

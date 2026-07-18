@@ -72,6 +72,7 @@ export default function RentRequestDetailContent({
               cldQuality="auto:good"
               className="h-full w-full object-cover"
               priority
+              fallbackSrc={coverImage}
             />
           </div>
         </section>

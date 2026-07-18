@@ -1,4 +1,4 @@
-export const RENT_REQUEST_COVER_IMAGE = "/imgs/wallpaper-1.jpg";
+export const RENT_REQUEST_COVER_IMAGE = "/imgs/fallback.png";
 
 const RENT_REQUEST_THUMBNAIL_BASE_PATH = "/imgs/rent-request-thumbnail";
 

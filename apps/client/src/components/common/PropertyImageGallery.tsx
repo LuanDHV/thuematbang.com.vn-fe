@@ -39,7 +39,7 @@ type PropertyImageGalleryProps = {
   };
 };
 
-const FALLBACK_IMAGE = "/imgs/wallpaper-1.jpg";
+const FALLBACK_IMAGE = "/imgs/rent-request-thumbnail/can-ho-chung-cu.png";
 const GALLERY_HISTORY_STATE_KEY = "__thuematbangGalleryOpen";
 
 export default function PropertyImageGallery({
@@ -275,6 +275,7 @@ export default function PropertyImageGallery({
           sizes="(max-width: 1024px) 100vw, 66vw"
           cldQuality="auto:good"
           className="pointer-events-none h-full w-full scale-105 object-cover opacity-70 blur-2xl"
+          fallbackSrc={FALLBACK_IMAGE}
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent" />
 
@@ -301,6 +302,7 @@ export default function PropertyImageGallery({
               cldQuality="auto:good"
               priority
               className={`h-full w-full ${activeImageClassName}`}
+              fallbackSrc={FALLBACK_IMAGE}
             />
           </motion.div>
         </AnimatePresence>
@@ -353,6 +355,7 @@ export default function PropertyImageGallery({
               sizes="96px"
               cldQuality="auto:good"
               className="h-full w-full object-cover"
+              fallbackSrc={FALLBACK_IMAGE}
             />
           </button>
         ))}

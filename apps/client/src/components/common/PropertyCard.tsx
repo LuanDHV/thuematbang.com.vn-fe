@@ -29,7 +29,7 @@ import {
 import type { PropertyPriority } from "@/types";
 import { Property } from "@/types/property";
 
-const DEFAULT_PROPERTY_IMAGE = "/imgs/wallpaper-1.jpg";
+const DEFAULT_PROPERTY_IMAGE = "/imgs/fallback.png";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 const FEATURED_CARD_IMAGE_SIZES =
@@ -180,6 +180,7 @@ function FeaturedCard({
           sizes={FEATURED_CARD_IMAGE_SIZES}
           className="h-full w-full object-cover"
           cldQuality="auto:good"
+          fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
       </div>
 
@@ -221,6 +222,7 @@ function LuckyCard({
           sizes={LUCKY_CARD_IMAGE_SIZES}
           className="h-full w-full object-cover"
           cldQuality="auto:good"
+          fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
       </div>
 
@@ -277,6 +279,7 @@ function PremiumCard({
             sizes={TIER_MAIN_IMAGE_SIZES}
             className="h-full w-full object-cover"
             cldQuality="auto:good"
+            fallbackSrc={DEFAULT_PROPERTY_IMAGE}
           />
         </div>
 
@@ -292,6 +295,7 @@ function PremiumCard({
                   sizes={TIER_SIDE_IMAGE_SIZES}
                   className="h-full w-full object-cover"
                   cldQuality="auto:good"
+                  fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                 />
               </div>
             ) : sideLayout === "split" ? (
@@ -305,6 +309,7 @@ function PremiumCard({
                     sizes={TIER_SIDE_IMAGE_SIZES}
                     className="h-full w-full object-cover"
                     cldQuality="auto:good"
+                    fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
                 </div>
                 <div className="relative h-1/2 w-full overflow-hidden">
@@ -316,6 +321,7 @@ function PremiumCard({
                     sizes={TIER_SIDE_IMAGE_SIZES}
                     className="h-full w-full object-cover"
                     cldQuality="auto:good"
+                    fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
                 </div>
               </>
@@ -342,6 +348,7 @@ function PremiumCard({
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
                       className="h-full w-full object-cover"
                       cldQuality="auto:good"
+                      fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                     />
                   </div>
                   <div className="relative h-full w-1/2 overflow-hidden">
@@ -353,6 +360,7 @@ function PremiumCard({
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
                       className="h-full w-full object-cover"
                       cldQuality="auto:good"
+                      fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                     />
                   </div>
                 </div>
@@ -408,6 +416,7 @@ function StandardCard({
             sizes={TIER_MAIN_IMAGE_SIZES}
             className="h-full w-full object-cover"
             cldQuality="auto:good"
+            fallbackSrc={DEFAULT_PROPERTY_IMAGE}
           />
         </div>
 
@@ -423,6 +432,7 @@ function StandardCard({
                   sizes={TIER_SIDE_IMAGE_SIZES}
                   className="h-full w-full object-cover"
                   cldQuality="auto:good"
+                  fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                 />
               </div>
             ) : (
@@ -439,6 +449,7 @@ function StandardCard({
                     sizes={TIER_SIDE_IMAGE_SIZES}
                     className="h-full w-full object-cover"
                     cldQuality="auto:good"
+                    fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
                 </div>
               ))
@@ -486,6 +497,7 @@ function FreeCard({
           sizes={FREE_CARD_IMAGE_SIZES}
           className="h-full w-full object-cover"
           cldQuality="auto:good"
+          fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
         <TierBadge tone="FREE" />
         <ImageCountBadge count={realImageCount} />
