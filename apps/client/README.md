@@ -66,4 +66,3 @@ npm run test:client
 - `AGENTS.md`: quy tắc làm việc trong app client
 - `DESIGN.md`: design system và token
 - `docs/testing/frontend-testing.md`: chiến lược test
-- `TEST_COVERAGE.md`: ma trận coverage hiện tại

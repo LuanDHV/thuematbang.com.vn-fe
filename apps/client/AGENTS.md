@@ -119,6 +119,5 @@ Nếu không chạy manual UI check, nói rõ trong summary.
 Khi đổi test strategy, suite boundary hoặc coverage expectation:
 
 - cập nhật `docs/testing/frontend-testing.md`
-- cập nhật `TEST_COVERAGE.md`
 
-`frontend-testing.md` là policy guide. `TEST_COVERAGE.md` là ma trận coverage sống.
+`frontend-testing.md` là policy guide cho test strategy và suite boundary.

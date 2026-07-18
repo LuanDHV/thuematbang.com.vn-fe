@@ -101,11 +101,16 @@ Các suite này bảo vệ service boundary, refresh/retry behavior, cookie opti
 Component tests hiện có:
 
 - `tests/components/auth/LoginForm.test.tsx`
+- `tests/components/auth/ProfileCompletionGate.test.tsx`
 - `tests/components/auth/SignupForm.test.tsx`
+- `tests/components/common/CloudinaryImage.test.tsx`
 - `tests/components/common/FavoriteButton.test.tsx`
 - `tests/components/common/Pagination.test.tsx`
 - `tests/components/common/PasswordInput.test.tsx`
 - `tests/components/common/PosterContactCard.test.tsx`
+- `tests/components/common/PropertyImageGallery.test.tsx`
+- `tests/components/common/Skeleton.test.tsx`
+- `tests/components/listing-client/ListingResultsClient.test.tsx`
 - `tests/components/listing-filter/ListingFilterToolbar.test.tsx`
 - `tests/components/listing-form/PropertyCreateForm.test.tsx`
 
@@ -114,7 +119,7 @@ Hook/lib tests:
 - `tests/hooks/use-auth.test.tsx`
 - `tests/lib/favorites/favorite-navigation.test.ts`
 
-Các suite này bảo vệ render states, validation behavior, favorite UX, pagination, password visibility, contact card, filter toolbar, create form states và auth hook cache cleanup.
+Các suite này bảo vệ render states, validation behavior, favorite UX, pagination, password visibility, contact card, media fallback/skeleton, gallery history behavior, listing pagination navigation, filter toolbar, create form states và auth hook cache cleanup.
 
 ## 7. Quy Tắc Cập Nhật Test
 
@@ -122,25 +127,14 @@ Các suite này bảo vệ render states, validation behavior, favorite UX, pagi
 - Listing create/update form behavior: review `listing-create.spec.ts` và component/schema tests liên quan.
 - User dashboard moderation/status: review `user-dashboard-status.spec.ts`.
 - Favorites: review `FavoriteButton.test.tsx` và `favorite-navigation.test.ts`.
+- Media/gallery common UI: review `CloudinaryImage.test.tsx` và `PropertyImageGallery.test.tsx`.
 - Listing match status helpers: review `listing-match-status.test.ts`.
 - Pure helper/schema branches: thêm unit test, không thêm Playwright nếu không cần browser.
 - Render-state/error-mapping form behavior: thêm component test trước.
 
-## 8. Coverage Tracking
-
-Ma trận coverage sống nằm ở `TEST_COVERAGE.md`.
-
-Cập nhật file đó khi:
-
-- thêm/xóa test suite
-- đổi priority của flow
-- thêm coverage cho feature area mới
-- phát hiện coverage gap quan trọng trong lúc refactor
-
-## 9. Drift Prevention
+## 8. Drift Prevention
 
 Khi route structure, auth flow, server action hoặc test boundary đổi:
 
 - cập nhật tài liệu này
 - cập nhật `ARCHITECTURE.md` nếu ownership/data flow đổi
-- cập nhật `TEST_COVERAGE.md` nếu coverage matrix đổi

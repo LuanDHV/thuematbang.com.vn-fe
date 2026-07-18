@@ -163,6 +163,12 @@ File naming:
 - reusable component file dùng `PascalCase`
 - helper/util file dùng `kebab-case`
 
+Media/card rules:
+
+- dùng `CloudinaryImage` cho ảnh public/shared để giữ skeleton, fallback image và loading behavior nhất quán
+- listing/news/project cards giữ click analytics gần component render card; favorite state dùng `FavoriteButton` thay vì duplicate toggle logic
+- gallery detail dùng `PropertyImageGallery` cho lightbox, thumbnail navigation và browser-back behavior
+
 ## 7. Data Layer
 
 ### Server reads
@@ -257,8 +263,6 @@ Không thêm helper mới vào `src/helpers/`; layer đó được xem là legac
 
 Testing guide nằm ở `docs/testing/frontend-testing.md`.
 
-Live coverage matrix nằm ở `TEST_COVERAGE.md`.
-
 Quy tắc:
 
 - render logic, schema, helper, hook: unit/component test
@@ -273,7 +277,7 @@ Khi đổi architecture-affecting code:
 - cập nhật file này nếu route structure, shell, data flow hoặc ownership đổi
 - cập nhật `DESIGN.md` nếu token/theme/component language đổi
 - cập nhật `AGENTS.md` nếu working rule đổi
-- cập nhật `docs/testing/frontend-testing.md` và `TEST_COVERAGE.md` nếu test strategy/coverage đổi
+- cập nhật `docs/testing/frontend-testing.md` nếu test strategy hoặc suite boundary đổi
 
 ## 13. Verification Tối Thiểu
 
