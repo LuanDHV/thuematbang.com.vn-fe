@@ -242,6 +242,81 @@ body {
   font-family: var(--font-sans) !important;
 }
 
+.premium-prose :is(ul, ol) {
+  margin: 0 0 1em;
+  padding-inline-start: 1.75em;
+}
+
+.premium-prose ul {
+  list-style: disc;
+}
+
+.premium-prose ol {
+  list-style: decimal;
+}
+
+.premium-prose li {
+  display: list-item;
+  margin-block: 0.25em;
+  padding-inline-start: 0.2em;
+}
+
+.premium-prose li > :is(ul, ol) {
+  margin-block: 0.35em 0;
+}
+
+.premium-prose a {
+  color: #1678a7;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.premium-prose a:hover {
+  color: #0f5f88;
+}
+
+.premium-prose .image {
+  display: table;
+  clear: both;
+  margin: 0.9em auto;
+  text-align: center;
+}
+
+.premium-prose .image img {
+  display: block;
+  width: 100%;
+  min-width: 100%;
+  height: auto;
+}
+
+.premium-prose .image-style-align-left {
+  float: left;
+  margin-inline: 0.2em 1.5em;
+}
+
+.premium-prose .image-style-align-center {
+  margin-inline: auto;
+}
+
+.premium-prose .image-style-align-right {
+  float: right;
+  margin-inline: 1.5em 0.2em;
+}
+
+.premium-prose .image-style-block-align-left {
+  margin-inline: 0 auto;
+}
+
+.premium-prose .image-style-block-align-right {
+  margin-inline: auto 0;
+}
+
+.premium-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.875rem;
+}
+
 a,
 button,
 input,
