@@ -1,9 +1,7 @@
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import FloatingActions from "@/components/common/FloatingActions";
-import FloatingContactButton from "@/components/common/FloatingContactButton";
 import SubHeader from "@/components/common/SubHeader";
-import ProfileCompletionGate from "@/components/auth/ProfileCompletionGate";
+import DeferredMainChrome from "@/components/common/DeferredMainChrome";
 
 export default async function MainLayout({
   children,
@@ -16,9 +14,7 @@ export default async function MainLayout({
       <Header />
       <main className="grow pb-24 pt-28 md:pb-0">{children}</main>
       <Footer />
-      <FloatingContactButton />
-      <FloatingActions />
-      <ProfileCompletionGate />
+      <DeferredMainChrome />
     </div>
   );
 }
