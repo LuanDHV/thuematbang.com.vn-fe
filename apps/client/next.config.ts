@@ -3,6 +3,26 @@ import type { NextConfig } from "next";
 const workspaceRoot =
   process.env.NEXT_WORKSPACE_ROOT ?? process.cwd() + "/../..";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const securityHeaders = [
+  {
+    key: "X-Content-Type-Options",
+    value: "nosniff",
+  },
+  {
+    key: "Content-Security-Policy",
+    value: "frame-ancestors 'none';",
+  },
+];
+
+if (isProduction) {
+  securityHeaders.unshift({
+    key: "Strict-Transport-Security",
+    value: "max-age=31536000; includeSubDomains; preload",
+  });
+}
+
 const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: workspaceRoot,
@@ -19,6 +39,14 @@ const nextConfig: NextConfig = {
       // Image uploads now bypass Server Actions, so keep the body guard tight.
       bodySizeLimit: "2mb",
     },
+  },
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders,
+      },
+    ];
   },
   images: {
     qualities: [75, 80, 85, 90],
