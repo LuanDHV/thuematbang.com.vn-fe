@@ -6,7 +6,10 @@ import Link from "next/link";
 import { ArrowRight, CirclePlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { ANALYTICS_EVENTS, type AnalyticsEventName } from "@/lib/analytics/events";
+import {
+  ANALYTICS_EVENTS,
+  type AnalyticsEventName,
+} from "@/lib/analytics/events";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +33,7 @@ function HeroBackground() {
           className="h-full w-full object-cover object-center"
         />
       </picture>
-      <div className="absolute inset-0 bg-black/10" />
+      <div className="absolute inset-0 bg-black/5" />
     </div>
   );
 }
@@ -131,15 +134,11 @@ export default function HeroBannerSlider() {
         <div className="layout-container relative flex h-full flex-col px-4 py-10 sm:px-6 sm:py-14 md:py-24 lg:py-28">
           <div className="flex flex-1 items-center justify-center text-center">
             <div className="flex w-full max-w-6xl flex-col items-center">
-              <h1
-                className="mt-0 max-w-5xl text-2xl leading-tight font-bold tracking-tighter text-white uppercase sm:mt-6 sm:text-3xl md:text-4xl lg:text-5xl"
-              >
+              <h1 className="text-inverse mt-0 max-w-5xl text-2xl leading-tight font-bold tracking-tighter uppercase sm:mt-6 sm:text-3xl md:text-4xl lg:text-5xl">
                 Nền tảng kết nối <br /> bất động sản cho thuê toàn quốc
               </h1>
 
-              <div
-                className="mt-5 grid w-full max-w-4xl grid-cols-1 gap-3 sm:mt-8 sm:gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5"
-              >
+              <div className="mt-5 grid w-full max-w-4xl grid-cols-1 gap-3 sm:mt-8 sm:gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5">
                 <HeroActionCard
                   primaryHref="/dang-tin/cho-thue"
                   primaryLabel="Đăng tin cho thuê"
@@ -181,12 +180,10 @@ export default function HeroBannerSlider() {
             </div>
           </div>
 
-          <div
-            className="mt-auto hidden justify-center py-4 sm:flex sm:py-8"
-          >
+          <div className="mt-auto hidden justify-center py-4 sm:flex sm:py-8">
             <Link
               href="tel:0968688081"
-              className="bg-footer inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 backdrop-blur-xl transition"
+              className="bg-inverse inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 backdrop-blur-xl transition"
             >
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
