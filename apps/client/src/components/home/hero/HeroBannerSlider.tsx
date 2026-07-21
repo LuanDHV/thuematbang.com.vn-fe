@@ -183,17 +183,16 @@ export default function HeroBannerSlider() {
           <div className="mt-auto hidden justify-center py-4 sm:flex sm:py-8">
             <Link
               href="tel:0968688081"
-              className="bg-inverse inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 backdrop-blur-xl transition"
+              className="bg-primary inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 backdrop-blur-xl transition"
             >
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
               </span>
-              <span className="text-sm font-bold tracking-[0.12em] text-white/90 uppercase">
+              <span className="text-sm font-semibold tracking-wide text-white uppercase">
                 Hotline
               </span>
-              <span className="h-3.5 w-px bg-white/50" />
-              <span className="text-primary text-base font-bold tracking-wide whitespace-nowrap">
+              <span className="text-sm font-semibold tracking-wide text-white">
                 0968 68 80 81
               </span>
             </Link>

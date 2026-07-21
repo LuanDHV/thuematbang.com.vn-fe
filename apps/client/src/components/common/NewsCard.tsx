@@ -9,6 +9,9 @@ import { formatDate } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { News } from "@/types/news";
 
+const IMAGE_HOVER_CLASSES =
+  "h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105";
+
 interface NewsCardProps {
   news: News;
   category?: string | null;
@@ -42,9 +45,10 @@ export default function NewsCard({
           alt={news.title}
           width={960}
           height={720}
-          sizes="(max-width: 768px) 100vw, 20vw"
+          sizes="(max-width: 768px) 345px, 20vw"
           priority={priority}
-          className="h-full w-full object-cover"
+          cldQuality="auto:good"
+          className={IMAGE_HOVER_CLASSES}
           fallbackSrc="/imgs/fallback.webp"
         />
       </div>
@@ -57,9 +61,9 @@ export default function NewsCard({
             </span>
           ) : null}
 
-          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+          <p className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
             {news.title}
-          </h3>
+          </p>
 
           {news.summary ? (
             <p className="text-secondary my-2 line-clamp-2 text-sm leading-relaxed">

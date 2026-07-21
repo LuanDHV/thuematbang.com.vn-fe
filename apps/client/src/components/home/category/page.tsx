@@ -57,9 +57,9 @@ function CategoryCard({ category }: { category: (typeof categories)[number] }) {
       <div className="text-primary mb-2 transition-all duration-300 group-hover:scale-110">
         {category.icon}
       </div>
-      <h3 className="group-hover:text-primary text-body text-center text-base font-bold tracking-tight transition-colors duration-300">
+      <p className="group-hover:text-primary text-body text-center text-base font-bold tracking-tight transition-colors duration-300">
         {category.name}
-      </h3>
+      </p>
       <div className="bg-primary mt-4 h-1 w-0 transition-all duration-300 group-hover:w-12" />
     </Link>
   );

@@ -20,6 +20,8 @@ import { Project } from "@/types/project";
 const DEFAULT_PROJECT_IMAGE = "/imgs/fallback.webp";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
+const IMAGE_HOVER_CLASSES =
+  "h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105";
 
 function getProjectThumbnailUrl(project: Project) {
   const sortedImages =
@@ -168,9 +170,9 @@ export function ProjectCard({ project }: { project: Project }) {
               alt={project?.name}
               width={1200}
               height={900}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 345px, (max-width: 1200px) 50vw, 33vw"
               cldQuality="auto:good"
-              className="h-full w-full object-cover"
+              className={IMAGE_HOVER_CLASSES}
               fallbackSrc={DEFAULT_PROJECT_IMAGE}
             />
             <ImageCountBadge count={imageCount} />
@@ -181,9 +183,9 @@ export function ProjectCard({ project }: { project: Project }) {
               {project?.displayCode} - {project?.category?.name}
             </span>
 
-            <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+            <p className="text-heading group-hover:text-primary mb-2 line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
               {project?.name}
-            </h3>
+            </p>
 
             <p className="group-hover:text-primary text-heading text-base font-semibold transition-colors duration-200">
               {formatNegotiablePrice(project?.price, project?.isNegotiable, {

@@ -32,18 +32,20 @@ import { Property } from "@/types/property";
 const DEFAULT_PROPERTY_IMAGE = "/imgs/fallback.webp";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
+const IMAGE_HOVER_CLASSES =
+  "h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105";
 const FEATURED_CARD_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw";
 const TIER_MAIN_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, 33vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 50vw, 33vw";
 const TIER_SIDE_IMAGE_SIZES =
   "(max-width: 767px) 30vw, (max-width: 1023px) 20vw, 15vw";
 const TIER_SIDE_SMALL_IMAGE_SIZES =
   "(max-width: 767px) 24vw, (max-width: 1023px) 15vw, 12vw";
 const FREE_CARD_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 33vw, 25vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 33vw, 25vw";
 const LUCKY_CARD_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, 25vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 50vw, 25vw";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";
@@ -178,7 +180,7 @@ function FeaturedCard({
           height={800}
           priority={priority}
           sizes={FEATURED_CARD_IMAGE_SIZES}
-          className="h-full w-full object-cover"
+          className={IMAGE_HOVER_CLASSES}
           cldQuality="auto:good"
           fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
@@ -220,7 +222,7 @@ function LuckyCard({
           height={800}
           priority={priority}
           sizes={LUCKY_CARD_IMAGE_SIZES}
-          className="h-full w-full object-cover"
+          className={IMAGE_HOVER_CLASSES}
           cldQuality="auto:good"
           fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
@@ -277,7 +279,7 @@ function PremiumCard({
             height={800}
             priority={priority}
             sizes={TIER_MAIN_IMAGE_SIZES}
-            className="h-full w-full object-cover"
+            className={IMAGE_HOVER_CLASSES}
             cldQuality="auto:good"
             fallbackSrc={DEFAULT_PROPERTY_IMAGE}
           />
@@ -293,7 +295,7 @@ function PremiumCard({
                   width={800}
                   height={600}
                   sizes={TIER_SIDE_IMAGE_SIZES}
-                  className="h-full w-full object-cover"
+                  className={IMAGE_HOVER_CLASSES}
                   cldQuality="auto:good"
                   fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                 />
@@ -307,7 +309,7 @@ function PremiumCard({
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
-                    className="h-full w-full object-cover"
+                    className={IMAGE_HOVER_CLASSES}
                     cldQuality="auto:good"
                     fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
@@ -319,7 +321,7 @@ function PremiumCard({
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
-                    className="h-full w-full object-cover"
+                    className={IMAGE_HOVER_CLASSES}
                     cldQuality="auto:good"
                     fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
@@ -334,7 +336,7 @@ function PremiumCard({
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
-                    className="h-full w-full object-cover"
+                    className={IMAGE_HOVER_CLASSES}
                     cldQuality="auto:good"
                   />
                 </div>
@@ -346,7 +348,7 @@ function PremiumCard({
                       width={800}
                       height={600}
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
-                      className="h-full w-full object-cover"
+                      className={IMAGE_HOVER_CLASSES}
                       cldQuality="auto:good"
                       fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                     />
@@ -358,7 +360,7 @@ function PremiumCard({
                       width={800}
                       height={600}
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
-                      className="h-full w-full object-cover"
+                      className={IMAGE_HOVER_CLASSES}
                       cldQuality="auto:good"
                       fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                     />
@@ -414,7 +416,7 @@ function StandardCard({
             height={800}
             priority={priority}
             sizes={TIER_MAIN_IMAGE_SIZES}
-            className="h-full w-full object-cover"
+            className={IMAGE_HOVER_CLASSES}
             cldQuality="auto:good"
             fallbackSrc={DEFAULT_PROPERTY_IMAGE}
           />
@@ -430,7 +432,7 @@ function StandardCard({
                   width={800}
                   height={600}
                   sizes={TIER_SIDE_IMAGE_SIZES}
-                  className="h-full w-full object-cover"
+                  className={IMAGE_HOVER_CLASSES}
                   cldQuality="auto:good"
                   fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                 />
@@ -447,7 +449,7 @@ function StandardCard({
                     width={800}
                     height={600}
                     sizes={TIER_SIDE_IMAGE_SIZES}
-                    className="h-full w-full object-cover"
+                    className={IMAGE_HOVER_CLASSES}
                     cldQuality="auto:good"
                     fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
@@ -495,7 +497,7 @@ function FreeCard({
           height={800}
           priority={priority}
           sizes={FREE_CARD_IMAGE_SIZES}
-          className="h-full w-full object-cover"
+          className={IMAGE_HOVER_CLASSES}
           cldQuality="auto:good"
           fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
@@ -571,9 +573,9 @@ function CardBody({
         {property?.displayCode} - {property?.category?.name}
       </span>
 
-      <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 overflow-hidden text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+      <p className="text-heading group-hover:text-primary mb-2 line-clamp-2 overflow-hidden text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
         {property?.title}
-      </h3>
+      </p>
 
       <p className="group-hover:text-primary text-heading text-base font-semibold transition-colors duration-200">
         {formatNegotiablePrice(property?.price, property?.isNegotiable, {
