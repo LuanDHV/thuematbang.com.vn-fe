@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { trackEvent } from "@/lib/analytics/track-event";
 
+const IMAGE_HOVER_CLASSES =
+  "h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105";
+
 interface FeaturedNewsCardProps {
   news: News;
   className?: string;
@@ -47,7 +50,7 @@ export default function FeaturedNewsCard({
         sizes="(max-width: 768px) 345px, (max-width: 1200px) 50vw, 33vw"
         priority={priority}
         cldQuality="auto:good"
-        className="h-full w-full object-cover"
+        className={IMAGE_HOVER_CLASSES}
         fallbackSrc="/imgs/fallback.webp"
       />
 

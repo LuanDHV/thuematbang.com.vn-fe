@@ -20,6 +20,8 @@ import { RentRequest } from "@/types/rent-request";
 
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
+const IMAGE_HOVER_CLASSES =
+  "h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105";
 
 function CardFooter({
   request,
@@ -128,7 +130,7 @@ export function RentRequestCard({
               height={800}
               sizes="(max-width: 768px) 345px, 33vw"
               cldQuality="auto:good"
-              className="h-full w-full object-cover"
+              className={IMAGE_HOVER_CLASSES}
               fallbackSrc={coverImage}
             />
           </div>

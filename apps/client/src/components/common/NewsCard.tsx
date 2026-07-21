@@ -9,6 +9,9 @@ import { formatDate } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { News } from "@/types/news";
 
+const IMAGE_HOVER_CLASSES =
+  "h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105";
+
 interface NewsCardProps {
   news: News;
   category?: string | null;
@@ -45,7 +48,7 @@ export default function NewsCard({
           sizes="(max-width: 768px) 345px, 20vw"
           priority={priority}
           cldQuality="auto:good"
-          className="h-full w-full object-cover"
+          className={IMAGE_HOVER_CLASSES}
           fallbackSrc="/imgs/fallback.webp"
         />
       </div>

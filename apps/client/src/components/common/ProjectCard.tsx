@@ -20,6 +20,8 @@ import { Project } from "@/types/project";
 const DEFAULT_PROJECT_IMAGE = "/imgs/fallback.webp";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
+const IMAGE_HOVER_CLASSES =
+  "h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105";
 
 function getProjectThumbnailUrl(project: Project) {
   const sortedImages =
@@ -170,7 +172,7 @@ export function ProjectCard({ project }: { project: Project }) {
               height={900}
               sizes="(max-width: 768px) 345px, (max-width: 1200px) 50vw, 33vw"
               cldQuality="auto:good"
-              className="h-full w-full object-cover"
+              className={IMAGE_HOVER_CLASSES}
               fallbackSrc={DEFAULT_PROJECT_IMAGE}
             />
             <ImageCountBadge count={imageCount} />
