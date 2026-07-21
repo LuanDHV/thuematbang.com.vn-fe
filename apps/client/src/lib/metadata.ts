@@ -4,6 +4,8 @@ import { buildMetaDescription } from "@/lib/seo";
 
 export const PAGE_TITLE_MAX_LENGTH = 60;
 export const HO_CHI_MINH_TIME_ZONE = "Asia/Ho_Chi_Minh";
+const BRAND_NAME = siteConfig.name;
+const BRAND_SUFFIX = ` - ${BRAND_NAME}`;
 
 type CreateMetadataOptions = {
   title: string;
@@ -34,7 +36,18 @@ export function normalizePageTitle(
 }
 
 export function buildPageTitle(value?: string | null) {
-  return normalizePageTitle(value);
+  const normalized = normalizePageTitle(value);
+
+  if (normalized.includes(BRAND_NAME)) {
+    return normalized;
+  }
+
+  const candidate = `${normalized}${BRAND_SUFFIX}`;
+  if (candidate.length <= PAGE_TITLE_MAX_LENGTH) {
+    return candidate;
+  }
+
+  return normalizePageTitle(normalized, BRAND_NAME, PAGE_TITLE_MAX_LENGTH);
 }
 
 export function buildMonthYearLabel(date = new Date()) {

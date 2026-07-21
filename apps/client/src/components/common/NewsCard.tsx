@@ -58,9 +58,9 @@ export default function NewsCard({
             </span>
           ) : null}
 
-          <h3 className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+          <p className="text-heading group-hover:text-primary line-clamp-2 text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
             {news.title}
-          </h3>
+          </p>
 
           {news.summary ? (
             <p className="text-secondary my-2 line-clamp-2 text-sm leading-relaxed">

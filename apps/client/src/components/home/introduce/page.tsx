@@ -38,9 +38,9 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
       <div className="bg-primary/5 group-hover:border-primary/10 mb-4 rounded-full border border-transparent p-4 transition-colors duration-300">
         {feature.icon}
       </div>
-      <h3 className="text-body mb-4 line-clamp-2 w-full text-xl font-bold tracking-tight">
+      <p className="text-body mb-4 line-clamp-2 w-full text-xl font-bold tracking-tight">
         {feature.title}
-      </h3>
+      </p>
       <p className="text-secondary line-clamp-3 w-full text-sm leading-relaxed font-light">
         {feature.description}
       </p>
@@ -58,7 +58,7 @@ export default function IntroduceSection() {
             <Title
               eyebrow="Về chúng tôi"
               title="Giải pháp tối ưu cho thuê và cần thuê"
-              description="Nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê. "
+              description="Nền tảng kết nối hàng đầu trong lĩnh vực bất động sản, mang đến giải pháp tối ưu cho mọi nhu cầu thuê và cho thuê."
               variant="home"
             />
           </Reveal>

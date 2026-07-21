@@ -571,9 +571,9 @@ function CardBody({
         {property?.displayCode} - {property?.category?.name}
       </span>
 
-      <h3 className="text-heading group-hover:text-primary mb-2 line-clamp-2 overflow-hidden text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
+      <p className="text-heading group-hover:text-primary mb-2 line-clamp-2 overflow-hidden text-base leading-snug font-semibold tracking-[-0.02em] transition-colors duration-200 md:text-lg">
         {property?.title}
-      </h3>
+      </p>
 
       <p className="group-hover:text-primary text-heading text-base font-semibold transition-colors duration-200">
         {formatNegotiablePrice(property?.price, property?.isNegotiable, {
