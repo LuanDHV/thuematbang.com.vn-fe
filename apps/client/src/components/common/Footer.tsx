@@ -25,7 +25,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-footer text-footer-body border-footer-border mt-auto w-full border-t">
+    <footer className="bg-inverse text-inverse-body border-inverse-border mt-auto w-full border-t">
       <div className="layout-container py-12 md:py-14">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div className="flex flex-col gap-8">
@@ -41,10 +41,10 @@ export default function Footer() {
               </Link>
             </div>
             <div className="max-w-xl space-y-3">
-              <h2 className="text-footer-heading text-base font-semibold tracking-[-0.02em] md:text-lg">
+              <h2 className="text-inverse-heading text-base font-semibold tracking-[-0.02em] md:text-lg">
                 CÔNG TY TNHH DỊCH VỤ QUẢNG CÁO THUEMATBANG.COM.VN
               </h2>
-              <div className="text-footer-body flex items-start gap-2 text-sm leading-7">
+              <div className="text-inverse-body flex items-start gap-2 text-sm leading-7">
                 <MapPin size={18} className="text-primary mt-1 shrink-0" />
                 <span>
                   708-710-712 Cách Mạng Tháng 8, P. Tân Sơn Nhất, Q. Tân Bình,
@@ -52,7 +52,7 @@ export default function Footer() {
                 </span>
               </div>
 
-              <div className="text-footer-body flex items-start gap-2 text-sm leading-7">
+              <div className="text-inverse-body flex items-start gap-2 text-sm leading-7">
                 <Phone size={18} className="text-primary mt-1 shrink-0" />
                 <a
                   href="tel:0968688081"
@@ -66,10 +66,10 @@ export default function Footer() {
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
             <div>
-              <h3 className="text-footer-heading mb-4 text-xs font-semibold tracking-[0.22em] uppercase">
+              <h3 className="text-inverse-heading mb-4 text-xs font-semibold tracking-[0.22em] uppercase">
                 Về chúng tôi
               </h3>
-              <ul className="text-footer-body flex flex-col gap-3 text-sm">
+              <ul className="text-inverse-body flex flex-col gap-3 text-sm">
                 {aboutLinks.map((item) => (
                   <li key={item.label}>
                     <Link
@@ -84,10 +84,10 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="text-footer-heading mb-4 text-xs font-semibold tracking-[0.22em] uppercase">
+              <h3 className="text-inverse-heading mb-4 text-xs font-semibold tracking-[0.22em] uppercase">
                 Quy định
               </h3>
-              <ul className="text-footer-body flex flex-col gap-3 text-sm">
+              <ul className="text-inverse-body flex flex-col gap-3 text-sm">
                 {policyLinks.map((item) => (
                   <li key={item.label}>
                     <Link
@@ -104,9 +104,9 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-footer-border border-t">
+      <div className="border-inverse-border border-t">
         <div className="layout-container py-5">
-          <div className="text-footer-body text-center text-xs font-semibold tracking-[0.24em] uppercase">
+          <div className="text-inverse-body text-center text-xs font-semibold tracking-[0.24em] uppercase">
             Copyright © 2026 Thuematbang
           </div>
         </div>
