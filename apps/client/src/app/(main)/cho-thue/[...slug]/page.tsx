@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/counter.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { cache } from "react";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
 import PageStructuredData from "@/components/common/PageStructuredData";
@@ -93,7 +96,7 @@ function extractPropertyImages(property: Property) {
       .map((image) => image.imageUrl)
       .filter(Boolean) ?? [];
 
-  return imageUrls.length > 0 ? imageUrls : ["/imgs/fallback.png"];
+  return imageUrls.length > 0 ? imageUrls : ["/imgs/fallback.webp"];
 }
 
 const resolveProperty = cache(async (rawSlug: string) => {

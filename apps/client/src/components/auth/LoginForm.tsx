@@ -69,7 +69,7 @@ export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="bg-surface relative hidden md:block">
             <Image
-              src="/imgs/fallback.png"
+              src="/imgs/fallback.webp"
               alt="Hình nền đăng nhập"
               fill
               sizes="(min-width: 768px) 50vw, 0px"

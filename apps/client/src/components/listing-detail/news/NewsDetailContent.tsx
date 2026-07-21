@@ -21,14 +21,14 @@ export default function NewsDetailContent({ news }: NewsDetailContentProps) {
       <section>
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
           <CloudinaryImage
-            src={news.imageUrl || "/imgs/fallback.png"}
+            src={news.imageUrl || "/imgs/fallback.webp"}
             alt={news.title}
             width={1600}
             height={900}
             sizes="(max-width: 1024px) 100vw, 66vw"
             className="h-full w-full object-cover"
             priority
-            fallbackSrc="/imgs/fallback.png"
+            fallbackSrc="/imgs/fallback.webp"
           />
         </div>
       </section>

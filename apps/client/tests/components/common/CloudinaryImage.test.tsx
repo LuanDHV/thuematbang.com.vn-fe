@@ -24,7 +24,7 @@ describe("CloudinaryImage", () => {
   it("shows a skeleton until the image has loaded", () => {
     render(
       <CloudinaryImage
-        src="/imgs/fallback.png"
+        src="/imgs/fallback.webp"
         alt="Demo image"
         width={320}
         height={200}
@@ -42,7 +42,7 @@ describe("CloudinaryImage", () => {
     render(
       <CloudinaryImage
         src="https://res.cloudinary.com/demo/broken.jpg"
-        fallbackSrc="/imgs/fallback.png"
+        fallbackSrc="/imgs/fallback.webp"
         alt="Fallback image"
         width={320}
         height={200}
@@ -53,7 +53,7 @@ describe("CloudinaryImage", () => {
 
     fireEvent.error(image);
 
-    expect(image).toHaveAttribute("src", "/imgs/fallback.png");
+    expect(image).toHaveAttribute("src", "/imgs/fallback.webp");
     expect(screen.getByTestId("image-skeleton")).toBeInTheDocument();
 
     fireEvent.load(image);

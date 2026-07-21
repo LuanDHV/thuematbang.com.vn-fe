@@ -7,7 +7,7 @@ module.exports = async function handleSystemRoutes(context) {
       context.res,
       200,
       {
-        secure_url: "/imgs/fallback.png",
+        secure_url: "/imgs/fallback.webp",
         public_id: `properties/draft/${Date.now()}`,
         width: 1600,
         height: 900,

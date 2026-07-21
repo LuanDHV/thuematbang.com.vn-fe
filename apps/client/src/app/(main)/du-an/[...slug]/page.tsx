@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/counter.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import DynamicBreadcrumb from "@/components/common/DynamicBreadcrumb";
@@ -39,7 +42,7 @@ function extractProjectImages(project: Project) {
       .map((image) => image.imageUrl)
       .filter(Boolean) ?? [];
 
-  return images.length > 0 ? images : ["/imgs/fallback.png"];
+  return images.length > 0 ? images : ["/imgs/fallback.webp"];
 }
 
 const resolveProject = cache(async (slug: string) => {

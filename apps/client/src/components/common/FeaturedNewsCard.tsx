@@ -40,14 +40,14 @@ export default function FeaturedNewsCard({
       }
     >
       <CloudinaryImage
-        src={news.imageUrl || "/imgs/fallback.png"}
+        src={news.imageUrl || "/imgs/fallback.webp"}
         alt={news.title}
         width={1200}
         height={900}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         priority={priority}
         className="h-full w-full object-cover"
-        fallbackSrc="/imgs/fallback.png"
+        fallbackSrc="/imgs/fallback.webp"
       />
 
       <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/35 to-black/5" />

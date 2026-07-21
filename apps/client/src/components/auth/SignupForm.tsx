@@ -322,7 +322,7 @@ export function SignupForm({
 
           <div className="bg-surface relative hidden md:block">
             <Image
-              src="/imgs/fallback.png"
+              src="/imgs/fallback.webp"
               alt="Hình nền đăng ký"
               fill
               sizes="(min-width: 768px) 50vw, 0px"

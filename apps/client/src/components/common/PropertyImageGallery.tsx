@@ -39,7 +39,7 @@ type PropertyImageGalleryProps = {
   };
 };
 
-const FALLBACK_IMAGE = "/imgs/rent-request-thumbnail/can-ho-chung-cu.png";
+const FALLBACK_IMAGE = "/imgs/rent-request-thumbnail/can-ho-chung-cu.webp";
 const GALLERY_HISTORY_STATE_KEY = "__thuematbangGalleryOpen";
 
 export default function PropertyImageGallery({

@@ -70,7 +70,7 @@ export default async function PropertyFeaturedSection() {
                       className="py-4"
                       options={{ align: "center" }}
                     >
-                      {featuredProperties.map((item, index) => (
+                      {featuredProperties.map((item) => (
                         <div
                           key={item.id}
                           className="min-w-0 shrink-0 basis-11/12 pl-3"
@@ -78,7 +78,6 @@ export default async function PropertyFeaturedSection() {
                           <PropertyCard
                             property={item}
                             variant="featured"
-                            priority={index === 0}
                           />
                         </div>
                       ))}
@@ -91,7 +90,6 @@ export default async function PropertyFeaturedSection() {
                         <PropertyCard
                           property={item}
                           variant="featured"
-                          priority={index === 0}
                         />
                       </Reveal>
                     ))}
