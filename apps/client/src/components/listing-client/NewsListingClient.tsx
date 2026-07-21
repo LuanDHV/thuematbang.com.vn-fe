@@ -171,7 +171,7 @@ export default function NewsListingClient({
             </div>
 
             <aside className="w-full lg:w-2/6">
-              <div className="lg:sticky lg:top-24">
+              <div className="lg:sticky lg:top-30">
                 <section className="surface-card hidden border p-5 lg:block">
                   <h2 className="text-heading text-base font-medium">
                     <span className="bg-primary mr-2 inline-block h-4 w-0.5 rounded-full align-middle" />
