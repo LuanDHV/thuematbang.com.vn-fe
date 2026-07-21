@@ -42,8 +42,9 @@ export default function NewsCard({
           alt={news.title}
           width={960}
           height={720}
-          sizes="(max-width: 768px) 100vw, 20vw"
+          sizes="(max-width: 768px) 345px, 20vw"
           priority={priority}
+          cldQuality="auto:good"
           className="h-full w-full object-cover"
           fallbackSrc="/imgs/fallback.webp"
         />

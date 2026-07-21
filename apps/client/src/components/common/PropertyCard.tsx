@@ -33,17 +33,17 @@ const DEFAULT_PROPERTY_IMAGE = "/imgs/fallback.webp";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 const FEATURED_CARD_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw";
 const TIER_MAIN_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, 33vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 50vw, 33vw";
 const TIER_SIDE_IMAGE_SIZES =
   "(max-width: 767px) 30vw, (max-width: 1023px) 20vw, 15vw";
 const TIER_SIDE_SMALL_IMAGE_SIZES =
   "(max-width: 767px) 24vw, (max-width: 1023px) 15vw, 12vw";
 const FREE_CARD_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 33vw, 25vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 33vw, 25vw";
 const LUCKY_CARD_IMAGE_SIZES =
-  "(max-width: 767px) 92vw, (max-width: 1023px) 50vw, 25vw";
+  "(max-width: 767px) 345px, (max-width: 1023px) 50vw, 25vw";
 
 type CardTone = PropertyPriority;
 type CardDensity = "rich" | "compact";

@@ -87,8 +87,9 @@ export default function Header() {
             <Image
               src="/imgs/logo-TMB-black.webp"
               alt="Thuematbang.com.vn"
-              width={280}
-              height={80}
+              width={112}
+              height={48}
+              sizes="112px"
               priority
               className="h-12 w-auto object-contain"
             />

@@ -126,7 +126,7 @@ export function RentRequestCard({
               alt={request?.title}
               width={1200}
               height={800}
-              sizes="(max-width: 768px) 100vw, 33vw"
+              sizes="(max-width: 768px) 345px, 33vw"
               cldQuality="auto:good"
               className="h-full w-full object-cover"
               fallbackSrc={coverImage}

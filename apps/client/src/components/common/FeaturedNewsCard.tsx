@@ -44,8 +44,9 @@ export default function FeaturedNewsCard({
         alt={news.title}
         width={1200}
         height={900}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        sizes="(max-width: 768px) 345px, (max-width: 1200px) 50vw, 33vw"
         priority={priority}
+        cldQuality="auto:good"
         className="h-full w-full object-cover"
         fallbackSrc="/imgs/fallback.webp"
       />
