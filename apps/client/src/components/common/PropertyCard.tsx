@@ -29,7 +29,7 @@ import {
 import type { PropertyPriority } from "@/types";
 import { Property } from "@/types/property";
 
-const DEFAULT_PROPERTY_IMAGE = "/imgs/fallback.png";
+const DEFAULT_PROPERTY_IMAGE = "/imgs/fallback.webp";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 const FEATURED_CARD_IMAGE_SIZES =

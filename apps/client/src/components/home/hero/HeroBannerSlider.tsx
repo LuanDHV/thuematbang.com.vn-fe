@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import Link from "next/link";
 import { ArrowRight, CirclePlus } from "lucide-react";
@@ -10,10 +10,10 @@ import { ANALYTICS_EVENTS, type AnalyticsEventName } from "@/lib/analytics/event
 import { trackEvent } from "@/lib/analytics/track-event";
 import { cn } from "@/lib/utils";
 
-const DESKTOP_BANNER_SRC = "/imgs/hero-banner-desktop.png";
-const MOBILE_BANNER_SRC = "/imgs/hero-banner-mobile.png";
+const DESKTOP_BANNER_SRC = "/imgs/hero-banner-desktop.webp";
+const MOBILE_BANNER_SRC = "/imgs/hero-banner-mobile.webp";
 
-function HeroBackground({ mounted }: { mounted: boolean }) {
+function HeroBackground() {
   return (
     <div className="absolute inset-0">
       <picture className="block h-full w-full">
@@ -21,10 +21,13 @@ function HeroBackground({ mounted }: { mounted: boolean }) {
         <img
           src={DESKTOP_BANNER_SRC}
           alt="Thuê Mặt Bằng hero banner"
-          className={cn(
-            "h-full w-full object-cover object-center transition-transform duration-1200 ease-out",
-            mounted ? "scale-100" : "scale-[1.08]",
-          )}
+          width={1920}
+          height={1080}
+          sizes="100vw"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="h-full w-full object-cover object-center"
         />
       </picture>
       <div className="absolute inset-0 bg-black/10" />
@@ -120,46 +123,22 @@ function HeroActionCard({
 }
 
 export default function HeroBannerSlider() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      setMounted(true);
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-    };
-  }, []);
-
   return (
     <div className="absolute inset-0">
-      <HeroBackground mounted={mounted} />
+      <HeroBackground />
 
       <div className="absolute inset-0">
         <div className="layout-container relative flex h-full flex-col px-4 py-10 sm:px-6 sm:py-14 md:py-24 lg:py-28">
           <div className="flex flex-1 items-center justify-center text-center">
             <div className="flex w-full max-w-6xl flex-col items-center">
               <h1
-                className={cn(
-                  "mt-0 max-w-5xl text-2xl leading-tight font-bold tracking-tighter text-white uppercase transition-all duration-700 ease-out sm:mt-6 sm:text-3xl md:text-4xl lg:text-5xl",
-                  mounted
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-6 opacity-0",
-                )}
-                style={{ transitionDelay: mounted ? "120ms" : "0ms" }}
+                className="mt-0 max-w-5xl text-2xl leading-tight font-bold tracking-tighter text-white uppercase sm:mt-6 sm:text-3xl md:text-4xl lg:text-5xl"
               >
                 Nền tảng kết nối <br /> bất động sản cho thuê toàn quốc
               </h1>
 
               <div
-                className={cn(
-                  "mt-5 grid w-full max-w-4xl grid-cols-1 gap-3 sm:mt-8 sm:gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5",
-                  mounted
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-6 opacity-0",
-                )}
-                style={{ transitionDelay: mounted ? "320ms" : "0ms" }}
+                className="mt-5 grid w-full max-w-4xl grid-cols-1 gap-3 sm:mt-8 sm:gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-5"
               >
                 <HeroActionCard
                   primaryHref="/dang-tin/cho-thue"
@@ -203,11 +182,7 @@ export default function HeroBannerSlider() {
           </div>
 
           <div
-            className={cn(
-              "mt-auto hidden justify-center py-4 transition-all duration-700 ease-out sm:flex sm:py-8",
-              mounted ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0",
-            )}
-            style={{ transitionDelay: mounted ? "420ms" : "0ms" }}
+            className="mt-auto hidden justify-center py-4 sm:flex sm:py-8"
           >
             <Link
               href="tel:0968688081"

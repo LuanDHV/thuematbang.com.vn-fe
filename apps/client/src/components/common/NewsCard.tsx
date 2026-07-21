@@ -36,16 +36,16 @@ export default function NewsCard({
         })
       }
     >
-      <div className="bg-surface-alt relative aspect-[16/10] w-full shrink-0 overflow-hidden md:aspect-auto md:w-2/5">
+      <div className="bg-surface-alt relative aspect-16/10 w-full shrink-0 overflow-hidden md:aspect-auto md:w-2/5">
         <CloudinaryImage
-          src={news.imageUrl || "/imgs/fallback.png"}
+          src={news.imageUrl || "/imgs/fallback.webp"}
           alt={news.title}
           width={960}
           height={720}
           sizes="(max-width: 768px) 100vw, 20vw"
           priority={priority}
           className="h-full w-full object-cover"
-          fallbackSrc="/imgs/fallback.png"
+          fallbackSrc="/imgs/fallback.webp"
         />
       </div>
 
@@ -73,7 +73,7 @@ export default function NewsCard({
             <Calendar size={14} strokeWidth={2} className="text-primary" />
             {formatDate(news.createdAt)}
           </span>
-          <span className="group-hover:text-primary text-secondary flex items-center gap-1 whitespace-nowrap text-xs font-medium tracking-wide">
+          <span className="group-hover:text-primary text-secondary flex items-center gap-1 text-xs font-medium tracking-wide whitespace-nowrap">
             Đọc tiếp
             <ArrowRight size={14} strokeWidth={2} />
           </span>

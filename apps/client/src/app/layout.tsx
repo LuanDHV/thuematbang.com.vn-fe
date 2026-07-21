@@ -3,9 +3,6 @@ import "@fontsource/be-vietnam-pro/400.css";
 import "@fontsource/be-vietnam-pro/500.css";
 import "@fontsource/be-vietnam-pro/600.css";
 import "@fontsource/be-vietnam-pro/700.css";
-import "yet-another-react-lightbox/styles.css";
-import "yet-another-react-lightbox/plugins/counter.css";
-import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "./globals.css";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { isProductionAppEnv } from "@/lib/app-env";
@@ -45,8 +42,8 @@ export const metadata: Metadata = {
     images: [siteConfig.defaultImage],
   },
   icons: {
-    icon: "/imgs/logo-symbol.png",
-    apple: "/imgs/logo-symbol.png",
+    icon: "/imgs/logo-symbol.webp",
+    apple: "/imgs/logo-symbol.webp",
   },
   robots: isProduction
     ? {

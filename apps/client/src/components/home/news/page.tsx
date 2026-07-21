@@ -73,7 +73,7 @@ export default async function NewsSection() {
                     <div className="grid grid-cols-1 gap-5">
                       {sideNews.map((newsItem, index) => (
                         <Reveal key={newsItem.id} delay={index * 70}>
-                          <NewsCard news={newsItem} priority={index === 0} />
+                          <NewsCard news={newsItem} />
                         </Reveal>
                       ))}
                     </div>
@@ -93,7 +93,7 @@ export default async function NewsSection() {
                     <div className="grid grid-cols-1 gap-5">
                       {sideNews.map((newsItem, index) => (
                         <Reveal key={newsItem.id} delay={index * 70}>
-                          <NewsCard news={newsItem} priority={index === 0} />
+                          <NewsCard news={newsItem} />
                         </Reveal>
                       ))}
                     </div>

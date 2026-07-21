@@ -17,7 +17,7 @@ import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { Project } from "@/types/project";
 
-const DEFAULT_PROJECT_IMAGE = "/imgs/fallback.png";
+const DEFAULT_PROJECT_IMAGE = "/imgs/fallback.webp";
 const CARD_HOVER_CLASSES =
   "group flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-2xl";
 

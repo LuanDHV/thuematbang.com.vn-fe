@@ -85,7 +85,7 @@ export default function Header() {
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0"
           >
             <Image
-              src="/imgs/logo-TMB-black.png"
+              src="/imgs/logo-TMB-black.webp"
               alt="Thuematbang.com.vn"
               width={280}
               height={80}
@@ -135,7 +135,7 @@ export default function Header() {
                       )}
                     </span>
                     <span className="flex min-w-0 flex-col items-start leading-tight">
-                      <span className="text-primary text-xs font-semibold">
+                      <span className="text-primary-readable text-xs font-semibold">
                         {userRole}
                       </span>
                       <span className="text-heading max-w-42 truncate text-sm font-medium">

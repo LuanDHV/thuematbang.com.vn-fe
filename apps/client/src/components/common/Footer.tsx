@@ -32,7 +32,7 @@ export default function Footer() {
             <div className="relative h-16 w-56 sm:h-20 sm:w-64">
               <Link href="/" className="relative block h-full w-full">
                 <Image
-                  src="/imgs/logo-TMB-white.png"
+                  src="/imgs/logo-TMB-white.webp"
                   alt="Thuematbang.com.vn"
                   fill
                   sizes="(max-width: 640px) 14rem, 16rem"

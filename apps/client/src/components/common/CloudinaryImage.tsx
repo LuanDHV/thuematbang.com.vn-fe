@@ -17,7 +17,7 @@ type CloudinaryImageProps = Omit<ImageProps, "src"> & {
 export default function CloudinaryImage({
   src,
   cldQuality = "auto:good",
-  fallbackSrc = "/imgs/fallback.png",
+  fallbackSrc = "/imgs/fallback.webp",
   showSkeleton = true,
   skeletonClassName,
   containerClassName,
