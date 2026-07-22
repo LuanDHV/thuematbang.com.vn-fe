@@ -49,6 +49,7 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    formats: ["image/avif", "image/webp"],
     qualities: [75, 80, 85, 90],
     // Allow Next.js Image component to optimize images from Cloudinary
     remotePatterns: [

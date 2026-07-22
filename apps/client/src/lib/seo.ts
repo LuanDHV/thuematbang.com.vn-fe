@@ -1,4 +1,5 @@
 import type { BreadcrumbItem } from "@/lib/listing/flat-url";
+import { optimizeCloudinaryByPreset } from "@/lib/cloudinary";
 import { siteConfig } from "@/lib/site-config";
 
 export const SEO_DESCRIPTION_MIN_LENGTH = 100;
@@ -114,7 +115,10 @@ export function buildWebPageSchema(options: {
 }) {
   const resolvedUrl = new URL(options.url, siteConfig.url).toString();
   const resolvedImage = options.image
-    ? new URL(options.image, siteConfig.url).toString()
+    ? optimizeCloudinaryByPreset(
+        new URL(options.image, siteConfig.url).toString(),
+        "seoImage",
+      )
     : undefined;
 
   return {
@@ -149,7 +153,10 @@ export function buildOrganizationSchema() {
     "@type": "Organization",
     name: siteConfig.name,
     url: siteConfig.url,
-    logo: new URL(siteConfig.defaultImage, siteConfig.url).toString(),
+    logo: optimizeCloudinaryByPreset(
+      new URL(siteConfig.defaultImage, siteConfig.url).toString(),
+      "seoImage",
+    ),
   };
 }
 
@@ -164,7 +171,10 @@ export function buildNewsArticleSchema(options: {
 }) {
   const resolvedUrl = new URL(options.url, siteConfig.url).toString();
   const resolvedImage = options.image
-    ? new URL(options.image, siteConfig.url).toString()
+    ? optimizeCloudinaryByPreset(
+        new URL(options.image, siteConfig.url).toString(),
+        "seoImage",
+      )
     : undefined;
 
   return {

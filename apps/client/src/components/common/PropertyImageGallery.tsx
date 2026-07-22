@@ -16,6 +16,7 @@ import {
   trackEvent,
   type AnalyticsEventParams,
 } from "@/lib/analytics/track-event";
+import { optimizeCloudinaryByPreset } from "@/lib/cloudinary";
 
 type PropertyImageGalleryProps = {
   title: string;
@@ -48,18 +49,24 @@ export default function PropertyImageGallery({
   analytics,
 }: PropertyImageGalleryProps) {
   const safeImages = useMemo(() => images.filter(Boolean), [images]);
-  const displayImages = useMemo(
+  const rawDisplayImages = useMemo(
     () => (safeImages.length > 0 ? safeImages : [FALLBACK_IMAGE]),
     [safeImages],
   );
+  const displayImages = rawDisplayImages;
+  const thumbnailImages = rawDisplayImages;
   const slides = useMemo(
     () =>
       displayImages.map((src, index) => ({
-        src,
+        src: optimizeCloudinaryByPreset(src, "listingGalleryMain"),
         alt: `${title} - ảnh ${index + 1}`,
-        thumbnail: src,
+        thumbnail:
+          optimizeCloudinaryByPreset(
+            thumbnailImages[index] || src,
+            "listingGalleryThumb",
+          ) || src,
       })),
-    [displayImages, title],
+    [displayImages, thumbnailImages, title],
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [viewerIndex, setViewerIndex] = useState(0);
@@ -76,15 +83,22 @@ export default function PropertyImageGallery({
   const currentActiveIndex = Math.min(activeIndex, displayImages.length - 1);
   const currentViewerIndex = Math.min(viewerIndex, displayImages.length - 1);
   const activeImage = displayImages[currentActiveIndex] || displayImages[0];
+  const optimizedActiveImage = optimizeCloudinaryByPreset(
+    activeImage,
+    "listingGalleryMain",
+  );
 
   useEffect(() => {
     if (displayImages.length <= 1 || typeof window === "undefined") return;
 
     const preload = (src: string | undefined) => {
-      if (!src || preloadedImagesRef.current.has(src)) return;
-      preloadedImagesRef.current.add(src);
+      const optimizedSrc = src
+        ? optimizeCloudinaryByPreset(src, "listingGalleryMain")
+        : "";
+      if (!optimizedSrc || preloadedImagesRef.current.has(optimizedSrc)) return;
+      preloadedImagesRef.current.add(optimizedSrc);
       const image = new window.Image();
-      image.src = src;
+      image.src = optimizedSrc;
     };
 
     preload(displayImages[0]);
@@ -123,12 +137,12 @@ export default function PropertyImageGallery({
       }
     };
 
-    image.src = activeImage;
+    image.src = optimizedActiveImage;
 
     return () => {
       cancelled = true;
     };
-  }, [activeImage]);
+  }, [activeImage, optimizedActiveImage]);
 
   const goPrev = () => {
     setSlideDirection(-1);
@@ -269,11 +283,9 @@ export default function PropertyImageGallery({
         <CloudinaryImage
           src={activeImage}
           alt=""
-          width={1200}
-          height={800}
+          cloudinaryPreset="listingGalleryMain"
           aria-hidden
           sizes="(max-width: 1024px) 100vw, 66vw"
-          cldQuality="auto:good"
           className="pointer-events-none h-full w-full scale-105 object-cover opacity-70 blur-2xl"
           fallbackSrc={FALLBACK_IMAGE}
         />
@@ -296,10 +308,8 @@ export default function PropertyImageGallery({
             <CloudinaryImage
               src={activeImage}
               alt={title}
-              width={1200}
-              height={800}
+              cloudinaryPreset="listingGalleryMain"
               sizes="(max-width: 1024px) 100vw, 66vw"
-              cldQuality="auto:good"
               priority
               className={`h-full w-full ${activeImageClassName}`}
               fallbackSrc={FALLBACK_IMAGE}
@@ -348,12 +358,10 @@ export default function PropertyImageGallery({
             aria-label={`Xem ảnh ${index + 1}`}
           >
             <CloudinaryImage
-              src={image}
+              src={thumbnailImages[index] || image}
               alt={`${title} - ảnh ${index + 1}`}
-              width={240}
-              height={160}
+              cloudinaryPreset="listingGalleryThumb"
               sizes="96px"
-              cldQuality="auto:good"
               className="h-full w-full object-cover"
               fallbackSrc={FALLBACK_IMAGE}
             />

@@ -23,8 +23,7 @@ export default function NewsDetailContent({ news }: NewsDetailContentProps) {
           <CloudinaryImage
             src={news.imageUrl || "/imgs/fallback.webp"}
             alt={news.title}
-            width={1600}
-            height={900}
+            cloudinaryPreset="detailHero"
             sizes="(max-width: 1024px) 100vw, 66vw"
             className="h-full w-full object-cover"
             priority

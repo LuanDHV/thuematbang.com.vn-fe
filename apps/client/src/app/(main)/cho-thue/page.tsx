@@ -17,7 +17,7 @@ import { propertyService } from "@/services/property.service";
 const PROPERTY_PATH = "/cho-thue";
 const PROPERTY_TITLE = buildLatestListingTitle("Bất động sản cho thuê");
 const PROPERTY_DESCRIPTION =
-  "Khám phá tin bất động sản cho thuê mới nhất, bao gồm mặt bằng, văn phòng, kho xưởng, căn hộ và nhiều lựa chọn theo khu vực, diện tích, giá thuê và nhu cầu thực tế.";
+  "Khám phá tin bất động sản cho thuê mới nhất, bao gồm nhiều lựa chọn theo khu vực, diện tích, giá thuê và nhu cầu thực tế.";
 
 const resolveSeoContent = cache(async (path: string) => {
   const response = await seoContentService

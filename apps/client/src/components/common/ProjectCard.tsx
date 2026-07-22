@@ -28,7 +28,7 @@ function getProjectThumbnailUrl(project: Project) {
     project?.images
       ?.slice()
       .sort((left, right) => left.sortOrder - right.sortOrder)
-      .map((image) => image.imageUrl)
+      .map((image) => image.imageUrl ?? null)
       .filter(Boolean) ?? [];
 
   return sortedImages[0] || DEFAULT_PROJECT_IMAGE;
@@ -168,10 +168,8 @@ export function ProjectCard({ project }: { project: Project }) {
             <CloudinaryImage
               src={thumbnailImageUrl}
               alt={project?.name}
-              width={1200}
-              height={900}
+              cloudinaryPreset="listingCard"
               sizes="(max-width: 768px) 345px, (max-width: 1200px) 50vw, 33vw"
-              cldQuality="auto:good"
               className={IMAGE_HOVER_CLASSES}
               fallbackSrc={DEFAULT_PROJECT_IMAGE}
             />
