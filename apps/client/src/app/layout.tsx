@@ -9,7 +9,11 @@ import { isProductionAppEnv } from "@/lib/app-env";
 import { siteConfig } from "@/lib/site-config";
 import AppProviders from "@/components/providers/AppProviders";
 import PageStructuredData from "@/components/common/PageStructuredData";
-import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo";
+import {
+  buildOrganizationSchema,
+  buildWebSiteSchema,
+} from "@/lib/seo";
+import { optimizeCloudinaryByPreset } from "@/lib/cloudinary";
 
 const isProduction = isProductionAppEnv();
 
@@ -20,27 +24,32 @@ export const metadata: Metadata = {
   verification: {
     google: "HECbvh66BjtuaX4WLVSKvG9Gkr2gDJE43dlIe_nqqUE",
   },
-  openGraph: {
-    type: "website",
-    locale: "vi_VN",
-    siteName: siteConfig.name,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [
-      {
-        url: siteConfig.defaultImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
+    openGraph: {
+      type: "website",
+      locale: "vi_VN",
+      siteName: siteConfig.name,
+      title: siteConfig.name,
+      description: siteConfig.description,
+      images: [
+        {
+          url: optimizeCloudinaryByPreset(
+            siteConfig.defaultImage,
+            "seoImage",
+          ),
+          width: 1200,
+          height: 630,
+          alt: siteConfig.name,
+        },
+      ],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [siteConfig.defaultImage],
-  },
+    twitter: {
+      card: "summary_large_image",
+      title: siteConfig.name,
+      description: siteConfig.description,
+      images: [
+        optimizeCloudinaryByPreset(siteConfig.defaultImage, "seoImage"),
+      ],
+    },
   icons: {
     icon: "/imgs/logo-symbol.webp",
     apple: "/imgs/logo-symbol.webp",

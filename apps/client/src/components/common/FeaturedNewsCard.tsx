@@ -45,11 +45,9 @@ export default function FeaturedNewsCard({
       <CloudinaryImage
         src={news.imageUrl || "/imgs/fallback.webp"}
         alt={news.title}
-        width={1200}
-        height={900}
+        cloudinaryPreset="listingCard"
         sizes="(max-width: 768px) 345px, (max-width: 1200px) 50vw, 33vw"
         priority={priority}
-        cldQuality="auto:good"
         className={IMAGE_HOVER_CLASSES}
         fallbackSrc="/imgs/fallback.webp"
       />

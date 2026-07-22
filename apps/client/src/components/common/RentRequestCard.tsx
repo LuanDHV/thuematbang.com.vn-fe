@@ -126,10 +126,8 @@ export function RentRequestCard({
             <CloudinaryImage
               src={coverImage}
               alt={request?.title}
-              width={1200}
-              height={800}
+              cloudinaryPreset="listingCard"
               sizes="(max-width: 768px) 345px, 33vw"
-              cldQuality="auto:good"
               className={IMAGE_HOVER_CLASSES}
               fallbackSrc={coverImage}
             />

@@ -226,9 +226,9 @@ export default function PosterContactCard({
             <CloudinaryImage
               src={avatarUrl}
               alt={fullName || "Người đăng"}
+              cloudinaryPreset="avatar"
               fill
               sizes="48px"
-              cldQuality="auto:good"
               className="object-cover"
             />
           </div>

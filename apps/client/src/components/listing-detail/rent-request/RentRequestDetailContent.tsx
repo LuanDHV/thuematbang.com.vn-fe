@@ -66,10 +66,8 @@ export default function RentRequestDetailContent({
             <CloudinaryImage
               src={coverImage}
               alt={rentRequest?.title}
-              width={1600}
-              height={900}
+              cloudinaryPreset="detailHero"
               sizes="(max-width: 1024px) 100vw, 75vw"
-              cldQuality="auto:good"
               className="h-full w-full object-cover"
               priority
               fallbackSrc={coverImage}

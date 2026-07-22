@@ -1,20 +1,17 @@
-type CloudinaryResizeMode = "fill" | "fit" | "limit" | "crop";
-
 type CloudinaryImageOptions = {
   width?: number;
   height?: number;
   quality?: "auto" | "auto:good" | number;
   format?: "auto" | "webp" | "avif" | "jpg" | "png";
-  mode?: CloudinaryResizeMode;
 };
 
-type CloudinaryPresetName =
-  | "avatarSm"
-  | "avatarMd"
-  | "avatarLg"
+export type CloudinaryPresetName =
+  | "avatar"
   | "listingCard"
   | "listingGalleryMain"
-  | "listingGalleryThumb";
+  | "listingGalleryThumb"
+  | "detailHero"
+  | "seoImage";
 
 const CLOUDINARY_HOST = "res.cloudinary.com";
 const IMAGE_UPLOAD_SEGMENT = "/image/upload/";
@@ -83,7 +80,6 @@ export function optimizeCloudinaryImage(
   const uploadIndex = parsed.pathname.indexOf(IMAGE_UPLOAD_SEGMENT);
   if (uploadIndex === -1) return rawUrl;
 
-  const mode = options.mode ?? "fill";
   const quality = options.quality ?? "auto:good";
   const format = options.format ?? "auto";
   const width = toInteger(options.width);
@@ -95,7 +91,7 @@ export function optimizeCloudinaryImage(
     `q_${quality}`,
     width ? `w_${width}` : null,
     height ? `h_${height}` : null,
-    width || height ? `c_${mode}` : null,
+    width || height ? "c_fill" : null,
     "g_auto",
   ]
     .filter(Boolean)
@@ -155,15 +151,17 @@ export function getCloudinaryPublicId(rawUrl: string) {
   return publicIdWithExt.replace(/\.[^/.]+$/, "");
 }
 
-const CLOUDINARY_PRESETS: Record<CloudinaryPresetName, CloudinaryImageOptions> =
-  {
-    avatarSm: { width: 96, height: 96, quality: "auto:good" },
-    avatarMd: { width: 176, height: 176, quality: "auto:good" },
-    avatarLg: { width: 192, height: 192, quality: "auto:good" },
-    listingCard: { width: 1200, height: 760, quality: "auto:good" },
-    listingGalleryMain: { width: 1600, height: 1000, quality: "auto:good" },
-    listingGalleryThumb: { width: 220, height: 140, quality: "auto:good" },
-  };
+export const CLOUDINARY_PRESETS: Record<
+  CloudinaryPresetName,
+  CloudinaryImageOptions
+> = {
+  avatar: { width: 128, height: 128, quality: "auto:good" },
+  listingCard: { width: 960, height: 640, quality: "auto:good" },
+  listingGalleryMain: { width: 1600, height: 1067, quality: "auto:good" },
+  listingGalleryThumb: { width: 240, height: 160, quality: "auto:good" },
+  detailHero: { width: 1600, height: 900, quality: "auto:good" },
+  seoImage: { width: 1200, height: 630, quality: 90 },
+};
 
 // Apply one named Cloudinary preset while still allowing per-call overrides.
 export function optimizeCloudinaryByPreset(

@@ -126,9 +126,7 @@ export default function Header() {
                         <CloudinaryImage
                           src={avatarUrl}
                           alt={displayName}
-                          width={32}
-                          height={32}
-                          cldQuality="auto:good"
+                          cloudinaryPreset="avatar"
                           className="size-8 rounded-full object-cover"
                         />
                       ) : (

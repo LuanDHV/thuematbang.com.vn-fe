@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site-config";
 import { buildMetaDescription } from "@/lib/seo";
+import { optimizeCloudinaryByPreset } from "@/lib/cloudinary";
 
 export const PAGE_TITLE_MAX_LENGTH = 60;
 export const HO_CHI_MINH_TIME_ZONE = "Asia/Ho_Chi_Minh";
@@ -96,7 +97,10 @@ export function createPageMetadata({
     ? buildMetaDescription([description], description)
     : undefined;
   const normalizedImage = image
-    ? new URL(image, siteConfig.url).toString()
+    ? optimizeCloudinaryByPreset(
+        new URL(image, siteConfig.url).toString(),
+        "seoImage",
+      )
     : undefined;
   const canonicalUrl = pathname
     ? new URL(pathname, siteConfig.url).toString()

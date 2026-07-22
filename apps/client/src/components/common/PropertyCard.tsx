@@ -176,12 +176,10 @@ function FeaturedCard({
         <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
           alt={property?.title || "Bất động sản"}
-          width={1200}
-          height={800}
+          cloudinaryPreset="listingCard"
           priority={priority}
           sizes={FEATURED_CARD_IMAGE_SIZES}
           className={IMAGE_HOVER_CLASSES}
-          cldQuality="auto:good"
           fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
       </div>
@@ -218,12 +216,10 @@ function LuckyCard({
         <CloudinaryImage
           src={getPropertyThumbnailUrl(property)}
           alt={property?.title || "Bất động sản"}
-          width={1200}
-          height={800}
+          cloudinaryPreset="listingCard"
           priority={priority}
           sizes={LUCKY_CARD_IMAGE_SIZES}
           className={IMAGE_HOVER_CLASSES}
-          cldQuality="auto:good"
           fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
       </div>
@@ -275,12 +271,10 @@ function PremiumCard({
           <CloudinaryImage
             src={heroImage}
             alt={property?.title || "Bất động sản"}
-            width={1200}
-            height={800}
+            cloudinaryPreset="listingCard"
             priority={priority}
             sizes={TIER_MAIN_IMAGE_SIZES}
             className={IMAGE_HOVER_CLASSES}
-            cldQuality="auto:good"
             fallbackSrc={DEFAULT_PROPERTY_IMAGE}
           />
         </div>
@@ -292,11 +286,9 @@ function PremiumCard({
                 <CloudinaryImage
                   src={sideImages[0] || fallbackImage}
                   alt={`${property?.title} - ảnh 2`}
-                  width={800}
-                  height={600}
+                  cloudinaryPreset="listingCard"
                   sizes={TIER_SIDE_IMAGE_SIZES}
                   className={IMAGE_HOVER_CLASSES}
-                  cldQuality="auto:good"
                   fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                 />
               </div>
@@ -306,11 +298,9 @@ function PremiumCard({
                   <CloudinaryImage
                     src={sideImages[0] || fallbackImage}
                     alt={`${property?.title} - ảnh 2`}
-                    width={800}
-                    height={600}
+                    cloudinaryPreset="listingCard"
                     sizes={TIER_SIDE_IMAGE_SIZES}
                     className={IMAGE_HOVER_CLASSES}
-                    cldQuality="auto:good"
                     fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
                 </div>
@@ -318,11 +308,9 @@ function PremiumCard({
                   <CloudinaryImage
                     src={sideImages[1] || fallbackImage}
                     alt={`${property?.title} - ảnh 3`}
-                    width={800}
-                    height={600}
+                    cloudinaryPreset="listingCard"
                     sizes={TIER_SIDE_IMAGE_SIZES}
                     className={IMAGE_HOVER_CLASSES}
-                    cldQuality="auto:good"
                     fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
                 </div>
@@ -333,11 +321,9 @@ function PremiumCard({
                   <CloudinaryImage
                     src={sideImages[0] || fallbackImage}
                     alt={`${property?.title} - ảnh 2`}
-                    width={800}
-                    height={600}
+                    cloudinaryPreset="listingCard"
                     sizes={TIER_SIDE_IMAGE_SIZES}
                     className={IMAGE_HOVER_CLASSES}
-                    cldQuality="auto:good"
                   />
                 </div>
                 <div className="flex h-1/2 w-full gap-0.5">
@@ -345,11 +331,9 @@ function PremiumCard({
                     <CloudinaryImage
                       src={sideImages[1] || fallbackImage}
                       alt={`${property?.title} - ảnh 3`}
-                      width={800}
-                      height={600}
+                      cloudinaryPreset="listingCard"
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
                       className={IMAGE_HOVER_CLASSES}
-                      cldQuality="auto:good"
                       fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                     />
                   </div>
@@ -357,11 +341,9 @@ function PremiumCard({
                     <CloudinaryImage
                       src={sideImages[2] || fallbackImage}
                       alt={`${property?.title} - ảnh 4`}
-                      width={800}
-                      height={600}
+                      cloudinaryPreset="listingCard"
                       sizes={TIER_SIDE_SMALL_IMAGE_SIZES}
                       className={IMAGE_HOVER_CLASSES}
-                      cldQuality="auto:good"
                       fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                     />
                   </div>
@@ -412,12 +394,10 @@ function StandardCard({
           <CloudinaryImage
             src={heroImage}
             alt={property?.title || "Bất động sản"}
-            width={1200}
-            height={800}
+            cloudinaryPreset="listingCard"
             priority={priority}
             sizes={TIER_MAIN_IMAGE_SIZES}
             className={IMAGE_HOVER_CLASSES}
-            cldQuality="auto:good"
             fallbackSrc={DEFAULT_PROPERTY_IMAGE}
           />
         </div>
@@ -429,11 +409,9 @@ function StandardCard({
                 <CloudinaryImage
                   src={sideImages[0] || fallbackImage}
                   alt={`${property?.title} - ảnh phụ 1`}
-                  width={800}
-                  height={600}
+                  cloudinaryPreset="listingCard"
                   sizes={TIER_SIDE_IMAGE_SIZES}
                   className={IMAGE_HOVER_CLASSES}
-                  cldQuality="auto:good"
                   fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                 />
               </div>
@@ -446,11 +424,9 @@ function StandardCard({
                   <CloudinaryImage
                     src={src || fallbackImage}
                     alt={`${property?.title} - ảnh phụ ${index + 1}`}
-                    width={800}
-                    height={600}
+                    cloudinaryPreset="listingCard"
                     sizes={TIER_SIDE_IMAGE_SIZES}
                     className={IMAGE_HOVER_CLASSES}
-                    cldQuality="auto:good"
                     fallbackSrc={DEFAULT_PROPERTY_IMAGE}
                   />
                 </div>
@@ -493,12 +469,10 @@ function FreeCard({
         <CloudinaryImage
           src={image}
           alt={property?.title || "Bất động sản"}
-          width={1200}
-          height={800}
+          cloudinaryPreset="listingCard"
           priority={priority}
           sizes={FREE_CARD_IMAGE_SIZES}
           className={IMAGE_HOVER_CLASSES}
-          cldQuality="auto:good"
           fallbackSrc={DEFAULT_PROPERTY_IMAGE}
         />
         <TierBadge tone="FREE" />

@@ -137,9 +137,7 @@ export default function CmsSidebar({
     <CloudinaryImage
       src={user.avatarUrl}
       alt={`Ảnh đại diện của ${accountLabel}`}
-      width={48}
-      height={48}
-      cldQuality="auto:good"
+      cloudinaryPreset="avatar"
       className="border-hairline size-12 shrink-0 rounded-full border object-cover"
     />
   ) : (
