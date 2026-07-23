@@ -116,9 +116,12 @@ export const ORDER_STATUS_VALUES = [
 ] as const satisfies readonly OrderStatus[];
 
 export const LISTING_MATCH_STATUS_VALUES = [
-  "CANDIDATE",
-  "MATCHED",
-  "REJECTED",
+  "SUGGESTED",
+  "QUALIFIED",
+  "NEGOTIATING",
+  "DEAL_WON",
+  "DEAL_LOST",
+  "CANCELLED_AUTO",
 ] as const;
 
 export const PAGE_VALUES = [

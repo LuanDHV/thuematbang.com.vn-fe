@@ -92,19 +92,22 @@ export const LEAD_STATUS_OPTIONS: Array<{
   label: string;
   value: LeadStatus;
 }> = [
-  { label: "Mới", value: "NEW" },
-  { label: "Đã liên hệ", value: "CONTACTED" },
-  { label: "Đạt chuẩn", value: "QUALIFIED" },
-  { label: "Từ chối", value: "REJECTED" },
+  { label: "Mới tiếp nhận", value: "NEW" },
+  { label: "Đang chăm sóc", value: "CONTACTED" },
+  { label: "Chốt thành công", value: "QUALIFIED" },
+  { label: "Dừng chăm sóc", value: "REJECTED" },
 ];
 
 export const MATCH_STATUS_OPTIONS: Array<{
   label: string;
   value: ListingMatchStatus;
 }> = [
-  { label: "Ứng viên", value: "CANDIDATE" },
-  { label: "Đã ghép", value: "MATCHED" },
-  { label: "Từ chối", value: "REJECTED" },
+  { label: "Đề xuất mới", value: "SUGGESTED" },
+  { label: "Đã xác nhận phù hợp", value: "QUALIFIED" },
+  { label: "Đang đàm phán", value: "NEGOTIATING" },
+  { label: "Đã chốt đề xuất", value: "DEAL_WON" },
+  { label: "Đề xuất không hợp", value: "DEAL_LOST" },
+  { label: "Tự động hủy", value: "CANCELLED_AUTO" },
 ];
 
 export const PAYMENT_STATUS_OPTIONS: Array<{

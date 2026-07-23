@@ -60,9 +60,12 @@ export const listingMatchStatusBadgeToneMap: Record<
   ListingMatchStatus,
   BadgeTone
 > = {
-  CANDIDATE: "warning",
-  MATCHED: "success",
-  REJECTED: "danger",
+  SUGGESTED: "warning",
+  QUALIFIED: "info",
+  NEGOTIATING: "purple",
+  DEAL_WON: "success",
+  DEAL_LOST: "danger",
+  CANCELLED_AUTO: "muted",
 };
 
 export default function StatusBadge({

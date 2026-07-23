@@ -32,7 +32,7 @@ export type AdminResourceName =
   | "rent-requests"
   | "leads-property"
   | "leads-rent-request"
-  | "listing-matches"
+  | "archive"
   | "news"
   | "projects"
   | "banners"
@@ -95,8 +95,8 @@ export const adminResources: AdminResource[] = [
     list: "/leads/property",
     show: "/leads/property/show/:id",
     meta: {
-      label: "Lead cho thuê",
-      shortLabel: "Lead cho thuê",
+      label: "Liên hệ cho thuê",
+      shortLabel: "Liên hệ cho thuê",
       group: "for-rent",
       icon: <TeamOutlined />,
       usable: true,
@@ -121,22 +121,22 @@ export const adminResources: AdminResource[] = [
     list: "/leads/rent-request",
     show: "/leads/rent-request/show/:id",
     meta: {
-      label: "Lead cần thuê",
-      shortLabel: "Lead cần thuê",
+      label: "Liên hệ cần thuê",
+      shortLabel: "Liên hệ cần thuê",
       group: "rent-request",
       icon: <UserOutlined />,
       usable: true,
     },
   },
   {
-    name: "listing-matches",
-    list: "/matches",
-    show: "/matches/show/:id",
+    name: "archive",
+    list: "/archive",
+    show: "/archive/show/:id",
     meta: {
-      label: "Kết nối",
-      shortLabel: "Kết nối",
+      label: "Lưu trữ",
+      shortLabel: "Lưu trữ",
       group: "connections",
-      icon: <FlagOutlined />,
+      icon: <ReadOutlined />,
       usable: true,
     },
   },
@@ -333,9 +333,9 @@ export const menuGroups: Array<{
   },
   {
     key: "connections",
-    label: "Quản lý kết nối",
+    label: "Xử lý hồ sơ",
     icon: <FlagOutlined />,
-    items: ["listing-matches"],
+    items: ["archive"],
   },
   {
     key: "content",

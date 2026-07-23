@@ -23,6 +23,41 @@ export async function promoteMatchAction(matchId: number, leadId: number) {
   return listingMatchService.promote(matchId, leadId);
 }
 
+export async function qualifySentLeadProposalAction(
+  leadId: number,
+  proposalId: number,
+) {
+  return leadService.qualifyMySentLeadProposal(leadId, proposalId);
+}
+
+export async function negotiateSentLeadProposalAction(
+  leadId: number,
+  proposalId: number,
+) {
+  return leadService.negotiateMySentLeadProposal(leadId, proposalId);
+}
+
+export async function rejectSentLeadProposalAction(
+  leadId: number,
+  proposalId: number,
+) {
+  return leadService.rejectMySentLeadProposal(leadId, proposalId);
+}
+
+export async function revertSentLeadProposalToSuggestedAction(
+  leadId: number,
+  proposalId: number,
+) {
+  return leadService.revertMySentLeadProposalToSuggested(leadId, proposalId);
+}
+
+export async function revertSentLeadProposalToQualifiedAction(
+  leadId: number,
+  proposalId: number,
+) {
+  return leadService.revertMySentLeadProposalToQualified(leadId, proposalId);
+}
+
 export async function rejectMatchAction(matchId: number) {
   return listingMatchService.reject(matchId);
 }

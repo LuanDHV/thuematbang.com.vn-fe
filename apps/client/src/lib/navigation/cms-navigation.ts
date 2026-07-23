@@ -2,6 +2,7 @@ import {
   ClipboardList,
   Heart,
   House,
+  LayoutPanelTop,
   LockKeyholeOpen,
   Signpost,
   type LucideIcon,
@@ -26,6 +27,11 @@ export function buildCmsHomeNavItem(): CmsNavItem {
 
 export function buildUserCmsNavItems(hasPassword: boolean): CmsNavItem[] {
   return [
+    {
+      href: "/quan-li-tai-khoan/lien-he-da-gui",
+      label: "Liên hệ đã gửi",
+      icon: LayoutPanelTop,
+    },
     {
       href: "/quan-li-tai-khoan/chinh-sua-thong-tin",
       label: "Hồ sơ cá nhân",

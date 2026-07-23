@@ -30,9 +30,23 @@ export type LeadUpsertPayload = {
   userId?: number | null;
   propertyId?: number | null;
   rentRequestId?: number | null;
+  note?: string | null;
+  completedAt?: string | null;
+  winningMatchId?: number | null;
+  closureReason?: string | null;
+  closureReasonDetail?: string | null;
+  closureNote?: string | null;
   // Counterpart selection
   selectedRentRequestIds?: number[];
   selectedPropertyIds?: number[];
+};
+
+export type MarketplaceCaseType = "PROPERTY" | "RENT_REQUEST";
+
+export type MarketplaceCaseListParams = {
+  type: MarketplaceCaseType;
+  page?: number;
+  limit?: number;
 };
 
 export const leadService = {
@@ -111,6 +125,120 @@ export const leadService = {
       method: "DELETE",
       auth: "required",
     });
+    return response.data;
+  },
+
+  getMyMarketplaceCases: async (params: MarketplaceCaseListParams) =>
+    requestServerApi<Lead[]>(
+      buildListPath("/users/me/marketplace-cases", {
+        page: params.page,
+        limit: params.limit,
+        filters: {
+          type: params.type,
+        },
+      }),
+      {
+        auth: "required",
+        cache: "no-store",
+        tags: ["marketplace-cases", params.type],
+      },
+    ),
+
+  getMyMarketplaceCaseById: async (id: number) => {
+    const response = await requestServerApi<Lead>(
+      `/users/me/marketplace-cases/${id}`,
+      {
+        auth: "required",
+        cache: "no-store",
+        tags: ["marketplace-case-detail", String(id)],
+      },
+    );
+    return response.data;
+  },
+
+  getMySentLeads: async (params: MarketplaceCaseListParams) =>
+    requestServerApi<Lead[]>(
+      buildListPath("/users/me/sent-leads", {
+        page: params.page,
+        limit: params.limit,
+        filters: {
+          type: params.type,
+        },
+      }),
+      {
+        auth: "required",
+        cache: "no-store",
+        tags: ["sent-leads", params.type],
+      },
+    ),
+
+  getMySentLeadById: async (id: number) => {
+    const response = await requestServerApi<Lead>(`/users/me/sent-leads/${id}`, {
+      auth: "required",
+      cache: "no-store",
+      tags: ["sent-lead-detail", String(id)],
+    });
+    return response.data;
+  },
+
+  qualifyMySentLeadProposal: async (leadId: number, proposalId: number) => {
+    const response = await requestServerApi(
+      `/users/me/sent-leads/${leadId}/proposals/${proposalId}/qualify`,
+      {
+        method: "POST",
+        auth: "required",
+      },
+    );
+    return response.data;
+  },
+
+  negotiateMySentLeadProposal: async (leadId: number, proposalId: number) => {
+    const response = await requestServerApi(
+      `/users/me/sent-leads/${leadId}/proposals/${proposalId}/negotiate`,
+      {
+        method: "POST",
+        auth: "required",
+      },
+    );
+    return response.data;
+  },
+
+  rejectMySentLeadProposal: async (leadId: number, proposalId: number) => {
+    const response = await requestServerApi(
+      `/users/me/sent-leads/${leadId}/proposals/${proposalId}/reject`,
+      {
+        method: "POST",
+        auth: "required",
+      },
+    );
+    return response.data;
+  },
+
+  revertMySentLeadProposalToSuggested: async (
+    leadId: number,
+    proposalId: number,
+  ) => {
+    const response = await requestServerApi(
+      `/users/me/sent-leads/${leadId}/proposals/${proposalId}/revert-suggested`,
+      {
+        method: "POST",
+        auth: "required",
+      },
+    );
+    return response.data;
+  },
+
+  revertMySentLeadProposalToQualified: async (
+    leadId: number,
+    proposalId: number,
+  ) => {
+    const response = await requestServerApi(
+      `/users/me/sent-leads/${leadId}/proposals/${proposalId}/revert-qualified`,
+      {
+        method: "POST",
+        auth: "required",
+      },
+    );
     return response.data;
   },
 };

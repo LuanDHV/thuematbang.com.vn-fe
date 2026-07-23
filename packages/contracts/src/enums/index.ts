@@ -49,9 +49,12 @@ export type PurchaseType =
 export type OrderStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELED";
 
 export type ListingMatchStatus =
-  | "CANDIDATE"
-  | "MATCHED"
-  | "REJECTED";
+  | "SUGGESTED"
+  | "QUALIFIED"
+  | "NEGOTIATING"
+  | "DEAL_WON"
+  | "DEAL_LOST"
+  | "CANCELLED_AUTO";
 
 export type PublishSource = "FREE_QUOTA" | "PAID_PACKAGE";
 

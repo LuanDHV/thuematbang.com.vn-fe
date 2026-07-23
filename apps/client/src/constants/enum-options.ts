@@ -129,10 +129,10 @@ export const CATEGORY_TYPE_OPTIONS: EnumOption<CategoryType>[] =
 export const LEAD_STATUS_OPTIONS: EnumOption<LeadStatus>[] =
   LEAD_STATUS_VALUES.map((value) => {
     const labels: Record<LeadStatus, string> = {
-      NEW: "Mới",
-      CONTACTED: "Đã liên hệ",
-      QUALIFIED: "Đã phù hợp",
-      REJECTED: "Từ chối",
+      NEW: "Mới tiếp nhận",
+      CONTACTED: "Đang chăm sóc",
+      QUALIFIED: "Chốt thành công",
+      REJECTED: "Dừng chăm sóc",
     };
 
     return { value, label: labels[value] };
@@ -141,9 +141,12 @@ export const LEAD_STATUS_OPTIONS: EnumOption<LeadStatus>[] =
 export const LISTING_MATCH_STATUS_OPTIONS: EnumOption<ListingMatchStatus>[] =
   LISTING_MATCH_STATUS_VALUES.map((value) => {
     const labels: Record<ListingMatchStatus, string> = {
-      CANDIDATE: "Đề xuất ghép",
-      MATCHED: "Đã ghép",
-      REJECTED: "Từ chối",
+      SUGGESTED: "Đề xuất mới",
+      QUALIFIED: "Đã xác nhận phù hợp",
+      NEGOTIATING: "Đang đàm phán",
+      DEAL_WON: "Đã chốt đề xuất",
+      DEAL_LOST: "Đề xuất không hợp",
+      CANCELLED_AUTO: "Tự động hủy",
     };
 
     return { value, label: labels[value] };

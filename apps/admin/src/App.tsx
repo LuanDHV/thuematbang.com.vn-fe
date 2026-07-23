@@ -29,8 +29,7 @@ import { LeadsPropertyList } from "./pages/leads/property-list";
 import { LeadsRentRequestList } from "./pages/leads/rent-request-list";
 import { LeadsShow } from "./pages/leads/show";
 
-import { MatchesList } from "./pages/matches/list";
-import { MatchesShow } from "./pages/matches/show";
+import { ArchiveList } from "./pages/archive/list";
 
 import { UsersList } from "./pages/users/list";
 import { UsersShow } from "./pages/users/show";
@@ -132,8 +131,10 @@ function RefineInner() {
             element={<LeadsRentRequestList />}
           />
           <Route path="/leads/rent-request/show/:id" element={<LeadsShow />} />
-          <Route path="/matches" element={<MatchesList />} />
-          <Route path="/matches/show/:id" element={<MatchesShow />} />
+          <Route path="/matches" element={<Navigate to="/" replace />} />
+          <Route path="/matches/show/:id" element={<Navigate to="/" replace />} />
+          <Route path="/archive" element={<ArchiveList />} />
+          <Route path="/archive/show/:id" element={<LeadsShow />} />
           <Route path="/users" element={<UsersList />} />
           <Route path="/users/show/:id" element={<UsersShow />} />
           <Route path="/users/edit/:id" element={<UsersEdit />} />

@@ -106,6 +106,7 @@ type DashboardSummary = {
     pendingProperties: DashboardQueueItem[];
     pendingRentRequests: DashboardQueueItem[];
     newLeads: DashboardQueueItem[];
+    pendingProposals: DashboardQueueItem[];
     pendingPayments: DashboardQueueItem[];
   };
 };
@@ -195,9 +196,9 @@ function toBusinessRows(summary?: DashboardSummary) {
   return summary.charts.businessByDay.flatMap((row) => [
     { date: row.date, type: "Tin cho thuê", value: row.properties },
     { date: row.date, type: "Nhu cầu thuê", value: row.rentRequests },
-    { date: row.date, type: "Lead", value: row.leads },
+    { date: row.date, type: "Hồ sơ", value: row.leads },
     { date: row.date, type: "User", value: row.users },
-    { date: row.date, type: "Match", value: row.matches },
+    { date: row.date, type: "Đề xuất", value: row.matches },
   ]);
 }
 
@@ -566,7 +567,7 @@ function QueueList({
 
 function QueueTabs({ summary }: { summary: DashboardSummary }) {
   const { queues } = summary;
-  const summaryText = `${queues.pendingProperties.length} tin cho thuê · ${queues.pendingRentRequests.length} tin cần thuê · ${queues.newLeads.length} lead · ${queues.pendingPayments.length} thanh toán`;
+  const summaryText = `${queues.pendingProperties.length} tin cho thuê · ${queues.pendingRentRequests.length} tin cần thuê · ${queues.newLeads.length} hồ sơ · ${queues.pendingProposals.length} đề xuất · ${queues.pendingPayments.length} thanh toán`;
 
   return (
     <Card
@@ -597,9 +598,19 @@ function QueueTabs({ summary }: { summary: DashboardSummary }) {
           },
           {
             key: "leads",
-            label: `Lead mới (${queues.newLeads.length})`,
+            label: `Hồ sơ mới (${queues.newLeads.length})`,
             children: (
-              <QueueList items={queues.newLeads} emptyText="Không có lead mới" />
+              <QueueList items={queues.newLeads} emptyText="Không có hồ sơ mới" />
+            ),
+          },
+          {
+            key: "proposals",
+            label: `Đề xuất chờ duyệt (${queues.pendingProposals.length})`,
+            children: (
+              <QueueList
+                items={queues.pendingProposals}
+                emptyText="Không có đề xuất chờ duyệt"
+              />
             ),
           },
           {
@@ -828,10 +839,6 @@ export const DashboardPage: React.FC = () => {
         },
       ]
     : [];
-  const pendingTotal = data
-    ? data.business.properties.pending + data.business.rentRequests.pending
-    : 0;
-
   return (
     <div className="admin-stack">
       <div className="admin-page-header admin-page-header-surface admin-panel">
@@ -949,7 +956,7 @@ export const DashboardPage: React.FC = () => {
             </Col>
             <Col xs={24} sm={12} xl={6}>
               <KpiCard
-                title="Lead mới"
+                title="Hồ sơ mới"
                 value={data.business.connections.leads}
                 source="DB"
                 prefix={<SwapOutlined />}
@@ -957,8 +964,8 @@ export const DashboardPage: React.FC = () => {
             </Col>
             <Col xs={24} sm={12} xl={6}>
               <KpiCard
-                title="Tin chờ duyệt"
-                value={pendingTotal}
+                title="Đề xuất chờ duyệt"
+                value={data.queues.pendingProposals.length}
                 source="DB"
                 prefix={<ClockCircleOutlined />}
               />

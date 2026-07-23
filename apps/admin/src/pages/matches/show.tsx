@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useShow } from "@refinedev/core";
-import {
-  Button,
-  Modal,
-  Typography,
-  message,
-} from "antd";
+import { Button, Space, Tag, Typography, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import { AdminDetailLayout } from "../../components/admin/page/AdminDetailLayout";
@@ -16,206 +11,190 @@ import { formatMetaDate } from "../../lib/admin/utils/format";
 
 const { Text, Title } = Typography;
 
+function approvalTag(status: string) {
+  if (status === "PENDING") return <Tag color="gold">Chờ duyệt</Tag>;
+  if (status === "APPROVED") return <Tag color="blue">Đã duyệt</Tag>;
+  if (status === "REJECTED") return <Tag color="red">Từ chối</Tag>;
+  return <Tag>{status}</Tag>;
+}
+
 export const MatchesShow: React.FC = () => {
   const navigate = useNavigate();
   const { query } = useShow();
   const record = query?.data?.data as Record<string, unknown> | undefined;
-  const [loading, setLoading] = useState("");
-  const [currentStatus, setCurrentStatus] = useState("CANDIDATE");
+  const [actionLoading, setActionLoading] = useState("");
+  const [approvalStatus, setApprovalStatus] = useState("PENDING");
 
   useEffect(() => {
-    setCurrentStatus(String(record?.status ?? "CANDIDATE"));
-  }, [record?.status]);
+    setApprovalStatus(String(record?.approvalStatus ?? "PENDING"));
+  }, [record?.approvalStatus]);
 
   if (!record) return null;
 
-  const matchId = record.id as number;
-  const status = currentStatus;
-  const prop = record.property as Record<string, unknown> | undefined;
-  const rentReq = record.rentRequest as Record<string, unknown> | undefined;
-  const counterpartIsMatched =
-    Boolean(rentReq?.isMatched) || Boolean(prop?.isMatched);
+  const property = record.property as Record<string, unknown> | undefined;
+  const rentRequest = record.rentRequest as Record<string, unknown> | undefined;
+  const lead = record.lead as Record<string, unknown> | undefined;
+  const caseHref = lead?.id
+    ? property
+      ? `/leads/property/show/${lead.id}`
+      : `/leads/rent-request/show/${lead.id}`
+    : null;
 
-  const handlePromote = async () => {
-    if (counterpartIsMatched) {
-      message.warning("Tin này đã được ghép ở lead khác.");
-      return;
-    }
-    setLoading("promote");
+  const handleApprove = async () => {
+    setActionLoading("approve");
     try {
-      await axiosInstance.post(`/listing-matches/${matchId}/promote`, {
-        leadId: record.leadId,
-      });
-      message.success("Đã xác nhận phù hợp.");
-      setCurrentStatus("MATCHED");
+      await axiosInstance.post(`/listing-matches/${record.id}/approve`, {});
+      setApprovalStatus("APPROVED");
+      message.success("Đã duyệt đề xuất.");
       await query?.refetch?.();
     } catch {
-      message.error("Không thể xác nhận phù hợp.");
+      message.error("Không thể duyệt đề xuất.");
     } finally {
-      setLoading("");
+      setActionLoading("");
     }
   };
 
   const handleReject = async () => {
-    setLoading("reject");
+    setActionLoading("reject");
     try {
-      await axiosInstance.post(`/listing-matches/${matchId}/reject`);
-      message.success("Đã từ chối.");
-      setCurrentStatus("REJECTED");
+      await axiosInstance.post(`/listing-matches/${record.id}/reject-approval`, {});
+      setApprovalStatus("REJECTED");
+      message.success("Đã từ chối đề xuất.");
       await query?.refetch?.();
     } catch {
-      message.error("Không thể từ chối.");
+      message.error("Không thể từ chối đề xuất.");
     } finally {
-      setLoading("");
+      setActionLoading("");
     }
   };
 
-  const handleUnmatch = () => {
-    Modal.confirm({
-      title: "Hủy ghép đề xuất này?",
-      content:
-        "Tin cho thuê và tin cần thuê sẽ được bỏ ghép. Lead sẽ quay về trạng thái chờ xử lý.",
-      okText: "Xác nhận hủy ghép",
-      cancelText: "Hủy",
-      onOk: async () => {
-        try {
-          await axiosInstance.post(`/listing-matches/${matchId}/unmatch`);
-          message.success("Đã hủy ghép.");
-          setCurrentStatus("CANDIDATE");
-          await query?.refetch?.();
-        } catch {
-          message.error("Không thể hủy ghép.");
-        }
-      },
-    });
-  };
-
-  const handleRemove = () => {
-    Modal.confirm({
-      title: "Xóa đề xuất này?",
-      content: `Đề xuất ID ${matchId} sẽ bị xóa khỏi danh sách. Hành động này không thể hoàn tác.`,
-      okText: "Xác nhận xóa",
-      okButtonProps: { danger: true },
-      cancelText: "Hủy",
-      onOk: async () => {
-        try {
-          await axiosInstance.delete(`/listing-matches/${matchId}`);
-          message.success("Đã xóa.");
-          navigate(-1);
-        } catch {
-          message.error("Không thể xóa.");
-        }
-      },
-    });
+  const handleRevertApproval = async () => {
+    setActionLoading("revert");
+    try {
+      await axiosInstance.post(`/listing-matches/${record.id}/revert-approval`, {});
+      setApprovalStatus("PENDING");
+      message.success("Đã hoàn tác về hàng chờ duyệt.");
+      await query?.refetch?.();
+    } catch {
+      message.error("Không thể hoàn tác duyệt.");
+    } finally {
+      setActionLoading("");
+    }
   };
 
   return (
     <AdminDetailLayout>
       <Title className="admin-show-heading" level={4}>
-        {String(prop?.title ?? rentReq?.title ?? "Đề xuất ghép")}
+        Đề xuất #{String(record.id)}
       </Title>
 
       <AdminFormSection
-        title="Thông tin ghép"
-        description="Chi tiết kết nối giữa tin cho thuê và tin cần thuê."
+        title="Tổng quan đề xuất"
+        description="Theo dõi trạng thái duyệt trước khi đề xuất được public sang phía còn lại."
       >
-        <div className="admin-workflow-title-row">
-          <StatusBadge status={status} type="match" />
-          {counterpartIsMatched && status === "CANDIDATE" ? (
-            <span className="admin-warning-badge">Đã ghép nơi khác</span>
-          ) : null}
+        <div className="admin-workflow-summary">
+          <div>
+            <div className="admin-workflow-title-row">
+              <div className="admin-entity-copy">
+                <div className="admin-entity-title">
+                  {String(property?.title ?? "-")}
+                </div>
+                <span className="admin-entity-subtitle">
+                  {String(rentRequest?.title ?? "-")}
+                </span>
+              </div>
+              <Space size={8}>
+                {approvalTag(approvalStatus)}
+                <StatusBadge status={String(record.status ?? "SUGGESTED")} type="match" />
+              </Space>
+            </div>
+            <div className="admin-workflow-meta">
+              <div className="admin-meta-item">
+                <span className="admin-meta-label">Nguồn tạo</span>
+                <span className="admin-meta-value">
+                  {String(record.origin ?? "-") === "USER_SUBMISSION"
+                    ? "User gửi"
+                    : "Admin tạo"}
+                </span>
+              </div>
+              <div className="admin-meta-item">
+                <span className="admin-meta-label">Ngày tạo</span>
+                <span className="admin-meta-value">
+                  {formatMetaDate(record.createdAt as string | undefined)}
+                </span>
+              </div>
+              <div className="admin-meta-item">
+                <span className="admin-meta-label">Duyệt lúc</span>
+                <span className="admin-meta-value">
+                  {formatMetaDate(record.approvalReviewedAt as string | undefined)}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <Text type="secondary">Xử lý nhanh</Text>
+            <div className="admin-action-group" style={{ marginTop: 12 }}>
+              {approvalStatus === "PENDING" ? (
+                <>
+                  <Button
+                    type="primary"
+                    loading={actionLoading === "approve"}
+                    onClick={() => {
+                      void handleApprove();
+                    }}
+                  >
+                    Duyệt
+                  </Button>
+                  <Button
+                    danger
+                    loading={actionLoading === "reject"}
+                    onClick={() => {
+                      void handleReject();
+                    }}
+                  >
+                    Từ chối
+                  </Button>
+                </>
+              ) : null}
+              {approvalStatus !== "PENDING" && String(record.status ?? "SUGGESTED") === "SUGGESTED" ? (
+                <Button
+                  loading={actionLoading === "revert"}
+                  onClick={() => {
+                    void handleRevertApproval();
+                  }}
+                >
+                  Hoàn tác duyệt
+                </Button>
+              ) : null}
+              {caseHref ? (
+                <Button onClick={() => navigate(caseHref)}>Mở hồ sơ</Button>
+              ) : null}
+            </div>
+          </div>
         </div>
+      </AdminFormSection>
 
-        <div className="admin-match-pair">
-          <div className="admin-match-side">
+      <AdminFormSection title="Thông tin liên quan" description="Dữ liệu hiển thị cho admin trước khi quyết định public đề xuất.">
+        <div className="admin-stack">
+          <div className="admin-entity-copy">
             <Text type="secondary">Tin cho thuê</Text>
-            <div className="admin-entity-copy">
-              <div className="admin-entity-title">
-                {String(prop?.title ?? "-")}
-              </div>
-              <span className="admin-entity-subtitle">
-                {`ID #${String(prop?.id ?? "-")} · ${String(
-                  prop?.contactName ?? "-"
-                )} · ${String(prop?.contactPhone ?? "-")}`}
-              </span>
-            </div>
+            <div className="admin-entity-title">{String(property?.title ?? "-")}</div>
+            <span className="admin-entity-subtitle">
+              {String(property?.displayCode ?? property?.id ?? "-")}
+            </span>
           </div>
-          <div className="admin-match-connector">&lt;-&gt;</div>
-          <div className="admin-match-side">
+          <div className="admin-entity-copy">
             <Text type="secondary">Tin cần thuê</Text>
-            <div className="admin-entity-copy">
-              <div className="admin-entity-title">
-                {String(rentReq?.title ?? "-")}
-              </div>
-              <span className="admin-entity-subtitle">
-                {`ID #${String(rentReq?.id ?? "-")} · ${String(
-                  rentReq?.contactName ?? "-"
-                )} · ${String(rentReq?.contactPhone ?? "-")}`}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="admin-workflow-meta" style={{ marginTop: 14 }}>
-          <div className="admin-meta-item">
-            <span className="admin-meta-label">Lead</span>
-            <span className="admin-meta-value">
-              {String(
-                (record.lead as Record<string, unknown> | undefined)?.fullName ??
-                  "-"
-              )}
+            <div className="admin-entity-title">{String(rentRequest?.title ?? "-")}</div>
+            <span className="admin-entity-subtitle">
+              {String(rentRequest?.displayCode ?? rentRequest?.id ?? "-")}
             </span>
           </div>
-          <div className="admin-meta-item">
-            <span className="admin-meta-label">Ghép lúc</span>
-            <span className="admin-meta-value">
-              {formatMetaDate(record.matchedAt as string | undefined)}
-            </span>
+          <div className="admin-entity-copy">
+            <Text type="secondary">Hồ sơ</Text>
+            <div className="admin-entity-title">{String(lead?.fullName ?? "-")}</div>
+            <span className="admin-entity-subtitle">{String(lead?.phone ?? "-")}</span>
           </div>
-          <div className="admin-meta-item">
-            <span className="admin-meta-label">Ngày tạo</span>
-            <span className="admin-meta-value">
-              {formatMetaDate(record.createdAt as string | undefined)}
-            </span>
-          </div>
-        </div>
-
-        <div className="admin-action-group" style={{ marginTop: 16 }}>
-          {status === "CANDIDATE" && (
-            <>
-              <Button
-                type="primary"
-                disabled={!!counterpartIsMatched}
-                loading={loading === "promote"}
-                onClick={() => {
-                  void handlePromote();
-                }}
-              >
-                Phù hợp
-              </Button>
-              <Button
-                loading={loading === "reject"}
-                onClick={() => {
-                  void handleReject();
-                }}
-              >
-                Không phù hợp
-              </Button>
-              <Button danger onClick={handleRemove}>
-                Xóa
-              </Button>
-            </>
-          )}
-          {status === "MATCHED" && (
-            <Button onClick={handleUnmatch}>
-              Hủy ghép
-            </Button>
-          )}
-          {status === "REJECTED" && (
-            <Button danger onClick={handleRemove}>
-              Xóa
-            </Button>
-          )}
         </div>
       </AdminFormSection>
     </AdminDetailLayout>

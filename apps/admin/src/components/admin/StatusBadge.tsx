@@ -8,7 +8,13 @@ import type {
 import { Tag } from "antd";
 
 type StatusKind = "listing" | "content" | "lead" | "payment" | "match";
-type StatusTone = "success" | "pending" | "info" | "danger" | "neutral" | "warning";
+type StatusTone =
+  | "success"
+  | "pending"
+  | "info"
+  | "danger"
+  | "neutral"
+  | "warning";
 
 type Props = {
   status:
@@ -28,20 +34,35 @@ const STATUS_META: Record<string, { tone: StatusTone; label: string }> = {
   PUBLISHED: { tone: "success", label: "Đã đăng" },
   REJECTED: { tone: "danger", label: "Từ chối" },
   ARCHIVED: { tone: "neutral", label: "Đã ẩn" },
-  NEW: { tone: "pending", label: "Mới" },
-  CONTACTED: { tone: "info", label: "Đã liên hệ" },
-  QUALIFIED: { tone: "success", label: "Đạt chuẩn" },
+  NEW: { tone: "pending", label: "Mới tiếp nhận" },
+  CONTACTED: { tone: "info", label: "Đang chăm sóc" },
+  QUALIFIED: { tone: "success", label: "Chốt thành công" },
+  REJECTED_LEAD: { tone: "danger", label: "Dừng chăm sóc" },
   SUCCESS: { tone: "success", label: "Thành công" },
   FAILED: { tone: "danger", label: "Thất bại" },
   CANCELED: { tone: "neutral", label: "Đã hủy" },
-  CANDIDATE: { tone: "pending", label: "Ứng viên" },
-  MATCHED: { tone: "success", label: "Đã ghép" },
+  SUGGESTED: { tone: "pending", label: "Đề xuất mới" },
+  QUALIFIED_PROPOSAL: { tone: "info", label: "Đã xác nhận phù hợp" },
+  NEGOTIATING: { tone: "warning", label: "Đang đàm phán" },
+  DEAL_WON: { tone: "success", label: "Đã chốt đề xuất" },
+  DEAL_LOST: { tone: "danger", label: "Đề xuất không hợp" },
+  CANCELLED_AUTO: { tone: "neutral", label: "Tự động hủy" },
   ACTIVE: { tone: "success", label: "Đang dùng" },
   EXPIRED: { tone: "neutral", label: "Hết hạn" },
+  APPROVED: { tone: "info", label: "Đã duyệt" },
+  PENDING_APPROVAL: { tone: "warning", label: "Chờ duyệt" },
+  REJECTED_APPROVAL: { tone: "danger", label: "Từ chối" },
 };
 
-export function AdminStatusBadge({ status }: Props) {
-  const meta = STATUS_META[status] ?? {
+export function AdminStatusBadge({ status, kind, type }: Props) {
+  const resolvedKind = kind ?? type;
+  const resolvedStatus =
+    resolvedKind === "lead" && status === "REJECTED"
+      ? "REJECTED_LEAD"
+      : resolvedKind === "match" && status === "QUALIFIED"
+        ? "QUALIFIED_PROPOSAL"
+        : status;
+  const meta = STATUS_META[resolvedStatus] ?? {
     tone: "neutral" as const,
     label: String(status),
   };

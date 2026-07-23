@@ -7,6 +7,8 @@ import {
   Input,
   Modal,
   Select,
+  Space,
+  Tag,
   Table,
   Typography,
   message,
@@ -27,8 +29,16 @@ const { Text, Title } = Typography;
 function unwrapArray<T>(payload: unknown): T[] {
   if (Array.isArray(payload)) return payload as T[];
   if (payload && typeof payload === "object") {
+    const maybeItems = (payload as Record<string, unknown>).items;
+    if (Array.isArray(maybeItems)) return maybeItems as T[];
     const maybeData = (payload as Record<string, unknown>).data;
     if (Array.isArray(maybeData)) return maybeData as T[];
+    if (maybeData && typeof maybeData === "object") {
+      const nestedItems = (maybeData as Record<string, unknown>).items;
+      if (Array.isArray(nestedItems)) return nestedItems as T[];
+      const nestedData = (maybeData as Record<string, unknown>).data;
+      if (Array.isArray(nestedData)) return nestedData as T[];
+    }
   }
   return [];
 }
@@ -42,6 +52,10 @@ export const LeadsShow: React.FC = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [addForm] = Form.useForm();
   const [addSubmitting, setAddSubmitting] = useState(false);
+  const [counterpartOptions, setCounterpartOptions] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
+  const [counterpartSearching, setCounterpartSearching] = useState(false);
   const [matchUpdating, setMatchUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("NEW");
   const [confirmAction, setConfirmAction] = useState<{
@@ -49,6 +63,10 @@ export const LeadsShow: React.FC = () => {
     matchId: number;
   } | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [closeDialogMode, setCloseDialogMode] = useState<"won" | "lost" | null>(
+    null
+  );
+  const [closeForm] = Form.useForm();
 
   const leadId = record?.id as number | undefined;
   const { data: matchesData, refetch } = useQuery({
@@ -64,6 +82,11 @@ export const LeadsShow: React.FC = () => {
   });
 
   const matches = matchesData ?? [];
+  const isLeadClosed =
+    currentStatus === "QUALIFIED" || currentStatus === "REJECTED";
+  const winningMatch = matches.find(
+    (match) => Number(match.id) === Number(record?.winningMatchId ?? 0)
+  ) as Record<string, unknown> | undefined;
 
   const linkedSource = useMemo(() => {
     if (record?.propertyId) return "PROPERTY";
@@ -77,7 +100,18 @@ export const LeadsShow: React.FC = () => {
     statusForm.setFieldsValue({ status: nextStatus });
   }, [record?.status, statusForm]);
 
-  const activeCandidates = matches.filter((m) => m.status === "CANDIDATE");
+  const closableMatches = matches.filter(
+    (m) =>
+      m.approvalStatus === "APPROVED" &&
+      String(m.status) === "DEAL_WON"
+  );
+
+  const approvalTag = (status: string) => {
+    if (status === "PENDING") return <Tag color="gold">Chờ duyệt</Tag>;
+    if (status === "APPROVED") return <Tag color="blue">Đã duyệt</Tag>;
+    if (status === "REJECTED") return <Tag color="red">Từ chối</Tag>;
+    return <Tag>{status}</Tag>;
+  };
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["lead-matches", leadId] });
@@ -117,7 +151,7 @@ export const LeadsShow: React.FC = () => {
     );
   }
 
-  const handlePromote = async (
+  const handleQualify = async (
     matchId: number,
     counterpart: Record<string, unknown>
   ) => {
@@ -127,17 +161,14 @@ export const LeadsShow: React.FC = () => {
     }
     setMatchUpdating(true);
     try {
-      await axiosInstance.post(`/listing-matches/${matchId}/promote`, {
-        leadId,
-      });
+      await axiosInstance.post(`/listing-matches/${matchId}/qualify`);
       message.success("Đã xác nhận phù hợp.");
       syncLeadMatches((prev) =>
         prev.map((item) =>
           Number(item.id) === matchId
             ? {
                 ...item,
-                status: "MATCHED",
-                matchedAt: item.matchedAt ?? new Date().toISOString(),
+                status: "QUALIFIED",
               }
             : item
         )
@@ -151,6 +182,108 @@ export const LeadsShow: React.FC = () => {
     }
   };
 
+  const handleNegotiate = async (matchId: number) => {
+    setMatchUpdating(true);
+    try {
+      await axiosInstance.post(`/listing-matches/${matchId}/negotiate`);
+      message.success("Đã chuyển sang đàm phán.");
+      syncLeadMatches((prev) =>
+        prev.map((item) =>
+          Number(item.id) === matchId
+            ? {
+                ...item,
+                status: "NEGOTIATING",
+              }
+            : item
+        )
+      );
+      await invalidateAll();
+      await refetch();
+    } catch {
+      message.error("Không thể chuyển sang đàm phán.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
+  const handlePromote = async (matchId: number) => {
+    setMatchUpdating(true);
+    try {
+      await axiosInstance.post(`/listing-matches/${matchId}/promote`, {
+        leadId,
+      });
+      message.success("Đã chốt đề xuất.");
+      syncLeadMatches((prev) =>
+        prev.map((item) =>
+          Number(item.id) === matchId
+            ? {
+                ...item,
+                status: "DEAL_WON",
+                matchedAt: new Date().toISOString(),
+              }
+            : item
+        )
+      );
+      await query?.refetch?.();
+      await invalidateAll();
+      await refetch();
+    } catch {
+      message.error("Không thể chốt đề xuất.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
+  const handleRevertToSuggested = async (matchId: number) => {
+    setMatchUpdating(true);
+    try {
+      await axiosInstance.post(`/listing-matches/${matchId}/revert-suggested`);
+      message.success("Đã hoàn tác về đề xuất mới.");
+      syncLeadMatches((prev) =>
+        prev.map((item) =>
+          Number(item.id) === matchId
+            ? {
+                ...item,
+                status: "SUGGESTED",
+                matchedAt: null,
+              }
+            : item
+        )
+      );
+      await invalidateAll();
+      await refetch();
+    } catch {
+      message.error("Không thể hoàn tác đề xuất.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
+  const handleRevertToQualified = async (matchId: number) => {
+    setMatchUpdating(true);
+    try {
+      await axiosInstance.post(`/listing-matches/${matchId}/revert-qualified`);
+      message.success("Đã hoàn tác về đã xác nhận phù hợp.");
+      syncLeadMatches((prev) =>
+        prev.map((item) =>
+          Number(item.id) === matchId
+            ? {
+                ...item,
+                status: "QUALIFIED",
+                matchedAt: null,
+              }
+            : item
+        )
+      );
+      await invalidateAll();
+      await refetch();
+    } catch {
+      message.error("Không thể hoàn tác đàm phán.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
   const handleReject = async (matchId: number) => {
     setMatchUpdating(true);
     try {
@@ -158,13 +291,55 @@ export const LeadsShow: React.FC = () => {
       message.success("Đã từ chối.");
       syncLeadMatches((prev) =>
         prev.map((item) =>
-          Number(item.id) === matchId ? { ...item, status: "REJECTED" } : item
+          Number(item.id) === matchId ? { ...item, status: "DEAL_LOST" } : item
         )
       );
       await invalidateAll();
       await refetch();
     } catch {
       message.error("Không thể từ chối.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
+  const handleApproveProposal = async (matchId: number) => {
+    setMatchUpdating(true);
+    try {
+      await axiosInstance.post(`/listing-matches/${matchId}/approve`);
+      message.success("Đã duyệt đề xuất.");
+      await invalidateAll();
+      await refetch();
+    } catch {
+      message.error("Không thể duyệt đề xuất.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
+  const handleRejectProposal = async (matchId: number) => {
+    setMatchUpdating(true);
+    try {
+      await axiosInstance.post(`/listing-matches/${matchId}/reject-approval`);
+      message.success("Đã từ chối đề xuất.");
+      await invalidateAll();
+      await refetch();
+    } catch {
+      message.error("Không thể từ chối đề xuất.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
+  const handleRevertApproval = async (matchId: number) => {
+    setMatchUpdating(true);
+    try {
+      await axiosInstance.post(`/listing-matches/${matchId}/revert-approval`);
+      message.success("Đã hoàn tác về hàng chờ duyệt.");
+      await invalidateAll();
+      await refetch();
+    } catch {
+      message.error("Không thể hoàn tác duyệt.");
     } finally {
       setMatchUpdating(false);
     }
@@ -189,7 +364,7 @@ export const LeadsShow: React.FC = () => {
         syncLeadMatches((prev) =>
           prev.map((item) =>
             Number(item.id) === confirmAction.matchId
-              ? { ...item, status: "CANDIDATE" }
+              ? { ...item, status: "NEGOTIATING" }
               : item
           )
         );
@@ -214,14 +389,79 @@ export const LeadsShow: React.FC = () => {
     }
   };
 
+  const handleCloseCase = async () => {
+    if (!closeDialogMode) return;
+
+    try {
+      const values = await closeForm.validateFields();
+      setMatchUpdating(true);
+      await axiosInstance.patch(`/leads/${leadId}`, {
+        status: closeDialogMode === "won" ? "QUALIFIED" : "REJECTED",
+        completedAt: values.completedAt,
+        winningMatchId: closeDialogMode === "won" ? Number(values.winningMatchId) : null,
+        closureReason: closeDialogMode === "lost" ? values.closureReason : undefined,
+        closureReasonDetail:
+          closeDialogMode === "lost" ? values.closureReasonDetail : undefined,
+        closureNote: values.closureNote,
+      });
+      message.success(
+        closeDialogMode === "won"
+          ? "Đã đóng hồ sơ thành công."
+          : "Đã dừng chăm sóc hồ sơ."
+      );
+      setCloseDialogMode(null);
+      closeForm.resetFields();
+      await query?.refetch?.();
+      await invalidateAll();
+      await refetch();
+    } catch (error) {
+      if (error && typeof error === "object" && "errorFields" in error) return;
+      message.error("Không thể đóng hồ sơ.");
+    } finally {
+      setMatchUpdating(false);
+    }
+  };
+
+  const fetchCounterpartOptions = async (keyword?: string) => {
+    if (!linkedSource) return;
+
+    setCounterpartSearching(true);
+    try {
+      const endpoint =
+        linkedSource === "PROPERTY" ? "/rent-requests" : "/properties";
+      const { data } = await axiosInstance.get(endpoint, {
+        params: {
+          q: keyword?.trim() || undefined,
+          status: "PUBLISHED",
+          page: 1,
+          limit: 10,
+          sortBy: "displayCode",
+          sortOrder: "desc",
+        },
+      });
+
+      const items = unwrapArray<Record<string, unknown>>(data);
+      setCounterpartOptions(
+        items.map((item) => ({
+          value: String(item.id),
+          label: `${String(item.displayCode ?? `#${item.id}`)} · ${String(
+            item.title ?? "-"
+          )}`,
+        }))
+      );
+    } catch {
+      setCounterpartOptions([]);
+    } finally {
+      setCounterpartSearching(false);
+    }
+  };
+
   const handleAddCandidate = async () => {
     try {
       const values = await addForm.validateFields();
-      const counterpartId = values.counterpartId
-        ? Number(values.counterpartId)
-        : null;
+      const counterpartId = values.counterpartId ? Number(values.counterpartId) : null;
       if (!counterpartId || counterpartId <= 0) {
-        message.warning("Vui lòng nhập ID hợp lệ.");
+        message.warning("Vui lòng chọn đề xuất hợp lệ.");
         return;
       }
 
@@ -272,6 +512,12 @@ export const LeadsShow: React.FC = () => {
       : linkedSource === "RENT_REQUEST"
       ? "Tin cần thuê gốc"
       : "Nguồn gốc";
+  const winningCounterpart =
+    winningMatch && linkedSource === "PROPERTY"
+      ? (winningMatch.rentRequest as Record<string, unknown> | undefined)
+      : winningMatch
+        ? (winningMatch.property as Record<string, unknown> | undefined)
+        : undefined;
 
   return (
     <>
@@ -324,7 +570,61 @@ export const LeadsShow: React.FC = () => {
                     {formatMetaDate(record.updatedAt as string | undefined)}
                   </span>
                 </div>
+                {isLeadClosed ? (
+                  <div className="admin-meta-item">
+                    <span className="admin-meta-label">Ngày hoàn tất</span>
+                    <span className="admin-meta-value">
+                      {formatMetaDate(record.completedAt as string | undefined)}
+                    </span>
+                  </div>
+                ) : null}
               </div>
+
+              {isLeadClosed ? (
+                <div style={{ marginTop: 14, display: "grid", gap: 8 }}>
+                  <div className="admin-meta-item">
+                    <span className="admin-meta-label">Kết quả cuối</span>
+                    <span className="admin-meta-value">
+                      {currentStatus === "QUALIFIED"
+                        ? "Đóng thành công"
+                        : "Dừng chăm sóc"}
+                    </span>
+                  </div>
+                  {currentStatus === "QUALIFIED" ? (
+                    <div className="admin-meta-item">
+                      <span className="admin-meta-label">Đề xuất thắng</span>
+                      <span className="admin-meta-value">
+                        {winningCounterpart
+                          ? `${String(
+                              winningCounterpart.displayCode ?? "-"
+                            )} · ${String(winningCounterpart.title ?? "Đề xuất")}`
+                          : record.winningMatchId
+                            ? `Đề xuất #${String(record.winningMatchId)}`
+                            : "-"}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="admin-meta-item">
+                      <span className="admin-meta-label">Lý do thất bại</span>
+                      <span className="admin-meta-value">
+                        {String(
+                          record.closureReasonDetail ??
+                            record.closureReason ??
+                            "-"
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {record.closureNote ? (
+                    <div className="admin-meta-item">
+                      <span className="admin-meta-label">Ghi chú</span>
+                      <span className="admin-meta-value">
+                        {String(record.closureNote)}
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
 
               {sourceRecord ? (
                 <button
@@ -348,30 +648,41 @@ export const LeadsShow: React.FC = () => {
             </div>
 
             <div>
-              <Text type="secondary">Điều phối</Text>
-              <Form
+            <Text type="secondary">Điều phối</Text>
+            {isLeadClosed ? (
+              <div style={{ marginTop: 8, display: "grid", gap: 10 }}>
+                <div className="admin-meta-item">
+                  <span className="admin-meta-label">Trạng thái hiện tại</span>
+                  <span className="admin-meta-value">
+                    {currentStatus === "QUALIFIED"
+                      ? "Hồ sơ đã đóng thành công"
+                      : "Hồ sơ đã dừng chăm sóc"}
+                  </span>
+                </div>
+                <div className="admin-meta-item">
+                  <span className="admin-meta-label">Ngày hoàn tất</span>
+                  <span className="admin-meta-value">
+                    {formatMetaDate(record.completedAt as string | undefined)}
+                  </span>
+                </div>
+              </div>
+            ) : (
+            <Form
                 form={statusForm}
                 layout="vertical"
                 initialValues={{ status: currentStatus }}
                 style={{ marginTop: 8 }}
               >
-                <Form.Item label="Đổi trạng thái" name="status" style={{ marginBottom: 0 }}>
+                <Form.Item label="Cập nhật trạng thái xử lý" name="status" style={{ marginBottom: 12 }}>
                   <Select
-                    options={LEAD_STATUS_OPTIONS}
+                    options={LEAD_STATUS_OPTIONS.filter(
+                      (option) => option.value === "NEW" || option.value === "CONTACTED"
+                    )}
                     loading={matchUpdating}
                     onSelect={(value) => {
                       void (async () => {
                         setMatchUpdating(true);
                         try {
-                          if (
-                            value === "QUALIFIED" &&
-                            activeCandidates.length > 0
-                          ) {
-                            message.warning(
-                              "Lead này đang có đề xuất ghép. Hãy chọn một đề xuất để xác nhận hoặc từ chối chúng trước."
-                            );
-                            return;
-                          }
                           await axiosInstance.patch(`/leads/${leadId}`, {
                             status: value,
                           });
@@ -389,7 +700,33 @@ export const LeadsShow: React.FC = () => {
                     }}
                   />
                 </Form.Item>
+                <Space wrap>
+                  <Button
+                    type="primary"
+                    disabled={!closableMatches.length}
+                    onClick={() => {
+                      setCloseDialogMode("won");
+                      closeForm.setFieldsValue({
+                        completedAt: new Date().toISOString().slice(0, 10),
+                      });
+                    }}
+                  >
+                    Đóng thành công
+                  </Button>
+                  <Button
+                    danger
+                    onClick={() => {
+                      setCloseDialogMode("lost");
+                      closeForm.setFieldsValue({
+                        completedAt: new Date().toISOString().slice(0, 10),
+                      });
+                    }}
+                  >
+                    Dừng chăm sóc
+                  </Button>
+                </Space>
               </Form>
+            )}
             </div>
           </div>
         </AdminFormSection>
@@ -413,6 +750,7 @@ export const LeadsShow: React.FC = () => {
           >
             <Button
               type="primary"
+              disabled={isLeadClosed}
               onClick={() => setAddDialogOpen(true)}
             >
               Thêm đề xuất
@@ -439,13 +777,31 @@ export const LeadsShow: React.FC = () => {
                       {String(c?.title ?? "-")}
                     </div>
                     <div className="admin-entity-subtitle">
-                      {`ID #${c?.id ?? "-"} · ${String(
+                      {`${String(c?.displayCode ?? `#${c?.id ?? "-"}`)} · ${String(
                         c?.contactName ?? "-"
                       )} · ${String(c?.contactPhone ?? "-")}`}
                     </div>
                   </div>
                 );
               }}
+            />
+            <Table.Column
+              title="Nguồn"
+              width={120}
+              render={(_: unknown, row: Record<string, unknown>) =>
+                String(row.origin ?? "-") === "USER_SUBMISSION" ? (
+                  <Tag color="geekblue">User gửi</Tag>
+                ) : (
+                  <Tag>Admin tạo</Tag>
+                )
+              }
+            />
+            <Table.Column
+              title="Duyệt"
+              width={130}
+              render={(_: unknown, row: Record<string, unknown>) =>
+                approvalTag(String(row.approvalStatus ?? "APPROVED"))
+              }
             />
             <Table.Column
               title="Trạng thái"
@@ -489,7 +845,7 @@ export const LeadsShow: React.FC = () => {
               title="Tác vụ"
               width={200}
               render={(_: unknown, row: Record<string, unknown>) => {
-                const status = String(row.status ?? "CANDIDATE");
+                const status = String(row.status ?? "SUGGESTED");
                 const matchId = Number(row.id);
                 const counterpart =
                   linkedSource === "PROPERTY" ? row.rentRequest : row.property;
@@ -498,12 +854,30 @@ export const LeadsShow: React.FC = () => {
 
                 return (
                   <div className="admin-action-group">
-                    {status === "CANDIDATE" && (
+                    {status === "SUGGESTED" &&
+                    row.approvalStatus === "PENDING" ? (
+                      <>
+                        <Button
+                          type="primary"
+                          onClick={() => void handleApproveProposal(matchId)}
+                        >
+                          Duyệt
+                        </Button>
+                        <Button
+                          danger
+                          onClick={() => void handleRejectProposal(matchId)}
+                        >
+                          Từ chối
+                        </Button>
+                      </>
+                    ) : null}
+                    {status === "SUGGESTED" &&
+                    row.approvalStatus === "APPROVED" ? (
                       <>
                         <Button
                           type="primary"
                           disabled={!!isMatchedElsewhere}
-                          onClick={() => void handlePromote(matchId, c ?? {})}
+                          onClick={() => void handleQualify(matchId, c ?? {})}
                         >
                           Phù hợp
                         </Button>
@@ -512,22 +886,86 @@ export const LeadsShow: React.FC = () => {
                         >
                           Không phù hợp
                         </Button>
+                        {String(row.origin ?? "-") === "USER_SUBMISSION" ? (
+                          <Button
+                            onClick={() => void handleRevertApproval(matchId)}
+                          >
+                            Hoàn tác duyệt
+                          </Button>
+                        ) : null}
                       </>
-                    )}
-                    {status === "MATCHED" && (
+                    ) : null}
+                    {status === "SUGGESTED" &&
+                    row.approvalStatus === "REJECTED" &&
+                    String(row.origin ?? "-") === "USER_SUBMISSION" ? (
+                      <Button
+                        onClick={() => void handleRevertApproval(matchId)}
+                      >
+                        Hoàn tác duyệt
+                      </Button>
+                    ) : null}
+                    {status === "QUALIFIED" &&
+                    row.approvalStatus === "APPROVED" ? (
+                      <>
+                        <Button
+                          type="primary"
+                          onClick={() => void handleNegotiate(matchId)}
+                        >
+                          Chuyển sang đàm phán
+                        </Button>
+                        <Button
+                          onClick={() => void handleReject(matchId)}
+                        >
+                          Không phù hợp
+                        </Button>
+                        <Button
+                          onClick={() => void handleRevertToSuggested(matchId)}
+                        >
+                          Hoàn tác
+                        </Button>
+                      </>
+                    ) : null}
+                    {status === "NEGOTIATING" &&
+                    row.approvalStatus === "APPROVED" ? (
+                      <>
+                        <Button
+                          type="primary"
+                          onClick={() => void handlePromote(matchId)}
+                        >
+                          Chốt đề xuất
+                        </Button>
+                        <Button onClick={() => void handleReject(matchId)}>
+                          Không phù hợp
+                        </Button>
+                        <Button
+                          onClick={() => void handleRevertToQualified(matchId)}
+                        >
+                          Hoàn tác
+                        </Button>
+                      </>
+                    ) : null}
+                    {!isLeadClosed && status === "DEAL_WON" && (
                       <Button
                         onClick={() => handleUnmatch(matchId)}
                       >
                         Hủy ghép
                       </Button>
                     )}
-                    {status === "REJECTED" && (
-                      <Button
-                        danger
-                        onClick={() => handleRemove(matchId)}
-                      >
-                        Xóa
-                      </Button>
+                    {!isLeadClosed &&
+                    (status === "DEAL_LOST" || status === "CANCELLED_AUTO") && (
+                      <>
+                        <Button
+                          onClick={() => void handleRevertToSuggested(matchId)}
+                        >
+                          Hoàn tác
+                        </Button>
+                        <Button
+                          danger
+                          onClick={() => handleRemove(matchId)}
+                        >
+                          Xóa
+                        </Button>
+                      </>
                     )}
                   </div>
                 );
@@ -553,15 +991,119 @@ export const LeadsShow: React.FC = () => {
         cancelText="Huỷ"
       >
         <div style={{ marginBottom: 16, color: "#666", fontSize: 13 }}>
-          Nhập ID của tin đối ứng để tạo một đề xuất mới cho lead này.
+          Tìm theo mã tin hoặc tên tin để thêm đề xuất cho hồ sơ này.
         </div>
         <Form form={addForm} layout="vertical">
           <Form.Item
-            label={`ID ${counterpartLabel}`}
+            label={`Chọn ${counterpartLabel}`}
             name="counterpartId"
-            rules={[{ required: true, message: "Nhập ID hợp lệ" }]}
+            rules={[{ required: true, message: "Chọn đề xuất hợp lệ" }]}
           >
-            <Input type="number" placeholder="Nhập ID..." />
+            <Select
+              showSearch
+              placeholder="Nhập mã tin hoặc tên tin..."
+              filterOption={false}
+              loading={counterpartSearching}
+              onFocus={() => {
+                void fetchCounterpartOptions();
+              }}
+              onSearch={(value) => {
+                void fetchCounterpartOptions(value);
+              }}
+            >
+              {counterpartOptions.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title={
+          closeDialogMode === "won"
+            ? "Đóng hồ sơ thành công"
+            : "Dừng chăm sóc hồ sơ"
+        }
+        open={!!closeDialogMode}
+        forceRender
+        onOk={() => {
+          void handleCloseCase();
+        }}
+        confirmLoading={matchUpdating}
+        onCancel={() => {
+          setCloseDialogMode(null);
+          closeForm.resetFields();
+        }}
+        okText={closeDialogMode === "won" ? "Đóng hồ sơ" : "Xác nhận dừng"}
+        cancelText="Hủy"
+      >
+        <Form form={closeForm} layout="vertical">
+          <Form.Item
+            label="Ngày hoàn tất"
+            name="completedAt"
+            rules={[{ required: true, message: "Vui lòng nhập ngày hoàn tất" }]}
+          >
+            <Input type="date" />
+          </Form.Item>
+
+          {closeDialogMode === "won" ? (
+            <Form.Item
+              label="Chốt đề xuất"
+              name="winningMatchId"
+              rules={[{ required: true, message: "Chọn đề xuất thắng" }]}
+            >
+              <Select
+                options={closableMatches.map((item) => {
+                  const counterpart =
+                    linkedSource === "PROPERTY" ? item.rentRequest : item.property;
+                  const c = counterpart as Record<string, unknown> | undefined;
+                  return {
+                    value: Number(item.id),
+                    label: `${String(c?.displayCode ?? `#${String(c?.id ?? item.id)}`)} · ${String(
+                      c?.title ?? "Đề xuất"
+                    )}`,
+                  };
+                })}
+              />
+            </Form.Item>
+          ) : (
+            <>
+              <Form.Item
+                label="Lý do thất bại"
+                name="closureReason"
+                rules={[{ required: true, message: "Chọn lý do thất bại" }]}
+              >
+                <Select
+                  options={[
+                    { label: "Không phù hợp nhu cầu", value: "Không phù hợp nhu cầu" },
+                    { label: "Ngân sách không phù hợp", value: "Ngân sách không phù hợp" },
+                    { label: "Không liên hệ được", value: "Không liên hệ được" },
+                    { label: "Khách đổi ý", value: "Khách đổi ý" },
+                    { label: "Khác", value: "Khác" },
+                  ]}
+                />
+              </Form.Item>
+              <Form.Item shouldUpdate noStyle>
+                {({ getFieldValue }) =>
+                  getFieldValue("closureReason") === "Khác" ? (
+                    <Form.Item
+                      label="Lý do khác"
+                      name="closureReasonDetail"
+                      rules={[{ required: true, message: "Nhập lý do cụ thể" }]}
+                    >
+                      <Input.TextArea rows={3} />
+                    </Form.Item>
+                  ) : null
+                }
+              </Form.Item>
+            </>
+          )}
+
+          <Form.Item label="Ghi chú" name="closureNote">
+            <Input.TextArea rows={3} />
           </Form.Item>
         </Form>
       </Modal>
