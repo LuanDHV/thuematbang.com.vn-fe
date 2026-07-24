@@ -2,7 +2,7 @@ import type {
   AuthProvider,
   CategoryType,
   ContentStatus,
-  LeadStatus,
+  DealCaseStatus,
   OrderStatus,
   ListingStatus,
   ExpressDuration,
@@ -12,6 +12,9 @@ import type {
   PublishSource,
   PriceUnit,
   PurchaseType,
+  ProposalReviewStatus,
+  ProposalSourceType,
+  ProposalStatus,
   UserRole,
 } from "../enums/index.js";
 
@@ -69,12 +72,12 @@ export const CATEGORY_TYPE_VALUES = [
   "NEWS",
 ] as const satisfies readonly CategoryType[];
 
-export const LEAD_STATUS_VALUES = [
+export const DEAL_CASE_STATUS_VALUES = [
   "NEW",
   "CONTACTED",
   "QUALIFIED",
   "REJECTED",
-] as const satisfies readonly LeadStatus[];
+] as const satisfies readonly DealCaseStatus[];
 
 export const USER_ROLE_VALUES = [
   "CUSTOMER",
@@ -115,14 +118,25 @@ export const ORDER_STATUS_VALUES = [
   "CANCELED",
 ] as const satisfies readonly OrderStatus[];
 
-export const LISTING_MATCH_STATUS_VALUES = [
+export const PROPOSAL_STATUS_VALUES = [
   "SUGGESTED",
   "QUALIFIED",
   "NEGOTIATING",
   "DEAL_WON",
   "DEAL_LOST",
   "CANCELLED_AUTO",
-] as const;
+] as const satisfies readonly ProposalStatus[];
+
+export const PROPOSAL_REVIEW_STATUS_VALUES = [
+  "PENDING",
+  "APPROVED",
+  "REJECTED",
+] as const satisfies readonly ProposalReviewStatus[];
+
+export const PROPOSAL_SOURCE_TYPE_VALUES = [
+  "USER_SUBMISSION",
+  "ADMIN_CREATED",
+] as const satisfies readonly ProposalSourceType[];
 
 export const PAGE_VALUES = [
   "home",

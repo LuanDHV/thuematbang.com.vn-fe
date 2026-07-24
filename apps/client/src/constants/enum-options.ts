@@ -2,8 +2,9 @@ import type {
   AuthProvider,
   CategoryType,
   ContentStatus,
-  LeadStatus,
-  ListingMatchStatus,
+  DealCaseStatus,
+  ProposalReviewStatus,
+  ProposalStatus,
   ListingStatus,
   OrderStatus,
   PriceUnit,
@@ -19,14 +20,15 @@ import {
   BANNER_POSITION_VALUES,
   CATEGORY_TYPE_VALUES,
   CONTENT_STATUS_VALUES,
-  LEAD_STATUS_VALUES,
-  LISTING_MATCH_STATUS_VALUES,
+  DEAL_CASE_STATUS_VALUES,
   LISTING_STATUS_VALUES,
   ORDER_STATUS_VALUES,
   PAGE_VALUES,
   PRICE_UNIT_VALUES,
   PROPERTY_DIRECTION_VALUES,
   PROPERTY_PRIORITY_VALUES,
+  PROPOSAL_REVIEW_STATUS_VALUES,
+  PROPOSAL_STATUS_VALUES,
   PUBLISH_SOURCE_VALUES,
   PURCHASE_TYPE_VALUES,
   USER_ROLE_VALUES,
@@ -126,9 +128,9 @@ export const CATEGORY_TYPE_OPTIONS: EnumOption<CategoryType>[] =
     return { value, label: labels[value] };
   });
 
-export const LEAD_STATUS_OPTIONS: EnumOption<LeadStatus>[] =
-  LEAD_STATUS_VALUES.map((value) => {
-    const labels: Record<LeadStatus, string> = {
+export const DEAL_CASE_STATUS_OPTIONS: EnumOption<DealCaseStatus>[] =
+  DEAL_CASE_STATUS_VALUES.map((value) => {
+    const labels: Record<DealCaseStatus, string> = {
       NEW: "Mới tiếp nhận",
       CONTACTED: "Đang chăm sóc",
       QUALIFIED: "Chốt thành công",
@@ -138,15 +140,26 @@ export const LEAD_STATUS_OPTIONS: EnumOption<LeadStatus>[] =
     return { value, label: labels[value] };
   });
 
-export const LISTING_MATCH_STATUS_OPTIONS: EnumOption<ListingMatchStatus>[] =
-  LISTING_MATCH_STATUS_VALUES.map((value) => {
-    const labels: Record<ListingMatchStatus, string> = {
+export const PROPOSAL_STATUS_OPTIONS: EnumOption<ProposalStatus>[] =
+  PROPOSAL_STATUS_VALUES.map((value) => {
+    const labels: Record<ProposalStatus, string> = {
       SUGGESTED: "Đề xuất mới",
-      QUALIFIED: "Đã xác nhận phù hợp",
-      NEGOTIATING: "Đang đàm phán",
+      QUALIFIED: "Xác nhận phù hợp",
+      NEGOTIATING: "Đàm phán",
       DEAL_WON: "Đã chốt đề xuất",
       DEAL_LOST: "Đề xuất không hợp",
       CANCELLED_AUTO: "Tự động hủy",
+    };
+
+    return { value, label: labels[value] };
+  });
+
+export const PROPOSAL_REVIEW_STATUS_OPTIONS: EnumOption<ProposalReviewStatus>[] =
+  PROPOSAL_REVIEW_STATUS_VALUES.map((value) => {
+    const labels: Record<ProposalReviewStatus, string> = {
+      PENDING: "Chờ duyệt",
+      APPROVED: "Đã duyệt",
+      REJECTED: "Từ chối",
     };
 
     return { value, label: labels[value] };
@@ -245,17 +258,15 @@ export const CONTENT_STATUS_LABEL_MAP: Record<ContentStatus, string> =
     CONTENT_STATUS_OPTIONS.map((option) => [option.value, option.label]),
   ) as Record<ContentStatus, string>;
 
-export const LEAD_STATUS_LABEL_MAP: Record<LeadStatus, string> =
+export const DEAL_CASE_STATUS_LABEL_MAP: Record<DealCaseStatus, string> =
   Object.fromEntries(
-    LEAD_STATUS_OPTIONS.map((option) => [option.value, option.label]),
-  ) as Record<LeadStatus, string>;
+    DEAL_CASE_STATUS_OPTIONS.map((option) => [option.value, option.label]),
+  ) as Record<DealCaseStatus, string>;
 
-export const LISTING_MATCH_STATUS_LABEL_MAP: Record<
-  ListingMatchStatus,
-  string
-> = Object.fromEntries(
-  LISTING_MATCH_STATUS_OPTIONS.map((option) => [option.value, option.label]),
-) as Record<ListingMatchStatus, string>;
+export const PROPOSAL_STATUS_LABEL_MAP: Record<ProposalStatus, string> =
+  Object.fromEntries(
+    PROPOSAL_STATUS_OPTIONS.map((option) => [option.value, option.label]),
+  ) as Record<ProposalStatus, string>;
 
 export const CATEGORY_TYPE_LABEL_MAP: Record<CategoryType, string> =
   Object.fromEntries(

@@ -1,12 +1,13 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Empty, Spin, Table } from "antd";
+import { Empty, Space, Spin, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import { AdminDataTable } from "../../components/admin/page/AdminDataTable";
 import { StatusBadge } from "../../components/StatusBadge";
 import { axiosInstance } from "../../providers/auth/auth-client";
 import { formatMetaDate } from "../../lib/admin/utils/format";
+import { ShowButton } from "@refinedev/antd";
 
 type LeadRecord = Record<string, unknown>;
 
@@ -86,7 +87,9 @@ export const ArchiveList: React.FC = () => {
         title="Kết quả cuối"
         dataIndex="status"
         width={160}
-        render={(value: string) => <StatusBadge status={value} type="lead" />}
+        render={(value: string) => (
+          <StatusBadge status={value} kind="deal-case" />
+        )}
       />
       <Table.Column
         title="Ngày hoàn tất"
@@ -98,12 +101,11 @@ export const ArchiveList: React.FC = () => {
         title="Lý do / đề xuất thắng"
         width={260}
         render={(_: unknown, record: LeadRecord) => {
+          const proposalList = (record.proposals ?? []) as LeadRecord[];
+          const winningProposalId = Number(record.winningProposalId ?? 0);
           if (record.status === "QUALIFIED") {
-            const matches = Array.isArray(record.listingMatches)
-              ? (record.listingMatches as LeadRecord[])
-              : [];
-            const winningMatch = matches.find(
-              (item) => Number(item.id) === Number(record.winningMatchId ?? 0)
+            const winningMatch = proposalList.find(
+              (item) => Number(item.id) === winningProposalId
             );
             const counterpart = record.propertyId
               ? (winningMatch?.rentRequest as LeadRecord | undefined)
@@ -128,23 +130,25 @@ export const ArchiveList: React.FC = () => {
         dataIndex="closureNote"
         render={(value: string) => String(value ?? "-")}
       />
+
       <Table.Column
-        title="Xem"
-        width={80}
-        render={(_: unknown, record: LeadRecord) => (
-          <button
-            type="button"
-            className="admin-link-button"
-            onClick={() =>
-              navigate(
-                record.propertyId
-                  ? `/leads/property/show/${record.id}`
-                  : `/leads/rent-request/show/${record.id}`
-              )
-            }
-          >
-            Xem
-          </button>
+        title="Tác vụ"
+        width={100}
+        render={(_: unknown, record: Record<string, unknown>) => (
+          <Space size="small">
+            <ShowButton
+              hideText
+              size="small"
+              recordItemId={record.id as number}
+              onClick={() =>
+                navigate(
+                  record.propertyId
+                    ? `/leads/property/show/${record.id}`
+                    : `/leads/rent-request/show/${record.id}`
+                )
+              }
+            />
+          </Space>
         )}
       />
     </AdminDataTable>

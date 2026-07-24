@@ -5,7 +5,7 @@ import {
   RentRequestExpressOrder,
 } from "./commerce";
 import { AuthProvider, UserRole } from "./enums";
-import { Lead } from "./lead";
+import { DealCase } from "./lead";
 import { Property } from "./property";
 import { RentRequest } from "./rent-request";
 
@@ -26,7 +26,7 @@ export interface User {
   updatedAt: Date | string;
   properties?: Property[];
   rentRequests?: RentRequest[];
-  leads?: Lead[];
+  dealCases?: DealCase[];
   packageOrders?: PropertyPackageOrder[];
   boostOrders?: PropertyBoostOrder[];
   expressOrders?: RentRequestExpressOrder[];

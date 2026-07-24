@@ -15,7 +15,7 @@ import PriorityBadge, {
   type PriorityTone,
 } from "@/components/cms/shared/PriorityBadge";
 import StatusBadge, {
-  publishStatusBadgeToneMap,
+  listingStatusBadgeToneMap,
 } from "@/components/cms/shared/StatusBadge";
 import {
   Pagination,
@@ -137,7 +137,7 @@ function PropertyMobileCard({
         <PriorityBadge tone={priorityToneMap[item.priorityStatus]}>
           {PROPERTY_PRIORITY_LABEL_MAP[item.priorityStatus]}
         </PriorityBadge>
-        <StatusBadge tone={publishStatusBadgeToneMap[item.status]}>
+        <StatusBadge tone={listingStatusBadgeToneMap[item.status]}>
           {PUBLISH_STATUS_LABEL_MAP[item.status]}
         </StatusBadge>
       </div>
@@ -322,7 +322,7 @@ export default function UserPropertiesTable({
                     </TableCell>
                     <TableCell className="align-top">
                       <StatusBadge
-                        tone={publishStatusBadgeToneMap[item.status]}
+                        tone={listingStatusBadgeToneMap[item.status]}
                       >
                         {PUBLISH_STATUS_LABEL_MAP[item.status]}
                       </StatusBadge>

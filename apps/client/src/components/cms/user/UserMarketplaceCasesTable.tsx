@@ -4,20 +4,20 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import StatusBadge, {
-  leadStatusBadgeToneMap,
-  listingMatchStatusBadgeToneMap,
+  dealCaseStatusBadgeToneMap,
+  proposalStatusBadgeToneMap,
 } from "@/components/cms/shared/StatusBadge";
 import {
   Pagination,
   TablePaginationFooter,
 } from "@/components/common/Pagination";
 import {
-  LEAD_STATUS_LABEL_MAP,
-  LISTING_MATCH_STATUS_LABEL_MAP,
+  DEAL_CASE_STATUS_LABEL_MAP,
+  PROPOSAL_STATUS_LABEL_MAP,
 } from "@/constants/enum-options";
 import { formatDateDisplay } from "@/lib/format";
 import { createPaginationChangeHandler } from "@/lib/pagination";
-import type { Lead } from "@/types/lead";
+import type { DealCase } from "@/types/lead";
 import {
   Table,
   TableBody,
@@ -28,29 +28,29 @@ import {
 } from "@/components/ui/table";
 
 type Props = {
-  items: Lead[];
+  items: DealCase[];
   currentPage: number;
   totalPages: number;
   title: string;
   detailBasePath?: string;
 };
 
-function sourceTitle(item: Lead) {
+function sourceTitle(item: DealCase) {
   return item.property?.title ?? item.rentRequest?.title ?? "-";
 }
 
-function sourceCode(item: Lead) {
+function sourceCode(item: DealCase) {
   return item.property?.displayCode ?? item.rentRequest?.displayCode ?? "-";
 }
 
-function proposalSummary(item: Lead) {
-  const proposals = item.listingMatches ?? [];
+function proposalSummary(item: DealCase) {
+  const proposals = item.proposals ?? [];
   if (!proposals.length) return "0";
   const won =
     proposals.find((proposal) => proposal.status === "DEAL_WON") ??
     proposals.find((proposal) => proposal.status === "NEGOTIATING") ??
     proposals.find((proposal) => proposal.status === "QUALIFIED");
-  if (won) return LISTING_MATCH_STATUS_LABEL_MAP[won.status];
+  if (won) return PROPOSAL_STATUS_LABEL_MAP[won.status];
   return String(proposals.length);
 }
 
@@ -111,8 +111,8 @@ export default function UserMarketplaceCasesTable({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <StatusBadge tone={leadStatusBadgeToneMap[item.status]}>
-                      {LEAD_STATUS_LABEL_MAP[item.status]}
+                    <StatusBadge tone={dealCaseStatusBadgeToneMap[item.status]}>
+                      {DEAL_CASE_STATUS_LABEL_MAP[item.status]}
                     </StatusBadge>
                   </TableCell>
                   <TableCell className="text-sm">
@@ -175,8 +175,8 @@ export default function UserMarketplaceCasesTable({
                   </Link>
                   <p className="text-secondary text-xs">{item.phone}</p>
                 </div>
-                <StatusBadge tone={leadStatusBadgeToneMap[item.status]}>
-                  {LEAD_STATUS_LABEL_MAP[item.status]}
+                <StatusBadge tone={dealCaseStatusBadgeToneMap[item.status]}>
+                  {DEAL_CASE_STATUS_LABEL_MAP[item.status]}
                 </StatusBadge>
               </div>
               <div className="grid gap-2 text-sm">

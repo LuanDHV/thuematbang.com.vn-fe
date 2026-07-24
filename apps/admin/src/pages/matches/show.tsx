@@ -23,28 +23,28 @@ export const MatchesShow: React.FC = () => {
   const { query } = useShow();
   const record = query?.data?.data as Record<string, unknown> | undefined;
   const [actionLoading, setActionLoading] = useState("");
-  const [approvalStatus, setApprovalStatus] = useState("PENDING");
+  const [reviewStatus, setReviewStatus] = useState("PENDING");
 
   useEffect(() => {
-    setApprovalStatus(String(record?.approvalStatus ?? "PENDING"));
-  }, [record?.approvalStatus]);
+    setReviewStatus(String(record?.reviewStatus ?? "PENDING"));
+  }, [record?.reviewStatus]);
 
   if (!record) return null;
 
   const property = record.property as Record<string, unknown> | undefined;
   const rentRequest = record.rentRequest as Record<string, unknown> | undefined;
-  const lead = record.lead as Record<string, unknown> | undefined;
-  const caseHref = lead?.id
+  const dealCase = record.dealCase as Record<string, unknown> | undefined;
+  const caseHref = dealCase?.id
     ? property
-      ? `/leads/property/show/${lead.id}`
-      : `/leads/rent-request/show/${lead.id}`
+      ? `/leads/property/show/${dealCase.id}`
+      : `/leads/rent-request/show/${dealCase.id}`
     : null;
 
   const handleApprove = async () => {
     setActionLoading("approve");
     try {
       await axiosInstance.post(`/listing-matches/${record.id}/approve`, {});
-      setApprovalStatus("APPROVED");
+      setReviewStatus("APPROVED");
       message.success("Đã duyệt đề xuất.");
       await query?.refetch?.();
     } catch {
@@ -58,7 +58,7 @@ export const MatchesShow: React.FC = () => {
     setActionLoading("reject");
     try {
       await axiosInstance.post(`/listing-matches/${record.id}/reject-approval`, {});
-      setApprovalStatus("REJECTED");
+      setReviewStatus("REJECTED");
       message.success("Đã từ chối đề xuất.");
       await query?.refetch?.();
     } catch {
@@ -72,7 +72,7 @@ export const MatchesShow: React.FC = () => {
     setActionLoading("revert");
     try {
       await axiosInstance.post(`/listing-matches/${record.id}/revert-approval`, {});
-      setApprovalStatus("PENDING");
+      setReviewStatus("PENDING");
       message.success("Đã hoàn tác về hàng chờ duyệt.");
       await query?.refetch?.();
     } catch {
@@ -104,15 +104,15 @@ export const MatchesShow: React.FC = () => {
                 </span>
               </div>
               <Space size={8}>
-                {approvalTag(approvalStatus)}
-                <StatusBadge status={String(record.status ?? "SUGGESTED")} type="match" />
+                {approvalTag(reviewStatus)}
+                <StatusBadge status={String(record.status ?? "SUGGESTED")} kind="proposal" />
               </Space>
             </div>
             <div className="admin-workflow-meta">
               <div className="admin-meta-item">
                 <span className="admin-meta-label">Nguồn tạo</span>
                 <span className="admin-meta-value">
-                  {String(record.origin ?? "-") === "USER_SUBMISSION"
+                  {String(record.sourceType ?? "-") === "USER_SUBMISSION"
                     ? "User gửi"
                     : "Admin tạo"}
                 </span>
@@ -134,7 +134,7 @@ export const MatchesShow: React.FC = () => {
           <div>
             <Text type="secondary">Xử lý nhanh</Text>
             <div className="admin-action-group" style={{ marginTop: 12 }}>
-              {approvalStatus === "PENDING" ? (
+              {reviewStatus === "PENDING" ? (
                 <>
                   <Button
                     type="primary"
@@ -156,7 +156,7 @@ export const MatchesShow: React.FC = () => {
                   </Button>
                 </>
               ) : null}
-              {approvalStatus !== "PENDING" && String(record.status ?? "SUGGESTED") === "SUGGESTED" ? (
+              {reviewStatus !== "PENDING" && String(record.status ?? "SUGGESTED") === "SUGGESTED" ? (
                 <Button
                   loading={actionLoading === "revert"}
                   onClick={() => {
@@ -192,8 +192,12 @@ export const MatchesShow: React.FC = () => {
           </div>
           <div className="admin-entity-copy">
             <Text type="secondary">Hồ sơ</Text>
-            <div className="admin-entity-title">{String(lead?.fullName ?? "-")}</div>
-            <span className="admin-entity-subtitle">{String(lead?.phone ?? "-")}</span>
+            <div className="admin-entity-title">
+              {String(dealCase?.fullName ?? "-")}
+            </div>
+            <span className="admin-entity-subtitle">
+              {String(dealCase?.phone ?? "-")}
+            </span>
           </div>
         </div>
       </AdminFormSection>

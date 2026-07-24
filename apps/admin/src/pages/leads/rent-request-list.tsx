@@ -8,7 +8,7 @@ import { AdminDataTable } from "../../components/admin/page/AdminDataTable";
 import { AdminFilterBar } from "../../components/admin/page/AdminFilterBar";
 import { AdminFilterResetButton } from "../../components/admin/page/AdminFilterResetButton";
 import { StatusBadge } from "../../components/StatusBadge";
-import { LEAD_STATUS_OPTIONS } from "../../lib/admin/constants/options";
+import { DEAL_CASE_STATUS_OPTIONS } from "../../lib/admin/constants/options";
 import {
   buildAdminSearchFilters,
   submitAdminSearch,
@@ -72,7 +72,7 @@ export const LeadsRentRequestList: React.FC = () => {
               <Select
                 placeholder="Trạng thái"
                 style={{ width: 180 }}
-                options={LEAD_STATUS_OPTIONS}
+                options={DEAL_CASE_STATUS_OPTIONS}
               />
             </Form.Item>
             <AdminFilterResetButton
@@ -126,7 +126,9 @@ export const LeadsRentRequestList: React.FC = () => {
           dataIndex="status"
           width={140}
           sorter
-          render={(value: string) => <StatusBadge status={value} type="lead" />}
+          render={(value: string) => (
+            <StatusBadge status={value} kind="deal-case" />
+          )}
         />
         <Table.Column
           title="Số đề xuất"
@@ -134,7 +136,7 @@ export const LeadsRentRequestList: React.FC = () => {
           render={(_: unknown, record: Record<string, unknown>) =>
             Number(
               (record._count as Record<string, unknown> | undefined)
-                ?.listingMatches ?? 0
+                ?.proposals ?? 0
             )
           }
         />

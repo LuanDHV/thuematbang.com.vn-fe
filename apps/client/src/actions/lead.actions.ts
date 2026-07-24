@@ -1,12 +1,12 @@
 "use server";
 
-import { leadService, type LeadUpsertPayload } from "@/services/lead.service";
+import { dealCaseService, type DealCaseUpsertPayload } from "@/services/lead.service";
 import { propertyService } from "@/services/property.service";
 import { rentRequestService } from "@/services/rent-request.service";
 import { getServerAuthUser } from "@/lib/server/server-auth";
 
-export async function createPublicLeadAction(payload: LeadUpsertPayload) {
-  return leadService.createPublic(payload);
+export async function createPublicLeadAction(payload: DealCaseUpsertPayload) {
+  return dealCaseService.createPublic(payload);
 }
 
 export async function getMyEligiblePropertiesAction() {

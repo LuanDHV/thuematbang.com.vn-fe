@@ -1,13 +1,17 @@
-import type { ListingMatchStatus } from "./enums";
+import type { ProposalReviewStatus, ProposalStatus } from "./enums";
 
-export type ListingMatchApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
-export type ListingMatchOrigin = "USER_SUBMISSION" | "ADMIN_CREATED";
+export type ProposalSourceType = "USER_SUBMISSION" | "ADMIN_CREATED";
 
-export interface ListingMatchSummary {
+export interface ProposalSummary {
   id: number;
-  status: ListingMatchStatus;
-  approvalStatus: ListingMatchApprovalStatus;
-  origin: ListingMatchOrigin;
+  dealCaseId: number;
+  propertyId?: number | null;
+  rentRequestId?: number | null;
+  status: ProposalStatus;
+  reviewStatus: ProposalReviewStatus;
+  sourceType: ProposalSourceType;
+  reviewedAt?: string | null;
+  reviewNote?: string | null;
   approvalReviewedAt?: string | null;
   approvalNote?: string | null;
   property?: {

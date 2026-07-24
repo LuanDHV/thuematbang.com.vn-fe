@@ -6,7 +6,7 @@ import {
   ListingStatus,
   PublishSource,
 } from "./enums";
-import { Lead } from "./lead";
+import { DealCase } from "./lead";
 import { Province, Ward } from "./location";
 import { PropertyImage } from "./media";
 import { User } from "./user";
@@ -54,7 +54,7 @@ export interface Property {
   category?: Category;
   province?: Province | null;
   ward?: Ward | null;
-  leads?: Lead[];
+  dealCases?: DealCase[];
   images?: PropertyImage[];
   boostOrders?: PropertyBoostOrder[];
   propertyPackageOrder?: PropertyPackageOrder | null;

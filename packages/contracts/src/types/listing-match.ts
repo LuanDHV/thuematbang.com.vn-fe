@@ -1,11 +1,11 @@
-import type { ListingMatchStatus } from "../enums/index.js";
+import type { ProposalStatus } from "../enums/index.js";
 
-export interface ListingMatchSummary {
+export interface ProposalSummary {
   id: number;
   leadId: number;
   propertyId?: number | null;
   rentRequestId?: number | null;
-  status: ListingMatchStatus;
+  status: ProposalStatus;
   matchedAt?: Date | string | null;
   createdAt: Date | string;
   updatedAt: Date | string;

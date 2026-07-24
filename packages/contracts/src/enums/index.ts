@@ -13,7 +13,7 @@ export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
 export type PublishStatus = ListingStatus;
 
-export type LeadStatus =
+export type DealCaseStatus =
   | "NEW"
   | "CONTACTED"
   | "QUALIFIED"
@@ -48,13 +48,17 @@ export type PurchaseType =
 
 export type OrderStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELED";
 
-export type ListingMatchStatus =
+export type ProposalStatus =
   | "SUGGESTED"
   | "QUALIFIED"
   | "NEGOTIATING"
   | "DEAL_WON"
   | "DEAL_LOST"
   | "CANCELLED_AUTO";
+
+export type ProposalReviewStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export type ProposalSourceType = "USER_SUBMISSION" | "ADMIN_CREATED";
 
 export type PublishSource = "FREE_QUOTA" | "PAID_PACKAGE";
 

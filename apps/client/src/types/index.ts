@@ -13,6 +13,7 @@ export * from "./media";
 export * from "./news";
 export * from "./project";
 export * from "./property";
+export * from "./proposal";
 export * from "./rent-request";
 export * from "./static-page";
 export * from "./seo-content";

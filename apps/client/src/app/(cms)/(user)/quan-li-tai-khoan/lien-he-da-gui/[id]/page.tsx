@@ -3,15 +3,15 @@ import { notFound } from "next/navigation";
 
 import SentLeadProposalActions from "@/components/cms/user/SentLeadProposalActions";
 import StatusBadge, {
-  leadStatusBadgeToneMap,
-  listingMatchStatusBadgeToneMap,
+  dealCaseStatusBadgeToneMap,
+  proposalStatusBadgeToneMap,
 } from "@/components/cms/shared/StatusBadge";
 import {
-  LEAD_STATUS_LABEL_MAP,
-  LISTING_MATCH_STATUS_LABEL_MAP,
+  DEAL_CASE_STATUS_LABEL_MAP,
+  PROPOSAL_STATUS_LABEL_MAP,
 } from "@/constants/enum-options";
 import { formatDateDisplay } from "@/lib/format";
-import { leadService } from "@/services/lead.service";
+import { dealCaseService } from "@/services/lead.service";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -40,12 +40,14 @@ function buildListingHref(input: {
 
 export default async function UserSentLeadDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const leadId = Number(id);
-  if (!Number.isFinite(leadId) || leadId <= 0) {
+  const dealCaseId = Number(id);
+  if (!Number.isFinite(dealCaseId) || dealCaseId <= 0) {
     notFound();
   }
 
-  const item = await leadService.getMySentLeadById(leadId).catch(() => null);
+  const item = await dealCaseService
+    .getMySentDealCaseById(dealCaseId)
+    .catch(() => null);
   if (!item) {
     notFound();
   }
@@ -55,6 +57,10 @@ export default async function UserSentLeadDetailPage({ params }: PageProps) {
     property: item.property ?? null,
     rentRequest: item.rentRequest ?? null,
   });
+  const proposalList = (item.proposals ?? []) as Array<
+    Record<string, any> & { id: number }
+  >;
+  const winningProposalId = Number(item.winningProposalId ?? 0);
 
   return (
     <section className="space-y-5">
@@ -65,8 +71,8 @@ export default async function UserSentLeadDetailPage({ params }: PageProps) {
               <h2 className="text-heading text-lg font-semibold">
                 Thông tin liên hệ đã gửi
               </h2>
-              <StatusBadge tone={leadStatusBadgeToneMap[item.status]}>
-                {LEAD_STATUS_LABEL_MAP[item.status]}
+              <StatusBadge tone={dealCaseStatusBadgeToneMap[item.status]}>
+                {DEAL_CASE_STATUS_LABEL_MAP[item.status]}
               </StatusBadge>
             </div>
             <div className="mt-4 grid gap-3 text-sm">
@@ -112,8 +118,8 @@ export default async function UserSentLeadDetailPage({ params }: PageProps) {
           <section className="surface-panel p-4 md:p-5">
             <h2 className="text-heading text-lg font-semibold">Đề xuất</h2>
             <div className="mt-4 space-y-3">
-              {(item.listingMatches ?? []).length ? (
-                item.listingMatches?.map((proposal) => {
+              {proposalList?.length ? (
+                proposalList.map((proposal) => {
                   const counterpart =
                     item.property != null
                       ? proposal.rentRequest
@@ -137,21 +143,27 @@ export default async function UserSentLeadDetailPage({ params }: PageProps) {
                         <div className="flex flex-wrap items-center gap-2">
                           <StatusBadge
                             tone={
-                              proposal.approvalStatus === "PENDING"
+                              proposal.reviewStatus === "PENDING"
                                 ? "warning"
-                                : proposal.approvalStatus === "APPROVED"
+                                : proposal.reviewStatus === "APPROVED"
                                   ? "info"
                                   : "danger"
-                            }
-                          >
-                            {approvalLabel(proposal.approvalStatus)}
+                          }
+                        >
+                            {approvalLabel(proposal.reviewStatus)}
                           </StatusBadge>
                           <StatusBadge
                             tone={
-                              listingMatchStatusBadgeToneMap[proposal.status]
+                              proposalStatusBadgeToneMap[
+                                proposal.status as keyof typeof proposalStatusBadgeToneMap
+                              ]
                             }
                           >
-                            {LISTING_MATCH_STATUS_LABEL_MAP[proposal.status]}
+                            {
+                              PROPOSAL_STATUS_LABEL_MAP[
+                                proposal.status as keyof typeof PROPOSAL_STATUS_LABEL_MAP
+                              ]
+                            }
                           </StatusBadge>
                         </div>
                       </div>
@@ -181,9 +193,9 @@ export default async function UserSentLeadDetailPage({ params }: PageProps) {
                           </div>
                         ) : null}
                         <SentLeadProposalActions
-                          leadId={item.id}
+                          dealCaseId={item.id}
                           proposalId={proposal.id}
-                          approvalStatus={proposal.approvalStatus}
+                          reviewStatus={proposal.reviewStatus}
                           status={proposal.status}
                         />
                       </div>
@@ -204,30 +216,30 @@ export default async function UserSentLeadDetailPage({ params }: PageProps) {
           <div className="mt-4 space-y-3 text-sm">
             <p>
               <span className="text-secondary">Trạng thái:</span>{" "}
-              {LEAD_STATUS_LABEL_MAP[item.status]}
+              {DEAL_CASE_STATUS_LABEL_MAP[item.status]}
             </p>
             <p>
               <span className="text-secondary">Tiến độ kiểm duyệt:</span>{" "}
-              {(item.listingMatches ?? []).some(
-                (proposal) => proposal.approvalStatus === "PENDING",
+              {proposalList?.some(
+                (proposal) => proposal.reviewStatus === "PENDING",
               )
                 ? "Đang chờ duyệt"
-                : (item.listingMatches ?? []).some(
-                      (proposal) => proposal.approvalStatus === "APPROVED",
+                : proposalList?.some(
+                      (proposal) => proposal.reviewStatus === "APPROVED",
                     )
                   ? "Đã có đề xuất"
                   : "Chưa có đề xuất"}
             </p>
             <p>
               <span className="text-secondary">Số đề xuất:</span>{" "}
-              {item.listingMatches?.length ?? 0}
+              {proposalList?.length ?? 0}
             </p>
-            {item.winningMatchId ? (
+            {winningProposalId ? (
               <p>
                 <span className="text-secondary">Đề xuất đã chốt:</span>{" "}
                 {(() => {
-                  const winningProposal = item.listingMatches?.find(
-                    (proposal) => proposal.id === item.winningMatchId,
+                  const winningProposal = proposalList?.find(
+                    (proposal) => proposal.id === winningProposalId,
                   );
                   const counterpart =
                     item.property != null

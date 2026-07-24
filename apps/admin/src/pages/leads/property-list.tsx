@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import { AdminDataTable } from "../../components/admin/page/AdminDataTable";
 import { AdminFilterBar } from "../../components/admin/page/AdminFilterBar";
 import { AdminFilterResetButton } from "../../components/admin/page/AdminFilterResetButton";
-import { LEAD_STATUS_OPTIONS } from "../../lib/admin/constants/options";
+import { DEAL_CASE_STATUS_OPTIONS } from "../../lib/admin/constants/options";
 import { StatusBadge } from "../../components/StatusBadge";
 import { formatMetaDate } from "../../lib/admin/utils/format";
 import {
@@ -70,7 +70,7 @@ export const LeadsPropertyList: React.FC = () => {
             </Form.Item>
             <Form.Item name="status" style={{ marginBottom: 0 }}>
               <Select
-                options={LEAD_STATUS_OPTIONS}
+                options={DEAL_CASE_STATUS_OPTIONS}
                 placeholder="Trạng thái"
                 style={{ width: 180 }}
               />
@@ -126,7 +126,9 @@ export const LeadsPropertyList: React.FC = () => {
           title="Trạng thái"
           dataIndex="status"
           sorter
-          render={(value: string) => <StatusBadge status={value} type="lead" />}
+          render={(value: string) => (
+            <StatusBadge status={value} kind="deal-case" />
+          )}
           width={140}
         />
         <Table.Column
@@ -135,7 +137,7 @@ export const LeadsPropertyList: React.FC = () => {
           render={(_: unknown, record: Record<string, unknown>) =>
             Number(
               (record._count as Record<string, unknown> | undefined)
-                ?.listingMatches ?? 0
+                ?.proposals ?? 0
             )
           }
         />

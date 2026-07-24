@@ -133,7 +133,7 @@ export const adminResources: AdminResource[] = [
     list: "/archive",
     show: "/archive/show/:id",
     meta: {
-      label: "Lưu trữ",
+      label: "Lưu trữ hồ sơ",
       shortLabel: "Lưu trữ",
       group: "connections",
       icon: <ReadOutlined />,

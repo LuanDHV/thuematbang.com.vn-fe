@@ -4,10 +4,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type {
-  LeadStatus,
-  ListingMatchStatus,
-  PaymentStatus,
+  DealCaseStatus,
   ListingStatus,
+  PaymentStatus,
+  ProposalReviewStatus,
+  ProposalStatus,
 } from "@/types/enums";
 
 const statusBadgeVariants = cva(
@@ -34,7 +35,7 @@ export type BadgeTone = NonNullable<
   VariantProps<typeof statusBadgeVariants>["tone"]
 >;
 
-export const publishStatusBadgeToneMap: Record<ListingStatus, BadgeTone> = {
+export const listingStatusBadgeToneMap: Record<ListingStatus, BadgeTone> = {
   DRAFT: "muted",
   PENDING: "warning",
   PUBLISHED: "success",
@@ -42,7 +43,7 @@ export const publishStatusBadgeToneMap: Record<ListingStatus, BadgeTone> = {
   ARCHIVED: "neutral",
 };
 
-export const leadStatusBadgeToneMap: Record<LeadStatus, BadgeTone> = {
+export const dealCaseStatusBadgeToneMap: Record<DealCaseStatus, BadgeTone> = {
   NEW: "info",
   CONTACTED: "warning",
   QUALIFIED: "success",
@@ -56,16 +57,22 @@ export const paymentStatusBadgeToneMap: Record<PaymentStatus, BadgeTone> = {
   CANCELED: "danger",
 };
 
-export const listingMatchStatusBadgeToneMap: Record<
-  ListingMatchStatus,
-  BadgeTone
-> = {
+export const proposalStatusBadgeToneMap: Record<ProposalStatus, BadgeTone> = {
   SUGGESTED: "warning",
   QUALIFIED: "info",
   NEGOTIATING: "purple",
   DEAL_WON: "success",
   DEAL_LOST: "danger",
   CANCELLED_AUTO: "muted",
+};
+
+export const proposalReviewStatusBadgeToneMap: Record<
+  ProposalReviewStatus,
+  BadgeTone
+> = {
+  PENDING: "warning",
+  APPROVED: "info",
+  REJECTED: "danger",
 };
 
 export default function StatusBadge({

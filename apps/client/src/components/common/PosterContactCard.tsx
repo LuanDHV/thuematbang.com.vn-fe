@@ -38,7 +38,7 @@ import {
   leadContactSchema,
   type LeadContactFormValues,
 } from "@/schemas/lead-contact.schema";
-import type { LeadUpsertPayload } from "@/services/lead.service";
+import type { DealCaseUpsertPayload } from "@/services/lead.service";
 
 type PosterContactCardProps = {
   fullName?: string | null;
@@ -169,7 +169,7 @@ export default function PosterContactCard({
     });
 
     try {
-      const payload: LeadUpsertPayload = {
+      const payload: DealCaseUpsertPayload = {
         fullName: values.fullName,
         phone: values.phone,
         userId: currentUser?.id ?? null,

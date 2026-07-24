@@ -39,7 +39,7 @@ export const MatchesList: React.FC = () => {
     },
     filters: {
       permanent: [
-        { field: "approvalStatus", operator: "eq", value: "PENDING" },
+        { field: "reviewStatus", operator: "eq", value: "PENDING" },
       ],
     },
     onSearch: (values: Record<string, unknown>) =>
@@ -113,14 +113,16 @@ export const MatchesList: React.FC = () => {
           title="Hồ sơ"
           width={220}
           render={(_: unknown, record: Record<string, unknown>) => {
-            const lead = record.lead as Record<string, unknown> | undefined;
+            const dealCase = record.dealCase as
+              | Record<string, unknown>
+              | undefined;
             return (
               <div className="admin-entity-copy">
                 <div className="admin-entity-title">
-                  {String(lead?.fullName ?? "-")}
+                  {String(dealCase?.fullName ?? "-")}
                 </div>
                 <span className="admin-entity-subtitle">
-                  {String(lead?.phone ?? "-")}
+                  {String(dealCase?.phone ?? "-")}
                 </span>
               </div>
             );
@@ -168,7 +170,7 @@ export const MatchesList: React.FC = () => {
           title="Nguồn"
           width={140}
           render={(_: unknown, record: Record<string, unknown>) =>
-            String(record.origin ?? "-") === "USER_SUBMISSION" ? (
+            String(record.sourceType ?? "-") === "USER_SUBMISSION" ? (
               <Tag color="geekblue">User gửi</Tag>
             ) : (
               <Tag color="default">Admin tạo</Tag>
@@ -177,7 +179,7 @@ export const MatchesList: React.FC = () => {
         />
         <Table.Column
           title="Duyệt"
-          dataIndex="approvalStatus"
+          dataIndex="reviewStatus"
           width={120}
           render={(value: string) => approvalTag(value)}
         />

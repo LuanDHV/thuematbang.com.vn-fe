@@ -1,14 +1,14 @@
-import type { LeadStatus } from "../enums/index.js";
+import type { DealCaseStatus } from "../enums/index.js";
 
-export type LeadSourceFilter = "PROPERTY" | "RENT_REQUEST";
+export type DealCaseSourceFilter = "PROPERTY" | "RENT_REQUEST";
 
-export interface Lead {
+export interface DealCase {
   id: number;
   userId?: number | null;
   fullName: string;
   phone: string;
-  status: LeadStatus;
-  source: LeadSourceFilter;
+  status: DealCaseStatus;
+  source: DealCaseSourceFilter;
   propertyId?: number | null;
   rentRequestId?: number | null;
   note?: string | null;

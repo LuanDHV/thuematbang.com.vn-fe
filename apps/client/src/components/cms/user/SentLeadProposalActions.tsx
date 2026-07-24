@@ -4,34 +4,33 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import {
-  negotiateSentLeadProposalAction,
-  qualifySentLeadProposalAction,
-  rejectSentLeadProposalAction,
-  revertSentLeadProposalToQualifiedAction,
-  revertSentLeadProposalToSuggestedAction,
+  negotiateSentDealCaseProposalAction,
+  qualifySentDealCaseProposalAction,
+  rejectSentDealCaseProposalAction,
+  revertSentDealCaseProposalToQualifiedAction,
+  revertSentDealCaseProposalToSuggestedAction,
 } from "@/actions/listing-match.actions";
 import { useToast } from "@/components/ui/use-toast";
-import type { ListingMatchApprovalStatus } from "@/types/listing-match";
-import type { ListingMatchStatus } from "@/types/enums";
+import type { ProposalReviewStatus, ProposalStatus } from "@/types/enums";
 
 type Props = {
-  leadId: number;
+  dealCaseId: number;
   proposalId: number;
-  approvalStatus: ListingMatchApprovalStatus;
-  status: ListingMatchStatus;
+  reviewStatus: ProposalReviewStatus;
+  status: ProposalStatus;
 };
 
 export default function SentLeadProposalActions({
-  leadId,
+  dealCaseId,
   proposalId,
-  approvalStatus,
+  reviewStatus,
   status,
 }: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
-  if (approvalStatus !== "APPROVED") {
+  if (reviewStatus !== "APPROVED") {
     return null;
   }
 
@@ -43,11 +42,11 @@ export default function SentLeadProposalActions({
     startTransition(async () => {
       try {
         if (action === "qualify") {
-          await qualifySentLeadProposalAction(leadId, proposalId);
+          await qualifySentDealCaseProposalAction(dealCaseId, proposalId);
         } else if (action === "negotiate") {
-          await negotiateSentLeadProposalAction(leadId, proposalId);
+          await negotiateSentDealCaseProposalAction(dealCaseId, proposalId);
         } else {
-          await rejectSentLeadProposalAction(leadId, proposalId);
+          await rejectSentDealCaseProposalAction(dealCaseId, proposalId);
         }
 
         toast({ title: successTitle, variant: "success" });
@@ -66,9 +65,15 @@ export default function SentLeadProposalActions({
     startTransition(async () => {
       try {
         if (action === "revert-suggested") {
-          await revertSentLeadProposalToSuggestedAction(leadId, proposalId);
+          await revertSentDealCaseProposalToSuggestedAction(
+            dealCaseId,
+            proposalId,
+          );
         } else {
-          await revertSentLeadProposalToQualifiedAction(leadId, proposalId);
+          await revertSentDealCaseProposalToQualifiedAction(
+            dealCaseId,
+            proposalId,
+          );
         }
 
         toast({ title: successTitle, variant: "success" });
@@ -108,11 +113,11 @@ export default function SentLeadProposalActions({
           type="button"
           disabled={isPending}
           onClick={() =>
-            handleAction(
-              "qualify",
-              "Đã xác nhận đề xuất phù hợp.",
-              "Không thể xác nhận đề xuất phù hợp.",
-            )
+          handleAction(
+            "qualify",
+            "Xác nhận phù hợp.",
+            "Không thể xác nhận đề xuất phù hợp.",
+          )
           }
           className="rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
@@ -142,15 +147,15 @@ export default function SentLeadProposalActions({
           type="button"
           disabled={isPending}
           onClick={() =>
-            handleAction(
-              "negotiate",
-              "Đã chuyển đề xuất sang đàm phán.",
-              "Không thể chuyển đề xuất sang đàm phán.",
-            )
+          handleAction(
+            "negotiate",
+            "Đã đàm phán.",
+            "Không thể đàm phán.",
+          )
           }
           className="rounded-full border border-primary px-3 py-1.5 text-xs font-semibold text-primary disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Chuyển sang đàm phán
+          Đàm phán
         </button>
       ) : null}
 
@@ -159,11 +164,11 @@ export default function SentLeadProposalActions({
           type="button"
           disabled={isPending}
           onClick={() =>
-            handleUndo(
-              "revert-qualified",
-              "Đã hoàn tác về đã xác nhận phù hợp.",
-              "Không thể hoàn tác đàm phán.",
-            )
+          handleUndo(
+            "revert-qualified",
+            "Đã hoàn tác về xác nhận phù hợp.",
+            "Không thể hoàn tác đàm phán.",
+          )
           }
           className="rounded-full border border-hairline px-3 py-1.5 text-xs font-semibold text-body disabled:cursor-not-allowed disabled:opacity-60"
         >

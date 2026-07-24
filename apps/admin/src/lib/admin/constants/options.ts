@@ -1,13 +1,13 @@
 import type {
   ContentStatus,
-  LeadStatus,
-  ListingMatchStatus,
   ListingStatus,
   PaymentStatus,
   PriceUnit,
   PropertyDirection,
   PropertyPriority,
   PublishSource,
+  DealCaseStatus,
+  ProposalStatus,
   UserRole,
 } from "@thuematbang/contracts";
 
@@ -88,9 +88,9 @@ export const PUBLISH_SOURCE_OPTIONS: Array<{
   { label: "Gói trả phí", value: "PAID_PACKAGE" },
 ];
 
-export const LEAD_STATUS_OPTIONS: Array<{
+export const DEAL_CASE_STATUS_OPTIONS: Array<{
   label: string;
-  value: LeadStatus;
+  value: DealCaseStatus;
 }> = [
   { label: "Mới tiếp nhận", value: "NEW" },
   { label: "Đang chăm sóc", value: "CONTACTED" },
@@ -98,13 +98,13 @@ export const LEAD_STATUS_OPTIONS: Array<{
   { label: "Dừng chăm sóc", value: "REJECTED" },
 ];
 
-export const MATCH_STATUS_OPTIONS: Array<{
+export const PROPOSAL_STATUS_OPTIONS: Array<{
   label: string;
-  value: ListingMatchStatus;
+  value: ProposalStatus;
 }> = [
   { label: "Đề xuất mới", value: "SUGGESTED" },
-  { label: "Đã xác nhận phù hợp", value: "QUALIFIED" },
-  { label: "Đang đàm phán", value: "NEGOTIATING" },
+  { label: "Xác nhận phù hợp", value: "QUALIFIED" },
+  { label: "Đàm phán", value: "NEGOTIATING" },
   { label: "Đã chốt đề xuất", value: "DEAL_WON" },
   { label: "Đề xuất không hợp", value: "DEAL_LOST" },
   { label: "Tự động hủy", value: "CANCELLED_AUTO" },

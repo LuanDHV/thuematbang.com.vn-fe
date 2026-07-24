@@ -1,22 +1,23 @@
-import { LeadStatus } from "./enums";
-import { ListingMatchSummary } from "./listing-match";
+import type { DealCaseStatus } from "./enums";
+import type { ProposalSummary } from "./proposal";
 import { Property } from "./property";
 import { RentRequest } from "./rent-request";
 import { User } from "./user";
 
-export type LeadSourceFilter = "PROPERTY" | "RENT_REQUEST";
+export type DealCaseSourceFilter = "PROPERTY" | "RENT_REQUEST";
 
-export interface Lead {
+export interface DealCase {
   id: number;
   userId?: number | null;
   propertyId?: number | null;
   rentRequestId?: number | null;
   fullName: string;
   phone: string;
-  status: LeadStatus;
+  status: DealCaseStatus;
+  source: DealCaseSourceFilter;
   note?: string | null;
   completedAt?: Date | string | null;
-  winningMatchId?: number | null;
+  winningProposalId?: number | null;
   closureReason?: string | null;
   closureReasonDetail?: string | null;
   closureNote?: string | null;
@@ -25,8 +26,10 @@ export interface Lead {
   user?: User | null;
   property?: Property | null;
   rentRequest?: RentRequest | null;
-  listingMatches?: ListingMatchSummary[];
+  proposals?: ProposalSummary[];
   _count?: {
-    listingMatches: number;
+    proposals: number;
   };
 }
+
+export interface DealCaseSummary extends DealCase {}

@@ -1,7 +1,10 @@
 import Link from "next/link";
 
 import UserMarketplaceCasesTable from "@/components/cms/user/UserMarketplaceCasesTable";
-import { leadService, type MarketplaceCaseType } from "@/services/lead.service";
+import {
+  dealCaseService,
+  type MarketplaceCaseType,
+} from "@/services/lead.service";
 import { resolvePaginationServer } from "@/lib/server/server-side";
 
 type PageProps = {
@@ -19,7 +22,7 @@ export default async function UserMarketplaceCasesPage({
   const resolvedSearchParams = await searchParams;
   const currentPage = resolvePaginationServer(resolvedSearchParams);
   const currentTab = resolveTab(resolvedSearchParams?.tab);
-  const result = await leadService
+  const result = await dealCaseService
     .getMyMarketplaceCases({
       type: currentTab,
       page: currentPage,

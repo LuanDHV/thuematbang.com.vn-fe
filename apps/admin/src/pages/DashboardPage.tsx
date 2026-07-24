@@ -105,7 +105,7 @@ type DashboardSummary = {
   queues: {
     pendingProperties: DashboardQueueItem[];
     pendingRentRequests: DashboardQueueItem[];
-    newLeads: DashboardQueueItem[];
+    newDealCases: DashboardQueueItem[];
     pendingProposals: DashboardQueueItem[];
     pendingPayments: DashboardQueueItem[];
   };
@@ -567,7 +567,8 @@ function QueueList({
 
 function QueueTabs({ summary }: { summary: DashboardSummary }) {
   const { queues } = summary;
-  const summaryText = `${queues.pendingProperties.length} tin cho thuê · ${queues.pendingRentRequests.length} tin cần thuê · ${queues.newLeads.length} hồ sơ · ${queues.pendingProposals.length} đề xuất · ${queues.pendingPayments.length} thanh toán`;
+  const newDealCases = queues.newDealCases;
+  const summaryText = `${queues.pendingProperties.length} tin cho thuê · ${queues.pendingRentRequests.length} tin cần thuê · ${newDealCases.length} hồ sơ · ${queues.pendingProposals.length} đề xuất · ${queues.pendingPayments.length} thanh toán`;
 
   return (
     <Card
@@ -598,9 +599,9 @@ function QueueTabs({ summary }: { summary: DashboardSummary }) {
           },
           {
             key: "leads",
-            label: `Hồ sơ mới (${queues.newLeads.length})`,
+            label: `Hồ sơ mới (${newDealCases.length})`,
             children: (
-              <QueueList items={queues.newLeads} emptyText="Không có hồ sơ mới" />
+              <QueueList items={newDealCases} emptyText="Không có hồ sơ mới" />
             ),
           },
           {

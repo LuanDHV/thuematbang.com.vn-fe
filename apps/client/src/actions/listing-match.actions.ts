@@ -1,76 +1,91 @@
 "use server";
 
-import { leadService } from "@/services/lead.service";
-import { listingMatchService } from "@/services/listing-match.service";
+import { dealCaseService } from "@/services/lead.service";
+import { proposalService } from "@/services/listing-match.service";
 
-export async function getLeadAction(id: number) {
-  return leadService.getById(id);
+export async function getDealCaseAction(id: number) {
+  return dealCaseService.getById(id);
 }
 
-export async function getLeadMatchesAction(leadId: number) {
-  return listingMatchService.getByLeadId(leadId);
+export async function getDealCaseProposalsAction(dealCaseId: number) {
+  return proposalService.getByDealCaseId(dealCaseId);
 }
 
-export async function createListingMatchAction(payload: {
+export async function createProposalAction(payload: {
   propertyId: number;
   rentRequestId: number;
-  leadId?: number;
+  dealCaseId?: number;
 }) {
-  return listingMatchService.create(payload);
+  return proposalService.create(payload);
 }
 
-export async function promoteMatchAction(matchId: number, leadId: number) {
-  return listingMatchService.promote(matchId, leadId);
+export async function promoteProposalAction(
+  proposalId: number,
+  dealCaseId: number,
+) {
+  return proposalService.promote(proposalId, dealCaseId);
 }
 
-export async function qualifySentLeadProposalAction(
-  leadId: number,
+export async function qualifySentDealCaseProposalAction(
+  dealCaseId: number,
   proposalId: number,
 ) {
-  return leadService.qualifyMySentLeadProposal(leadId, proposalId);
+  return dealCaseService.qualifyMySentDealCaseProposal(
+    dealCaseId,
+    proposalId,
+  );
 }
 
-export async function negotiateSentLeadProposalAction(
-  leadId: number,
+export async function negotiateSentDealCaseProposalAction(
+  dealCaseId: number,
   proposalId: number,
 ) {
-  return leadService.negotiateMySentLeadProposal(leadId, proposalId);
+  return dealCaseService.negotiateMySentDealCaseProposal(
+    dealCaseId,
+    proposalId,
+  );
 }
 
-export async function rejectSentLeadProposalAction(
-  leadId: number,
+export async function rejectSentDealCaseProposalAction(
+  dealCaseId: number,
   proposalId: number,
 ) {
-  return leadService.rejectMySentLeadProposal(leadId, proposalId);
+  return dealCaseService.rejectMySentDealCaseProposal(dealCaseId, proposalId);
 }
 
-export async function revertSentLeadProposalToSuggestedAction(
-  leadId: number,
+export async function revertSentDealCaseProposalToSuggestedAction(
+  dealCaseId: number,
   proposalId: number,
 ) {
-  return leadService.revertMySentLeadProposalToSuggested(leadId, proposalId);
+  return dealCaseService.revertMySentDealCaseProposalToSuggested(
+    dealCaseId,
+    proposalId,
+  );
 }
 
-export async function revertSentLeadProposalToQualifiedAction(
-  leadId: number,
+export async function revertSentDealCaseProposalToQualifiedAction(
+  dealCaseId: number,
   proposalId: number,
 ) {
-  return leadService.revertMySentLeadProposalToQualified(leadId, proposalId);
+  return dealCaseService.revertMySentDealCaseProposalToQualified(
+    dealCaseId,
+    proposalId,
+  );
 }
 
-export async function rejectMatchAction(matchId: number) {
-  return listingMatchService.reject(matchId);
+export async function rejectProposalAction(proposalId: number) {
+  return proposalService.reject(proposalId);
 }
 
-export async function unmatchMatchAction(matchId: number) {
-  return listingMatchService.unmatch(matchId);
+export async function unmatchProposalAction(proposalId: number) {
+  return proposalService.unmatch(proposalId);
 }
 
-export async function removeMatchAction(matchId: number) {
-  return listingMatchService.remove(matchId);
+export async function removeProposalAction(proposalId: number) {
+  return proposalService.remove(proposalId);
 }
 
-export async function updateLeadStatusAction(
+export async function updateDealCaseStatusAction(
   id: number,
   status: string,
   candidateId?: number,
@@ -79,5 +94,5 @@ export async function updateLeadStatusAction(
   if (candidateId !== undefined) {
     payload.candidateId = candidateId;
   }
-  return leadService.update(id, payload);
+  return dealCaseService.update(id, payload);
 }

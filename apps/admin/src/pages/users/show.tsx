@@ -518,7 +518,7 @@ export const UsersShow: React.FC = () => {
               },
               {
                 key: "leads",
-                label: `Lead (${resources?.counts.leads ?? 0})`,
+                label: `Hồ sơ (${resources?.counts.leads ?? 0})`,
                 children: (
                   <Table
                     rowKey="id"
@@ -556,7 +556,7 @@ export const UsersShow: React.FC = () => {
                       title="Nguồn"
                       width={130}
                       render={(_: unknown, item: LeadResource) =>
-                        item.propertyId ? "Lead cho thuê" : "Lead cần thuê"
+                        item.propertyId ? "Hồ sơ cho thuê" : "Hồ sơ cần thuê"
                       }
                     />
                     <Table.Column
@@ -583,7 +583,7 @@ export const UsersShow: React.FC = () => {
                       dataIndex="status"
                       width={130}
                       render={(value: string) => (
-                        <StatusBadge status={value} type="lead" />
+                        <StatusBadge status={value} kind="deal-case" />
                       )}
                     />
                     <Table.Column

@@ -1,32 +1,32 @@
 import "server-only";
 
-import type { ListingMatchSummary } from "@/types/listing-match";
+import type { ProposalSummary } from "@/types/proposal";
 import { requestServerApi } from "./shared/server-api-client";
 import { buildListPath } from "./shared/list-service";
 
-export type ListingMatchListFilters = {
+export type ProposalListFilters = {
   status?: string;
-  leadId?: number;
+  dealCaseId?: number;
   propertyId?: number;
   rentRequestId?: number;
 };
 
-export type ListingMatchGetAllParams = {
-  filters?: ListingMatchListFilters;
+export type ProposalGetAllParams = {
+  filters?: ProposalListFilters;
   page?: number;
   limit?: number;
 };
 
-export type CreateListingMatchPayload = {
+export type CreateProposalPayload = {
   propertyId: number;
   rentRequestId: number;
-  leadId?: number;
+  dealCaseId?: number;
   note?: string;
 };
 
-export const listingMatchService = {
-  getAll: async (params: ListingMatchGetAllParams = {}) =>
-    requestServerApi<ListingMatchSummary[]>(
+export const proposalService = {
+  getAll: async (params: ProposalGetAllParams = {}) =>
+    requestServerApi<ProposalSummary[]>(
       buildListPath("/listing-matches", params),
       {
         auth: "required",
@@ -36,7 +36,7 @@ export const listingMatchService = {
     ),
 
   getById: async (id: number) => {
-    const response = await requestServerApi<ListingMatchSummary>(
+    const response = await requestServerApi<ProposalSummary>(
       `/listing-matches/${id}`,
       {
         auth: "required",
@@ -47,20 +47,20 @@ export const listingMatchService = {
     return response.data;
   },
 
-  getByLeadId: async (leadId: number) => {
-    const response = await requestServerApi<ListingMatchSummary[]>(
-      `/listing-matches/by-lead/${leadId}`,
+  getByDealCaseId: async (dealCaseId: number) => {
+    const response = await requestServerApi<ProposalSummary[]>(
+      `/listing-matches/by-lead/${dealCaseId}`,
       {
         auth: "required",
         cache: "no-store",
-        tags: ["listing-matches", `lead-${leadId}-matches`],
+        tags: ["listing-matches", `deal-case-${dealCaseId}-proposals`],
       },
     );
     return response.data;
   },
 
-  create: async (payload: CreateListingMatchPayload) => {
-    const response = await requestServerApi<ListingMatchSummary>(
+  create: async (payload: CreateProposalPayload) => {
+    const response = await requestServerApi<ProposalSummary>(
       "/listing-matches",
       {
         method: "POST",
@@ -72,21 +72,21 @@ export const listingMatchService = {
     return response.data;
   },
 
-  promote: async (id: number, leadId: number) => {
-    const response = await requestServerApi<ListingMatchSummary>(
+  promote: async (id: number, dealCaseId: number) => {
+    const response = await requestServerApi<ProposalSummary>(
       `/listing-matches/${id}/promote`,
       {
         method: "POST",
         auth: "required",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ leadId }),
+        body: JSON.stringify({ dealCaseId }),
       },
     );
     return response.data;
   },
 
   reject: async (id: number) => {
-    const response = await requestServerApi<ListingMatchSummary>(
+    const response = await requestServerApi<ProposalSummary>(
       `/listing-matches/${id}/reject`,
       {
         method: "POST",
@@ -97,7 +97,7 @@ export const listingMatchService = {
   },
 
   unmatch: async (id: number) => {
-    const response = await requestServerApi<ListingMatchSummary>(
+    const response = await requestServerApi<ProposalSummary>(
       `/listing-matches/${id}/unmatch`,
       {
         method: "POST",
@@ -108,7 +108,7 @@ export const listingMatchService = {
   },
 
   remove: async (id: number) => {
-    const response = await requestServerApi<ListingMatchSummary>(
+    const response = await requestServerApi<ProposalSummary>(
       `/listing-matches/${id}`,
       {
         method: "DELETE",
