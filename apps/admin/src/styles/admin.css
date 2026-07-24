@@ -1048,6 +1048,7 @@
 [data-theme="admin"] .admin-warning-badge {
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
   min-height: 22px;
   padding: 2px 8px;
   border-radius: 999px;
@@ -1056,6 +1057,26 @@
   border: 1px solid #f1aaa0;
   font-size: 0.74rem;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme="admin"] .admin-ready-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 22px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #1f6a4a;
+  background: #e2f7ec;
+  border: 1px solid #a7dfbf;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 [data-theme="admin"] .admin-action-group {

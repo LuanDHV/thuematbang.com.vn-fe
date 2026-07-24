@@ -33,6 +33,13 @@ export default async function UserMarketplaceCaseDetailPage({
   }
 
   const source = item.property ?? item.rentRequest;
+  const winningProposal = item.winningMatchId
+    ? item.listingMatches?.find((proposal) => proposal.id === item.winningMatchId)
+    : null;
+  const winningCounterpart =
+    item.property != null
+      ? winningProposal?.rentRequest
+      : winningProposal?.property;
 
   return (
     <section className="space-y-5">
@@ -181,8 +188,8 @@ export default async function UserMarketplaceCaseDetailPage({
             ) : null}
             {item.winningMatchId ? (
               <p>
-                <span className="text-secondary">Đề xuất đã chốt:</span> #
-                {item.winningMatchId}
+                <span className="text-secondary">Đề xuất đã chốt:</span>{" "}
+                {winningCounterpart?.displayCode ?? "Đề xuất thắng"}
               </p>
             ) : null}
           </div>

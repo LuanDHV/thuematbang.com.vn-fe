@@ -5,7 +5,6 @@ import SentLeadProposalActions from "@/components/cms/user/SentLeadProposalActio
 import StatusBadge, {
   leadStatusBadgeToneMap,
   listingMatchStatusBadgeToneMap,
-  type BadgeTone,
 } from "@/components/cms/shared/StatusBadge";
 import {
   LEAD_STATUS_LABEL_MAP,
@@ -234,7 +233,7 @@ export default async function UserSentLeadDetailPage({ params }: PageProps) {
                     item.property != null
                       ? winningProposal?.rentRequest
                       : winningProposal?.property;
-                  return counterpart?.displayCode ?? `#${item.winningMatchId}`;
+                  return counterpart?.displayCode ?? "Đề xuất thắng";
                 })()}
               </p>
             ) : null}

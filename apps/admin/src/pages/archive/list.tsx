@@ -110,9 +110,7 @@ export const ArchiveList: React.FC = () => {
               : (winningMatch?.property as LeadRecord | undefined);
 
             if (!counterpart) {
-              return String(
-                record.winningMatchId ? `Đề xuất #${record.winningMatchId}` : "-"
-              );
+              return "Đề xuất thắng";
             }
 
             return `${String(counterpart.displayCode ?? "-")} · ${String(
