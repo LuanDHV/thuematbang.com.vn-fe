@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  DeleteButton,
   EditButton,
   ShowButton,
   useTable,
@@ -164,11 +163,6 @@ export const UsersList: React.FC = () => {
                 recordItemId={record.id as number}
               />
               <ShowButton
-                hideText
-                size="small"
-                recordItemId={record.id as number}
-              />
-              <DeleteButton
                 hideText
                 size="small"
                 recordItemId={record.id as number}
